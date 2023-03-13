@@ -1,9 +1,9 @@
-# Your Project's Title...
-Your project's description...
+# Mammotome Website
+Franklin site implementing https://www.mammotome.com/
 
 ## Environments
-- Preview: https://main--{repo}--{owner}.hlx.page/
-- Live: https://main--{repo}--{owner}.hlx.live/
+- Preview: https://main--mammotome--hlxsites.hlx.page/
+- Live: https://main--mammotome--hlxsites.hlx.live/
 
 ## Installation
 
