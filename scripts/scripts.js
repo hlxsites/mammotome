@@ -11,10 +11,11 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
+  setLanguage,
 } from './lib-franklin.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
-window.hlx.RUM_GENERATION = 'project-1'; // add your RUM generation information here
+window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -49,10 +50,10 @@ function buildAutoBlocks(main) {
  * @param {Element} main The main element
  */
 // eslint-disable-next-line import/prefer-default-export
-export function decorateMain(main) {
+export async function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
-  decorateIcons(main);
+  await decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
@@ -60,14 +61,14 @@ export function decorateMain(main) {
 
 /**
  * Loads everything needed to get to LCP.
- * @param {Element} doc The container element
+ * @param {Element|Document} doc The container element
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  setLanguage();
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
-    decorateMain(main);
+    await decorateMain(main);
     await waitForLCP(LCP_BLOCKS);
   }
 }
@@ -91,7 +92,7 @@ export function addFavIcon(href) {
 
 /**
  * Loads everything that doesn't need to be delayed.
- * @param {Element} doc The container element
+ * @param {Element|Document} doc The container element
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
@@ -101,10 +102,10 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  await loadHeader(doc.querySelector('header'));
+  await loadFooter(doc.querySelector('footer'));
 
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
+  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
   addFavIcon(`${window.hlx.codeBasePath}/styles/favicon.svg`);
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
@@ -127,4 +128,4 @@ async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+await loadPage();

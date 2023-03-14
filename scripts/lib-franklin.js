@@ -76,6 +76,7 @@ export function sampleRUM(checkpoint, data = {}) {
 /**
  * Loads a CSS file.
  * @param {string} href The path to the CSS file
+ * @param {function} callback A function called after CSS is loaded
  */
 export function loadCSS(href, callback) {
   if (!document.querySelector(`head > link[href="${href}"]`)) {
@@ -178,7 +179,7 @@ export async function decorateIcons(element) {
     const iconName = Array.from(span.classList).find((c) => c.startsWith('icon-')).split('-')[1];
     const parent = span.firstElementChild?.tagName === 'A' ? span.firstElementChild : span;
     // Styled icons need to be inlined as-is, while unstyled ones can leverage the sprite
-    if (ICONS_CACHE[iconName].styled) {
+    if (ICONS_CACHE[iconName] && ICONS_CACHE[iconName].styled) {
       parent.innerHTML = ICONS_CACHE[iconName].html;
     } else {
       parent.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg"><use href="#icons-sprite-${iconName}"/></svg>`;
@@ -350,7 +351,7 @@ export function decorateBlocks(main) {
 }
 
 /**
- * Builds a block DOM Element from a two dimensional array, string, or object
+ * Builds a block DOM Element from a two-dimensional array, string, or object
  * @param {string} blockName name of the block
  * @param {*} content two dimensional array or string or object of content
  */
@@ -566,12 +567,44 @@ export async function waitForLCP(lcpBlocks) {
   });
 }
 
+export const SUPPORTED_LANGUAGES = ['de', 'en', 'en-gb', 'es', 'fr', 'it', 'pl'];
+export const DEFAULT_LANGUAGE = 'en';
+
+export function getPreferredLanguage() {
+  return navigator.languages.find(
+    (l) => SUPPORTED_LANGUAGES.includes(l),
+  ) || DEFAULT_LANGUAGE;
+}
+
+export function setLanguage() {
+  const preferredLanguage = getPreferredLanguage();
+  const preferredLanguagePath = `/${preferredLanguage}/`;
+
+  if (window.location.pathname === '/' && window.location.origin.match(/\.hlx\.(page|live)$/)) {
+    window.location.replace(preferredLanguagePath);
+  }
+
+  const [, lang] = window.location.pathname.split('/');
+  document.documentElement.lang = lang;
+
+  const navMeta = document.createElement('meta');
+  navMeta.setAttribute('name', 'nav');
+  navMeta.setAttribute('content', `${preferredLanguagePath}nav`);
+
+  const footerMeta = document.createElement('meta');
+  footerMeta.setAttribute('name', 'footer');
+  footerMeta.setAttribute('content', `${preferredLanguagePath}footer`);
+
+  document.head.append(navMeta);
+  document.head.append(footerMeta);
+}
+
 /**
  * Loads a block named 'header' into header
  * @param {Element} header header element
  * @returns {Promise}
  */
-export function loadHeader(header) {
+export async function loadHeader(header) {
   const headerBlock = buildBlock('header', '');
   header.append(headerBlock);
   decorateBlock(headerBlock);
@@ -583,7 +616,7 @@ export function loadHeader(header) {
  * @param footer footer element
  * @returns {Promise}
  */
-export function loadFooter(footer) {
+export async function loadFooter(footer) {
   const footerBlock = buildBlock('footer', '');
   footer.append(footerBlock);
   decorateBlock(footerBlock);
