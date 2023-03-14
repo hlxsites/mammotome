@@ -356,10 +356,15 @@ export function decorateBlocks(main) {
  * @param {*} content two dimensional array or string or object of content
  */
 export function buildBlock(blockName, content) {
-  const table = Array.isArray(content) ? content : [[content]];
   const blockEl = document.createElement('div');
-  // build image block nested div structure
   blockEl.classList.add(blockName);
+
+  if (content === null) {
+    return blockEl;
+  }
+
+  const table = Array.isArray(content) ? content : [[content]];
+
   table.forEach((row) => {
     const rowEl = document.createElement('div');
     row.forEach((col) => {
@@ -605,7 +610,7 @@ export function setLanguage() {
  * @returns {Promise}
  */
 export async function loadHeader(header) {
-  const headerBlock = buildBlock('header', '');
+  const headerBlock = buildBlock('header', null);
   header.append(headerBlock);
   decorateBlock(headerBlock);
   return loadBlock(headerBlock);
@@ -617,7 +622,7 @@ export async function loadHeader(header) {
  * @returns {Promise}
  */
 export async function loadFooter(footer) {
-  const footerBlock = buildBlock('footer', '');
+  const footerBlock = buildBlock('footer', null);
   footer.append(footerBlock);
   decorateBlock(footerBlock);
   return loadBlock(footerBlock);
