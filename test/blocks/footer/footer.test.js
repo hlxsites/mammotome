@@ -16,7 +16,12 @@ const sleep = async (time = 1000) => new Promise((resolve) => {
   }, time);
 });
 
-const footerBlock = buildBlock('footer', [['Footer', '/test/blocks/footer/footer']]);
+const footerMeta = document.createElement('meta');
+footerMeta.setAttribute('name', 'footer');
+footerMeta.setAttribute('content', '/test/blocks/footer/footer');
+document.head.append(footerMeta);
+
+const footerBlock = buildBlock('footer', [[]]);
 document.querySelector('footer').append(footerBlock);
 decorateBlock(footerBlock);
 await loadBlock(footerBlock);
