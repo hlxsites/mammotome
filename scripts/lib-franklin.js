@@ -104,6 +104,14 @@ export function getMetadata(name) {
   return meta || '';
 }
 
+export function createMetadata(name, value) {
+  const meta = document.createElement('meta');
+  meta.setAttribute('name', name);
+  meta.setAttribute('content', value);
+
+  document.head.append(meta);
+}
+
 /**
  * Sanitizes a string for use as class name.
  * @param {string} name The unsanitized string
@@ -592,16 +600,8 @@ export function setLanguage() {
   const [, lang] = window.location.pathname.split('/');
   document.documentElement.lang = lang;
 
-  const navMeta = document.createElement('meta');
-  navMeta.setAttribute('name', 'nav');
-  navMeta.setAttribute('content', `${preferredLanguagePath}nav`);
-
-  const footerMeta = document.createElement('meta');
-  footerMeta.setAttribute('name', 'footer');
-  footerMeta.setAttribute('content', `${preferredLanguagePath}footer`);
-
-  document.head.append(navMeta);
-  document.head.append(footerMeta);
+  createMetadata('nav', `${preferredLanguagePath}nav`);
+  createMetadata('footer', `${preferredLanguagePath}footer`);
 }
 
 /**

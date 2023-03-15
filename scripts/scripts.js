@@ -11,7 +11,7 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-  setLanguage,
+  setLanguage, createMetadata,
 } from './lib-franklin.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
@@ -74,20 +74,26 @@ async function loadEager(doc) {
 }
 
 /**
- * Adds the favicon.
+ * Adds a favicon.
  * @param {string} href The favicon URL
+ * @param {string} rel The icon rel
+ * @param {string} type The icon content type
+ * @param {string} size The dimensions of the icon, e.g. 80x80
  */
-export function addFavIcon(href) {
+export function addFavIcon(
+  href,
+  rel = 'icon',
+  size = '',
+  type = 'image/png',
+) {
   const link = document.createElement('link');
-  link.rel = 'icon';
-  link.type = 'image/svg+xml';
+  link.rel = rel;
+  link.type = type;
   link.href = href;
-  const existingLink = document.querySelector('head link[rel="icon"]');
-  if (existingLink) {
-    existingLink.parentElement.replaceChild(link, existingLink);
-  } else {
-    document.getElementsByTagName('head')[0].appendChild(link);
+  if (size) {
+    link.sizes.add(size);
   }
+  document.getElementsByTagName('head')[0].appendChild(link);
 }
 
 /**
@@ -106,7 +112,14 @@ async function loadLazy(doc) {
   await loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
-  addFavIcon(`${window.hlx.codeBasePath}/styles/favicon.svg`);
+
+  addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
+  addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');
+  addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon', '180x180');
+  addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-192x192.png`, 'apple-touch-icon', '192x192');
+  addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-270x270.png`, 'apple-touch-icon', '270x270');
+  createMetadata('msapplication-TileImage', `${window.hlx.codeBasePath}/styles/icons/favicon-270x270.png`);
+
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
