@@ -132,7 +132,6 @@ a:hover {
 
 /* buttons */
 a.button:any-link, button {
-  font-family: var(--global-font-family-base);
   display: inline-block;
   box-sizing: border-box;
   text-decoration: none;
