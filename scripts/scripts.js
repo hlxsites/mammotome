@@ -48,7 +48,7 @@ function buildAutoBlocks(main) {
 function getNextSiblings(child, parent, until) {
   let isNextSiblings = false;
   const nextSiblings = [];
-  parent.childNodes.forEach(node => {
+  parent.childNodes.forEach((node) => {
     if (until === 'UNTIL_NEXT_H3' && node.tagName.toLowerCase() === 'h3') {
       isNextSiblings = false;
     }
@@ -72,7 +72,7 @@ export async function decorateHistoryPage(main) {
   try {
     const parent = main.querySelector('.default-content-wrapper');
     const firstH3 = parent.querySelector('h3');
-    
+
     // wrap all h3 and p in a timeline element
     const timelineBlock = buildBlock('timeline', null);
     parent.insertBefore(timelineBlock, firstH3);
@@ -80,26 +80,25 @@ export async function decorateHistoryPage(main) {
 
     // create small blocks for every year
     const yearBlocks = [];
-    timelineBlock.childNodes.forEach(el => {
+    timelineBlock.childNodes.forEach((el) => {
       if (el.tagName.toLowerCase() === 'h3') {
         const yearBlock = buildBlock('year', null);
         yearBlocks.push([yearBlock, getNextSiblings(el, timelineBlock, 'UNTIL_NEXT_H3')]);
       }
     });
-    yearBlocks.forEach(block => {
+    yearBlocks.forEach((block) => {
       timelineBlock.append(block[0]);
       block[0].append(...block[1]);
     });
 
-    // change order and move picture element before h3 element. needed for mobile.  
-    yearBlocks.forEach(block => {
-      block[0].childNodes.forEach(el => {
+    // change order and move picture element before h3 element. needed for mobile.
+    yearBlocks.forEach((block) => {
+      block[0].childNodes.forEach((el) => {
         if (el.tagName.toLowerCase() === 'h3' && el.nextSibling?.firstElementChild?.tagName?.toLowerCase() === 'picture') {
           block[0].insertBefore(el.nextSibling, el);
         }
       });
     });
-
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Decorating History page failed', error);
@@ -108,13 +107,12 @@ export async function decorateHistoryPage(main) {
 /**
  * Observe the history page for changes.
  * @param {Element} main The main element
- */
+*/
 // eslint-disable-next-line import/prefer-default-export
 export async function observeHistoryPage(main) {
   try {
-
     const highlightWhenInViewport = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         const { isIntersecting } = entry;
         if (isIntersecting) {
           entry.target.classList.add('highlight');
@@ -124,18 +122,16 @@ export async function observeHistoryPage(main) {
       });
     }, {
       rootMargin: '0px',
-      threshold: 1
+      threshold: 1,
     });
 
     const yearBlocks = main.querySelectorAll('.timeline .year');
-    yearBlocks.forEach(el => highlightWhenInViewport.observe(el));
-
+    yearBlocks.forEach((el) => highlightWhenInViewport.observe(el));
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Observer of History page failed', error);
   }
 }
-
 
 /**
  * Decorates the main element.

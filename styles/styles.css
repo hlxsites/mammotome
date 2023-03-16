@@ -249,6 +249,7 @@ main .section.highlight {
 body.our-history main .timeline {
   position: relative;
 }
+
 body.our-history main .timeline::before {
   background-color: var(--blue-color);
   display: inline-block;
@@ -261,6 +262,7 @@ body.our-history main .timeline::before {
   z-index: -1;
   height: 100%;
 }
+
 body.our-history main h2 {
   text-align: center;
   color: var(--dark-violet-color);
@@ -271,9 +273,6 @@ body.our-history main h2 {
   margin-bottom: 100px;
 }
 
-body.our-history main .year {
-  position: relative;
-}
 body.our-history main .year h3 {
   font-size: 16px;
 }
@@ -297,13 +296,14 @@ body.our-history main .year.highlight::before {
 }
 
 body.our-history main .year {
+  position: relative;
   transition: background-color 0.5s linear;
   background-color: var(--blue-color);
-  box-shadow: 8px 22px 50px 0px rgb(28 28 73 / 40%);
+  box-shadow: 8px 22px 50px 0 rgb(28 28 73 / 40%);
   font-size: 16px;
   color: white;
   border-radius: 4px;
-  padding: 30px 50px 10px 50px;
+  padding: 30px 50px 10px;
   margin-bottom: 120px;
 }
 
