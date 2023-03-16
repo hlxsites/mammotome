@@ -366,6 +366,10 @@ body.our-history main .year::before {
 }
 
 body.our-history main .year.highlight::before {
+  transform: scale(1.2);
+}
+
+body.our-history main .year.highlight::before {
   transition: background-color 0.5s linear;
   background-color: var(--mt-global-color-base-primary);
 }
