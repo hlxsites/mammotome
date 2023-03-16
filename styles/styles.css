@@ -344,7 +344,8 @@ body.our-history main h2 {
 }
 
 body.our-history main .year h3 {
-  font-size: 16px;
+  font-size: var(--mt-font-size-100);
+  color: var(--mt-global-color-white);
 }
 
 body.our-history main .year::before {
