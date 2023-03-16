@@ -12,3 +12,75 @@ footer .footer {
 footer .footer p {
   margin: 0;
 }
+
+/* container for footer nav and copyright */
+footer .footer > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+/* flex container for footer nav */
+footer .columns > div {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* flex items for footer links */
+footer .columns ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  line-height: 24px;
+}
+
+/* footer nav links */
+footer .columns ul li a[href] {
+  text-decoration: none;
+  color: rgb(132,50,155);
+  font-size: 16px;
+}
+
+/* footer nav headlines */
+footer .columns h5 {
+  font-size: 16px;
+  color: rgb(117,120,123);
+}
+
+/* flex container for social media icons */
+footer .columns > div > div:nth-child(4) > ul {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* flex item, Headquarter address right align */
+footer .columns > div > div:nth-child(5) > p {
+  text-align: right;
+  font-size: 16px;
+  color: rgb(117,120,123);
+}
+
+/* flex container for copyright and logo icon */
+
+
+/* copyright section */
+footer > .footer > div > div:nth-child(2) > p {
+  font-size: 16px;
+  font-weight: var(--mt-font-weight-thin);
+  margin-top: 60px;
+}
+
+/* copyright link */
+footer > .footer > div > div:nth-child(2) > p > a[href] {
+  font-size: 12.8px;
+  text-decoration: none;
+}
+
+/* logo */
+footer > .footer > div > div:nth-child(2) .icon  {
+  width: 103px;
+  float: right;
+  display: inline-block;
+}
