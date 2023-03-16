@@ -13,7 +13,7 @@
 /* below the fold CSS goes here */
 @font-face {
     font-family: robotoflex-regular;
-    src: url("/styles/fonts/RobotoFlex-Regular.ttf");
+    src: url("/styles/fonts/RobotoFlex-VF.ttf");
     font-display: swap;
-    font-variation-settings: 'wght' 400;
+    font-weight: 100 1000;
 }
