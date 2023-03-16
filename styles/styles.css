@@ -18,6 +18,8 @@
   --overlay-background-color: #eee;
   --highlight-background-color: #ccc;
   --text-color: #000;
+  --blue-color: #5F8DDA;
+  --dark-violet-color: #84329b;
 
   /* fonts */
   --body-font-family: 'helvetica neue', helvetica, ubuntu, roboto, noto, sans-serif;
@@ -241,4 +243,74 @@ main .section[data-section-status='initialized'] {
 /* section metadata */
 main .section.highlight {
   background-color: var(--highlight-background-color);
+}
+
+/* about-us/our-history */
+body.our-history main .timeline {
+  position: relative;
+}
+body.our-history main .timeline::before {
+  background-color: var(--blue-color);
+  display: inline-block;
+  width: 4px;
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  margin-left: -2px;
+  z-index: -1;
+  height: 100%;
+}
+body.our-history main h2 {
+  text-align: center;
+  color: var(--dark-violet-color);
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 100px;
+}
+
+body.our-history main .year {
+  position: relative;
+}
+body.our-history main .year h3 {
+  font-size: 16px;
+}
+
+body.our-history main .year::before {
+  display: inline-block;
+  content: '';
+  background-color: var(--blue-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: -55px;
+  left: 50%;
+  margin-left: -20px;
+}
+
+body.our-history main .year.highlight::before {
+  transition: background-color 0.5s linear;
+  background-color: var(--dark-violet-color);
+}
+
+body.our-history main .year {
+  transition: background-color 0.5s linear;
+  background-color: var(--blue-color);
+  box-shadow: 8px 22px 50px 0px rgb(28 28 73 / 40%);
+  font-size: 16px;
+  color: white;
+  border-radius: 4px;
+  padding: 30px 50px 10px 50px;
+  margin-bottom: 120px;
+}
+
+body.our-history main .year.highlight {
+  background-color: var(--dark-violet-color);
+}
+
+body.our-history main p:has(img) {
+  text-align: center;
 }
