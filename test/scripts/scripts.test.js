@@ -41,8 +41,8 @@ describe('Core Helix features', () => {
   });
 
   it('Adds favicon', async () => {
-    scripts.addFavIcon('/foo.svg');
+    scripts.addFavIcon('/styles/icons/favicon-32x32.png');
     const $favIcon = document.querySelector('link[rel="icon"]');
-    expect($favIcon.getAttribute('href')).to.equal('/foo.svg');
+    expect($favIcon.getAttribute('href')).to.equal('/styles/icons/favicon-32x32.png');
   });
 });
