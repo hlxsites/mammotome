@@ -293,20 +293,12 @@ main img {
 }
 
 main .section {
-  padding: 64px 16px;
+  padding: 5% 10% 0%;
 }
 
-@media (min-width: 600px) {
-  main .section {
-    padding: 64px 32px;
-  }
-}
-
-@media (min-width: 900px) {
-  .section > div {
-    max-width: 1200px;
-    margin: auto;
-  }
+main .section .default-content-wrapper {
+  max-width: 1300px;
+  margin: auto;
 }
 
 /* progressive section appearance */
