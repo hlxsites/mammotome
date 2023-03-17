@@ -316,11 +316,14 @@ main .section[data-section-status='initialized'] {
 }
 
 /* about-us/our-history */
-body.our-history main .timeline {
+
+@media screen and (min-width: 767px) {
+
+main .section.our-history .timeline {
   position: relative;
 }
 
-body.our-history main .timeline::before {
+main .section.our-history .timeline::before {
   background-color: var(--mt-global-color-accent-primary);
   display: inline-block;
   width: 4px;
@@ -333,7 +336,7 @@ body.our-history main .timeline::before {
   height: 100%;
 }
 
-body.our-history main h2 {
+main .section.our-history h2 {
   text-align: center;
   color: var(--mt-global-color-base-primary);
   font-size: 1rem;
@@ -343,12 +346,12 @@ body.our-history main h2 {
   margin-bottom: 100px;
 }
 
-body.our-history main .year h3 {
+main .section.our-history .year h3 {
   font-size: var(--mt-font-size-100);
   color: var(--mt-global-color-white);
 }
 
-body.our-history main .year::before {
+main .section.our-history .year::before {
   display: inline-block;
   content: '';
   background-color: var(--mt-global-color-accent-primary);
@@ -365,16 +368,16 @@ body.our-history main .year::before {
   margin-left: -20px;
 }
 
-body.our-history main .year.highlight::before {
+main .section.our-history .year.highlight::before {
   transform: scale(1.2);
 }
 
-body.our-history main .year.highlight::before {
+main .section.our-history .year.highlight::before {
   transition: background-color 0.5s linear;
   background-color: var(--mt-global-color-base-primary);
 }
 
-body.our-history main .year {
+main .section.our-history .year {
   position: relative;
   transition: background-color 0.5s linear;
   background-color: var(--mt-global-color-accent-primary);
@@ -386,10 +389,13 @@ body.our-history main .year {
   margin-bottom: 120px;
 }
 
-body.our-history main .year.highlight {
+main .section.our-history .year.highlight {
   background-color: var(--mt-global-color-base-primary);
 }
 
-body.our-history main p:has(img) {
+main .section.our-history p:has(img) {
   text-align: center;
+}
+
+@media screen and (min-width: 767px) {
 }
