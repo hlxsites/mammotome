@@ -93,6 +93,10 @@
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-input-font-size: var(--mt-font-size-175);
 
+  /* history */
+  --mt-our-history-color-violet: var(--mt-global-color-base-primary); 
+  --mt-our-history-color-blue: var(--mt-global-color-accent-primary);
+
   /* nav height */
   --mt-nav-height: 64px;
 }
@@ -322,7 +326,7 @@ main .section.our-history .timeline {
 }
 
 main .section.our-history .timeline::before {
-  background-color: var(--mt-global-color-accent-primary);
+  background-color: var(--mt-our-history-color-blue);
   display: inline-block;
   width: 4px;
   content: '';
@@ -336,7 +340,7 @@ main .section.our-history .timeline::before {
 
 main .section.our-history h2 {
   text-align: center;
-  color: var(--mt-global-color-base-primary);
+  color: var(--mt-our-history-color-violet);
   font-size: 1rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -345,14 +349,14 @@ main .section.our-history h2 {
 }
 
 main .section.our-history .year h3 {
-  font-size: var(--mt-font-size-100);
+  font-size: var(--mt-body-font-size-100);
   color: var(--mt-global-color-white);
 }
 
 main .section.our-history .year::before {
   display: inline-block;
   content: '';
-  background-color: var(--mt-global-color-accent-primary);
+  background-color: var(--mt-our-history-color-blue);
   background-image: url('/icons/calendar.svg');
   background-repeat: no-repeat;
   background-size: 40%;
@@ -369,13 +373,13 @@ main .section.our-history .year::before {
 main .section.our-history .year.highlight::before {
   transform: scale(1.2);
   transition: background-color 0.5s linear;
-  background-color: var(--mt-global-color-base-primary);
+  background-color: var(--mt-our-history-color-violet);
 }
 
 main .section.our-history .year {
   position: relative;
   transition: background-color 0.5s linear;
-  background-color: var(--mt-global-color-accent-primary);
+  background-color: var(--mt-our-history-color-blue);
   box-shadow: 8px 22px 50px 0 rgb(28 28 73 / 40%);
   font-size: 16px;
   color: white;
@@ -385,7 +389,7 @@ main .section.our-history .year {
 }
 
 main .section.our-history .year.highlight {
-  background-color: var(--mt-global-color-base-primary);
+  background-color: var(--mt-our-history-color-violet);
 }
 
 main .section.our-history p:has(img) {
