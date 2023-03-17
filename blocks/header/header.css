@@ -212,19 +212,19 @@ header nav .nav-sections ul > li > ul > li {
     border: 2px solid currentcolor;
     border-radius: 0 1px 0 0;
     border-width: 2px 2px 0 0;
-  } */
+  } 
 
   header nav .nav-sections .nav-drop[aria-expanded="true"]::after {
     top: unset;
     bottom: .5em;
     transform: rotate(315deg);
-  }
+  }*/
 
   header nav .nav-sections ul {
     display: flex;
     gap: 2em;
     margin: 0;
-    font-size: var(--mt-body-font-size-m);
+    font-size: var(--mt-font-size-90);
     color: var(--mt-global-color-base-primary);
   }
 
