@@ -317,8 +317,6 @@ main .section[data-section-status='initialized'] {
 
 /* about-us/our-history */
 
-@media screen and (min-width: 767px) {
-
 main .section.our-history .timeline {
   position: relative;
 }
@@ -355,7 +353,7 @@ main .section.our-history .year::before {
   display: inline-block;
   content: '';
   background-color: var(--mt-global-color-accent-primary);
-  background-image: url(/icons/calendar.svg);
+  background-image: url('/icons/calendar.svg');
   background-repeat: no-repeat;
   background-size: 40%;
   background-position: center;
@@ -370,9 +368,6 @@ main .section.our-history .year::before {
 
 main .section.our-history .year.highlight::before {
   transform: scale(1.2);
-}
-
-main .section.our-history .year.highlight::before {
   transition: background-color 0.5s linear;
   background-color: var(--mt-global-color-base-primary);
 }
@@ -395,7 +390,4 @@ main .section.our-history .year.highlight {
 
 main .section.our-history p:has(img) {
   text-align: center;
-}
-
-@media screen and (min-width: 767px) {
 }
