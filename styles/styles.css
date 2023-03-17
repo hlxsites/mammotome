@@ -154,6 +154,10 @@ h6 {
   font-size: var(--mt-heading-font-size-xs);
 }
 
+sup {
+  font-size: var(--mt-font-size-75);
+}
+
 p, dl, ol, ul, pre, blockquote {
   margin: 0 0 0.9rem;
 }
@@ -397,8 +401,11 @@ main .section.our-history p:has(img) {
   text-align: center;
 }
 
-@media screen and (min-width: 767px) {
+main .section.our-history p:has(sup) {
+  margin: 0;
+}
 
+@media screen and (min-width: 767px) {
   main .section.our-history .year::before {
     top: 40%;
     left: 116.5%;
@@ -417,6 +424,7 @@ main .section.our-history p:has(img) {
 
   main .section.our-history .year {
     width: 43%;
+    margin-bottom: 80px;
   }
 
   main .section.our-history .year h3:nth-child(even) {
@@ -426,6 +434,5 @@ main .section.our-history p:has(img) {
   main .section.our-history .year:nth-child(even) {
     left: 57%;
   }
-
 
 }
