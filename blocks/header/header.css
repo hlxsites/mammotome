@@ -200,7 +200,7 @@ header nav .nav-sections ul > li > ul > li {
     cursor: pointer;
   }
 
-  /* header nav .nav-sections .nav-drop::after {
+  header nav .nav-sections .nav-drop::after {
     content: '';
     display: inline-block;
     position: absolute;
@@ -218,7 +218,7 @@ header nav .nav-sections ul > li > ul > li {
     top: unset;
     bottom: .5em;
     transform: rotate(315deg);
-  }*/
+  }
 
   header nav .nav-sections ul {
     display: flex;
