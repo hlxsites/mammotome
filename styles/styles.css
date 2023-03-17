@@ -386,6 +386,7 @@ main .section.our-history .year {
   border-radius: 4px;
   padding: 30px 50px 10px;
   margin-bottom: 120px;
+  width: 100%;
 }
 
 main .section.our-history .year.highlight {
@@ -394,4 +395,37 @@ main .section.our-history .year.highlight {
 
 main .section.our-history p:has(img) {
   text-align: center;
+}
+
+@media screen and (min-width: 767px) {
+
+  main .section.our-history .year::before {
+    top: 40%;
+    left: 116.5%;
+  }
+
+  main .section.our-history .year h3 {
+    position: absolute;
+    top: 40%;
+    left: 130%;
+    color: var(--mt-our-history-color-violet);
+  }
+  
+  main .section.our-history .year:nth-child(even)::before {
+    left: -16.5%;
+  }
+
+  main .section.our-history .year {
+    width: 43%;
+  }
+
+  main .section.our-history .year h3:nth-child(even) {
+    left: -38%;
+  }
+
+  main .section.our-history .year:nth-child(even) {
+    left: 57%;
+  }
+
+
 }
