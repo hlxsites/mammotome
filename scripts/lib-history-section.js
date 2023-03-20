@@ -92,15 +92,16 @@ export async function observeHistorySection(main) {
     const section = main.querySelector('.section.our-history');
     const highlightWhenInViewport = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
+        // leave this here for debugging: console.log(entry.target.querySelector('h3').innerText);
         const { isIntersecting } = entry;
         if (isIntersecting) {
           entry.target.classList.add('highlight');
-        } else {
+        } else if (entry.boundingClientRect.top > 0) {
           entry.target.classList.remove('highlight');
         }
       });
     }, {
-      rootMargin: '0px',
+      rootMargin: '50px',
       threshold: 1,
     });
 
