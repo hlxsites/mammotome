@@ -251,30 +251,22 @@ header nav .nav-sections ul > li > ul > li {
     display: block;
     position: absolute;
     left: -1em;
-    /* width: 200px; */
     margin-top: 12px;
-    /* padding: 1em; */
     white-space: nowrap;
-
     background-color: var(--mt-global-color-base-primary);
     border-style: solid;
-    border-width: 5px 5px 5px 5px;
+    border-width: 5px;
     border-color: #752A8A;
-    border-radius: 0px 0px 4px 4px;
     color: var(--mt-global-color-white);
     gap: unset;
   }
 
   header nav .nav-sections > ul > li[aria-expanded="true"] > ul > li {
-    padding: 10px 10px 10px 10px;
+    padding: 10px;
   }
 
   header nav .nav-sections > ul > li[aria-expanded="true"] > ul > li:hover {
-    background-color: #752A8A; /*check this*/
-  }
-
-  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li:hover {
-    background-color: var(--mt-global-color-base-primary);
+    background-color: #752A8A; /* check this */
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul {
@@ -287,6 +279,14 @@ header nav .nav-sections ul > li > ul > li {
     color: rgba(255, 255, 255, 0.56);
   }
 
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li:hover {
+    background-color: var(--mt-global-color-base-primary);
+  }
+
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
+    padding: 10px 10px 10px 10px;
+  }
+  
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
     display: flex;
     flex-direction: column;
@@ -297,12 +297,10 @@ header nav .nav-sections ul > li > ul > li {
     row-gap: unset;
   }
 
-  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
-    padding: 10px 10px 10px 10px;
-  }
+
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li:hover{
-    background-color: #752A8A; /*check this*/
+    background-color: #752A8A; /* check this */
   }
 
   header nav .nav-sections > ul > li > ul::before {
