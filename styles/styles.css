@@ -366,6 +366,7 @@ main .section.our-history .year .icon-calendar {
   justify-content: center;
   align-items: center;
 }
+
 main .section.our-history .year .icon-calendar svg {
   width: 40%;
   height: 40%;
