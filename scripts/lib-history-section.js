@@ -15,22 +15,15 @@ import {
   decorateIcons,
 } from './lib-franklin.js';
 
-function getNextSiblings(child, parent, until) {
-  let isNextSiblings = false;
-  const nextSiblings = [];
-  parent.childNodes.forEach((node) => {
-    if (until === 'UNTIL_NEXT_H3' && node.tagName.toLowerCase() === 'h3') {
-      isNextSiblings = false;
+export function* getNextSiblings(element, selector) {
+  let nextElement = element.nextElementSibling;
+  while (nextElement) {
+    if (selector && nextElement.matches(selector)) {
+      return;
     }
-    if (isNextSiblings) {
-      nextSiblings.push(node);
-    }
-    if (node === child) {
-      nextSiblings.push(node);
-      isNextSiblings = true;
-    }
-  });
-  return nextSiblings;
+    yield nextElement;
+    nextElement = nextElement.nextElementSibling;
+  }
 }
 
 /**
@@ -47,14 +40,14 @@ export async function decorateHistorySection(main) {
     // wrap all h3 and p in a timeline element
     const timelineBlock = buildBlock('timeline', null);
     parent.insertBefore(timelineBlock, firstH3);
-    timelineBlock.append(...getNextSiblings(firstH3, parent));
+    timelineBlock.append(firstH3, ...getNextSiblings(firstH3));
 
     // create small blocks for every year
     const yearBlocks = [];
-    timelineBlock.childNodes.forEach((el) => {
-      if (el.tagName.toLowerCase() === 'h3') {
+    [...timelineBlock.children].forEach((el) => {
+      if (el.tagName?.toLowerCase() === 'h3') {
         const yearBlock = buildBlock('year', null);
-        yearBlocks.push([yearBlock, getNextSiblings(el, timelineBlock, 'UNTIL_NEXT_H3')]);
+        yearBlocks.push([yearBlock, [el, ...getNextSiblings(el, 'H3')]]);
       }
     });
     yearBlocks.forEach((block) => {
@@ -69,8 +62,8 @@ export async function decorateHistorySection(main) {
 
     // change order and move picture element before h3 element. needed for mobile.
     yearBlocks.forEach((block) => {
-      block[0].childNodes.forEach((el) => {
-        if (el.tagName.toLowerCase() === 'h3' && el.nextSibling?.firstElementChild?.tagName?.toLowerCase() === 'picture') {
+      [...block[0].children].forEach((el) => {
+        if (el.tagName?.toLowerCase() === 'h3' && el.querySelector('picture')) {
           block[0].insertBefore(el.nextSibling, el);
         }
       });
