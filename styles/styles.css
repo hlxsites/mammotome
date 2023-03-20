@@ -353,14 +353,9 @@ main .section.our-history .year h3 {
   color: var(--mt-background-color-primary);
 }
 
-main .section.our-history .year::before {
-  display: inline-block;
-  content: '';
+main .section.our-history .year .icon-calendar {
+  display: flex;
   background-color: var(--mt-our-history-color-secondary);
-  background-image: url('/icons/calendar.svg');
-  background-repeat: no-repeat;
-  background-size: 40%;
-  background-position: center;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -368,6 +363,12 @@ main .section.our-history .year::before {
   top: -55px;
   left: 50%;
   margin-left: -20px;
+  justify-content: center;
+  align-items: center;
+}
+main .section.our-history .year .icon-calendar svg {
+  width: 40%;
+  height: 40%;
 }
 
 main .section.our-history .year::after {
@@ -392,7 +393,7 @@ main .section.our-history .year:first-of-type::after {
   height: 120%;
 }
 
-main .section.our-history .year.highlight::before {
+main .section.our-history .year.highlight .icon-calendar {
   transform: scale(1.2);
   transition: background-color 0.5s linear;
   background-color: var(  --mt-our-history-color-primary);
@@ -412,7 +413,7 @@ main .section.our-history p:has(sup) {
     margin-top: 80px;
   }
 
-  main .section.our-history .year::before {
+  main .section.our-history .year .icon-calendar {
     top: 40%;
     left: 116.5%;
   }
@@ -432,7 +433,7 @@ main .section.our-history p:has(sup) {
     color: var(  --mt-our-history-color-primary);
   }
 
-  main .section.our-history .year:nth-child(even)::before {
+  main .section.our-history .year:nth-child(even) .icon-calendar {
     left: -16%;
   }
 

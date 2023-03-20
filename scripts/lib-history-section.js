@@ -12,6 +12,7 @@
 
 import {
   buildBlock,
+  decorateIcons,
 } from './lib-franklin.js';
 
 function getNextSiblings(child, parent, until) {
@@ -59,6 +60,11 @@ export async function decorateHistorySection(main) {
     yearBlocks.forEach((block) => {
       timelineBlock.append(block[0]);
       block[0].append(...block[1]);
+
+      // append calendar icon (as sprite)
+      const icon = document.createElement('span');
+      icon.classList.add('icon', 'icon-calendar');
+      block[0].append(icon);
     });
 
     // change order and move picture element before h3 element. needed for mobile.
@@ -69,6 +75,8 @@ export async function decorateHistorySection(main) {
         }
       });
     });
+
+    await decorateIcons(section);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Decorating History page failed', error);
