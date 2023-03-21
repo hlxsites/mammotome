@@ -22,6 +22,8 @@
   --mt-global-color-accent-primary: #5F8DDA;
   --mt-global-color-accent-secondary: #487ED9;
   --mt-global-color-accent-tertiary: #78aaff24;
+  --mt-global-color-accent-quaternary: #75787B;
+  --mt-global-color-accent-quinary: #84329b;
   --mt-global-color-white: #fff;
 
   /* feature background colors */
@@ -56,7 +58,8 @@
   --mt-font-weight-thin: 300;
   --mt-font-weight-regular: 400;
   --mt-font-weight-bold: 500;
-  --mt-font-weight-bolder: 700;
+  --mt-font-weight-bolder: 600;
+  --mt-font-weight-boldest: 700;
   --mt-font-weight-heavy: 900;
 
   /* feature font weights */
@@ -79,6 +82,9 @@
   /* line heights */
   --mt-body-line-height: 1.5rem;
   --mt-button-line-height: 1rem;
+  --mt-footer-line-height-xs: 0.8rem;
+  --mt-footer-line-height-s: 0.9rem;
+  --mt-footer-line-height-m: 1rem;
 
   /* feature font sizes */
   --mt-body-font-size-m: var(--mt-font-size-100);
@@ -92,6 +98,10 @@
   --mt-heading-font-size-s: var(--mt-font-size-100);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-input-font-size: var(--mt-font-size-175);
+  --mt-footer-font-size-footer-s: var(--mt-font-size-80);
+  --mt-footer-font-size-footer-m: var(--mt-font-size-90);
+  --mt-footer-font-size-footer-l: var(--mt-font-size-100);
+
 
   /* nav height */
   --mt-nav-height: 64px;
