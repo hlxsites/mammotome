@@ -137,7 +137,7 @@ footer .columns > div > div:nth-child(5) > p a[href] {
 }
 
 /* Copyright and Logo (mobile) */
-footer > .footer > div > div:nth-child(2) > ul {
+footer > .footer > div > div:last-child > ul {
   display: flex;
   flex-direction: column;
   color: var(--mt-global-color-accent-quaternary);
@@ -149,60 +149,63 @@ footer > .footer > div > div:nth-child(2) > ul {
 }
 
 /* copyright text (mobile) */
-footer > .footer > div > div:nth-child(2) > ul > li:nth-child(1) {
+footer > .footer > div > div:last-child > ul > li:first-child {
   text-decoration: none;
   margin-bottom: 10px;
 }
 
 /* Design by link  (mobile) */
-footer > .footer > div > div:nth-child(2) > ul > li:nth-child(2) > a[href] {
+footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
   text-decoration: none;
   color: var(--mt-global-color-accent-quaternary);
 }
 
 /* logo item (mobile) */
-footer > .footer > div > div:nth-child(2) > ul > li:nth-child(3) {
+footer > .footer > div > div:last-child > ul > li:last-child {
   text-align: left;
   margin-top: 20px;
   margin-bottom: 10px;
 }
 
 /* corp logo (mobile) */
-footer > .footer > div > div:nth-child(2) .icon svg {
+footer > .footer > div > div:last-child span.icon-logo {
   width: 106px;
 }
 
 /* Copyright and logo (larger screens) */
 @media (min-width: 768px){
   /* flex container */
-  footer > .footer > div > div:nth-child(2) > ul {
-    flex-flow: row wrap;
+  footer > .footer > div > div:last-child > ul {
+    flex-flow: wrap;
+  }
+
+  footer > .footer > div > div:last-child > ul > li {
+    margin: 0;
+    padding: 0;
   }
 
   /* copyright text */
-  footer > .footer > div > div:nth-child(2) > ul > li:nth-child(1) {
+  footer > .footer > div > div:last-child > ul > li:first-child {
+    flex-grow: 2;
+    flex-basis: 100%;
     font-size: var(--mt-footer-font-size-footer-l);
-    flex: 1 100%;
   }
 
   /* design by link */
-  footer > .footer > div > div:nth-child(2) > ul > li:nth-child(2) {
-    flex: 2 50%;
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) {
+    flex-basis: 50%;
+    flex-shrink: 0;
   }
 
-  footer > .footer > div > div:nth-child(2) > ul > li:nth-child(2) > a[href] {
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
     font-size: var(--mt-footer-font-size-footer-s);
   }
 
   /* corp logo */
-  footer > .footer > div > div:nth-child(2) > ul > li:nth-child(3) {
-    flex: 2 50% ;
+  footer > .footer > div > div:last-child > ul > li:last-child {
+    flex-basis: 50%;
+    flex-shrink: 0;
+    margin: 0;
     text-align: right;
   }
-
-  /* corp logo */
-  footer > .footer > div > div:nth-child(2) .icon svg {
-    transform: translate(-81px,-20px);
-  }
-
 }
