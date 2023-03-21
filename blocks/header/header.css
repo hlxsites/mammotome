@@ -183,7 +183,15 @@ header nav .nav-sections ul > li > ul > li {
   font-weight: var(--mt-font-weight-bold);
 }
 
+.icon-logo {
+  width: 200px;
+}
+
 @media (min-width: 1025px) {
+
+  .icon-logo {
+    width: 136px;
+  }
 
   header nav .nav-hamburger {
     display: none;
