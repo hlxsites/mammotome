@@ -38,7 +38,15 @@ function focusNavSection() {
 function createMobileMenyControlsBlock() {
   const mobileMenyControls = document.createElement('li');
   mobileMenyControls.classList.add('mobile-menu-controls');
-  mobileMenyControls.innerHTML = `<div class="mobile-menu-back"></div>`;
+
+  const backButton = document.createElement('div');
+  backButton.classList.add('mobile-menu-back');
+
+  backButton.addEventListener('click', (event) => {
+    backButton.closest("[aria-expanded]").setAttribute('aria-expanded', 'false');
+  });
+
+  mobileMenyControls.append(backButton);
 
   return mobileMenyControls;
 }
@@ -50,7 +58,10 @@ function createMobileMenyControlsBlock() {
  */
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
+    
+    if (!section.classList.contains) {
+      section.setAttribute('mobile-menu-controls', expanded);      
+    }    
   });
 }
 
@@ -137,7 +148,8 @@ export default async function decorate(block) {
 
         navSection.querySelector('ul').prepend(createMobileMenyControlsBlock());
         
-        navSection.addEventListener('click', function(event) {
+        const navSectionLink = navSection.querySelector('a');
+        navSectionLink.addEventListener('click', function(event) {
           // if (isDesktop.matches) {
            if (true) { 
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
@@ -161,8 +173,6 @@ export default async function decorate(block) {
 
       
       navSections.querySelector('ul').prepend(createMobileMenyControlsBlock());
-
-      const a = 'a';
     }
 
     // hamburger for mobile

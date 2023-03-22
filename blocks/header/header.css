@@ -293,6 +293,10 @@ header nav .nav-sections ul > li > ul > li {
 
 @media (min-width: 1025px) {
 
+  .mobile-menu-controls {
+    display: none;
+  }
+  
   .icon-logo {
     width: 136px;
   }
