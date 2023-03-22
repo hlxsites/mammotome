@@ -59,8 +59,8 @@ function createMobileMenyControlsBlock() {
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
     
-    if (!section.classList.contains) {
-      section.setAttribute('mobile-menu-controls', expanded);      
+    if (!section.classList.contains('mobile-menu-controls')) {
+      section.setAttribute('aria-expanded', expanded);      
     }    
   });
 }
