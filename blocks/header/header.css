@@ -110,7 +110,7 @@ header nav[aria-expanded="false"] .nav-hamburger-icon::before {
 header nav[aria-expanded="false"] .nav-hamburger-icon::after {
   top: 6px;
 }
-
+/* 
 header nav[aria-expanded="true"] .nav-hamburger-icon {
   height: 22px;
 }
@@ -130,7 +130,7 @@ header nav[aria-expanded="true"] .nav-hamburger-icon::after {
   top: unset;
   bottom: 3px;
   transform: rotate(-45deg);
-}
+} */
 
 /* @media (min-width: 900px) {
   header nav .nav-hamburger {
