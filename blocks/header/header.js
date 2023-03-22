@@ -57,6 +57,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   const button = nav.querySelector('.nav-hamburger button');
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  // MS: - check this 
   //toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
   // enable nav dropdown keyboard accessibility
@@ -114,10 +115,20 @@ export default async function decorate(block) {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
         navSection.addEventListener('click', () => {
-          if (isDesktop.matches) {
+          // if (isDesktop.matches) {
+           if (true) { 
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          }
+        });
+      });
+
+      const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li > a');
+      firstLevelLinks.forEach((link) => {
+        link.addEventListener('click', function (event) {
+          if (!isDesktop.matches) {
+            event.preventDefault();
           }
         });
       });
