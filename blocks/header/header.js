@@ -148,18 +148,37 @@ export default async function decorate(block) {
 
         navSection.querySelector('ul').prepend(createMobileMenyControlsBlock());
         
-        const navSectionLink = navSection.querySelector('a');
-        navSectionLink.addEventListener('click', function(event) {
-          // if (isDesktop.matches) {
-           if (true) { 
+        navSection.addEventListener('click', function(event) {
+          if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
+
             toggleAllNavSections(navSections);
-            //if (!expanded) {
-              navSection.setAttribute('aria-expanded', 'true');
-            //}
-            //navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
           }
         });
+
+        const navSectionLink = navSection.querySelector('a');
+        navSectionLink.addEventListener('click', function(event) {
+          if (!isDesktop.matches) {
+            toggleAllNavSections(navSections);
+            navSection.setAttribute('aria-expanded', 'true');
+          }
+        });
+
+        // // mouseover for desktop
+        // navSection.addEventListener('mouseover', () => {
+        //   if (isDesktop.matches) {
+        //     navSection.setAttribute('aria-expanded', 'true');
+        //     console.log('### hover');
+        //   }
+        // });
+
+        // navSection.addEventListener('mouseout', () => {
+        //   if (isDesktop.matches) {
+        //    // navSection.setAttribute('aria-expanded', 'false');
+        //     console.log('### hover');
+        //   }
+        // });
       });
 
       const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li > a');
