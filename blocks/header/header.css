@@ -269,6 +269,26 @@ header nav .nav-sections ul > li > ul > li {
     font-weight: var(--mt-font-weight-regular);
     letter-spacing: normal;
   }
+
+  header nav[aria-expanded="true"] .nav-sections > ul li.mobile-menu-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  header nav[aria-expanded="true"] .nav-sections > ul li.mobile-menu-controls > .mobile-menu-back::before {
+    content: "\f00d";
+    color: #3a3a3a;
+    font-family: "FontAwesome";
+    font-weight: 900;
+
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+  }
 }
 
 @media (min-width: 1025px) {

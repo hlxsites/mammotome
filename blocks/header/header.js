@@ -35,6 +35,14 @@ function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
 }
 
+function createMobileMenyControlsBlock() {
+  const mobileMenyControls = document.createElement('li');
+  mobileMenyControls.classList.add('mobile-menu-controls');
+  mobileMenyControls.innerHTML = `<div class="mobile-menu-back"></div>`;
+
+  return mobileMenyControls;
+}
+
 /**
  * Toggles all nav sections
  * @param {Element} sections The container element
@@ -86,6 +94,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -111,17 +120,31 @@ export default async function decorate(block) {
 
     const navSections = nav.querySelector('.nav-sections');
     if (navSections) {
+
+      // const mobileMenyControls = document.createElement('li');
+      // mobileMenyControls.classList.add('mobile-menu-controls');
+      // mobileMenyControls.innerHTML = `<div class="mobile-menu-back"></div>`;
+
+
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
+
+
+        // const mobileMenyControls = document.createElement('li');
+        // mobileMenyControls.classList.add('mobile-menu-controls');
+        // mobileMenyControls.innerHTML = `<div class="mobile-menu-back"></div>`;
+
+        navSection.querySelector('ul').prepend(createMobileMenyControlsBlock());
+        
         navSection.addEventListener('click', function(event) {
           // if (isDesktop.matches) {
            if (true) { 
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
             toggleAllNavSections(navSections);
-            if (!expanded) {
+            //if (!expanded) {
               navSection.setAttribute('aria-expanded', 'true');
-            }
+            //}
             //navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
           }
         });
@@ -135,6 +158,11 @@ export default async function decorate(block) {
           }
         });
       });
+
+      
+      navSections.querySelector('ul').prepend(createMobileMenyControlsBlock());
+
+      const a = 'a';
     }
 
     // hamburger for mobile
