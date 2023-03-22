@@ -193,19 +193,14 @@ header nav .nav-sections ul > li > ul > li {
   width: 200px;
 }
 
-header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="false"] > ul, 
-header nav[aria-expanded="true"] .nav-sections > ul > li:not([aria-expanded]) > ul {
-  display: none;
-}
 
-header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="true"] > ul {
-  position: absolute;
-  width: 300px;
-  right: 0;
-  top: 0;
-}
 
 @media (max-width: 1024px) {
+  header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="false"] > ul, 
+  header nav[aria-expanded="true"] .nav-sections > ul > li:not([aria-expanded]) > ul {
+    display: none;
+  }
+
   header nav[aria-expanded="true"] .nav-sections {
     position: absolute;
     right: 0;
@@ -217,12 +212,63 @@ header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="true"] >
     padding: 20px;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+  }
+
+  header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="true"] > ul {
+    position: absolute;
+    width: 300px;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: var(--mt-global-color-base-primary);
+    color: var(--mt-global-color-white);
+    font-size: var(--mt-font-size-100);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
   }
 
   header nav[aria-expanded="true"] .nav-sections > ul > li {
     padding-top: 10px;
     padding-bottom: 10px;
   }  
+
+  header nav[aria-expanded="true"] .nav-sections > ul > li > ul > li{
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }  
+  
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
+    padding: 10px;
+  }
+
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
+    padding: 10px;
+  }
+
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
+    text-transform: uppercase;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: var(--mt-font-size-80);
+    font-weight: var(--mt-font-weight-bolder);
+    letter-spacing: 3px;
+  }
+
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(84, 0, 108, 0.38);
+    color: var(--mt-global-color-white);
+    text-transform: none;
+    text-align: initial;
+    row-gap: unset;
+    font-size: var(--mt-font-size-90);
+    font-weight: var(--mt-font-weight-regular);
+    letter-spacing: normal;
+  }
 }
 
 @media (min-width: 1025px) {
