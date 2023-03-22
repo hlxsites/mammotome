@@ -17,17 +17,36 @@ import {
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
+const HERO_SVG_ARC = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
+  + '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z"/>\n'
+  + '</svg>';
+
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
  */
 function buildHeroBlock(main) {
   const h1 = main.querySelector('h1');
+  const h2 = main.querySelector('h2');
   const picture = main.querySelector('picture');
+
   // eslint-disable-next-line no-bitwise
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    section.append(buildBlock('hero', { elems: [picture, h1] }));
+    const elems = [picture, h1];
+
+    // optional H2 following the hero's H1
+    if (h2 && h1.nextElementSibling === h2) {
+      elems.push(h2);
+    }
+
+    const arc = document.createElement('div');
+    arc.classList.add('hero-arc');
+    arc.innerHTML = HERO_SVG_ARC;
+
+    elems.push(arc);
+
+    section.append(buildBlock('hero', { elems }));
     main.prepend(section);
   }
 }

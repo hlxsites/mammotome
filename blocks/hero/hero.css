@@ -1,34 +1,79 @@
 /* block specific CSS goes here */
 
-main .hero-container > div {
+main .hero-container > .hero-wrapper {
   max-width: unset;
 }
-  
+
 main .hero-container {
   padding: 0;
 }
-  
+
 main .hero {
   position: relative;
-  padding: 32px;
-  min-height: 300px;
+  padding: 10% 0 0;
 }
 
-main .hero h1 {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  color: white;
-}
-
-main .hero picture {
+main .hero::after {
   position: absolute;
   z-index: -1;
   top: 0;
   left: 0;
+  height: 100%;
+  width: 100%;
+  content: '';
+  background-color: transparent;
+  background-image: linear-gradient(180deg, rgb(0 15 41 / 69%) 45%, rgb(0 15 41 / 27%) 67%);
+  opacity: 0.61;
+  transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+
+main .hero > div > div {
+  text-align: center;
+}
+
+main .hero h1, main .hero h2 {
+  margin: 0 auto 20px;
+  color: var(--mt-background-color-primary);
+  text-transform: none;
+}
+
+main .hero h1 {
+  max-width: 1200px;
+  padding: 0 5%;
+  font-size: var(--mt-hero-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  line-height: var(--mt-hero-line-height);
+}
+
+main .hero h2 {
+  max-width: 800px;
+  margin-bottom: 35px;
+  font-size: var(--mt-hero-font-size-l);
+  font-weight: var(--mt-font-weight-thin);
+  line-height: var(--mt-hero-line-height);
+}
+
+main .hero .hero-arc {
+  margin: 5% 0 0;
+}
+
+main .hero .hero-arc svg {
+  display: block;
+  width: 110%;
+  max-width: 110%;
+  fill: var(--mt-background-color-primary);
+  background-color: transparent;
+}
+
+main .hero picture {
+  position: absolute;
+  width: 110%;
+  z-index: -2;
   bottom: 0;
+  left: 0;
+  top: 0;
   right: 0;
-  object-fit: cover;
+  object-fit: fill;
   box-sizing: border-box;
 }
 
@@ -36,4 +81,11 @@ main .hero img {
   object-fit: cover;
   width: 100%;
   height: 100%;
+}
+
+@media (min-width: 500px) {
+  main .hero picture {
+    bottom: 0;
+    top: unset;
+  }
 }
