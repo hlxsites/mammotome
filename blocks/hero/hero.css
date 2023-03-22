@@ -40,17 +40,18 @@ main .hero h1, main .hero h2 {
 main .hero h1 {
   max-width: 1200px;
   padding: 0 5%;
-  font-size: var(--mt-hero-font-size-xl);
+  font-size: var(--mt-hero-font-size-l);
   font-weight: var(--mt-font-weight-regular);
-  line-height: var(--mt-hero-line-height);
+  line-height: var(--mt-hero-line-height-title);
 }
 
 main .hero h2 {
   max-width: 800px;
   margin-bottom: 35px;
-  font-size: var(--mt-hero-font-size-l);
+  padding: 0 24px;
+  font-size: var(--mt-hero-font-size-s);
   font-weight: var(--mt-font-weight-thin);
-  line-height: var(--mt-hero-line-height);
+  line-height: var(--mt-hero-line-height-subtitle);
 }
 
 main .hero .hero-arc {
@@ -87,5 +88,16 @@ main .hero img {
   main .hero picture {
     bottom: 0;
     top: unset;
+  }
+}
+
+@media (min-width: 768px) {
+  main .hero h1 {
+    font-size: var(--mt-hero-font-size-xl);
+  }
+
+  main .hero h2 {
+    padding: 0 40px;
+    font-size: var(--mt-hero-font-size-m);
   }
 }
