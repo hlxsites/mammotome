@@ -13,16 +13,16 @@ header .nav-wrapper {
 }
 
 header nav {
-  display: grid;
+  /* display: grid;
   grid-template:
     'hamburger brand tools' var(--mt-nav-height)
-    'sections sections sections' 1fr / auto 1fr auto;
+    'sections sections sections' 1fr / auto 1fr auto; */
   align-items: center;
   gap: 0 2em;
   margin: auto;
   max-width: 1264px;
-  height: var(--mt-nav-height);
-  padding: 0 1rem;
+  /* height: var(--mt-nav-height); */
+  padding: 15px 10px 15px 10px;
 }
 
 header nav[aria-expanded="true"] {
@@ -155,6 +155,7 @@ header .nav-brand {
   font-size: var(--mt-heading-font-size-m);
   font-weight: var(--mt-font-weight-heavy);
   line-height: 1;
+  padding: 10px;
 }
 
 header nav .nav-brand img {
@@ -203,44 +204,12 @@ header nav .nav-sections ul > li > ul > li {
 
 @media (max-width: 1024px) {
 
-  /* header nav .nav-hamburger-icon,
-  header nav .nav-hamburger-icon::before,
-  header nav .nav-hamburger-icon::after {
-    box-sizing: border-box;
-    display: block;
-    position: relative;
-    width: 20px;
-  }
-  
-  header nav .nav-hamburger-icon::before,
-  header nav .nav-hamburger-icon::after {
-    content: '';
-    position: absolute;
-    background: currentcolor;
-  } */
-  
   header nav .nav-hamburger-icon::after {
     content: '\f0c9';
     font-family: FontAwesome;
     color: var(--mt-header-color-nav-icons);
     font-size: 20px;
   }
-
-  /* header nav[aria-expanded="false"] .nav-hamburger-icon,
-  header nav[aria-expanded="false"] .nav-hamburger-icon::before,
-  header nav[aria-expanded="false"] .nav-hamburger-icon::after {
-    height: 2px;
-    border-radius: 2px;
-    background: currentcolor;
-  }
-  
-  header nav[aria-expanded="false"] .nav-hamburger-icon::before {
-    top: -6px;
-  }
-  
-  header nav[aria-expanded="false"] .nav-hamburger-icon::after {
-    top: 6px;
-  }   */
 
   header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="false"] > ul, 
   header nav[aria-expanded="true"] .nav-sections > ul > li:not([aria-expanded]) > ul {
@@ -357,6 +326,7 @@ header nav .nav-sections ul > li > ul > li {
   
   .icon-logo {
     width: 136px;
+    height: fit-content;
   }
 
   header nav .nav-hamburger {
