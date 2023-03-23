@@ -19,10 +19,10 @@ describe('lib-history-section: getNextSiblings', () => {
     expect([...lib.getNextSiblings(first)][4]).to.equal(document.querySelector('#third'));
   });
 
-  it('returns all following siblings until next H3 excluding the last element', async () => {
+  it('returns all following siblings until next H3 excluding the search and last element', async () => {
     const second = document.querySelector('#second');
-    expect([...lib.getNextSiblings(second, 'H3')].length).to.equal(3);
+    expect([...lib.getNextSiblings(second, 'H3')].length).to.equal(2);
     expect([...lib.getNextSiblings(second, 'H3')][0]).to.equal(second.nextElementSibling);
-    expect([...lib.getNextSiblings(second, 'H3')][2]).to.equal(document.querySelector('#third').previousElementSibling);
+    expect([...lib.getNextSiblings(second, 'H3')][1]).to.equal(document.querySelector('#third').previousElementSibling);
   });
 });
