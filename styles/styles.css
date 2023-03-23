@@ -155,7 +155,8 @@ h6 {
 }
 
 sup {
-  font-size: var(--mt-font-size-75);
+  font-size: var(--mt-font-size-50);
+  vertical-align: top;
 }
 
 p, dl, ol, ul, pre, blockquote {
@@ -339,7 +340,7 @@ main .section.our-history .year {
   font-size: var(--mt-body-font-size-m);
   color: var(--mt-background-color-primary);
   border-radius: 4px;
-  padding: 30px 50px 10px;
+  padding: 30px 50px;
   margin-top: 120px;
   width: 100%;
 }
