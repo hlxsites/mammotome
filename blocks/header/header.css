@@ -13,16 +13,11 @@ header .nav-wrapper {
 }
 
 header nav {
-  /* display: grid;
-  grid-template:
-    'hamburger brand tools' var(--mt-nav-height)
-    'sections sections sections' 1fr / auto 1fr auto; */
+  display: flex;
   align-items: center;
-  gap: 0 1.4em;
   margin: auto;
   max-width: 1264px;
-  /* height: var(--mt-nav-height); */
-  padding: 15px 10px 15px 10px;
+  padding: 15px 10px;
 }
 
 header nav[aria-expanded="true"] {
@@ -32,25 +27,9 @@ header nav[aria-expanded="true"] {
     'tools tools' var(--mt-nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100vh;
-}
-
-/* @media (min-width: 600px) {
-  header nav {
-    padding: 0 2rem;
-  }
-}
- */
-
-header nav {
-  display: flex;
-  /* justify-content: center; */
-}
-
-header nav[aria-expanded="true"] {
   min-height: 0;
   overflow: visible;
 }
-
 
 header nav p {
   margin: 0;
@@ -87,10 +66,7 @@ header nav .nav-hamburger button {
 /* brand */
 header .nav-brand {
   grid-area: brand;
-  /* flex-basis: 128px; */
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 1;
+  flex: initial;
   font-size: var(--mt-heading-font-size-m);
   font-weight: var(--mt-font-weight-heavy);
   line-height: 1;
@@ -119,13 +95,7 @@ header nav[aria-expanded="true"] .nav-sections {
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
-  /* font-size: var(--mt-body-font-size-s);
-  font-weight: var(--mt-font-weight-bold); */
 }
-
-/* header nav .nav-sections ul > li {
-  font-weight: var(--mt-font-weight-heavy);
-} */
 
 header nav .nav-sections ul > li > ul {
   margin-top: 0;
@@ -142,10 +112,13 @@ header nav .nav-sections ul > li > ul > li {
 
 
 @media (max-width: 1024px) {
+  header nav {
+    gap: 0 1.4em;
+  }
 
   header nav .nav-hamburger-icon::after {
     content: '\f0c9';
-    font-family: FontAwesome;
+    font-family: var(--mt-nav-button-icons-font-family);
     color: var(--mt-header-color-nav-icons);
     font-size: 20px;
   }
@@ -195,26 +168,19 @@ header nav .nav-sections ul > li > ul > li {
   }  
   
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
-    padding: 10px;
-  }
-
-  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
-    padding: 10px;
-  }
-
-  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
     text-transform: uppercase;
     text-align: center;
-    color: rgba(255, 255, 255, 0.56);
+    color: rgba(255, 255, 255, 56%);
     font-size: var(--mt-font-size-80);
     font-weight: var(--mt-font-weight-bolder);
     letter-spacing: 3px;
+    padding: 10px;
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
     display: flex;
     flex-direction: column;
-    background-color: rgba(84, 0, 108, 0.38);
+    background-color: rgba(84, 0, 108, 38%);
     color: var(--mt-global-color-white);
     text-transform: none;
     text-align: initial;
@@ -224,17 +190,21 @@ header nav .nav-sections ul > li > ul > li {
     letter-spacing: normal;
   }
 
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
+    padding: 10px;
+  }
+
   .mobile-menu-controls {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 0px;
+    padding: 0;
   }
 
   .mobile-menu-controls > .mobile-menu-back::before {
     content: "\f00d";
     color: var(--mt-header-color-nav-icons);
-    font-family: "FontAwesome";
+    font-family: var(--mt-nav-button-icons-font-family);
     font-weight: 900;
     font-size: var(--mt-font-size-100);
     -webkit-font-smoothing: antialiased;
@@ -253,12 +223,11 @@ header nav .nav-sections ul > li > ul > li {
   li.nav-drop::after {
     content: "\f105";
     color: var(--mt-header-color-nav-icons);
-    font-family: 'FontAwesome';
+    font-family: var(--mt-nav-button-icons-font-family);
 }
 }
 
 @media (min-width: 1025px) {
-
   .mobile-menu-controls {
     display: none;
   }
@@ -285,7 +254,6 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections .nav-drop {
     position: relative;
-    padding-right: 16px;
     cursor: pointer;
   }
 
@@ -294,7 +262,7 @@ header nav .nav-sections ul > li > ul > li {
     display: inline-block;
     position: absolute;
     top: .5em;
-    right: 2px;
+    right: -10px;
     transform: rotate(135deg);
     width: 6px;
     height: 6px;
@@ -311,6 +279,7 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections ul {
     display: flex;
+    justify-content: flex-end;
     gap: 2em;
     margin: 0;
     font-size: var(--mt-font-size-90);
@@ -327,15 +296,6 @@ header nav .nav-sections ul > li > ul > li {
     display: none;
     position: relative;
   }
-
-  /* header nav .nav-sections .nav-drop > a {
-    list-style: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #84329B;
-    box-sizing: border-box;
-  } */
-
 
   header nav .nav-sections > ul > li > ul > li {
     padding: 8px 0;
@@ -370,17 +330,17 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
     text-transform: uppercase;
     text-align: center;
-    color: rgba(255, 255, 255, 0.56);
+    color: rgba(255, 255, 255, 56%);
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
-    padding: 10px 10px 10px 10px;
+    padding: 10px;
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
     display: flex;
     flex-direction: column;
-    background-color: rgba(84, 0, 108, 0.38);
+    background-color: rgba(84, 0, 108, 38%);
     color: var(--mt-global-color-white);
     text-transform: none;
     text-align: initial;

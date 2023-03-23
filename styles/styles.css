@@ -16,7 +16,7 @@
 }
 
 @font-face {
-  font-family: "FontAwesome";
+  font-family: FontAwesome;
   src: url("/styles/fonts/fa-solid-900.ttf");;
 }
 
@@ -58,6 +58,7 @@
   /* fonts families */
   --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
+  --mt-nav-button-icons-font-family: "FontAwesome", sans-serif;
 
   /* font weights */
   --mt-font-weight-thin: 300;
