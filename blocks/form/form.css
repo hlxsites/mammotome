@@ -1,0 +1,203 @@
+:root {
+    --form-invalid-border-color: #ff5f3f;
+    --link-color: #035fe6;
+    --form-label-color: #666;
+    --form-input-disable-color: #ccc;
+    --form-input-border-color: #ECECEC;
+    --form-input-background-color: #F7F7F7;
+    --form-font-size-m: 22px;
+    --form-font-size-s: 18px;
+    --form-font-size-xs: 16px;
+}
+
+main .form {
+    background-color: white;
+    padding: var(--spacing-m);
+}
+
+main .form form {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+main .form form fieldset {
+    border: 0;
+    width: 100%;
+    margin: 0;
+}
+
+main .form form .field-wrapper {
+    margin-top: 20px;
+}
+
+main .form form .field-wrapper[aria-invalid="true"] {
+    background: #eb3c360d;
+    border: 0 solid var(--error-color);
+    border-left-width: 4px;
+    padding: 5px;
+ }
+
+main .form h2 {
+    padding: var(--spacing-m) 0;
+    font-size: var(--type-heading-l-lh);
+    font-weight: normal;
+}
+
+main .form h3 {
+    padding-top: var(--spacing-m);
+    font-size: var(--heading-font-size-m);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+main .form .field-status {
+    color: var(--form-label-color);
+    font-size: var(--form-font-size-s);
+}
+
+main .form .field-description {
+    color: var(--form-label-color);
+    font-size: var(--form-font-size-s);
+}
+
+.error {
+    display: inline-block;
+    padding: 5px 0;
+    color: var(--form-invalid-border-color);
+}
+
+main .form input,
+main .form textarea,
+main .form select {
+    background-color: var(--form-input-background-color);
+    border: 1px solid var(--form-input-border-color);
+    width: calc(100% - 16px);
+    height: 40px;
+    color: var(--form-label-color);;
+    margin-top: 10px;
+    padding-left: 10px;
+    font-size: 1rem;
+    max-width: unset;
+}
+
+
+main .form input[type='file'] {
+    border: none;
+}
+
+main .form input[type='checkbox'],
+main .form input[type='radio'] {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+}
+
+main .form textarea {
+    min-height: 100px;
+}
+
+main .form input:hover,
+main .form select:hover {
+    border-color: rgb(90 92 96);
+}
+
+main .form fieldset legend,
+main .form label {
+    width: 100%;
+    font-weight: bold;
+    font-size: var(--form-font-size-s);
+    padding-bottom: var(--spacing-xs);
+    box-sizing: border-box;
+    color: var(--form-label-color);
+    margin: 1rem 0;
+}
+
+main .form label.required::after {
+    content: "*";
+    color: black;
+    padding-left: 5px;
+}
+
+main .form form .form-checkbox-wrapper,
+main .form form .form-radio-wrapper{
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+main .form .form-radio-wrapper  label,
+main .form .form-checkbox-wrapper label {
+    font-size: var(--form-font-size-xs);
+    font-weight: normal;
+    text-transform: none;
+}
+
+h1 {
+    font-weight: 700;
+}
+
+main .form .button {
+    color: #fff;
+    background: var(--link-color);
+    padding: 1rem;
+    font-size: var(--form-font-size-s);
+    font-weight: bold;
+    border-radius: unset;
+}
+
+main .form .button:disabled {
+    background-color: var(--form-input-disable-color);
+    color: var(--form-label-color)
+}
+
+main form .field-wrapper > p {
+    font-size: .875rem;
+    padding-top: 5px;
+    display: inline-block;
+    color: var(--form-label-color);;
+}
+
+@media (min-width: 576px) {
+    .form-container {
+        max-width: 540px;
+    }
+}
+  
+  @media (min-width: 768px) {
+    .form-container {
+        max-width: 720px;
+        margin: 0 auto 10px;
+    }
+  
+     form {
+        width: unset;
+        flex-flow: wrap row;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    main .form form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-container {
+        max-width: 960px;
+        row-gap: 58px;
+    }
+  
+     h5 {
+        font-size: 20px;
+        line-height: 28px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    main .form form {
+        grid-template-columns: 1fr 1fr;
+        column-gap: 50px;
+    }
+    
+    .form-container {
+        max-width: 1140px;
+    }
+  }
