@@ -201,3 +201,135 @@ main form .field-wrapper > p {
         max-width: 1140px;
     }
   }
+
+  
+@media (min-width: 1200px) {
+    main .form form {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 50px;
+    }
+    
+    .form-container {
+        max-width: 1140px;
+    }
+    
+    .form-contactTypeFS,
+    .form-Company,
+    .form-Pardot_Form_Message__c,
+    .form-submit-wrapper  {
+        grid-column: span 4;
+    }
+
+    .form-FirstName,
+    .form-LastName,
+    .form-Country,
+    .form-PostalCode,
+    .form-Phone,
+    .form-Email {
+        grid-column: span 2;
+    }
+
+    .form-emailOptFS  {
+        grid-column-start: 1;
+    }
+
+    .form-submit-wrapper .button  {
+        width: 100%;
+    }
+    
+}
+
+@media (min-width: 1200px) {
+    main .innovate form {
+       display: flex;
+    }
+    
+    .form-container {
+        max-width: 1140px;
+    }
+
+    .innovate form > fieldset > legend {
+        text-align: center;
+        border-bottom: 1px solid gray;
+    }
+
+    .innovate .form-personalInfo  {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .innovate .form-email {
+        grid-column: span 2;
+    }
+
+    .form-submit-wrapper .button  {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    main .studyrequest form {
+       display: flex;
+    }
+    
+    .form-container {
+        max-width: 1140px;
+    }
+    
+    .studyrequest form > fieldset > legend {
+        border-bottom: 1px solid gray;
+    }
+
+    .studyrequest .form-PIandContactFS,
+    .studyrequest .form-studyFS,
+    .form-statisticalFS,
+    .form-budgetFS,
+    .form-milestonesFS,
+    .form-documentFS   {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .studyrequest .form-PIandContactTitle,
+    .studyrequest .form-institutionAddress,
+    .form-studyTitle,
+    .form-product,
+    .form-background,
+    .form-statistical,
+    #milestonesFS-description,
+    #documentFS-description   {
+        grid-column: span 2;
+    }
+   
+    main .studyrequest .form-textarea-wrapper  textarea  {
+        height: 288px;
+    }
+
+    .form-IRBSubmissionFS,
+    .form-enrollmentFS,
+    .form-enrollmentEndFS,
+    .form-FinalDataFS {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    #IRBSubmissionMonth,
+    #IRBSubmissionDay,
+    #IRBSubmissionYear,
+    #enrollmentMonth,
+    #enrollmentDay,
+    #enrollmentYear,
+    #enrollmentEndMonth,
+    #enrollmentEndDay,
+    #enrollmentEndYear,
+    #FinalDataMonth,
+    #FinalDataDay,
+    #FinalDataYear {
+        width: 84px;
+    }
+
+    .form-submit-wrapper .button  {
+        width: 100%;
+    }
+}
