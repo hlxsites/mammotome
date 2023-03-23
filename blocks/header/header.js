@@ -42,8 +42,8 @@ function createMobileMenyControlsBlock() {
   const backButton = document.createElement('div');
   backButton.classList.add('mobile-menu-back');
 
-  backButton.addEventListener('click', (event) => {
-    backButton.closest("[aria-expanded]").setAttribute('aria-expanded', 'false');
+  backButton.addEventListener('click', () => {
+    backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
   });
 
   mobileMenyControls.append(backButton);
@@ -58,10 +58,9 @@ function createMobileMenyControlsBlock() {
  */
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
-    
     if (!section.classList.contains('mobile-menu-controls')) {
-      section.setAttribute('aria-expanded', expanded);      
-    }    
+      section.setAttribute('aria-expanded', expanded);
+    }
   });
 }
 
@@ -76,9 +75,9 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   const button = nav.querySelector('.nav-hamburger button');
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  // MS: - check this 
-  //toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
+
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+
   // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
   if (isDesktop.matches) {
@@ -105,7 +104,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -131,14 +129,13 @@ export default async function decorate(block) {
 
     const navSections = nav.querySelector('.nav-sections');
     if (navSections) {
-
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
 
         navSection.querySelector('ul').prepend(createMobileMenyControlsBlock());
-        
-        navSection.addEventListener('click', function(event) {
+
+        navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
 
@@ -148,7 +145,7 @@ export default async function decorate(block) {
         });
 
         const navSectionLink = navSection.querySelector('a');
-        navSectionLink.addEventListener('click', function(event) {
+        navSectionLink.addEventListener('click', () => {
           if (!isDesktop.matches) {
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', 'true');
@@ -158,14 +155,13 @@ export default async function decorate(block) {
 
       const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li > a');
       firstLevelLinks.forEach((link) => {
-        link.addEventListener('click', function (event) {
+        link.addEventListener('click', (event) => {
           if (!isDesktop.matches) {
             event.preventDefault();
           }
         });
       });
 
-      
       navSections.querySelector('ul').prepend(createMobileMenyControlsBlock());
     }
 
@@ -176,7 +172,7 @@ export default async function decorate(block) {
         <span class="nav-hamburger-icon"></span>
       </button>`;
     hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
-    nav.insertBefore(hamburger, nav.querySelector('.nav-tools'))
+    nav.insertBefore(hamburger, nav.querySelector('.nav-tools'));
 
     nav.setAttribute('aria-expanded', 'false');
     // prevent mobile nav behavior on window resize
