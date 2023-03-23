@@ -236,7 +236,7 @@ header nav .nav-sections ul > li > ul > li {
     color: var(--mt-header-color-nav-icons);
     font-family: "FontAwesome";
     font-weight: 900;
-
+    font-size: var(--mt-font-size-100);
     -webkit-font-smoothing: antialiased;
     display: inline-block;
     font-style: normal;
@@ -265,7 +265,6 @@ header nav .nav-sections ul > li > ul > li {
   
   .icon-logo {
     width: 136px;
-    height: fit-content;
   }
 
   header nav .nav-hamburger {
