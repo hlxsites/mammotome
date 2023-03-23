@@ -1,6 +1,7 @@
 footer {
   padding: 2rem;
-  font-size: var(--mt-body-font-size-s);
+  background-color: var(--mt-background-color-primary);
+  font-size: var(--mt-body-font-size-m);
 }
 
 footer .footer {
@@ -10,4 +11,201 @@ footer .footer {
 
 footer .footer p {
   margin: 0;
+}
+
+/* container for footer nav and copyright */
+footer .footer > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* two columns for mobile */
+footer .columns > div {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 30px;
+  column-gap: 10px;
+}
+
+footer .columns > div div {
+  display: block;
+  width: 48%;
+  padding-left: 10px;
+}
+
+/* flex container for footer nav larger displays */
+@media (min-width: 768px) {
+  footer .columns > div {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  footer .columns > div div {
+    width: unset;
+    padding-left: 10px;
+  }
+}
+
+/* flex items for footer links */
+footer .columns ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  line-height: 24px;
+  margin-top: 3%;
+}
+
+/* footer nav links */
+footer .columns ul li {
+  margin-top: 6px;
+  padding-bottom: 6px;
+}
+
+footer .columns ul li:first-of-type {
+  margin-top: 3%;
+  padding-bottom: 6px;
+}
+
+footer .columns ul li:last-of-type {
+  margin-top: 6px;
+}
+
+footer .columns ul li a[href] {
+  text-decoration: none;
+  color: var(--mt-global-color-accent-quinary);
+  line-height: var(--mt-body-line-height);
+  height: auto;
+}
+
+
+/* footer nav headlines for mobile */
+footer .columns h5 {
+  font-size: var(--mt-footer-font-size-footer-s);
+  font-weight: var(--mt-font-weight-bolder);
+  color: var(--mt-global-color-accent-quaternary);
+  margin-top: unset;
+  margin-bottom: 20px;
+  padding-bottom: 3%;
+}
+
+/* footer nav headlines larger display */
+@media (min-width: 768px) {
+  footer .columns h5 {
+    font-size: var(--mt-heading-font-size-s);
+  }
+}
+
+/* flex container for social media icons */
+footer .columns > div > div:nth-child(4) > ul {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  column-gap: 25px;
+}
+
+/* social media icon scale */
+footer .columns > div > div:nth-child(4) .icon svg {
+  transform: scale(1.25);
+}
+
+
+/* flex item, Headquarter address
+ left align for mobile */
+footer .columns > div > div:nth-child(5) > h5 {
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+footer .columns > div > div:nth-child(5) > p {
+  text-align: left;
+}
+
+/* flex item, Headquarter address
+right align for larger screen */
+@media (min-width: 768px) {
+  footer .columns > div > div:nth-child(5) > h5,
+  footer .columns > div > div:nth-child(5) > p {
+    text-align: right;
+  }
+}
+
+footer .columns > div > div:nth-child(5) > p a[href] {
+  color: var(--mt-global-color-accent-quaternary);
+}
+
+/* Copyright and Logo (mobile) */
+footer > .footer > div > div:last-child > ul {
+  display: flex;
+  flex-direction: column;
+  color: var(--mt-global-color-accent-quaternary);
+  font-weight: var(--mt-font-weight-thin);
+  font-size: var(--mt-footer-font-size-footer-m);
+  margin-top: 28px;
+  list-style: none;
+  padding-left: 10px;
+}
+
+/* copyright text (mobile) */
+footer > .footer > div > div:last-child > ul > li:first-child {
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+/* Design by link  (mobile) */
+footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+  text-decoration: none;
+  color: var(--mt-global-color-accent-quaternary);
+}
+
+/* logo item (mobile) */
+footer > .footer > div > div:last-child > ul > li:last-child {
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* corp logo (mobile) */
+footer > .footer > div > div:last-child span.icon-logo {
+  width: 106px;
+}
+
+/* Copyright and logo (larger screens) */
+@media (min-width: 768px){
+  /* flex container */
+  footer > .footer > div > div:last-child > ul {
+    flex-flow: wrap;
+  }
+
+  footer > .footer > div > div:last-child > ul > li {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* copyright text */
+  footer > .footer > div > div:last-child > ul > li:first-child {
+    flex-grow: 2;
+    flex-basis: 100%;
+    font-size: var(--mt-footer-font-size-footer-l);
+  }
+
+  /* design by link */
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) {
+    flex-basis: 50%;
+    flex-shrink: 0;
+  }
+
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+    font-size: var(--mt-footer-font-size-footer-s);
+  }
+
+  /* corp logo */
+  footer > .footer > div > div:last-child > ul > li:last-child {
+    flex-basis: 50%;
+    flex-shrink: 0;
+    margin: 0;
+    text-align: right;
+  }
 }
