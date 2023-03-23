@@ -430,6 +430,12 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(  --mt-our-history-color-primary);
 }
 
+@media screen and (max-width: 530px) {
+  main .section.our-history .year:first-of-type::after {
+    top: -5%;
+  }
+}
+
 @media screen and (min-width: 767px) {
   main .section.our-history .year .description {
     width: 43%;
