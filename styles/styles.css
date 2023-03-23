@@ -335,10 +335,6 @@ main .section[data-section-status='initialized'] {
 
 /* about-us/our-history */
 
-main .section.our-history .timeline {
-  position: relative;
-}
-
 main .section.our-history h2 {
   text-align: center;
   color: var(  --mt-our-history-color-primary);
@@ -351,6 +347,13 @@ main .section.our-history h2 {
 
 main .section.our-history .year {
   position: relative;
+  margin-top: 120px;
+}
+
+main .section.our-history .year .description {
+  display: flex;
+  flex-flow: column;
+  position: relative;
   transition: background-color 0.5s linear;
   background-color: var(--mt-our-history-color-secondary);
   box-shadow: 8px 22px 50px 0 rgb(28 28 73 / 40%);
@@ -358,17 +361,26 @@ main .section.our-history .year {
   color: var(--mt-background-color-primary);
   border-radius: 4px;
   padding: 30px 50px;
-  margin-top: 120px;
   width: 100%;
 }
 
-main .section.our-history .year.highlight {
+main .section.our-history .year.highlight .description {
   background-color: var(  --mt-our-history-color-primary);
 }
 
 main .section.our-history .year h3 {
+  order: 2;
   font-size: var(--mt-body-font-size-100);
   color: var(--mt-background-color-primary);
+}
+
+main .section.our-history .year .description p {
+  order: 3;
+}
+
+main .section.our-history .year .description p:has(img) {
+  order: 1;
+  text-align: center;
 }
 
 main .section.our-history .year .icon-calendar {
@@ -418,23 +430,13 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(  --mt-our-history-color-primary);
 }
 
-main .section.our-history p:has(img) {
-  text-align: center;
-}
-
-main .section.our-history p:has(sup) {
-  margin: 0;
-}
-
 @media screen and (min-width: 767px) {
-  main .section.our-history .year {
+  main .section.our-history .year .description {
     width: 43%;
-    margin-top: 80px;
   }
 
   main .section.our-history .year .icon-calendar {
     top: 40%;
-    left: 116.5%;
   }
 
   main .section.our-history .year h3 {
@@ -445,39 +447,24 @@ main .section.our-history p:has(sup) {
   }
   
   main .section.our-history .year:nth-child(even) h3 {
-    left: -39%;
+    left: -40%;
+  }
+
+  main .section.our-history .year:nth-child(even) .description {
+    position: relative;
+    left: 57%;
   }
 
   main .section.our-history .year.year.highlight h3 {
     color: var(  --mt-our-history-color-primary);
   }
 
-  main .section.our-history .year:nth-child(even) .icon-calendar {
-    left: -16%;
-  }
-
-  main .section.our-history .year:nth-child(even) {
-    left: 57%;
-  }
-
-  main .section.our-history .year::after {
-    top: -80px;
-    left: 116.5%;
-    height: 132%;
-  }
-
   main .section.our-history .year:first-of-type::after {
     top: 40%;
   }
 
-  main .section.our-history .year:nth-child(even)::after {
-    top: -80px;
-    left: -16%;
-    height: 130%;
-  }
-
   main .section.our-history .year:last-of-type::after {
-    height: 60%;
+    height: 85%;
   }
 
 }

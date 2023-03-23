@@ -37,36 +37,33 @@ export async function decorateHistorySection(main) {
     const parent = section.querySelector('.default-content-wrapper');
     const firstH3 = parent.querySelector('h3');
 
-    // wrap all h3 and p in a timeline element
+    // wrap all H3 and p in a timeline element
     const timelineBlock = buildBlock('timeline', null);
     parent.insertBefore(timelineBlock, firstH3);
     timelineBlock.append(firstH3, ...getNextSiblings(firstH3));
 
-    // create small blocks for every year
+    // create small "year blocks" for every year
     const yearBlocks = [];
     [...timelineBlock.children].forEach((el) => {
-      if (el.tagName?.toLowerCase() === 'h3') {
+      if (el.tagName === 'H3') {
         const yearBlock = buildBlock('year', null);
         yearBlocks.push([yearBlock, [el, ...getNextSiblings(el, 'H3')]]);
       }
     });
+
     yearBlocks.forEach((block) => {
-      timelineBlock.append(block[0]);
-      block[0].append(...block[1]);
+      const [yearBlock, descriptionBlockChildren] = block;
+      timelineBlock.append(yearBlock);
+
+      // create small "description block" for every year
+      const descriptionBlock = buildBlock('description', null);
+      yearBlock.append(descriptionBlock);
+      descriptionBlock.append(...descriptionBlockChildren);
 
       // append calendar icon (as sprite)
       const icon = document.createElement('span');
       icon.classList.add('icon', 'icon-calendar');
-      block[0].append(icon);
-    });
-
-    // change order and move picture element before h3 element. needed for mobile.
-    yearBlocks.forEach((block) => {
-      [...block[0].children].forEach((el) => {
-        if (el.tagName?.toLowerCase() === 'h3' && el.querySelector('picture')) {
-          block[0].insertBefore(el.nextSibling, el);
-        }
-      });
+      yearBlock.append(icon);
     });
 
     await decorateIcons(section);
