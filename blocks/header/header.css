@@ -1,6 +1,8 @@
 /* Header colors */
 :root {
   --mt-header-color-nav-icons: #3a3a3a;
+  --mt-header-menu-items-fint-color:#ffffff8f;
+  --mt-header-menu-second-level-nav-color: #54006c61;
 }  
 
 
@@ -170,7 +172,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
     text-transform: uppercase;
     text-align: center;
-    color: rgba(255, 255, 255, 56%);
+    color: var(--mt-header-menu-items-fint-color);
     font-size: var(--mt-font-size-80);
     font-weight: var(--mt-font-weight-bolder);
     letter-spacing: 3px;
@@ -180,7 +182,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
     display: flex;
     flex-direction: column;
-    background-color: rgba(84, 0, 108, 38%);
+    background-color: var(--mt-header-menu-second-level-nav-color);
     color: var(--mt-global-color-white);
     text-transform: none;
     text-align: initial;
@@ -330,7 +332,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
     text-transform: uppercase;
     text-align: center;
-    color: rgba(255, 255, 255, 56%);
+    color: var(--mt-header-menu-items-fint-color);
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
@@ -340,7 +342,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
     display: flex;
     flex-direction: column;
-    background-color: rgba(84, 0, 108, 38%);
+    background-color: var(--mt-header-menu-second-level-nav-color);
     color: var(--mt-global-color-white);
     text-transform: none;
     text-align: initial;
