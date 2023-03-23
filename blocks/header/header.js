@@ -132,19 +132,9 @@ export default async function decorate(block) {
     const navSections = nav.querySelector('.nav-sections');
     if (navSections) {
 
-      // const mobileMenyControls = document.createElement('li');
-      // mobileMenyControls.classList.add('mobile-menu-controls');
-      // mobileMenyControls.innerHTML = `<div class="mobile-menu-back"></div>`;
-
-
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
-
-
-        // const mobileMenyControls = document.createElement('li');
-        // mobileMenyControls.classList.add('mobile-menu-controls');
-        // mobileMenyControls.innerHTML = `<div class="mobile-menu-back"></div>`;
 
         navSection.querySelector('ul').prepend(createMobileMenyControlsBlock());
         
@@ -164,21 +154,6 @@ export default async function decorate(block) {
             navSection.setAttribute('aria-expanded', 'true');
           }
         });
-
-        // // mouseover for desktop
-        // navSection.addEventListener('mouseover', () => {
-        //   if (isDesktop.matches) {
-        //     navSection.setAttribute('aria-expanded', 'true');
-        //     console.log('### hover');
-        //   }
-        // });
-
-        // navSection.addEventListener('mouseout', () => {
-        //   if (isDesktop.matches) {
-        //    // navSection.setAttribute('aria-expanded', 'false');
-        //     console.log('### hover');
-        //   }
-        // });
       });
 
       const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li > a');
@@ -202,7 +177,7 @@ export default async function decorate(block) {
       </button>`;
     hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
     nav.insertBefore(hamburger, nav.querySelector('.nav-tools'))
-    //nav.prepend(hamburger);
+
     nav.setAttribute('aria-expanded', 'false');
     // prevent mobile nav behavior on window resize
     toggleMenu(nav, navSections, isDesktop.matches);

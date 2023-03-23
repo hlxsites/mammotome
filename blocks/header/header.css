@@ -1,3 +1,9 @@
+/* Header colors */
+:root {
+  --mt-header-color-nav-icons: #3a3a3a;
+}  
+
+
 /* header and nav layout */
 header .nav-wrapper {
   background-color: var(--mt-background-color-primary);
@@ -270,15 +276,16 @@ header nav .nav-sections ul > li > ul > li {
     letter-spacing: normal;
   }
 
-  header nav[aria-expanded="true"] .nav-sections > ul li.mobile-menu-controls {
+  .mobile-menu-controls {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    padding: 0px;
   }
 
-  header nav[aria-expanded="true"] .nav-sections > ul li.mobile-menu-controls > .mobile-menu-back::before {
+  .mobile-menu-controls > .mobile-menu-back::before {
     content: "\f00d";
-    color: #3a3a3a;
+    color: var(--mt-header-color-nav-icons);
     font-family: "FontAwesome";
     font-weight: 900;
 
@@ -289,6 +296,17 @@ header nav .nav-sections ul > li > ul > li {
     text-rendering: auto;
     line-height: 1;
   }
+
+  li.nav-drop {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  li.nav-drop::after {
+    content: "\f105";
+    color: var(--mt-header-color-nav-icons);
+    font-family: 'FontAwesome';
+}
 }
 
 @media (min-width: 1025px) {
