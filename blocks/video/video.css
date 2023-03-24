@@ -1,5 +1,34 @@
 .video.block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.video.block > div {
+  width: 100%;
   max-width: 768px
+}
+
+.video.block > div > div:nth-child(2) {
+  display: none;
+}
+
+.video.block > div > div:last-child {
+  position: relative;
+  cursor: pointer;
+}
+
+.video.block > div > div:last-child span.icon-playvideo {
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.video.block > div > div:last-child span.icon-playvideo svg {
+  fill: var(--mt-background-color-primary);
+  transform: scale(6.2);
 }
 
 .video.block img {
