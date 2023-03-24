@@ -14,6 +14,11 @@ import {
   setLanguage, createMetadata,
 } from './lib-franklin.js';
 
+import {
+  decorateHistorySection,
+  observeHistorySection,
+} from './lib-history-section.js';
+
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
@@ -76,6 +81,11 @@ export async function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+
+  if (main.querySelector('.section.our-history')) {
+    decorateHistorySection(main);
+    observeHistorySection(main);
+  }
 }
 
 /**
