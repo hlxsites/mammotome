@@ -111,7 +111,7 @@
 
 
   /* history */
-  --mt-our-history-color-primary: var(--mt-global-color-base-primary); 
+  --mt-our-history-color-primary: var(--mt-global-color-base-primary);
   --mt-our-history-color-secondary: var(--mt-global-color-accent-primary);
 
   /* nav height */
@@ -451,7 +451,7 @@ main .section.our-history .year.highlight .icon-calendar {
     left: 130%;
     color: var(--mt-our-history-color-secondary);
   }
-  
+
   main .section.our-history .year:nth-child(even) h3 {
     left: -40%;
   }
