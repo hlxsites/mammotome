@@ -1,0 +1,7 @@
+.video.block {
+  max-width: 768px
+}
+
+.video.block img {
+  width: 100%;
+}

@@ -1,6 +1,18 @@
-import { loadCSS } from '../../scripts/lib-franklin.js';
+import { createOptimizedPicture, decorateIcons, loadCSS } from '../../scripts/lib-franklin.js';
 
-const getPathNameFromYoutubeURL = (videoURLString) => {
+let playerCssLoaded = false;
+
+const CSS_CLASS_NAME_ICON = 'icon';
+const CSS_CLASS_NAME_ICON_PLAY_VIDEO = 'icon-playvideo';
+const HTML_PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg"><use href="#icons-sprite-playvideo"></use></svg>';
+
+const getVideoPathFromVideo = (video) => {
+  const videoURLElement = video.querySelector(':scope > div:nth-child(2) a');
+  if (!videoURLElement) {
+    return '';
+  }
+
+  const videoURLString = videoURLElement.href;
   if (!videoURLString) {
     return '';
   }
@@ -15,31 +27,78 @@ const getPathNameFromYoutubeURL = (videoURLString) => {
   return new URL(videoURLString).pathname;
 };
 
-const loadVideo = (video) => {
-  const videoURLElement = video.querySelector(':scope > div:first-child');
-  const videoURLString = videoURLElement.textContent;
+const onPlayerCssLoaded = () => {
+  playerCssLoaded = true;
+};
 
-  if (!videoURLString) {
-    return;
+const ensurePlayerCSSLoaded = () => {
+  if (!playerCssLoaded) {
+    loadCSS(`${window.hlx.codeBasePath}/blocks/video/player.css`, onPlayerCssLoaded);
   }
+};
+
+const loadVideo = (video, videoPath) => {
+  ensurePlayerCSSLoaded();
 
   const videoIframe = document.createElement('iframe');
   videoIframe.classList.add('video-player-iframe');
   videoIframe.setAttribute('allowfullscreen', '');
-  videoIframe.src = `https://www.youtube.com/embed${getPathNameFromYoutubeURL(videoURLString)}`;
+  videoIframe.src = `https://www.youtube.com/embed${videoPath}`;
 
-  // const description = video.querySelector(':scope > div:last-child').textContent;
+  video.appendChild(videoIframe);
+};
 
-  loadCSS(`${window.hlx.codeBasePath}/blocks/video/player.css`, null);
+const addPlayButton = (video) => {
+  const playButton = document.createElement('span');
+  playButton.classList.add(CSS_CLASS_NAME_ICON);
+  playButton.classList.add(CSS_CLASS_NAME_ICON_PLAY_VIDEO);
+  playButton.innerHTML = HTML_PLAY_ICON;
 
-  videoURLElement.replaceWith(videoIframe);
+  video.appendChild(playButton);
+};
+
+const addClickHandler = (video, videoPath) => {
+  video.addEventListener('click', () => loadVideo(video, videoPath), { passive: true });
+};
+
+const optimizeThumbnails = (video) => {
+  video
+    .querySelectorAll('img')
+    .forEach((img) => {
+      img
+        .closest('picture')
+        .replaceWith(
+          createOptimizedPicture(
+            img.src,
+            img.alt,
+            false,
+            null,
+            null,
+            [{ width: '768' }],
+          ),
+        );
+    });
+};
+
+const decorateVideo = async (video) => {
+  const videoPath = getVideoPathFromVideo(video);
+  if (!videoPath) {
+    return;
+  }
+
+  addPlayButton(video);
+  addClickHandler(video, videoPath);
+  optimizeThumbnails(video);
+  await decorateIcons(video);
 };
 
 export default async function decorate(block) {
   const videos = block.querySelectorAll(':scope > div');
+  const promises = [];
+
   videos.forEach((video) => {
-    video.addEventListener('click', () => loadVideo(video));
+    promises.push(decorateVideo(video));
   });
-  // const videoURL = new URL(block.getElementsByTagName('a')[0].innerText);
-  // block.addEventListener('click', () => loadVideo(videoURL, block));
+
+  await Promise.all(promises);
 }
