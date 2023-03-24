@@ -35,6 +35,7 @@
 
 .video.block > div > div:last-child span.icon-playvideo svg {
   fill: var(--mt-background-color-primary);
+  filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
   transform: scale(6.2);
 }
 
@@ -43,4 +44,19 @@
   box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
   border: 0 solid transparent;
   border-radius: 5px;
+}
+
+.video-player-iframe {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 103;
+  display: block;
+  width: 1280px;
+  max-width: 90%;
+  max-height: 90%;
+  aspect-ratio: 1280/720;
+  border: none;
+  box-shadow: 0 0 15px hsl(0deg 0% 0% / 80%);
 }

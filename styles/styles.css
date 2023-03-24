@@ -24,10 +24,12 @@
   --mt-global-color-accent-tertiary: #78aaff24;
   --mt-global-color-accent-quaternary: #75787B;
   --mt-global-color-accent-quinary: #84329b;
+  --mt-global-color-black: #000;
   --mt-global-color-white: #fff;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
+  --mt-background-color-secondary: var(--mt-global-color-black);
   --mt-button-background-color-primary: var(--mt-global-color-accent-primary);
   --mt-button-background-color-seconary: var(--mt-global-color-white);
   --mt-input-background-color: var(--mt-background-color-primary);

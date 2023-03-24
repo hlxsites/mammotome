@@ -1,6 +1,8 @@
 import { createOptimizedPicture, decorateIcons, loadCSS } from '../../scripts/lib-franklin.js';
 
 let playerCssLoaded = false;
+let removeVideo;
+let escHandler;
 
 const CSS_CLASS_NAME_ICON_PLAY_VIDEO = 'icon-playvideo';
 const HTML_PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16px" height="16px">\n'
@@ -35,12 +37,57 @@ const onPlayerCssLoaded = () => {
 
 const ensurePlayerCSSLoaded = () => {
   if (!playerCssLoaded) {
-    loadCSS(`${window.hlx.codeBasePath}/blocks/video/player.css`, onPlayerCssLoaded);
+    loadCSS(`${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`, onPlayerCssLoaded);
   }
+};
+
+const createVideoOverlays = (video) => {
+  const overlay = document.createElement('div');
+  overlay.classList.add('asset-viewer-overlay');
+  video.parentElement.parentElement.appendChild(overlay);
+
+  const toolbar = document.createElement('div');
+  toolbar.classList.add('asset-viewer-toolbar');
+
+  const toolbarClose = document.createElement('div');
+  toolbarClose.classList.add('asset-viewer-close');
+  toolbar.appendChild(toolbarClose);
+  video.parentElement.parentElement.appendChild(toolbar);
+
+  return {
+    overlay,
+    toolbar,
+    toolbarClose,
+  };
+};
+
+const createRemoveVideoHandler = (video, overlays, videoIframe) => () => {
+  overlays.overlay.removeEventListener('click', removeVideo);
+  overlays.toolbarClose.removeEventListener('click', removeVideo);
+  window.removeEventListener('keydown', escHandler);
+
+  video.parentElement.parentElement.removeChild(overlays.overlay);
+  video.parentElement.parentElement.removeChild(overlays.toolbar);
+  video.removeChild(videoIframe);
+};
+
+const registerEventListeners = (video, overlays, videoIframe) => {
+  removeVideo = createRemoveVideoHandler(video, overlays, videoIframe);
+  escHandler = (event) => {
+    if (event.key === 'Escape' || event.key === 'Esc') {
+      removeVideo();
+    }
+  };
+
+  overlays.overlay.addEventListener('click', removeVideo);
+  overlays.toolbarClose.addEventListener('click', removeVideo);
+  window.addEventListener('keydown', escHandler);
 };
 
 const loadVideo = (video, videoPath) => {
   ensurePlayerCSSLoaded();
+
+  const overlays = createVideoOverlays(video);
 
   const videoIframe = document.createElement('iframe');
   videoIframe.classList.add('video-player-iframe');
@@ -48,6 +95,8 @@ const loadVideo = (video, videoPath) => {
   videoIframe.src = `https://www.youtube.com/embed${videoPath}`;
 
   video.appendChild(videoIframe);
+
+  registerEventListeners(video, overlays, videoIframe);
 };
 
 const addPlayButton = (video) => {
