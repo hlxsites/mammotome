@@ -233,7 +233,7 @@ header nav .nav-sections ul > li > ul > li {
     content: "\f105";
     color: var(--mt-header-color-nav-icons);
     font-family: var(--mt-nav-button-icons-font-family);
-}
+  }
 }
 
 @media (min-width: 1025px) {
