@@ -5,7 +5,7 @@
   --mt-header-menu-second-level-nav-color: #54006c61;
 
     /* nav height */
-    --mt-nav-height: 78px;
+  --mt-nav-height: 64px;
 }  
 
 
@@ -29,7 +29,7 @@ header nav {
   padding: 15px 10px;
 }
 
-header nav[aria-expanded="true"] {
+/* header nav[aria-expanded="true"] {
   grid-template:
     'hamburger brand' var(--mt-nav-height)
     'sections sections' 1fr
@@ -38,7 +38,7 @@ header nav[aria-expanded="true"] {
   min-height: 100vh;
   min-height: 0;
   overflow: visible;
-}
+} */
 
 header nav p {
   margin: 0;
