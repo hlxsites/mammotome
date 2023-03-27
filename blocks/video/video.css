@@ -5,12 +5,20 @@
 }
 
 .video.block > div {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 100%;
   max-width: 768px;
   margin-bottom: 25px;
 }
 
+.video.block.two-columns > div {
+  flex: 50%;
+  padding: 10px;
+}
+
 .video.block > div > div:first-child {
+  flex-grow: 1;
   margin-bottom: 20px;
   font-size: var(--mt-heading-font-size-m);
   font-weight: var(--mt-font-weight-regular);
