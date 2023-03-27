@@ -3,8 +3,15 @@
   --mt-header-color-nav-icons: #3a3a3a;
   --mt-header-menu-items-fint-color:#ffffff8f;
   --mt-header-menu-second-level-nav-color: #54006c61;
+
+    /* nav height */
+    --mt-nav-height: 78px;
 }  
 
+
+header {
+  height: var(--mt-nav-height);
+}
 
 /* header and nav layout */
 header .nav-wrapper {
