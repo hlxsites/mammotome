@@ -473,4 +473,36 @@ main .section.our-history .year.highlight .icon-calendar {
     height: 85%;
   }
 
+main:has(.schedule-demo, .contact) {
+  padding: 05% 0% 10% 0%;
+  background-color: #84329b;
+  background-image: url(https://www.mammotome.com/wp-content/uploads/2019/11/Mammotome-BG_Pattern-1.svg);
+  background-position: top center;
+  background-repeat: repeat;
+  background-size: 60px auto;
+}
+
+main .innovate .form,
+main .study-request .form {
+  background-color: #84329b;
+  padding: 2rem 0;
+}
+
+.contact .default-content-wrapper h2,
+.schedule-demo .default-content-wrapper h2 {
+  text-align: center;
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  text-transform: none;
+  margin: 0 5px;
+  padding-bottom: 40px;
+}
+
+.schedule-demo .default-content-wrapper h2 {
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.contact .default-content-wrapper p,
+.schedule-demo .default-content-wrapper p {
+  font-size: var(--mt-heading-font-size-m);
 }
