@@ -89,6 +89,15 @@ header nav .nav-brand img {
   height: auto;
 }
 
+header nav .nav-brand .scrolling-logo {
+  height: 40px;
+  width: 40px;
+}
+
+header nav .nav-brand .logo-hidden {
+  display: none;
+}
+
 /* sections */
 header nav .nav-sections {
   grid-area: sections;

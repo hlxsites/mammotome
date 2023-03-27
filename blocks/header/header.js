@@ -51,6 +51,29 @@ function createMobileMenyControlsBlock() {
   return mobileMenyControls;
 }
 
+function addNavigationLogoForScrollingPage(nav) {
+  const homePageLink = nav.querySelector('.nav-brand > p > a');
+  const scrollingLogo = document.createElement('img');
+  scrollingLogo.setAttribute('src', '/icons/logo-round.png');
+  scrollingLogo.setAttribute('class', 'scrolling-logo');
+  scrollingLogo.classList.add('logo-hidden');
+
+  const defaultLogo = homePageLink.firstChild;
+
+  homePageLink.append(scrollingLogo);
+
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.pageYOffset;
+    if (scrollPosition > 40) {
+      defaultLogo.classList.add('logo-hidden');
+      scrollingLogo.classList.remove('logo-hidden');
+    } else {
+      defaultLogo.classList.remove('logo-hidden');
+      scrollingLogo.classList.add('logo-hidden');
+    }
+  });
+}
+
 /**
  * Toggles all nav sections
  * @param {Element} sections The container element
@@ -180,6 +203,10 @@ export default async function decorate(block) {
     isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
     decorateIcons(nav);
+
+    // add logo for scroling page
+    addNavigationLogoForScrollingPage(nav);
+
     const navWrapper = document.createElement('div');
     navWrapper.className = 'nav-wrapper';
     navWrapper.append(nav);
