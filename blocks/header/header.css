@@ -31,17 +31,6 @@ header nav {
   padding: 15px 10px;
 }
 
-/* header nav[aria-expanded="true"] {
-  grid-template:
-    'hamburger brand' var(--mt-nav-height)
-    'sections sections' 1fr
-    'tools tools' var(--mt-nav-height) / auto 1fr;
-  overflow-y: auto;
-  min-height: 100vh;
-  min-height: 0;
-  overflow: visible;
-} */
-
 header nav p {
   margin: 0;
   line-height: 1;
