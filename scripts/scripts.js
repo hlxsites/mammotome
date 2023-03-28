@@ -13,8 +13,6 @@ import {
   loadCSS,
   setLanguage,
   createMetadata,
-  getMetadata,
-  toClassName,
 } from './lib-franklin.js';
 
 import {
@@ -22,26 +20,17 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
+import {
+  loadExperimentation,
+  loadExperimentationPreview,
+} from '../plugins/experimentation/index.js';
+
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
 const HERO_SVG_ARC = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
   + '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z"/>\n'
   + '</svg>';
-
-// Define the custom audiences mapping for experimentation
-const EXPERIMENTATION_CONFIG = {
-  audiences: {
-    device: {
-      mobile: () => window.innerWidth < 600,
-      desktop: () => window.innerWidth >= 600,
-    },
-    visitor: {
-      new: () => !localStorage.getItem('franklin-visitor-returning'),
-      returning: () => !!localStorage.getItem('franklin-visitor-returning'),
-    },
-  },
-};
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -112,15 +101,7 @@ export async function decorateMain(main) {
 async function loadEager(doc) {
   setLanguage();
   decorateTemplateAndTheme();
-
-  // load experiments
-  const experiment = toClassName(getMetadata('experiment'));
-  const instantExperiment = getMetadata('instant-experiment');
-  if (instantExperiment || experiment) {
-    const { runExperiment } = await import('./experimentation/index.js');
-    await runExperiment(experiment, instantExperiment, EXPERIMENTATION_CONFIG);
-  }
-
+  loadExperimentation();
   const main = doc.querySelector('main');
   if (main) {
     await decorateMain(main);
@@ -175,19 +156,7 @@ async function loadLazy(doc) {
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
-
-  // Load experimentation preview overlay
-  if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
-    const preview = await import(`${window.hlx.codeBasePath}/tools/preview/preview.js`);
-    await preview.default();
-    if (window.hlx.experiment) {
-      const experimentation = await import(`${window.hlx.codeBasePath}/tools/preview/experimentation.js`);
-      experimentation.default();
-    }
-  }
-
-  // Mark customer as having viewed the page once
-  localStorage.setItem('franklin-visitor-returning', true);
+  loadExperimentationPreview();
 }
 
 /**
