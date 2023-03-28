@@ -3,20 +3,24 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-export async function loadExperimentation() {
-  // Define the custom audiences mapping for experimentation
-  const EXPERIMENTATION_CONFIG = {
-    audiences: {
-      device: {
-        mobile: () => window.innerWidth < 600,
-        desktop: () => window.innerWidth >= 600,
-      },
-      visitor: {
-        new: () => !localStorage.getItem('franklin-visitor-returning'),
-        returning: () => !!localStorage.getItem('franklin-visitor-returning'),
-      },
+// Define the custom audiences mapping for experimentation
+const EXPERIMENTATION_CONFIG = {
+  audiences: {
+    device: {
+      mobile: () => window.innerWidth < 600,
+      desktop: () => window.innerWidth >= 600,
     },
-  };
+    visitor: {
+      new: () => !localStorage.getItem('franklin-visitor-returning'),
+      returning: () => !!localStorage.getItem('franklin-visitor-returning'),
+    },
+  },
+};
+/**
+ * If the document is configured as an experiment,
+ * runs the experimentation logic
+ */
+export async function loadExperimentation() {
   // load experiments
   const experiment = toClassName(getMetadata('experiment'));
   const instantExperiment = getMetadata('instant-experiment');
@@ -26,6 +30,10 @@ export async function loadExperimentation() {
   }
 }
 
+/**
+ * Adds the preview overlay for experimentation when
+ * an experiment is defined for this page
+ */
 export async function loadExperimentationPreview() {
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
