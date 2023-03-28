@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /*
- * Copyright 2022 Adobe. All rights reserved.
+ * Copyright 2023 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -207,6 +207,7 @@ function populatePerformanceMetrics(div, config, {
 async function decorateExperimentPill(overlay) {
   const config = window?.hlx?.experiment;
   const experiment = toClassName(getMetadata('experiment'));
+  // eslint-disable-next-line no-console
   console.log('preview experiment', experiment);
   if (!experiment || !config) {
     return;
