@@ -29,6 +29,11 @@ header nav {
   margin: auto;
   padding: 15px 10px;
   box-shadow: 0px 0px 8px 0px #00000026;
+  height: 85px;
+}
+
+header nav.narrow {
+  height: 60px;
 }
 
 header nav p {
@@ -70,7 +75,7 @@ header .nav-brand {
   font-weight: var(--mt-font-weight-heavy);
   line-height: 1;
   padding: 10px;
-  height: 55px;
+  /* height: 55px; */
   display: flex;
   align-items: center;
 }

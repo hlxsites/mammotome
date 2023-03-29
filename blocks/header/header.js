@@ -65,9 +65,11 @@ function addNavigationLogoForScrollingPage(nav) {
   window.addEventListener('scroll', () => {
     const scrollPosition = window.pageYOffset;
     if (scrollPosition > 40) {
+      nav.classList.add('narrow');
       defaultLogo.classList.add('logo-hidden');
       scrollingLogo.classList.remove('logo-hidden');
     } else {
+      nav.classList.remove('narrow');
       defaultLogo.classList.remove('logo-hidden');
       scrollingLogo.classList.add('logo-hidden');
     }
