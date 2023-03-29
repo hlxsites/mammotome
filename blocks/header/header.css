@@ -62,6 +62,7 @@ header nav .nav-hamburger button {
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  line-height: unset;
 }
 
 /* brand */
@@ -123,9 +124,36 @@ header nav .nav-sections ul > li > ul > li {
 
 
 @media (max-width: 1024px) {
-  header nav {
+  /* header nav {
     gap: 0 1.4em;
+  } */
+
+  header nav .nav-brand {
+    width: 75%;
   }
+
+  header nav .nav-hamburger {
+    width: 15%;
+    padding: 10px;
+  }
+
+  header nav .nav-tools {
+    display: flex;
+    width: 10%;
+    justify-content: center;
+  }
+
+  header nav .nav-tools .icon-search {
+    width: 20px;
+    height: 20px;
+  }
+
+  header nav .nav-hamburger-icon {
+    display: flex;
+    min-width: 35px;
+    min-height: 35px;
+    justify-content: center;
+}
 
   header nav .nav-hamburger-icon::after {
     content: '\f0c9';
@@ -379,6 +407,6 @@ header nav .nav-sections ul > li > ul > li {
 }
 
 /* tools */
-header nav .nav-tools {
+/* header nav .nav-tools {
   grid-area: tools;
-}
+} */
