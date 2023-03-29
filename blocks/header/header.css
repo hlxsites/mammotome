@@ -66,13 +66,13 @@ header nav .nav-hamburger button {
 
 /* brand */
 header .nav-brand {
-  grid-area: brand;
-  flex: initial;
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-l);
   font-weight: var(--mt-font-weight-heavy);
   line-height: 1;
   padding: 10px;
   height: 55px;
+  display: flex;
+  align-items: center;
 }
 
 header nav .nav-brand img {
