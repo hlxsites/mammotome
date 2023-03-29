@@ -183,6 +183,7 @@ header nav .nav-sections ul > li > ul > li {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    top: 0;
   }
 
   header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="true"] > ul {
