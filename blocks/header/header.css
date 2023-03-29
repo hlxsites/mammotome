@@ -75,7 +75,6 @@ header .nav-brand {
   font-weight: var(--mt-font-weight-heavy);
   line-height: 1;
   padding: 10px;
-  /* height: 55px; */
   display: flex;
   align-items: center;
 }
@@ -128,10 +127,6 @@ header nav .nav-sections ul > li > ul > li {
 
 
 @media (max-width: 1024px) {
-  /* header nav {
-    gap: 0 1.4em;
-  } */
-
   header nav .nav-brand {
     width: 75%;
   }
@@ -410,8 +405,3 @@ header nav .nav-sections ul > li > ul > li {
     border-right: 8px solid transparent;
   }
 }
-
-/* tools */
-/* header nav .nav-tools {
-  grid-area: tools;
-} */
