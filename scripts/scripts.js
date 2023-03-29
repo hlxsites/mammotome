@@ -101,7 +101,7 @@ export async function decorateMain(main) {
 async function loadEager(doc) {
   setLanguage();
   decorateTemplateAndTheme();
-  await loadExperimentation();
+  loadExperimentation();
   const main = doc.querySelector('main');
   if (main) {
     await decorateMain(main);

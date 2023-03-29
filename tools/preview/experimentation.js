@@ -246,7 +246,6 @@ export default async function decorateExperimentationOverlay() {
     const overlay = getOverlay();
     await decorateExperimentPill(overlay);
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.log(e);
   }
 }
