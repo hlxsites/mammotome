@@ -59,6 +59,7 @@
   --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
   --mt-nav-button-icons-font-family: "FontAwesome", sans-serif;
+  --mt-nav-nav-item-font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif;
 
   /* font weights */
   --mt-font-weight-thin: 300;

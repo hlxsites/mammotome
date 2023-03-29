@@ -30,6 +30,7 @@ header nav {
   padding: 15px 10px;
   box-shadow: 0 0 8px 0 #00000026;
   height: 85px;
+  font-family: var(--mt-nav-nav-item-font-family);
 }
 
 header nav.narrow {
@@ -263,6 +264,7 @@ header nav .nav-sections ul > li > ul > li {
     content: "\f105";
     color: var(--mt-header-color-nav-icons);
     font-family: var(--mt-nav-button-icons-font-family);
+    height: 30px;
   }
 }
 
