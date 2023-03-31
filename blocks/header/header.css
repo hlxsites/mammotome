@@ -39,7 +39,7 @@ header nav.narrow {
 
 header nav p {
   margin: 0;
-  line-height: 1;
+  line-height: 0.7;
 }
 
 header nav a:any-link {
@@ -67,7 +67,7 @@ header nav .nav-hamburger button {
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  line-height: unset;
+  line-height: 1.1;
 }
 
 /* brand */
@@ -123,9 +123,13 @@ header nav .nav-sections ul > li > ul > li {
 
 .icon-logo {
   width: 200px;
+  height: 22px;
 }
 
-
+header nav .nav-tools .icon-search {
+  width: 21px;
+  height: 21px;
+}
 
 @media (max-width: 1024px) {
   header nav .nav-brand {
@@ -143,11 +147,6 @@ header nav .nav-sections ul > li > ul > li {
     justify-content: center;
   }
 
-  header nav .nav-tools .icon-search {
-    width: 20px;
-    height: 20px;
-  }
-
   header nav .nav-hamburger-icon {
     display: flex;
     min-width: 35px;
@@ -155,7 +154,7 @@ header nav .nav-sections ul > li > ul > li {
     justify-content: center;
 }
 
-  header nav .nav-hamburger-icon::after {
+  header nav .nav-hamburger-icon::before {
     content: '\f0c9';
     font-family: var(--mt-nav-button-icons-font-family);
     color: var(--mt-header-color-nav-icons);
