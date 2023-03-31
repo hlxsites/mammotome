@@ -79,7 +79,6 @@
 /* Slide container */
 .carousel .slider-wrapper .slider {
     position: relative;
-    cursor: grab;
 }
 
 /* Pictures in slider */
