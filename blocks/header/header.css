@@ -135,7 +135,7 @@ header nav .nav-sections ul > li > ul {
 }
 
 header nav .nav-sections ul > li > ul > li {
-  font-weight: var(--mt-font-weight-bold);
+  font-weight: var(--mt-nav-desktop-multilevel-font-weight);
 }
 
 .icon-logo {
