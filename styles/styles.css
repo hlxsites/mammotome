@@ -25,10 +25,12 @@
   --mt-global-color-accent-quaternary: #75787B;
   --mt-global-color-accent-quinary: #84329b;
   --mt-global-color-accent-senary: #777;
+  --mt-global-color-black: #000;
   --mt-global-color-white: #fff;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
+  --mt-background-color-secondary: var(--mt-global-color-black);
   --mt-button-background-color-primary: var(--mt-global-color-accent-primary);
   --mt-button-background-color-seconary: var(--mt-global-color-white);
   --mt-input-background-color: var(--mt-background-color-primary);
@@ -78,6 +80,7 @@
   --mt-font-size-130: 1.3rem;
   --mt-font-size-150: 1.5rem;
   --mt-font-size-175: 1.75rem;
+  --mt-font-size-180: 1.75rem;
   --mt-font-size-200: 2rem;
   --mt-font-size-250: 2.5rem;
 
@@ -88,6 +91,8 @@
   --mt-footer-line-height-s: 0.9rem;
   --mt-footer-line-height-m: 1rem;
   --mt-list-line-height: 1.95rem;
+  --mt-hero-line-height-title: 1;
+  --mt-hero-line-height-subtitle: 1.5;
 
   /* feature font sizes */
   --mt-body-font-size-m: var(--mt-font-size-100);
@@ -100,11 +105,19 @@
   --mt-heading-font-size-m: var(--mt-font-size-130);
   --mt-heading-font-size-s: var(--mt-font-size-100);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
+  --mt-hero-font-size-s: var(--mt-font-size-130);
+  --mt-hero-font-size-m: var(--mt-font-size-180);
+  --mt-hero-font-size-l: var(--mt-font-size-200);
+  --mt-hero-font-size-xl: var(--mt-font-size-250);
   --mt-input-font-size: var(--mt-font-size-175);
   --mt-footer-font-size-footer-s: var(--mt-font-size-80);
   --mt-footer-font-size-footer-m: var(--mt-font-size-90);
   --mt-footer-font-size-footer-l: var(--mt-font-size-100);
 
+
+  /* history */
+  --mt-our-history-color-primary: var(--mt-global-color-base-primary);
+  --mt-our-history-color-secondary: var(--mt-global-color-accent-primary);
 
   /* nav height */
   --mt-nav-height: 64px;
@@ -161,6 +174,11 @@ h5 {
 
 h6 {
   font-size: var(--mt-heading-font-size-xs);
+}
+
+sup {
+  font-size: var(--mt-font-size-50);
+  vertical-align: top;
 }
 
 p, dl, ol, ul, pre, blockquote {
@@ -318,4 +336,146 @@ main .section .default-content-wrapper {
 main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'] {
   display: none;
+}
+
+/* about-us/our-history */
+
+main .section.our-history h2 {
+  text-align: center;
+  color: var(  --mt-our-history-color-primary);
+  font-size: var(--mt-body-font-size-m);
+  font-weight: var(--mt-font-weight-heavy);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 100px;
+}
+
+main .section.our-history .year {
+  position: relative;
+  margin-top: 120px;
+}
+
+main .section.our-history .year .description {
+  display: flex;
+  flex-flow: column;
+  position: relative;
+  transition: background-color 0.5s linear;
+  background-color: var(--mt-our-history-color-secondary);
+  box-shadow: 8px 22px 50px 0 rgb(28 28 73 / 40%);
+  font-size: var(--mt-body-font-size-m);
+  color: var(--mt-background-color-primary);
+  border-radius: 4px;
+  padding: 30px 50px;
+  width: 100%;
+}
+
+main .section.our-history .year.highlight .description {
+  background-color: var(  --mt-our-history-color-primary);
+}
+
+main .section.our-history .year h3 {
+  order: 2;
+  font-size: var(--mt-body-font-size-100);
+  color: var(--mt-background-color-primary);
+}
+
+main .section.our-history .year .description p {
+  order: 3;
+}
+
+main .section.our-history .year .description p:has(img) {
+  order: 1;
+  text-align: center;
+}
+
+main .section.our-history .year .icon-calendar {
+  display: flex;
+  background-color: var(--mt-our-history-color-secondary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: -55px;
+  left: 50%;
+  margin-left: -20px;
+  justify-content: center;
+  align-items: center;
+}
+
+main .section.our-history .year .icon-calendar svg {
+  width: 40%;
+  height: 40%;
+}
+
+main .section.our-history .year::after {
+  background-color: var(--mt-our-history-color-secondary);
+  display: inline-block;
+  width: 4px;
+  content: '';
+  position: absolute;
+  top: -45%;
+  left: 50%;
+  margin-left: -2px;
+  z-index: -1;
+  height: 145%;
+}
+
+main .section.our-history .year.highlight::after {
+  background-color: var(  --mt-our-history-color-primary);
+}
+
+main .section.our-history .year:first-of-type::after {
+  top: -20%;
+  height: 120%;
+}
+
+main .section.our-history .year.highlight .icon-calendar {
+  transform: scale(1.2);
+  transition: background-color 0.5s linear;
+  background-color: var(  --mt-our-history-color-primary);
+}
+
+@media screen and (max-width: 530px) {
+  main .section.our-history .year:first-of-type::after {
+    top: -5%;
+  }
+}
+
+@media screen and (min-width: 767px) {
+  main .section.our-history .year .description {
+    width: 43%;
+  }
+
+  main .section.our-history .year .icon-calendar {
+    top: 40%;
+  }
+
+  main .section.our-history .year h3 {
+    position: absolute;
+    top: 40%;
+    left: 130%;
+    color: var(--mt-our-history-color-secondary);
+  }
+
+  main .section.our-history .year:nth-child(even) h3 {
+    left: -40%;
+  }
+
+  main .section.our-history .year:nth-child(even) .description {
+    position: relative;
+    left: 57%;
+  }
+
+  main .section.our-history .year.year.highlight h3 {
+    color: var(  --mt-our-history-color-primary);
+  }
+
+  main .section.our-history .year:first-of-type::after {
+    top: 40%;
+  }
+
+  main .section.our-history .year:last-of-type::after {
+    height: 85%;
+  }
+
 }
