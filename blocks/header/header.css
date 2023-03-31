@@ -17,12 +17,12 @@
   --mt-nav-desktop-multilevel-font-weight: var(--mt-font-weight-regular);
 
   /* font sizes */
-  --mt-nav-desktop-multilevel-font-size: var(--mt-font-size-90);
+  --mt-nav-multilevel-font-size: var(--mt-font-size-90);
   --mt-nav-desktop-multilevel-section-title-font-size: var(--mt-font-size-80);
 
   /* font families */
   --mt-nav-button-icons-font-family: "FontAwesome", sans-serif;
-  --mt-nav-nav-item-font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif;
+  --mt-nav-nav-item-font-family: -apple-system,blinkmacsystemfont,segoe ui,roboto,helvetica neue,arial,aoto aans,sans-serif;
   --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family);
 }  
 
@@ -222,13 +222,15 @@ header nav .nav-tools .icon-search {
     padding-top: 10px;
     padding-bottom: 10px;
   }  
-  
+
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
     text-transform: uppercase;
     text-align: center;
     color: var(--mt-header-menu-items-fint-color);
-    font-size: var(--mt-font-size-80);
-    font-weight: var(--mt-font-weight-bolder);
+    font-size: var(--mt-nav-desktop-multilevel-section-title-font-size);
+    font-weight: var(--mt-font-weight-boldest);
+    font-family: var(--mt-nav-desktop-multilevel-font-family);
+    line-height: 1;
     letter-spacing: 3px;
     padding: 10px;
   }
@@ -241,14 +243,20 @@ header nav .nav-tools .icon-search {
     text-transform: none;
     text-align: initial;
     row-gap: unset;
-    font-size: var(--mt-font-size-90);
+    font-size: var(--mt-nav-multilevel-font-size);
     font-weight: var(--mt-font-weight-regular);
     letter-spacing: normal;
-    font-size: ;
+    margin: 10px;
+    margin-bottom: 0;
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
     padding: 10px;
+    font-size: var(--mt-nav-multilevel-font-size);
+    font-weight: var(--mt-nav-desktop-multilevel-font-weight);
+    line-height: var(--mt-nav-desktop-multilevel-line-height);
+    font-family: var(--mt-nav-desktop-multilevel-font-family);
+    letter-spacing: normal;
   }
 
   .mobile-menu-controls {
@@ -398,10 +406,6 @@ header nav .nav-tools .icon-search {
     letter-spacing: 3px;
   }
 
-  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
-    padding: 10px;
-  }
-
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
     display: flex;
     flex-direction: column;
@@ -412,6 +416,14 @@ header nav .nav-tools .icon-search {
     row-gap: unset;
     margin: 10px;
   }
+  
+  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li {
+    font-size: var(--mt-nav-multilevel-font-size);
+    font-weight: var(--mt-nav-desktop-multilevel-font-weight);
+    line-height: var(--mt-nav-desktop-multilevel-line-height);
+    letter-spacing: normal;
+    padding: 10px;
+  }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li:hover {
     background-color: var(--mt-global-color-base-primary);
@@ -419,13 +431,6 @@ header nav .nav-tools .icon-search {
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li:hover{
     background-color: var(--mt-header-menu-item-selected-color);
-  }
-
-  header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li {
-    font-size: var(--mt-nav-desktop-multilevel-font-size);
-    font-weight: var(--mt-nav-desktop-multilevel-font-weight);
-    line-height: var(--mt-nav-desktop-multilevel-line-height);
-    letter-spacing: normal;
   }
 
   header nav .nav-sections > ul > li > ul::before {
