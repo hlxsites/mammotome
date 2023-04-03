@@ -11,11 +11,37 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-  setLanguage, createMetadata,
+  setLanguage,
+  createMetadata,
+  getMetadata,
+  toClassName,
 } from './lib-franklin.js';
+
+import {
+  decorateHistorySection,
+  observeHistorySection,
+} from './lib-history-section.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
+
+const HERO_SVG_ARC = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
+  + '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z"/>\n'
+  + '</svg>';
+
+// Define the custom audiences mapping for experimentation
+const EXPERIMENTATION_CONFIG = {
+  audiences: {
+    device: {
+      mobile: () => window.innerWidth < 600,
+      desktop: () => window.innerWidth >= 600,
+    },
+    visitor: {
+      new: () => !localStorage.getItem('franklin-visitor-returning'),
+      returning: () => !!localStorage.getItem('franklin-visitor-returning'),
+    },
+  },
+};
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -23,11 +49,26 @@ window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information 
  */
 function buildHeroBlock(main) {
   const h1 = main.querySelector('h1');
+  const h2 = main.querySelector('h2');
   const picture = main.querySelector('picture');
+
   // eslint-disable-next-line no-bitwise
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    section.append(buildBlock('hero', { elems: [picture, h1] }));
+    const elems = [picture, h1];
+
+    // optional H2 following the hero's H1
+    if (h2 && h1.nextElementSibling === h2) {
+      elems.push(h2);
+    }
+
+    const arc = document.createElement('div');
+    arc.classList.add('hero-arc');
+    arc.innerHTML = HERO_SVG_ARC;
+
+    elems.push(arc);
+
+    section.append(buildBlock('hero', { elems }));
     main.prepend(section);
   }
 }
@@ -57,6 +98,11 @@ export async function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+
+  if (main.querySelector('.section.our-history')) {
+    decorateHistorySection(main);
+    observeHistorySection(main);
+  }
 }
 
 /**
@@ -66,6 +112,15 @@ export async function decorateMain(main) {
 async function loadEager(doc) {
   setLanguage();
   decorateTemplateAndTheme();
+
+  // load experiments
+  const experiment = toClassName(getMetadata('experiment'));
+  const instantExperiment = getMetadata('instant-experiment');
+  if (instantExperiment || experiment) {
+    const { runExperiment } = await import('./experimentation/index.js');
+    await runExperiment(experiment, instantExperiment, EXPERIMENTATION_CONFIG);
+  }
+
   const main = doc.querySelector('main');
   if (main) {
     await decorateMain(main);
@@ -120,6 +175,19 @@ async function loadLazy(doc) {
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
+
+  // Load experimentation preview overlay
+  if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
+    const preview = await import(`${window.hlx.codeBasePath}/tools/preview/preview.js`);
+    await preview.default();
+    if (window.hlx.experiment) {
+      const experimentation = await import(`${window.hlx.codeBasePath}/tools/preview/experimentation.js`);
+      experimentation.default();
+    }
+  }
+
+  // Mark customer as having viewed the page once
+  localStorage.setItem('franklin-visitor-returning', true);
 }
 
 /**
