@@ -120,7 +120,9 @@
   --mt-nav-height: 64px;
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
   box-sizing: border-box;
 }
 
@@ -138,8 +140,12 @@ header {
   height: var(--mt-nav-height);
 }
 
-h1, h2, h3,
-h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0.5rem 0 1rem;
   font-weight: var(--mt-font-weight-bold);
   line-height: 1.2;
@@ -178,16 +184,24 @@ sup {
   vertical-align: top;
 }
 
-p, dl, ol, ul, pre, blockquote {
+p,
+dl,
+ol,
+ul,
+pre,
+blockquote {
   margin: 0 0 0.9rem;
 }
 
-code, pre, samp {
+code,
+pre,
+samp {
   font-family: var(--mt-fixed-font-family);
   font-size: var(--mt-body-font-size-s);
 }
 
-code, samp {
+code,
+samp {
   padding: .125em;
 }
 
@@ -218,7 +232,8 @@ a:hover {
 }
 
 /* buttons */
-a.button:any-link, button {
+a.button:any-link,
+button {
   display: inline-block;
   box-sizing: border-box;
   width: 300px;
@@ -238,7 +253,8 @@ a.button:any-link, button {
   transition: all .3s;
 }
 
-a.button.primary, button.primary {
+a.button.primary,
+button.primary {
   color: var(--mt-button-color-primary);
   background-color: var(--mt-button-background-color-primary);
   border-color: var(--mt-button-border-color-primary);
@@ -251,11 +267,13 @@ button.primary:focus {
   background-color: var(--mt-button-hover-color-primary);
 }
 
-button:disabled, button:disabled:hover {
+button:disabled,
+button:disabled:hover {
   cursor: unset;
 }
 
-a.button.secondary, button.secondary {
+a.button.secondary,
+button.secondary {
   background-color: unset;
   border-color: var(--mt-button-border-color-secondary);
   color: var(--mt-button-color-secondary);
@@ -339,7 +357,7 @@ main .section[data-section-status='initialized'] {
 
 main .section.our-history h2 {
   text-align: center;
-  color: var(  --mt-our-history-color-primary);
+  color: var(--mt-our-history-color-primary);
   font-size: var(--mt-body-font-size-m);
   font-weight: var(--mt-font-weight-heavy);
   text-transform: uppercase;
@@ -367,7 +385,7 @@ main .section.our-history .year .description {
 }
 
 main .section.our-history .year.highlight .description {
-  background-color: var(  --mt-our-history-color-primary);
+  background-color: var(--mt-our-history-color-primary);
 }
 
 main .section.our-history .year h3 {
@@ -418,7 +436,7 @@ main .section.our-history .year::after {
 }
 
 main .section.our-history .year.highlight::after {
-  background-color: var(  --mt-our-history-color-primary);
+  background-color: var(--mt-our-history-color-primary);
 }
 
 main .section.our-history .year:first-of-type::after {
@@ -429,7 +447,7 @@ main .section.our-history .year:first-of-type::after {
 main .section.our-history .year.highlight .icon-calendar {
   transform: scale(1.2);
   transition: background-color 0.5s linear;
-  background-color: var(  --mt-our-history-color-primary);
+  background-color: var(--mt-our-history-color-primary);
 }
 
 @media screen and (max-width: 530px) {
@@ -464,7 +482,7 @@ main .section.our-history .year.highlight .icon-calendar {
   }
 
   main .section.our-history .year.year.highlight h3 {
-    color: var(  --mt-our-history-color-primary);
+    color: var(--mt-our-history-color-primary);
   }
 
   main .section.our-history .year:first-of-type::after {
@@ -474,5 +492,115 @@ main .section.our-history .year.highlight .icon-calendar {
   main .section.our-history .year:last-of-type::after {
     height: 85%;
   }
+}
 
+
+/* STYLED SECTIONS */
+.styled-section-text-white {
+  color: var(--mt-global-color-white);
+}
+/* stylelint-disable-next-line no-descending-specificity */
+.styled-section-text-white h2 {
+  color: var(--mt-global-color-white);
+}
+
+.styled-section-background-purple-gradient,
+.styled-section-background-grey-gradient,
+.styled-section-background-blue-transparent,
+.styled-section-background-purple-transparent {
+  position: relative;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+
+.styled-section-background-purple-gradient::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  content: '';
+  background-color: transparent;
+  background-image: linear-gradient(180deg, rgba(58 2 149 / 59%) 13%, rgba(82 150 209 / 85%) 83%);
+  opacity: 0.61;
+  transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+
+
+.styled-section-background-grey-gradient::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  content: '';
+  background-color: transparent;
+  background-image: linear-gradient(180deg, rgba(0 15 41 / 70%) 45%, rgba(0 15 41 / 32%) 67%);
+  opacity: 0.61;
+  transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+
+.styled-section-background-purple-transparent::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  content: '';
+  background-color: var(--mt-global-color-base-primary);
+  opacity: 0.8;
+  transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+
+
+.styled-section-background-blue-transparent::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  content: '';
+  background-color: var(--mt-global-color-accent-secondary);
+  opacity: 0.8;
+  transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+
+.styled-section-background-light-blue-solid {
+  background-color: var(--mt-global-color-accent-primary);
+}
+
+.styled-section-background-logo-white {
+  background-image: url('/styles/icons/Mammotome-BG_Pattern-2.svg');
+  background-position: center center;
+  background-repeat: repeat;
+  background-size: 60px auto;
+}
+
+.styled-section-background-logo-purple {
+  background-color: var(--mt-global-color-base-primary);
+  background-image: url('/styles/icons/Mammotome-BG_Pattern-1.svg');
+  background-position: center center;
+  background-repeat: repeat;
+  background-size: 60px auto;
+}
+
+.styled-section-arc .arc {
+  margin: -7% -15% 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.styled-section-arc .arc svg {
+  display: block;
+  width: 110%;
+  max-width: 110%;
+  fill: var(--mt-background-color-primary);
+  background-color: transparent;
 }

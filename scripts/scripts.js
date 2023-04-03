@@ -11,7 +11,9 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-  setLanguage, createMetadata,
+  toClassName,
+  setLanguage,
+  createMetadata,
 } from './lib-franklin.js';
 
 import {
@@ -22,9 +24,13 @@ import {
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
-const HERO_SVG_ARC = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
+const ARC_BOTTOM_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
   + '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z"/>\n'
   + '</svg>';
+
+const ARC_TOP_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
++ '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z" transform="translate(718.500000, 105.211150) scale(-1, -1) translate(-718.500000, -105.211150)" />\n'
++ '</svg>';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -47,7 +53,7 @@ function buildHeroBlock(main) {
 
     const arc = document.createElement('div');
     arc.classList.add('hero-arc');
-    arc.innerHTML = HERO_SVG_ARC;
+    arc.innerHTML = ARC_BOTTOM_SVG;
 
     elems.push(arc);
 
@@ -70,6 +76,52 @@ function buildAutoBlocks(main) {
 }
 
 /**
+ * Checks if the section passed as a parameter is a Styled Section,
+ * i.e. it has styles defined in the section metadata
+ * @param {Element} section
+ */
+function decorateStyledSection(section) {
+  Object.keys(section.dataset)
+    .filter((attrName) => attrName.startsWith('style'))
+    .map((attrKey) => {
+      const clsPrefix = toClassName(attrKey.substring(5));
+      const value = section.dataset[attrKey];
+      if (clsPrefix === 'backgroundimage') {
+        section.style.backgroundImage = `url(${value})`;
+        section.style.backgroundSize = 'cover';
+        return null;
+      }
+      if (clsPrefix === 'arc') {
+        const arc = document.createElement('div');
+        arc.classList.add('arc');
+        const arcPosition = toClassName(value);
+        if (arcPosition === 'bottom') {
+          arc.innerHTML = ARC_BOTTOM_SVG;
+          section.append(arc);
+        } else if (arcPosition === 'top') {
+          arc.innerHTML = ARC_TOP_SVG;
+          section.prepend(arc);
+        }
+        return 'styled-section-arc';
+      }
+      return `styled-section-${clsPrefix}-${toClassName(value)}`;
+    })
+    .filter((x) => x)
+    .forEach((styledClass) => section.classList.add(styledClass));
+}
+
+/**
+ * Finds all sections in the main element of the document
+ * and for each of them invokes the method that will apply
+ * to the section the styles defined in the section metadata
+ * @param {Element} main
+ */
+function styledSections(main) {
+  Array.from(main.querySelectorAll('.section'))
+    .forEach((section) => decorateStyledSection(section));
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -80,6 +132,7 @@ export async function decorateMain(main) {
   await decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  styledSections(main);
   decorateBlocks(main);
 
   if (main.querySelector('.section.our-history')) {
