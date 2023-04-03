@@ -1,3 +1,5 @@
+import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
+
 let activeSlide = 1;
 let slideCount = 0;
 let slideShow = false;
@@ -9,6 +11,16 @@ const HTML_ARROW_RIGHT = '<svg fill="rgba(238, 238, 238, 0.9)" xmlns="http://www
   + '<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"/>\n'
   + '</svg>\n';
 
+// Increment active slide value
+const incrementActiveSlide = (direction = 1) => {
+  if (direction > 0) {
+    activeSlide = (activeSlide + 1) <= slideCount ? activeSlide + 1 : 1;
+  } else {
+    activeSlide = (activeSlide - 1) > 0 ? activeSlide - 1 : slideCount;
+  }
+};
+
+// Activate/deactivate bottom bullets based
 const activateBullet = (bulletId) => {
   const btnNav = document.querySelector('.bottom-nav');
   [...btnNav.children].forEach((el) => {
@@ -20,8 +32,8 @@ const activateBullet = (bulletId) => {
   });
 };
 
+// Slides picture switcher
 const activateSlide = (targetPicture) => {
-  // Switch slide pictures
   const slider = document.querySelector('.slider');
   [...slider.children].forEach((el) => {
     if (el.id === targetPicture) {
@@ -32,25 +44,27 @@ const activateSlide = (targetPicture) => {
   });
 };
 
+// Navigate with Bottom Bullet navigation
 const bottomNavigation = (event) => {
   const target = event.target.id;
   activateSlide(target);
   activateBullet(target);
+  incrementActiveSlide();
 };
 
+// Navigate with left and right for arrow navigation
 const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
-  let nextSlide = 0;
-  if (navButton === 'arrow-left') {
-    nextSlide = (activeSlide - 1) > 0 ? activeSlide - 1 : slideCount;
-  } else if (navButton === 'arrow-right') {
-    nextSlide = (activeSlide + 1) <= slideCount ? activeSlide + 1 : 1;
+  if (navButton === 'slider-arrow-left') {
+    incrementActiveSlide(-1);
+  } else if (navButton === 'slider-arrow-right') {
+    incrementActiveSlide(1);
   }
-  activateSlide(`slide-${nextSlide}`);
-  activateBullet(`slide-${nextSlide}`);
-  activeSlide = nextSlide;
+  activateSlide(`slider-slide-${activeSlide}`);
+  activateBullet(`slider-slide-${activeSlide}`);
 };
 
+/// Add event listners for bottom bullet nav
 const bottomNavOnClickEvents = () => {
   const btnNav = document.querySelector('.bottom-nav');
   [...btnNav.children].forEach((el) => {
@@ -58,6 +72,7 @@ const bottomNavOnClickEvents = () => {
   });
 };
 
+// Event Listeners for arrow navigation
 const arrowNavOnClickEvents = () => {
   const arrowNav = document.querySelector('.arrow-nav');
   [...arrowNav.children].forEach((el) => {
@@ -67,11 +82,9 @@ const arrowNavOnClickEvents = () => {
 
 // Control Slide show
 const toNextSlide = () => {
-  const nextSlide = (activeSlide + 1) <= slideCount ? activeSlide + 1 : 1;
-
-  activateSlide(`slide-${nextSlide}`);
-  activateBullet(`slide-${nextSlide}`);
-  activeSlide = nextSlide;
+  incrementActiveSlide(1);
+  activateSlide(`slider-slide-${activeSlide}`);
+  activateBullet(`slider-slide-${activeSlide}`);
 };
 
 // Start slide show
@@ -81,23 +94,30 @@ const startSlideShow = () => {
   }
 };
 
+// Stop automatic Slideshow
 const stopSlideShow = () => {
   slideShow = window.clearInterval(slideShow);
 };
 
+// add Event Listener
 const initSlider = () => {
   const sliderWrapper = document.querySelector('.slider-wrapper');
   sliderWrapper.addEventListener('mouseover', stopSlideShow);
   sliderWrapper.addEventListener('mouseleave', startSlideShow);
   window.addEventListener('load', startSlideShow);
+  bottomNavOnClickEvents();
+  arrowNavOnClickEvents();
 };
 
-export default function decorate(block) {
-  // Set slide-wrapper class
+// Set slide-wrapper class
+const createSliderWrapper = (block) => {
   const sliderWrapper = block.firstElementChild.lastElementChild;
   sliderWrapper.classList.add('slider-wrapper');
+  return sliderWrapper;
+};
 
-  // put pictures under slider flex container
+// put pictures under slider flex container
+const createPictures = (sliderWrapper) => {
   const pictures = sliderWrapper.getElementsByTagName('picture');
   const slider = document.createElement('div');
   slider.classList.add('slider');
@@ -106,38 +126,43 @@ export default function decorate(block) {
   });
   sliderWrapper.innerHTML = '';
   sliderWrapper.appendChild(slider);
+  return slider;
+};
 
-  // set picture id slide 1 - n
+// set picture id (slide 1 - n)
+const setPictureIds = (slider) => {
   let i = 1;
   const slides = [];
   [...slider.children].forEach((el) => {
-    el.setAttribute('id', `slide-${i}`);
+    el.setAttribute('id', `slider-slide-${i}`);
     el.classList.add(i === 1 ? 'show' : 'hide');
-    slides.push(`slide-${i}`);
+    slides.push(`slider-slide-${i}`);
     i += 1;
   });
-  slideCount = slides.length;
+  return slides;
+};
 
-  // Create Arrow nav
+// Create Arrow navigation
+const createArrowNav = () => {
   const arrowNavContainer = document.createElement('div');
   arrowNavContainer.classList.add('arrow-nav');
 
   const arrowLeft = document.createElement('a');
-  arrowLeft.setAttribute('id', 'arrow-left');
+  arrowLeft.setAttribute('id', 'slider-arrow-left');
   arrowLeft.setAttribute('href', '#');
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
   arrowNavContainer.appendChild(arrowLeft);
 
   const arrowRight = document.createElement('a');
-  arrowRight.setAttribute('id', 'arrow-right');
+  arrowRight.setAttribute('id', 'slider-arrow-right');
   arrowRight.setAttribute('href', '#');
   arrowRight.innerHTML = HTML_ARROW_RIGHT;
   arrowNavContainer.appendChild(arrowRight);
+  return arrowNavContainer;
+};
 
-  // sliderWrapper.appendChild(arrowNavContainer);
-  slider.appendChild(arrowNavContainer);
-
-  // Create bottom nav
+// Create bottom bullet nav
+const createBottomNav = (slides) => {
   const bottomNavContainer = document.createElement('div');
   bottomNavContainer.classList.add('bottom-nav');
 
@@ -151,9 +176,41 @@ export default function decorate(block) {
     bottomNavContainer.appendChild(bottomNavEl);
     j += 1;
   });
+  return bottomNavContainer;
+};
+
+const optimizeThumbnails = (picture) => {
+  picture
+    .querySelectorAll('img')
+    .forEach((img) => {
+      img
+        .closest('picture')
+        .replaceWith(
+          createOptimizedPicture(
+            img.src,
+            img.alt,
+            false,
+            null,
+            null,
+            [{ width: '768' }],
+          ),
+        );
+    });
+};
+
+export default function decorate(block) {
+  optimizeThumbnails(block);
+
+  const sliderWrapper = createSliderWrapper(block);
+  const slider = createPictures(sliderWrapper);
+  const slides = setPictureIds(slider);
+  slideCount = slides.length;
+
+  const arrowNav = createArrowNav();
+  slider.appendChild(arrowNav);
+
+  const bottomNavContainer = createBottomNav(slides);
   sliderWrapper.appendChild(bottomNavContainer);
 
-  bottomNavOnClickEvents();
-  arrowNavOnClickEvents();
   initSlider();
 }
