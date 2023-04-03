@@ -96,7 +96,8 @@ const startSlideShow = () => {
 
 // Stop automatic Slideshow
 const stopSlideShow = () => {
-  slideShow = window.clearInterval(slideShow);
+  window.clearInterval(slideShow);
+  slideShow = false;
 };
 
 // add Event Listener
@@ -104,7 +105,7 @@ const initSlider = () => {
   const sliderWrapper = document.querySelector('.slider-wrapper');
   sliderWrapper.addEventListener('mouseover', stopSlideShow);
   sliderWrapper.addEventListener('mouseleave', startSlideShow);
-  window.addEventListener('load', startSlideShow);
+  startSlideShow();
   bottomNavOnClickEvents();
   arrowNavOnClickEvents();
 };
