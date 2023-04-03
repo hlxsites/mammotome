@@ -1,3 +1,5 @@
+import { sampleRUM } from '../../scripts/lib-franklin.js';
+
 function constructPayload(form) {
   const payload = {};
   [...form.elements].forEach((fe) => {
@@ -20,6 +22,7 @@ async function submitForm(form) {
     body: JSON.stringify({ data: payload }),
   });
   await resp.text();
+  sampleRUM('form:submit');
   return payload;
 }
 
