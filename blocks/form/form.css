@@ -8,7 +8,7 @@
     --form-field-gap: 20px 0 0 0;
     --form-invalid-border-color: var(--mt-global-color-orange);
     --form-input-padding: 0.75rem 0.6rem;
-    --form-input-font-size: 1rem;
+    --form-input-font-size: var(--mt-font-size-100);
     --form-input-disable-color: var(--mt-global-color-silver);
     --form-input-border-size: 1px;
     --form-input-border-color: var(--mt-global-color-oslo-gray);
@@ -33,7 +33,7 @@
     --form-button-background-hover-color: var(--mt-global-color-blue-ribbon);
     --form-button-border: 2px solid transparent;
     --form-button-padding:15px 50px;
-    --form-upload-color: var(--mt-background-color-primary);;
+    --form-upload-color: var(--mt-background-color-primary);
     --form-upload-font-size: var(--form-font-size-xs);
     --form-upload-background-color: var(--mt-global-color-base-primary);
     --form-submit-width: 100%;
@@ -189,7 +189,7 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
 }
 
 .technical-inquiry  {
-    --form-fieldset-legend-font-size: 1.75rem;
+    --form-fieldset-legend-font-size: var(--mt-font-size-175);
     --form-fieldset-legend-font-weight: var(--mt-font-weight-regular);
     --form-fieldset-legend-border: 1px solid rgb(0 0 0 / 10%);
     --form-fieldset-legend-color: var(--mt-global-color-base-primary);
@@ -198,7 +198,7 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
 
 .innovate,
 .study-request  {
-    --form-fieldset-legend-font-size: 1.50rem;
+    --form-fieldset-legend-font-size: var(--mt-font-size-150);
     --form-fieldset-legend-font-weight: var(--mt-font-weight-bold);
     --form-fieldset-legend-border: 2px dashed var(--mt-background-color-primary);
     --form-background-color: var(--mt-global-color-base-primary);
@@ -210,7 +210,7 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
 
 .innovate {
     --form-fieldset-legend-border: 1px solid gray;
-    --form-fieldset-legend-font-size: 2.15rem;
+    --form-fieldset-legend-font-size: var(--mt-font-size-215);
     --form-fieldset-legend-font-weight: var(--mt-font-weight-boldest);
 }
 
