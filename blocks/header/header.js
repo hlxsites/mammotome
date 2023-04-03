@@ -35,9 +35,9 @@ function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
 }
 
-function createMobileMenyControlsBlock() {
-  const mobileMenyControls = document.createElement('li');
-  mobileMenyControls.classList.add('mobile-menu-controls');
+function createMobileMenuControlsBlock() {
+  const mobileMenuControls = document.createElement('li');
+  mobileMenuControls.classList.add('mobile-menu-controls');
 
   const backButton = document.createElement('div');
   backButton.classList.add('mobile-menu-back');
@@ -46,9 +46,9 @@ function createMobileMenyControlsBlock() {
     backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
   });
 
-  mobileMenyControls.append(backButton);
+  mobileMenuControls.append(backButton);
 
-  return mobileMenyControls;
+  return mobileMenuControls;
 }
 
 function addNavigationLogoForScrollingPage(nav) {
@@ -158,7 +158,7 @@ export default async function decorate(block) {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
 
-        navSection.querySelector('ul').prepend(createMobileMenyControlsBlock());
+        navSection.querySelector('ul').prepend(createMobileMenuControlsBlock());
 
         navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
@@ -187,7 +187,7 @@ export default async function decorate(block) {
         });
       });
 
-      navSections.querySelector('ul').prepend(createMobileMenyControlsBlock());
+      navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
     }
 
     // hamburger for mobile
