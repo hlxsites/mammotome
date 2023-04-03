@@ -63,7 +63,7 @@ function addNavigationLogoForScrollingPage(nav) {
   homePageLink.append(scrollingLogo);
 
   window.addEventListener('scroll', () => {
-    const scrollPosition = window.pageYOffset;
+    const scrollPosition = window.scrollY;
     if (scrollPosition > 40) {
       nav.classList.add('narrow');
       defaultLogo.classList.add('logo-hidden');
@@ -84,7 +84,7 @@ function addNavigationLogoForScrollingPage(nav) {
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
     if (!section.classList.contains('mobile-menu-controls')) {
-      section.setAttribute('aria-expanded', expanded);
+      section.setAttribute('aria-expanded', expanded.toString());
     }
   });
 }
@@ -109,7 +109,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
     navDrops.forEach((drop) => {
       if (!drop.hasAttribute('tabindex')) {
         drop.setAttribute('role', 'button');
-        drop.setAttribute('tabindex', 0);
+        drop.setAttribute('tabindex', '0');
         drop.addEventListener('focus', focusNavSection);
       }
     });
@@ -204,7 +204,7 @@ export default async function decorate(block) {
     toggleMenu(nav, navSections, isDesktop.matches);
     isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
-    decorateIcons(nav);
+    await decorateIcons(nav);
 
     // add logo for scroling page
     addNavigationLogoForScrollingPage(nav);

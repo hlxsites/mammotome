@@ -24,7 +24,7 @@
   --mt-nav-button-icons-font-family: "FontAwesome", sans-serif;
   --mt-nav-nav-item-font-family: -apple-system,blinkmacsystemfont,segoe ui,roboto,helvetica neue,arial,aoto aans,sans-serif;
   --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family);
-}  
+}
 
 
 header {
@@ -178,7 +178,7 @@ header nav .nav-tools .icon-search {
     font-size: 20px;
   }
 
-  header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="false"] > ul, 
+  header nav[aria-expanded="true"] .nav-sections > ul > li[aria-expanded="false"] > ul,
   header nav[aria-expanded="true"] .nav-sections > ul > li:not([aria-expanded]) > ul {
     display: none;
   }
@@ -216,12 +216,12 @@ header nav .nav-tools .icon-search {
   header nav[aria-expanded="true"] .nav-sections > ul > li {
     padding-top: 10px;
     padding-bottom: 10px;
-  }  
+  }
 
   header nav[aria-expanded="true"] .nav-sections > ul > li > ul > li{
     padding-top: 10px;
     padding-bottom: 10px;
-  }  
+  }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
     text-transform: uppercase;
@@ -246,8 +246,7 @@ header nav .nav-tools .icon-search {
     font-size: var(--mt-nav-multilevel-font-size);
     font-weight: var(--mt-font-weight-regular);
     letter-spacing: normal;
-    margin: 10px;
-    margin-bottom: 0;
+    margin: 10px 10px 0;
   }
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li{
@@ -297,12 +296,12 @@ header nav .nav-tools .icon-search {
   .mobile-menu-controls {
     display: none;
   }
-  
+
   .icon-logo {
     width: 200px;
     height: 15px;
   }
-    
+
   header nav .nav-hamburger {
     display: none;
     visibility: hidden;
@@ -334,10 +333,11 @@ header nav .nav-tools .icon-search {
     transform: rotate(135deg);
     width: 6px;
     height: 6px;
-    border: 2px solid currentcolor;
+    border-color: currentcolor;
+    border-style: solid;
     border-radius: 0 1px 0 0;
     border-width: 2px 2px 0 0;
-  } 
+  }
 
   header nav .nav-sections .nav-drop[aria-expanded="true"]::after {
     top: unset;
@@ -416,7 +416,7 @@ header nav .nav-tools .icon-search {
     row-gap: unset;
     margin: 10px;
   }
-  
+
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li {
     font-size: var(--mt-nav-multilevel-font-size);
     font-weight: var(--mt-nav-desktop-multilevel-font-weight);
