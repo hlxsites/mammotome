@@ -109,6 +109,10 @@ main .form fieldset legend {
     padding: var(--form-fieldset-legend-padding);
 }
 
+main .innovate form > fieldset > legend {
+    text-align: center;
+}
+
 main .form fieldset legend:has(div.form-radio-wrapper) {
     border-bottom: 0;
 }
@@ -124,6 +128,23 @@ main .form label.required::after {
     content: "*";
     color: var(--form-label-color);
     padding-left: 5px;
+}
+
+main .form form p,
+main .form form .field-wrapper {
+    margin: var(--form-field-gap);
+    color: var(--form-label-color);
+}
+
+main .form form p {
+    font-size: var(--form-paragraph-font-size);
+    font-style: var(--form-paragraph-font-style);
+    color: var(--form-paragraph-color);
+    margin: var(--form-paragraph-margin);
+}
+
+main .form form fieldset > :is(.form-radio-wrapper:first-of-type, .form-checkbox-wrapper:first-of-type) {
+    margin: var(--form-field-gap);
 }
 
 main .form form :is(.form-checkbox-wrapper, .form-radio-wrapper){
@@ -167,23 +188,10 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
     background-color: var(--form-input-disable-color);
 }
 
-main .form form p,
-main .form form .field-wrapper {
-    margin: var(--form-field-gap);
-    color: var(--form-label-color);
-}
-
-main .form form p {
-    font-size: var(--form-paragraph-font-size);
-    font-style: var(--form-paragraph-font-style);
-    color: var(--form-paragraph-color);
-    margin: var(--form-paragraph-margin);
-}
-
 .technical-inquiry  {
     --form-fieldset-legend-font-size: 1.75rem;
     --form-fieldset-legend-font-weight: 400;
-    --form-fieldset-legend-border: 1px solid rgba(0, 0, 0, 10%);
+    --form-fieldset-legend-border: 1px solid rgb(0 0 0 / 10%);
     --form-fieldset-legend-color: var(--mt-global-color-base-primary);
     --form-fieldset-legend-padding: 0px 0px 20px 0px
 }
@@ -206,10 +214,6 @@ main .form form p {
     --form-fieldset-legend-font-weight: 700;
 }
 
-main .innovate form > fieldset > legend {
-    text-align: center;
-}
-
 main .innovate form fieldset fieldset,
 main .study-request form fieldset fieldset {
     --form-fieldset-legend-color: var(--form-label-color);
@@ -219,18 +223,18 @@ main .study-request form fieldset fieldset {
     --form-fieldset-legend-padding: 0;
 }
 
-.form-PIandContactTitle {
+.form-contacttitle {
     font-weight: var(--mt-font-weight-bold);
 }
 
-.study-request .form-firstName,
-.study-request .form-lastName {
+.study-request .form-firstname,
+.study-request .form-lastname {
     --form-field-gap: 0
 }
 
 .study-request :is(.form-information,
     .form-authorize,
-    .form-termsAndCondition) {
+    .form-terms) {
     padding: 20px;
     max-width: 500px;
     display: block;
@@ -241,7 +245,7 @@ main .study-request form fieldset fieldset {
 }
 
 main .study-request input[type='file'] {
-    background: rgba(0,0,0,2%);
+    background: rgb(var(--mt-global-color-black) / 2%);
     border: 1px dashed #ccc;
     border-radius: 4px;
     margin-bottom: 8px;
@@ -258,64 +262,67 @@ main .technical-inquiry form {
 
 .contact,
 .schedule-demo {
+    --form-paragraph-color: var(--mt-global-color-black);
+    --form-label-color: var(--mt-global-color-black);
     --form-input-background-color: #F7F7F7;
     --form-input-border-size: 1px;
     --form-input-border-color: #ECECEC;
 }
 
-.form-message,
-.form-consentMsg {
+main .form form .form-message,
+.form-consent {
     font-size:  var(--mt-font-size-90);
     border-bottom: solid 2px #eee;
 }
 
-.form-message {
+main .form form .form-message {
     font-size:  var(--mt-font-size-130);
     font-weight: var(--mt-font-weight-bold);
+    padding: 4%;
 }
 
 .study-request .form-textarea-wrapper textarea {
     height: 288px;
 }
 
-.form-IRBSubmissionFS,
-.form-enrollmentFS,
-.form-enrollmentEndFS,
-.form-FinalDataFS {
+.form-submission-fs,
+.form-enrollment-fs,
+.form-enrollment-end-fs,
+.form-final-data-fs {
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
-.form-IRBSubmissionMonth,
-.form-IRBSubmissionDay,
-.form-IRBSubmissionYear,
-.form-enrollmentMonth,
-.form-enrollmentDay,
-.form-enrollmentYear,
-.form-enrollmentEndMonth,
-.form-enrollmentEndDay,
-.form-enrollmentEndYear,
-.form-FinalDataMonth,
-.form-FinalDataDay,
-.form-FinalDataYear {
+.form-submissionmonth,
+.form-submissionday,
+.form-submissionyear,
+.form-enrollmentmonth,
+.form-enrollmentday,
+.form-enrollmentyear,
+.form-enrollmentendmonth,
+.form-enrollmentendday,
+.form-enrollmentendyear,
+.form-finaldatamonth,
+.form-finaldataday,
+.form-finaldatayear {
     --form-field-gap: 0;
 
     width: min-content;
 }
 
-#IRBSubmissionMonth,
-#IRBSubmissionDay,
-#IRBSubmissionYear,
-#enrollmentMonth,
-#enrollmentDay,
-#enrollmentYear,
-#enrollmentEndMonth,
-#enrollmentEndDay,
-#enrollmentEndYear,
-#FinalDataMonth,
-#FinalDataDay,
-#FinalDataYear {
+#submissionmonth,
+#submissionday,
+#submissionyear,
+#enrollmentmonth,
+#enrollmentday,
+#enrollmentyear,
+#enrollmentendmonth,
+#enrollmentendday,
+#enrollmentendyear,
+#finaldatamonth,
+#finaldataday,
+#finaldatayear {
     min-width: 84px;
     width: 100%;
     margin: 0;
@@ -352,29 +359,29 @@ main .technical-inquiry form {
         --form-columns: 2;
     }
 
-    .form-firstName,
-    .form-lastName,
+    .form-firstname,
+    .form-lastname,
     .form-country,
     .form-postalcode,
     .form-phone,
     .form-email,
-    .form-preferredDayFS,
-    .form-preferredTimeFS,
-    .form-productFS,
-    .form-solutionFS{
+    .form-preferred-day-fs,
+    .form-preferred-time-fs,
+    .form-product-fs,
+    .form-solution-fs{
         grid-column: span calc(var(--form-columns)/2);
     }
 
-    .form-contactTypeFS,
+    .form-contact-type-fs,
     .form-company,
     .form-description,
     .form-message,
-    .form-consentMsg,
+    .form-consent,
     .form-submit-wrapper  {
         grid-column: span 4;
     }
 
-    .form-emailOptFS  {
+    .form-email-opt-fs  {
         grid-column-start: 1;
     }
 
@@ -390,7 +397,7 @@ main .technical-inquiry form {
         margin: 0 auto;
     }
 
-    .innovate .form-personalInfo  {
+    .innovate .form-personal-info  {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
@@ -403,7 +410,7 @@ main .technical-inquiry form {
         grid-column: span 1;
     }
     
-    .technical-inquiry .form-contactDetailsFS {
+    .technical-inquiry .form-contact-details-fs {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
@@ -417,32 +424,33 @@ main .technical-inquiry form {
         --form-columns: 4;
     }
 
-    .contact .form-productFS {
+    .contact .form-product-fs {
         grid-column: span 1;
     }
 
-    .study-request .form-PIandContactFS,
-    .study-request .form-studyFS,
-    .form-statisticalFS,
-    .form-budgetFS,
-    .form-milestonesFS,
-    .form-documentFS   {
+    .study-request .form-pi-and-contact-fs,
+    .study-request .form-study-fs,
+    .form-statistical-fs,
+    .form-budget-fs,
+    .form-milestones-fs,
+    .form-document-fs   {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .study-request .form-PIandContactTitle,
-    .study-request .form-institutionAddress,
-    .form-studyTitle,
+    .study-request .form-pi-and-contact-fs,
+    .study-request .form-institutionaddress,
+    .form-contacttitle,
+    .form-studytitle,
     .form-product,
     .form-background,
     .form-statistical,
-    #milestonesFS-description,
-    #documentFS-description   {
+    #milestones-fs-description,
+    #document-fs-description   {
         grid-column: span 2;
     }
 
-    main .innovate form .form-ackFS {
+    main .innovate form .form-ack-fs {
         padding: 0 15% 5px;
         border-radius: 3px;
         margin-top: 36px 0;
