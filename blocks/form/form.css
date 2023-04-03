@@ -9,15 +9,15 @@
     --form-invalid-border-color: var(--mt-global-color-orange);
     --form-input-padding: 0.75rem 0.6rem;
     --form-input-font-size: 1rem;
-    --form-input-disable-color: #ccc;
+    --form-input-disable-color: var(--mt-global-color-silver);
     --form-input-border-size: 1px;
-    --form-input-border-color: #818a91;
+    --form-input-border-color: var(--mt-global-color-oslo-gray);
     --form-input-background-color: var(--mt-background-color-primary);
-    --form-paragraph-color: #666;
+    --form-paragraph-color: var(--mt-global-color-dove-gray);
     --form-paragraph-margin: 0 0 0.9rem;
     --form-paragraph-font-style: none;
     --form-paragraph-font-size: var(--form-font-size-xs);
-    --form-label-color: #666;
+    --form-label-color: var(--mt-global-color-dove-gray);
     --form-label-font-size: var(--form-font-size-xs);
     --form-label-font-weight: bold;
     --form-fieldset-border: 0;
@@ -27,15 +27,15 @@
     --form-fieldset-legend-font-weight: var(--form-label-font-weight);
     --form-fieldset-legend-border: none;
     --form-fieldset-legend-padding: 0;
-    --form-button-color: var(--mt-background-color-primary);;
+    --form-button-color: var(--mt-background-color-primary);
     --form-button-font-size: var(--form-font-size-s);
     --form-button-background-color: var(--mt-global-color-accent-primary);
-    --form-button-background-hover-color: #035fe6;
+    --form-button-background-hover-color: var(--mt-global-color-blue-ribbon);
     --form-button-border: 2px solid transparent;
     --form-button-padding:15px 50px;
     --form-upload-color: var(--mt-background-color-primary);;
     --form-upload-font-size: var(--form-font-size-xs);
-    --form-upload-background-color: #83329b;
+    --form-upload-background-color: var(--mt-global-color-base-primary);
     --form-submit-width: 100%;
 }
 
@@ -190,7 +190,7 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
 
 .technical-inquiry  {
     --form-fieldset-legend-font-size: 1.75rem;
-    --form-fieldset-legend-font-weight: 400;
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-regular);
     --form-fieldset-legend-border: 1px solid rgb(0 0 0 / 10%);
     --form-fieldset-legend-color: var(--mt-global-color-base-primary);
     --form-fieldset-legend-padding: 0px 0px 20px 0px
@@ -199,7 +199,7 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
 .innovate,
 .study-request  {
     --form-fieldset-legend-font-size: 1.50rem;
-    --form-fieldset-legend-font-weight: 500;
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-bold);
     --form-fieldset-legend-border: 2px dashed var(--mt-background-color-primary);
     --form-background-color: var(--mt-global-color-base-primary);
     --form-label-color: var(--mt-background-color-primary);
@@ -211,7 +211,7 @@ main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabl
 .innovate {
     --form-fieldset-legend-border: 1px solid gray;
     --form-fieldset-legend-font-size: 2.15rem;
-    --form-fieldset-legend-font-weight: 700;
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-boldest);
 }
 
 main .innovate form fieldset fieldset,
@@ -246,7 +246,7 @@ main .study-request form fieldset fieldset {
 
 main .study-request input[type='file'] {
     background: rgb(var(--mt-global-color-black) / 2%);
-    border: 1px dashed #ccc;
+    border: 1px dashed var(--mt-global-color-silver);
     border-radius: 4px;
     margin-bottom: 8px;
     padding: 32px;
@@ -264,15 +264,15 @@ main .technical-inquiry form {
 .schedule-demo {
     --form-paragraph-color: var(--mt-global-color-black);
     --form-label-color: var(--mt-global-color-black);
-    --form-input-background-color: #F7F7F7;
+    --form-input-background-color: var(--mt-global-color-alabaste);
     --form-input-border-size: 1px;
-    --form-input-border-color: #ECECEC;
+    --form-input-border-color: var(--mt-global-color-gallery);
 }
 
 main .form form .form-message,
 .form-consent {
     font-size:  var(--mt-font-size-90);
-    border-bottom: solid 2px #eee;
+    border-bottom: solid 2px var(--mt-global-color-gallery);
 }
 
 main .form form .form-message {
@@ -342,19 +342,19 @@ main .form form .form-message {
     }
 }
   
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
     .form-container {
         max-width: 740px;
         margin: 0 auto 10px;
     }
-  
-     form {
+
+        form {
         width: unset;
         flex-flow: wrap row;
     }
-  }
+}
   
-  @media (min-width: 1200px), (min-width: 992px) {
+@media (min-width: 1200px), (min-width: 992px) {
     :root {
         --form-columns: 2;
     }
@@ -455,4 +455,4 @@ main .form form .form-message {
         border-radius: 3px;
         margin-top: 36px 0;
     }
-  }
+}

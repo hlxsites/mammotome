@@ -27,6 +27,12 @@
   --mt-global-color-black: #000;
   --mt-global-color-white: #fff;
   --mt-global-color-orange: #ff5f3f;
+  --mt-global-color-oslo-gray: #818a91;
+  --mt-global-color-dove-gray: #666;
+  --mt-global-color-blue-ribbon: #035fe6;
+  --mt-global-color-silver: #ccc;
+  --mt-global-color-alabaste: #F7F7F7;
+  --mt-global-color-gallery: #ECECEC;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
@@ -440,7 +446,7 @@ main .section.our-history .year.highlight .icon-calendar {
 
 main:has(.schedule-demo, .contact) {
   padding: 05% 0% 10%;
-  background-color: #84329b;
+  background-color: var(--mt-global-color-base-primary);
   background-position: top center;
   background-repeat: repeat;
   background-size: 60px auto;
@@ -448,7 +454,7 @@ main:has(.schedule-demo, .contact) {
 
 main .innovate .form,
 main .study-request .form {
-  background-color: #84329b;
+  background-color: var(--mt-global-color-base-primary);
   padding: 2rem 0;
 }
 
