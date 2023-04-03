@@ -2,17 +2,17 @@
     --form-font-size-m: 22px;
     --form-font-size-s: 18px;
     --form-font-size-xs: 16px;
-    --form-background-color: white;
+    --form-background-color: var(--mt-background-color-primary);
     --form-padding: 3%;
     --form-columns: 1;
     --form-field-gap: 20px 0 0 0;
-    --form-invalid-border-color: #ff5f3f;
+    --form-invalid-border-color: var(--mt-global-color-orange);
     --form-input-padding: 0.75rem 0.6rem;
     --form-input-font-size: 1rem;
     --form-input-disable-color: #ccc;
     --form-input-border-size: 1px;
     --form-input-border-color: #818a91;
-    --form-input-background-color: #FFF;
+    --form-input-background-color: var(--mt-background-color-primary);
     --form-paragraph-color: #666;
     --form-paragraph-margin: 0 0 0.9rem;
     --form-paragraph-font-style: none;
@@ -27,20 +27,20 @@
     --form-fieldset-legend-font-weight: var(--form-label-font-weight);
     --form-fieldset-legend-border: none;
     --form-fieldset-legend-padding: 0;
-    --form-button-color: #FFF;
+    --form-button-color: var(--mt-background-color-primary);;
     --form-button-font-size: var(--form-font-size-s);
-    --form-button-background-color: #5f8dda;
+    --form-button-background-color: var(--mt-global-color-accent-primary);
     --form-button-background-hover-color: #035fe6;
     --form-button-border: 2px solid transparent;
     --form-button-padding:15px 50px;
-    --form-upload-color: #FFF;
+    --form-upload-color: var(--mt-background-color-primary);;
     --form-upload-font-size: var(--form-font-size-xs);
     --form-upload-background-color: #83329b;
     --form-submit-width: 100%;
 }
 
 main .form-container {
-    background-color: #fff;
+    background-color: var(--mt-background-color-primary);
     padding: var(--form-padding);
 }
 
@@ -134,7 +134,7 @@ main .form form :is(.form-checkbox-wrapper, .form-radio-wrapper){
 
 main .form .form-radio-wrapper  label,
 main .form .form-checkbox-wrapper label {
-    font-weight: normal;
+    font-weight: var(--mt-font-weight-regular);
     margin: 0 0 0.3em 0.3em;
 }
 
@@ -151,7 +151,7 @@ main .form button {
     border: var(--form-button-border);
     padding: var(--form-button-padding);
     font-size: var(--form-button-font-size);
-    font-weight: bold;
+    font-weight: var(--mt-font-weight-bold);
     border-radius: unset;
 }
 
@@ -184,7 +184,7 @@ main .form form p {
     --form-fieldset-legend-font-size: 1.75rem;
     --form-fieldset-legend-font-weight: 400;
     --form-fieldset-legend-border: 1px solid rgba(0, 0, 0, 10%);
-    --form-fieldset-legend-color: #84329B;
+    --form-fieldset-legend-color: var(--mt-global-color-base-primary);
     --form-fieldset-legend-padding: 0px 0px 20px 0px
 }
 
@@ -192,11 +192,11 @@ main .form form p {
 .study-request  {
     --form-fieldset-legend-font-size: 1.50rem;
     --form-fieldset-legend-font-weight: 500;
-    --form-fieldset-legend-border: 2px dashed #fff;
-    --form-background-color: #84329b;
-    --form-label-color: #fff;
-    --form-paragraph-color: #fff;
-    --form-fieldset-legend-color: #fff;
+    --form-fieldset-legend-border: 2px dashed var(--mt-background-color-primary);
+    --form-background-color: var(--mt-global-color-base-primary);
+    --form-label-color: var(--mt-background-color-primary);
+    --form-paragraph-color: var(--mt-background-color-primary);
+    --form-fieldset-legend-color: var(--mt-background-color-primary);
     --form-fieldset-legend-padding: 1em 0;
 }
 
@@ -220,7 +220,7 @@ main .study-request form fieldset fieldset {
 }
 
 .form-PIandContactTitle {
-    font-weight: bold;
+    font-weight: var(--mt-font-weight-bold);
 }
 
 .study-request .form-firstName,
@@ -271,7 +271,7 @@ main .technical-inquiry form {
 
 .form-message {
     font-size:  var(--mt-font-size-130);
-    font-weight: bold;
+    font-weight: var(--mt-font-weight-bold);
 }
 
 .study-request .form-textarea-wrapper textarea {

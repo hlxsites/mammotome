@@ -25,6 +25,7 @@
   --mt-global-color-accent-quaternary: #75787B;
   --mt-global-color-accent-quinary: #84329b;
   --mt-global-color-white: #fff;
+  --mt-global-color-orange: #ff5f3f;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
@@ -476,7 +477,6 @@ main .section.our-history .year.highlight .icon-calendar {
 main:has(.schedule-demo, .contact) {
   padding: 05% 0% 10% 0%;
   background-color: #84329b;
-  background-image: url(https://www.mammotome.com/wp-content/uploads/2019/11/Mammotome-BG_Pattern-1.svg);
   background-position: top center;
   background-repeat: repeat;
   background-size: 60px auto;
