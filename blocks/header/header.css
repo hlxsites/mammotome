@@ -281,7 +281,7 @@ header nav .nav-search-aside {
   top: var(--mt-nav-height);
   height: calc(100vh - var(--mt-nav-height));
   width: 100%;
-  background-color: white;
+  background-color: var(--mt-global-color-white);
   overflow: scroll;
   display: flex;
   flex-direction: column;
@@ -289,7 +289,8 @@ header nav .nav-search-aside {
 }
 
 header nav .nav-search-aside-empty {
-  background-color: rgba(0 0 0 / 80%);
+  background-color: var(--mt-global-color-black);
+  opacity: 0.8;
 }
 
 header nav .nav-search-input {
@@ -304,25 +305,25 @@ header nav .icon-search {
 
 input[type='search'] {
   appearance: textfield;
-  outline-offset:-2px;
-  border: 1px solid #666;
+  outline-offset: -2px;
+  border: 1px solid var(--mt-global-color-accent-quaternary);
   border-radius: 3px;
   padding: .5rem 1rem;
-  overflow:visible;
+  overflow: visible;
   display: inline-block;
   max-width: 100%;
   text-align: left;
-  font-size:16px
 }
 
 input[type='search']:focus {
-  border-color: #333;
-  outline:0 none
+  border-color: var(--mt-global-color-accent-tertiary);
+  outline: 0 none
 }
 
 header nav .nav-search-result-title {
-  font-size: 1rem;
-  font-weight: 900;
+  font-size: var(--mt-button-line-height);
+  font-weight: var(--mt-font-weight-heavy);
+  color: var(--mt-heading-color-secondary);
   text-transform: uppercase;
   letter-spacing: 4px;
   text-align: center;
@@ -341,7 +342,7 @@ header nav .nav-search-result-title-divider {
 header nav .nav-search-result-title-divider-separator {
   width: 50%;
   margin: 0 auto;
-  border-top-color: rgb(228 231 235);
+  border-top-color: var(--mt-global-color-accent-tertiary);
   border-top-style: solid;
 }
 
@@ -354,12 +355,12 @@ header nav .nav-search-wrapper {
 }
 
 header nav .nav-search-title {
-  color: #5F8DDA;
-  font-weight: 500;
+  color: var(--mt-global-color-accent-primary);
+  font-weight: var(--mt-font-weight-bold);
   margin-bottom: 14px;
 }
 
 header nav .nav-search-description {
   margin-bottom: 25px;
-  font-size: 1rem;
+  font-size: var(--mt-body-font-size-m);
 }

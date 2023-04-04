@@ -119,49 +119,48 @@ function decorateSearch(block) {
     searchSection.parentElement.parentElement
       .replaceChild(searchElement, searchSection.parentElement);
     searchElement.appendChild(searchSection);
-    const input = document.createElement('input');
+
     const aside = document.createElement('aside');
     aside.classList.add('nav-search-aside');
     aside.classList.add('nav-search-aside-empty');
 
+    const input = document.createElement('input');
     input.classList.add('nav-search-input');
     input.type = 'search';
     input.value = new URL(window.location).searchParams.get('ee_search_query');
 
-    input.addEventListener('input', (e) => {
-      aside.innerHTML = '';
+    input.addEventListener('input', async (e) => {
       const url = new URL(window.location);
-
       if (e.target.value.length >= 3) {
         url.searchParams.set('ee_search_query', e.target.value);
-        search(e.target.value).then((hits) => {
-          if (hits.length > 0) {
-            aside.classList.remove('nav-search-aside-empty');
-            aside.innerHTML = `<h1 class="nav-search-result-title">Search Results for: ${input.value}</h1>
-            <div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>`;
-          } else {
-            aside.classList.add('nav-search-aside-empty');
-            aside.innerHTML = '';
-          }
-          hits.forEach((hit) => {
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('nav-search-wrapper');
-            wrapper.innerHTML = `<h3 class='nav-search-title'><a href='${hit.path}'>${hit.title}</a></h3>
-            <div class='nav-search-description'>${hit.description}</div>`;
-            aside.appendChild(wrapper);
-          });
+        const hits = await search(e.target.value);
+        if (hits.length > 0) {
+          aside.classList.remove('nav-search-aside-empty');
+          aside.innerHTML = `<h1 class="nav-search-result-title">Search Results for: ${input.value}</h1>
+          <div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>`;
+        } else {
+          aside.classList.add('nav-search-aside-empty');
+          aside.innerHTML = '';
+        }
+        hits.forEach((hit) => {
+          const wrapper = document.createElement('div');
+          wrapper.classList.add('nav-search-wrapper');
+          wrapper.innerHTML = `<h3 class='nav-search-title'><a href='${hit.path}'>${hit.title}</a></h3>
+          <div class='nav-search-description'>${hit.description}</div>`;
+          aside.appendChild(wrapper);
         });
       } else {
         url.searchParams.delete('ee_search_query');
+        aside.innerHTML = '';
         aside.classList.add('nav-search-aside-empty');
       }
       // eslint-disable-next-line no-restricted-globals
       history.replaceState(null, '', url);
     });
 
-    let active = new URL(window.location).searchParams.get('ee_search_query');
+    let active = input.value;
+
     if (active) {
-      input.value = active;
       searchElement.prepend(input);
       searchElement.append(aside);
       input.dispatchEvent(new Event('input', { bubbles: true }));
