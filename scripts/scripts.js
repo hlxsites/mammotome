@@ -11,7 +11,6 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-  toClassName,
   setLanguage,
   createMetadata,
 } from './lib-franklin.js';
@@ -74,51 +73,34 @@ function buildAutoBlocks(main) {
     console.error('Auto Blocking failed', error);
   }
 }
-
-/**
- * Checks if the section passed as a parameter is a Styled Section,
- * i.e. it has styles defined in the section metadata
- * @param {Element} section
- */
-function decorateStyledSection(section) {
-  Object.keys(section.dataset)
-    .filter((attrName) => attrName.startsWith('style'))
-    .map((attrKey) => {
-      const clsPrefix = toClassName(attrKey.substring(5));
-      const value = section.dataset[attrKey];
-      if (clsPrefix === 'backgroundimage') {
-        section.style.backgroundImage = `url(${value})`;
-        section.style.backgroundSize = 'cover';
-        return null;
-      }
-      if (clsPrefix === 'arc') {
-        const arc = document.createElement('div');
-        arc.classList.add('arc');
-        const arcPosition = toClassName(value);
-        if (arcPosition === 'bottom') {
-          arc.innerHTML = ARC_BOTTOM_SVG;
-          section.append(arc);
-        } else if (arcPosition === 'top') {
-          arc.innerHTML = ARC_TOP_SVG;
-          section.prepend(arc);
-        }
-        return 'styled-section-arc';
-      }
-      return `styled-section-${clsPrefix}-${toClassName(value)}`;
-    })
-    .filter((x) => x)
-    .forEach((styledClass) => section.classList.add(styledClass));
-}
-
 /**
  * Finds all sections in the main element of the document
- * and for each of them invokes the method that will apply
- * to the section the styles defined in the section metadata
+ * that require additional decoration: adding
+ * a background image or an arc effect.
  * @param {Element} main
  */
-function styledSections(main) {
-  Array.from(main.querySelectorAll('.section'))
-    .forEach((section) => decorateStyledSection(section));
+function decorateStyledSections(main) {
+  Array.from(main.querySelectorAll('.section[data-background-image]'))
+    .forEach((section) => {
+      const bgImage = section.dataset.backgroundImage;
+      if (bgImage) {
+        section.style.backgroundImage = `url(${bgImage})`;
+        section.style.backgroundSize = 'cover';
+      }
+    });
+
+  Array.from(main.querySelectorAll('.section.arc-bottom, .section.arc-top'))
+    .forEach((section) => {
+      const arc = document.createElement('div');
+      arc.classList.add('arc');
+      if (section.classList.contains('arc-bottom')) {
+        arc.innerHTML = ARC_BOTTOM_SVG;
+        section.append(arc);
+      } else if (section.classList.contains('arc-top')) {
+        arc.innerHTML = ARC_TOP_SVG;
+        section.prepend(arc);
+      }
+    });
 }
 
 /**
@@ -132,7 +114,7 @@ export async function decorateMain(main) {
   await decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  styledSections(main);
+  decorateStyledSections(main);
   decorateBlocks(main);
 
   if (main.querySelector('.section.our-history')) {

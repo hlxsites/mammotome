@@ -494,20 +494,19 @@ main .section.our-history .year.highlight .icon-calendar {
   }
 }
 
-
 /* STYLED SECTIONS */
-.styled-section-text-white {
-  color: var(--mt-global-color-white);
-}
+
 /* stylelint-disable-next-line no-descending-specificity */
-.styled-section-text-white h2 {
+.section.inverted-text,
+.section.inverted-text h2,
+.section.inverted-text h3 {
   color: var(--mt-global-color-white);
 }
 
-.styled-section-background-purple-gradient,
-.styled-section-background-grey-gradient,
-.styled-section-background-blue-transparent,
-.styled-section-background-purple-transparent {
+.section.gradient-primary-blur-overlay,
+.section.gradient-secondary-blur-overlay,
+.section.accent-secondary-blur-overlay,
+.section.base-primary-blur-overlay {
   position: relative;
   z-index: -1;
   top: 0;
@@ -517,7 +516,7 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 
-.styled-section-background-purple-gradient::after {
+.section.gradient-primary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
@@ -532,7 +531,7 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 
-.styled-section-background-grey-gradient::after {
+.section.gradient-secondary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
@@ -546,7 +545,7 @@ main .section.our-history .year.highlight .icon-calendar {
   transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
 }
 
-.styled-section-background-purple-transparent::after {
+.section.base-primary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
@@ -560,7 +559,7 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 
-.styled-section-background-blue-transparent::after {
+.section.accent-secondary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
@@ -573,18 +572,18 @@ main .section.our-history .year.highlight .icon-calendar {
   transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
 }
 
-.styled-section-background-light-blue-solid {
+.section.accent-primary-solid-background {
   background-color: var(--mt-global-color-accent-primary);
 }
 
-.styled-section-background-logo-white {
+.section.logo-secondary-background {
   background-image: url('/styles/icons/Mammotome-BG_Pattern-2.svg');
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
 }
 
-.styled-section-background-logo-purple {
+.section.logo-primary-background {
   background-color: var(--mt-global-color-base-primary);
   background-image: url('/styles/icons/Mammotome-BG_Pattern-1.svg');
   background-position: center center;
@@ -592,12 +591,12 @@ main .section.our-history .year.highlight .icon-calendar {
   background-size: 60px auto;
 }
 
-.styled-section-arc .arc {
+.section .arc {
   margin: -7% -15% 0;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-.styled-section-arc .arc svg {
+.section .arc svg {
   display: block;
   width: 110%;
   max-width: 110%;
