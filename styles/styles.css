@@ -24,6 +24,7 @@
   --mt-global-color-accent-tertiary: #78aaff24;
   --mt-global-color-accent-quaternary: #75787B;
   --mt-global-color-accent-quinary: #84329b;
+  --mt-global-color-accent-senary: #777;
   --mt-global-color-black: #000;
   --mt-global-color-white: #fff;
 
@@ -51,6 +52,7 @@
   --mt-link-color: var(--mt-global-color-accent-primary);
   --mt-link-hover-color: var(--mt-global-color-accent-secondary);
   --mt-text-color: var(--mt-global-color-base-secondary);
+  --mt-list-color: var(--mt-global-color-accent-senary);
 
   /* fonts families */
   --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
@@ -88,6 +90,7 @@
   --mt-footer-line-height-xs: 0.8rem;
   --mt-footer-line-height-s: 0.9rem;
   --mt-footer-line-height-m: 1rem;
+  --mt-list-line-height: 1.95rem;
   --mt-hero-line-height-title: 1;
   --mt-hero-line-height-subtitle: 1.5;
 
