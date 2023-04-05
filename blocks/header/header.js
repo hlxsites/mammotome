@@ -54,8 +54,10 @@ function createMobileMenuControlsBlock() {
 function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = nav.querySelector('.nav-brand > p > a');
   const scrollingLogo = document.createElement('img');
-  scrollingLogo.setAttribute('src', '/icons/logo-round.png');
+  scrollingLogo.setAttribute('src', '/icons/logo-round.webp');
   scrollingLogo.setAttribute('class', 'scrolling-logo');
+  scrollingLogo.setAttribute('height', '40px');
+  scrollingLogo.setAttribute('width', '40px');
   scrollingLogo.classList.add('logo-hidden');
 
   const defaultLogo = homePageLink.firstChild;
@@ -166,14 +168,6 @@ export default async function decorate(block) {
 
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-          }
-        });
-
-        const navSectionLink = navSection.querySelector('a');
-        navSectionLink.addEventListener('click', () => {
-          if (!isDesktop.matches) {
-            toggleAllNavSections(navSections);
-            navSection.setAttribute('aria-expanded', 'true');
           }
         });
       });

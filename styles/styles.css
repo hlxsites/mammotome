@@ -15,11 +15,6 @@
   src: local("Arial");
 }
 
-@font-face {
-  font-family: FontAwesome;
-  src: url("/styles/fonts/fa-solid-900.ttf");;
-}
-
 :root {
   /* global colors */
   --mt-global-color-base-primary: #84329B;
@@ -323,7 +318,7 @@ main img {
 }
 
 main .section {
-  padding: 5% 10% 0%;
+  padding: 5% 10% 0;
 }
 
 main .section .default-content-wrapper {
@@ -374,7 +369,7 @@ main .section.our-history .year.highlight .description {
 
 main .section.our-history .year h3 {
   order: 2;
-  font-size: var(--mt-body-font-size-100);
+  font-size: var(--mt-font-size-100);
   color: var(--mt-background-color-primary);
 }
 
