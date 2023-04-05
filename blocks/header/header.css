@@ -288,11 +288,6 @@ header nav .nav-search-aside {
   align-items: center;
 }
 
-header nav .nav-search-aside-empty {
-  background-color: var(--mt-global-color-black);
-  opacity: 0.8;
-}
-
 header nav .nav-search-input {
   position: absolute;
   right: 60px;
@@ -311,7 +306,8 @@ input[type='search'] {
   padding: .5rem 1rem;
   overflow: visible;
   display: inline-block;
-  max-width: 100%;
+  width: 200px;
+  max-width: 70%;
   text-align: left;
 }
 
@@ -358,9 +354,11 @@ header nav .nav-search-title {
   color: var(--mt-global-color-accent-primary);
   font-weight: var(--mt-font-weight-bold);
   margin-bottom: 14px;
+  overflow-wrap: break-word;
 }
 
 header nav .nav-search-description {
   margin-bottom: 25px;
   font-size: var(--mt-body-font-size-m);
+  overflow-wrap: break-word;
 }

@@ -92,56 +92,49 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 async function fetchSearchData() {
   if (!window.searchData) {
     const resp = await fetch(`/${window.location.pathname.split('/')[1]}/query-index.json`);
-    const json = await resp.json();
-    window.searchData = json;
+    if (resp.ok) {
+      const json = await resp.json();
+      if (json.data) {
+        window.searchData = json;
+      } else {
+        throw new Error('Fetching search data returned unknown format');
+      }
+    } else {
+      throw new Error(`Fetching search data failed with: ${resp.status}`);
+    }
   }
   return window.searchData;
 }
 
 async function search(value) {
   const searchData = await fetchSearchData();
-  const hits = [];
-  for (let i = 0; i < searchData.data.length; i += 1) {
-    const e = searchData.data[i];
-    const text = [e.title, e.description].join(' ').toLowerCase();
-    if (text.includes(value.toLowerCase())) {
-      hits.push(e);
-    }
-  }
+  const hits = searchData.data
+    .filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
   return hits;
 }
 
-function decorateSearch(block) {
-  const searchSection = block.querySelector('a > .icon-search');
-  if (searchSection) {
-    const searchElement = document.createElement('div');
-    searchElement.classList.add('nav-search');
-    searchSection.parentElement.parentElement
-      .replaceChild(searchElement, searchSection.parentElement);
-    searchElement.appendChild(searchSection);
+async function searchInput(event) {
+  const { value, aside } = event.target;
 
-    const aside = document.createElement('aside');
-    aside.classList.add('nav-search-aside');
-    aside.classList.add('nav-search-aside-empty');
+  aside.innerHTML = '';
 
-    const input = document.createElement('input');
-    input.classList.add('nav-search-input');
-    input.type = 'search';
-    input.value = new URL(window.location).searchParams.get('ee_search_query');
+  const url = new URL(window.location);
+  if (value.length >= 3) {
+    url.searchParams.set('ee_search_query', value);
+  } else {
+    url.searchParams.delete('ee_search_query');
+  }
 
-    input.addEventListener('input', async (e) => {
-      const url = new URL(window.location);
-      if (e.target.value.length >= 3) {
-        url.searchParams.set('ee_search_query', e.target.value);
-        const hits = await search(e.target.value);
-        if (hits.length > 0) {
-          aside.classList.remove('nav-search-aside-empty');
-          aside.innerHTML = `<h1 class="nav-search-result-title">Search Results for: ${input.value}</h1>
-          <div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>`;
-        } else {
-          aside.classList.add('nav-search-aside-empty');
-          aside.innerHTML = '';
-        }
+  if (value.length >= 3) {
+    const title = document.createElement('h1');
+    title.classList.add('nav-search-result-title');
+    title.textContent = `Search Results for: ${value}`;
+    aside.append(title);
+    aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
+
+    try {
+      const hits = await search(value);
+      if (hits.length > 0) {
         hits.forEach((hit) => {
           const wrapper = document.createElement('div');
           wrapper.classList.add('nav-search-wrapper');
@@ -150,43 +143,75 @@ function decorateSearch(block) {
           aside.appendChild(wrapper);
         });
       } else {
-        url.searchParams.delete('ee_search_query');
-        aside.innerHTML = '';
-        aside.classList.add('nav-search-aside-empty');
+        aside.insertAdjacentHTML('beforeend', '<h3 class="nav-search-title">No Result</h3>');
       }
-      // eslint-disable-next-line no-restricted-globals
-      history.replaceState(null, '', url);
-    });
-
-    let active = input.value;
-
-    if (active) {
-      searchElement.prepend(input);
-      searchElement.append(aside);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
+    } catch (error) {
+      aside.insertAdjacentHTML('beforeend', '<h3 class="nav-search-title">Search could not be completed at this time - please try again later.</h3>');
     }
+    aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
+  }
+  // eslint-disable-next-line no-restricted-globals
+  history.replaceState(null, '', url);
+}
 
-    searchSection.addEventListener('click', (event) => {
-      if (!active) {
-        searchElement.prepend(input);
-        searchElement.append(aside);
-        input.focus();
-        active = true;
-      } else {
-        searchElement.removeChild(input);
-        searchElement.removeChild(aside);
-        active = false;
-        input.value = '';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-      event.preventDefault();
-    });
+function searchClick(event) {
+  const { input, searchElement } = event.currentTarget;
+  if (!input.active) {
+    searchElement.prepend(input);
+    searchElement.append(input.aside);
+    input.active = true;
+    input.focus();
+  } else {
+    input.active = false;
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    searchElement.removeChild(input);
+    searchElement.removeChild(input.aside);
+  }
+  event.preventDefault();
+}
 
-    searchSection.addEventListener('disable', () => {
-      if (active) {
-        searchSection.dispatchEvent(new Event('click', { bubbles: false }));
-      }
-    });
+function searchDisable(event) {
+  if (event.currentTarget.input.active) {
+    event.currentTarget.dispatchEvent(new Event('click', { bubbles: false }));
+  }
+}
+
+function decorateSearch(block) {
+  const searchSection = block.querySelector('div.nav-tools > p > a > .icon-search');
+
+  if (!searchSection) return;
+
+  const aside = document.createElement('aside');
+  aside.classList.add('nav-search-aside');
+
+  const input = document.createElement('input');
+  input.classList.add('nav-search-input');
+  input.type = 'search';
+  input.placeholder = 'What are you looking for?';
+  input.value = new URL(window.location).searchParams.get('ee_search_query');
+  input.aside = aside;
+  input.active = input.value;
+  input.addEventListener('input', searchInput);
+
+  const searchElement = document.createElement('div');
+  searchElement.classList.add('nav-search');
+  searchSection.input = input;
+  searchSection.searchElement = searchElement;
+
+  searchSection.parentElement.parentElement
+    .replaceChild(searchElement, searchSection.parentElement);
+
+  searchElement.appendChild(searchSection);
+
+  searchSection.addEventListener('click', searchClick);
+
+  searchSection.addEventListener('disable', searchDisable);
+
+  if (input.active) {
+    searchElement.prepend(input);
+    searchElement.append(aside);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
   }
 }
 
