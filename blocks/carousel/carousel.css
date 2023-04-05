@@ -1,0 +1,195 @@
+.carousel {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* URL and Slider container */
+.carousel > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    column-gap: 30px;
+    flex-grow: 1;
+}
+
+@media (min-width: 1024px) {
+    .carousel > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-grow: 1;
+    }
+}
+
+.carousel > div > div {
+    order: 2;
+}
+
+@media (min-width: 768px) {
+    .carousel > div > div {
+        order: 1;
+    }
+}
+
+
+.carousel > div > div ul {
+    list-style-type: none;
+    font-size: var(--mt-heading-font-size-m);
+    font-weight: var(--mt-font-weight-thin);
+    line-height: var(--mt-list-line-height);
+    color: var(--mt-list-color);
+    padding-left: 20px;
+}
+
+.carousel > div > div ul li {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 18px;
+    padding-bottom: 2px;
+    padding-left: 13px;
+
+}
+
+.carousel > div > div ul li::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 9px;
+    height: 9px;
+    vertical-align: center;
+    border: 3px solid var(--mt-global-color-accent-quinary);
+    border-radius: 50%;
+    margin-left: -23px;
+
+}
+
+.carousel .slider-wrapper {;
+    position: relative;
+    margin: 5% auto 0;
+    order: 1;
+}
+
+@media (min-width: 1024px) {
+    .carousel .slider-wrapper {
+        order: 2;
+    }
+}
+
+/* Slide container */
+.carousel .slider-wrapper .slider {
+    position: relative;
+}
+
+/* Pictures in slider */
+.carousel .slider-wrapper .slider picture {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel .slider-wrapper .slider picture img {
+    width: 400px;
+    height: 232px;
+    object-fit: cover;
+}
+
+@media (min-width: 768px) {
+    .carousel .slider-wrapper .slider picture img {
+        object-fit: cover;
+        width: 916px;
+        height: 440px;
+    }
+}
+
+
+/* First slide in slider */
+.carousel .slider-wrapper .slider picture:first-child {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    flex-shrink: 0;
+}
+
+/* Second to n slide in slider */
+.carousel .slider-wrapper .slider picture:nth-child(n+2) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 1;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* hide slide */
+.carousel .hide {
+    opacity: 0;
+    transition-duration: 500ms;
+    transition-property: opacity;
+}
+
+/* show slide */
+.carousel .show {
+    opacity: 1;
+    transition-duration: 500ms;
+    transition-property: opacity;
+}
+
+/* Arrow nav flex container */
+.carousel .slider-wrapper .slider .arrow-nav {
+    position: absolute;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 999;
+}
+
+
+.carousel .slider-wrapper .slider .arrow-nav #arrow-left,
+.carousel .slider-wrapper .slider .arrow-nav #arrow-right {
+    width: 24px;
+    height: 24px;
+    text-align: center;
+}
+
+/* bottom nav container */
+.carousel .slider-wrapper .bottom-nav {
+    position: relative;
+    display: flex;
+    width: 100%;
+    left: 50%;
+    z-index: 998;
+    margin-top: 9px;
+    margin-bottom: 9px;
+}
+
+/* Bottom Nav */
+.carousel .bottom-nav .bullet {
+    margin: 0 6px;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+}
+
+/* active for bottom nav */
+.carousel .bottom-nav .active {
+    background-color: #000;
+}
+
+/* inactive for bottom nav */
+.carousel .bottom-nav .inactive {
+    background-color: #000;
+    opacity: 0.2;
+}
+
+
+
+
+
+
+
+
