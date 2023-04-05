@@ -27,6 +27,13 @@
   --mt-global-color-accent-senary: #777;
   --mt-global-color-black: #000;
   --mt-global-color-white: #fff;
+  --mt-global-color-orange: #ff5f3f;
+  --mt-global-color-oslo-gray: #818a91;
+  --mt-global-color-dove-gray: #666;
+  --mt-global-color-blue-ribbon: #035fe6;
+  --mt-global-color-silver: #ccc;
+  --mt-global-color-alabaste: #F7F7F7;
+  --mt-global-color-gallery: #ECECEC;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
@@ -82,6 +89,7 @@
   --mt-font-size-175: 1.75rem;
   --mt-font-size-180: 1.75rem;
   --mt-font-size-200: 2rem;
+  --mt-font-size-215: 2.15rem;
   --mt-font-size-250: 2.5rem;
 
   /* line heights */
@@ -379,6 +387,11 @@ main .section.our-history .year h3 {
   color: var(--mt-background-color-primary);
 }
 
+main .contact .default-content-wrapper p,
+main .schedule-demo .default-content-wrapper p {
+  font-size: var(--mt-heading-font-size-m);
+}
+
 main .section.our-history .year .description p {
   order: 3;
 }
@@ -435,6 +448,34 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(  --mt-our-history-color-primary);
 }
 
+main:has(.schedule-demo, .contact) {
+  padding: 05% 0% 10%;
+  background-color: var(--mt-global-color-base-primary);
+  background-position: top center;
+  background-repeat: repeat;
+  background-size: 60px auto;
+}
+
+main .innovate .form,
+main .study-request .form {
+  background-color: var(--mt-global-color-base-primary);
+  padding: 2rem 0;
+}
+
+main .contact .default-content-wrapper h2,
+main .schedule-demo .default-content-wrapper h2 {
+  text-align: center;
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  text-transform: none;
+  margin: 0 5px;
+  padding-bottom: 40px;
+}
+
+main .schedule-demo .default-content-wrapper h2 {
+  font-size: var(--mt-heading-font-size-l);
+}
+
 @media screen and (max-width: 530px) {
   main .section.our-history .year:first-of-type::after {
     top: -5%;
@@ -477,5 +518,4 @@ main .section.our-history .year.highlight .icon-calendar {
   main .section.our-history .year:last-of-type::after {
     height: 85%;
   }
-
 }
