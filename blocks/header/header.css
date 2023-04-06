@@ -269,3 +269,96 @@ header nav .nav-sections ul > li > ul > li {
 header nav .nav-tools {
   grid-area: tools;
 }
+
+header nav .nav-search {
+  display: flex;
+  align-items: center;
+}
+
+header nav .nav-search-aside {
+  position: absolute;
+  left: 0;
+  top: var(--mt-nav-height);
+  height: calc(100vh - var(--mt-nav-height));
+  width: 100%;
+  background-color: var(--mt-global-color-white);
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header nav .nav-search-input {
+  position: absolute;
+  right: 60px;
+}
+
+header nav .icon-search {
+  position: absolute;
+  right: 30px;
+}
+
+input[type='search'] {
+  appearance: textfield;
+  outline-offset: -2px;
+  border: 1px solid var(--mt-global-color-accent-quaternary);
+  border-radius: 3px;
+  padding: .5rem 1rem;
+  overflow: visible;
+  display: inline-block;
+  width: 200px;
+  max-width: 70%;
+  text-align: left;
+}
+
+input[type='search']:focus {
+  border-color: var(--mt-global-color-accent-tertiary);
+  outline: 0 none
+}
+
+header nav .nav-search-result-title {
+  font-size: var(--mt-button-line-height);
+  font-weight: var(--mt-font-weight-heavy);
+  color: var(--mt-heading-color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-align: center;
+  width: 80%;
+  padding-top: 20px;
+}
+
+header nav .nav-search-result-title-divider {
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  width: 80%;
+}
+
+header nav .nav-search-result-title-divider-separator {
+  width: 50%;
+  margin: 0 auto;
+  border-top-color: var(--mt-global-color-accent-tertiary);
+  border-top-style: solid;
+}
+
+header nav .nav-search-wrapper {
+  width: 60%;
+  box-shadow: 2px 12px 28px 0 rgba(28 28 73 / 25%);
+  margin-bottom: 0;
+  margin-top: 20px;
+  padding: 0 30px;
+}
+
+header nav .nav-search-title {
+  color: var(--mt-global-color-accent-primary);
+  font-weight: var(--mt-font-weight-bold);
+  margin-bottom: 14px;
+  overflow-wrap: break-word;
+}
+
+header nav .nav-search-description {
+  margin-bottom: 25px;
+  font-size: var(--mt-body-font-size-m);
+  overflow-wrap: break-word;
+}
