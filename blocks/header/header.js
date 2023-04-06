@@ -138,8 +138,17 @@ async function searchInput(event) {
         hits.forEach((hit) => {
           const wrapper = document.createElement('div');
           wrapper.classList.add('nav-search-wrapper');
-          wrapper.innerHTML = `<h3 class='nav-search-title'><a href='${hit.path}'>${hit.title}</a></h3>
-          <div class='nav-search-description'>${hit.description}</div>`;
+          const searchTitle = document.createElement('h3');
+          searchTitle.classList.add('nav-search-title');
+          const searchLink = document.createElement('a');
+          searchLink.href = hit.path;
+          searchLink.textContent = hit.title;
+          const searchDescription = document.createElement('div');
+          searchDescription.classList.add('nav-search-description');
+          searchDescription.textContent = hit.description;
+          searchTitle.appendChild(searchLink);
+          wrapper.appendChild(searchTitle);
+          wrapper.appendChild(searchDescription);
           aside.appendChild(wrapper);
         });
       } else {
