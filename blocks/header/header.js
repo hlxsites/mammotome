@@ -1,4 +1,4 @@
-import { getMetadata, decorateIcons } from '../../scripts/lib-franklin.js';
+import { getMetadata, decorateIcons, fetchPlaceholders } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -89,6 +89,16 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+async function placeholder(key, def) {
+  try {
+    const placeholders = await fetchPlaceholders(`/${window.location.pathname.split('/')[1]}`);
+    if (placeholders[key]) {
+      return placeholders[key];
+    }
+  } catch (error) { /* empty */ }
+  return def;
+}
+
 async function fetchSearchData() {
   if (!window.searchData) {
     const resp = await fetch(`/${window.location.pathname.split('/')[1]}/query-index.json`);
@@ -128,7 +138,7 @@ async function searchInput(event) {
   if (value.length >= 3) {
     const title = document.createElement('h1');
     title.classList.add('nav-search-result-title');
-    title.textContent = `Search Results for: ${value}`;
+    title.textContent = `${await placeholder('navSearchResultsFor', 'Search Results for')}: ${value}`;
     aside.append(title);
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
 
@@ -152,10 +162,10 @@ async function searchInput(event) {
           aside.appendChild(wrapper);
         });
       } else {
-        aside.insertAdjacentHTML('beforeend', '<h3 class="nav-search-title">No Result</h3>');
+        aside.insertAdjacentHTML('beforeend', `<h3 class="nav-search-title">${await placeholder('navSearchNoResult', 'No Result')}</h3>`);
       }
     } catch (error) {
-      aside.insertAdjacentHTML('beforeend', '<h3 class="nav-search-title">Search could not be completed at this time - please try again later.</h3>');
+      aside.insertAdjacentHTML('beforeend', `<h3 class="nav-search-title">${await placeholder('navSearchFailure', 'Search could not be completed at this time - please try again later.')}</h3>`);
     }
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
   }
@@ -186,7 +196,7 @@ function searchDisable(event) {
   }
 }
 
-function decorateSearch(block) {
+async function decorateSearch(block) {
   const searchSection = block.querySelector('div.nav-tools > p > a > .icon-search');
 
   if (!searchSection) return;
@@ -197,7 +207,7 @@ function decorateSearch(block) {
   const input = document.createElement('input');
   input.classList.add('nav-search-input');
   input.type = 'search';
-  input.placeholder = 'What are you looking for?';
+  input.placeholder = await placeholder('navSearchPlaceholder', 'What are you looking for?');
   input.value = new URL(window.location).searchParams.get('ee_search_query');
   input.aside = aside;
   input.active = input.value;
