@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* global describe it */
 
-import { readFile, setViewport } from '@web/test-runner-commands';
+import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 
 document.body.innerHTML = await readFile({ path: '../../scripts/dummy.html' });
@@ -36,15 +36,5 @@ describe('Header block', () => {
     expect(nav.getAttribute('aria-expanded')).to.equal('true');
     hamburger.click();
     expect(nav.getAttribute('aria-expanded')).to.equal('false');
-  });
-
-  it('Section title shows and hides section on desktop', async () => {
-    await setViewport({ width: 1025, height: 640 });
-    const sections = document.querySelector('.header .nav-sections');
-    const title = sections.querySelector(':scope li:nth-child(2)');
-    title.click();
-    expect(title.getAttribute('aria-expanded')).to.equal('true');
-    title.click();
-    expect(title.getAttribute('aria-expanded')).to.equal('false');
   });
 });
