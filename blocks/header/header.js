@@ -162,10 +162,16 @@ async function searchInput(event) {
           aside.appendChild(wrapper);
         });
       } else {
-        aside.insertAdjacentHTML('beforeend', `<h3 class="nav-search-title">${await placeholder('navSearchNoResult', 'No Result')}</h3>`);
+        const searchTitle = document.createElement('h3');
+        searchTitle.classList.add('nav-search-title');
+        searchTitle.textContent = await placeholder('navSearchNoResult', 'No Result');
+        aside.appendChild(searchTitle);
       }
     } catch (error) {
-      aside.insertAdjacentHTML('beforeend', `<h3 class="nav-search-title">${await placeholder('navSearchFailure', 'Search could not be completed at this time - please try again later.')}</h3>`);
+      const searchTitle = document.createElement('h3');
+      searchTitle.classList.add('nav-search-title');
+      searchTitle.textContent = await placeholder('navSearchFailure', 'Search could not be completed at this time - please try again later.');
+      aside.appendChild(searchTitle);
     }
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
   }
