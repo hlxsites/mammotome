@@ -1,4 +1,4 @@
-import { getMetadata, decorateIcons } from '../../scripts/lib-franklin.js';
+import { decorateIcons, getMetadata } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -42,7 +42,8 @@ function createMobileMenuControlsBlock() {
   const backButton = document.createElement('div');
   backButton.classList.add('mobile-menu-back');
 
-  backButton.addEventListener('click', () => {
+  mobileMenuControls.addEventListener('click', (e) => {
+    e.stopPropagation();
     backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
   });
 
@@ -154,9 +155,8 @@ async function fetchSearchData() {
 
 async function search(value) {
   const searchData = await fetchSearchData();
-  const hits = searchData.data
+  return searchData.data
     .filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
-  return hits;
 }
 
 async function searchInput(event) {
@@ -302,7 +302,7 @@ export default async function decorate(block) {
         navSection.querySelector('ul').prepend(createMobileMenuControlsBlock());
 
         navSection.addEventListener('click', () => {
-          if (isDesktop.matches) {
+          if (!isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
 
             toggleAllNavSections(navSections);
@@ -336,6 +336,15 @@ export default async function decorate(block) {
     // prevent mobile nav behavior on window resize
     toggleMenu(nav, navSections, isDesktop.matches);
     isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+
+    const mobileCover = document.createElement('div');
+    mobileCover.classList.add('nav-mobile-cover');
+    nav.insertBefore(mobileCover, nav.querySelector('.nav-hamburger'));
+    mobileCover.addEventListener('click', () => {
+      block.querySelectorAll('[aria-expanded="true"]').forEach((expanded) => {
+        expanded.setAttribute('aria-expanded', 'false');
+      });
+    });
 
     await decorateIcons(nav);
     decorateSearch(nav);
