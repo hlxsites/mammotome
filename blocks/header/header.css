@@ -7,7 +7,6 @@
   --mt-header-menu-item-selected-color: #54006c70;
 
     /* nav height */
-  --mt-nav-height: 90px;
   --mt-nav-content-height: 55px;
 
   /* nav width */
@@ -31,11 +30,6 @@
   /* font families */
   --mt-nav-nav-item-font-family: -apple-system,blinkmacsystemfont,segoe ui,roboto,helvetica neue,arial,aoto aans,sans-serif;
   --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family);
-}
-
-
-header {
-  height: var(--mt-nav-height);
 }
 
 /* header and nav layout */
