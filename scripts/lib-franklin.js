@@ -231,6 +231,16 @@ export async function fetchPlaceholders(prefix = 'default') {
   return window.placeholders[prefix];
 }
 
+export async function getPlaceholderOrDefault(key, defaultText) {
+  try {
+    const placeholders = await fetchPlaceholders(`/${window.location.pathname.split('/')[1]}`);
+    if (placeholders[key]) {
+      return placeholders[key];
+    }
+  } catch (error) { /* empty */ }
+  return defaultText;
+}
+
 /**
  * Decorates a block.
  * @param {Element} block The block element
