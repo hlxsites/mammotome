@@ -169,9 +169,10 @@ async function searchInput(event) {
   history.replaceState(null, '', url);
 }
 
-function searchClick(event) {
+async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
   if (!input.active) {
+    input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
     searchElement.prepend(input);
     searchElement.append(input.aside);
     input.active = true;
@@ -203,7 +204,6 @@ async function decorateSearch(block) {
   const input = document.createElement('input');
   input.classList.add('nav-search-input');
   input.type = 'search';
-  input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
   input.value = new URL(window.location).searchParams.get('ee_search_query');
   input.aside = aside;
   input.active = input.value;
@@ -224,6 +224,7 @@ async function decorateSearch(block) {
   searchSection.addEventListener('disable', searchDisable);
 
   if (input.active) {
+    input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
     searchElement.prepend(input);
     searchElement.append(aside);
     input.dispatchEvent(new Event('input', { bubbles: true }));
