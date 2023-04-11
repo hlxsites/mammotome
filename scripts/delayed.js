@@ -29,7 +29,7 @@ export async function loadCookieConsent(doc, hostname) {
   const csID = await getCookieConsentID(hostname);
 
   const cookieScript = doc.createElement('script');
-  cookieScript.setAttribute('src', await getPlaceholderOrDefault('otSource', 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js'));
+  cookieScript.setAttribute('src', 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js');
   cookieScript.setAttribute('data-document-language', 'true');
   cookieScript.setAttribute('type', 'text/javascript');
   cookieScript.setAttribute('charset', 'UTF-8');
