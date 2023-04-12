@@ -480,6 +480,13 @@ main .schedule-demo .default-content-wrapper h2 {
   main .section.our-history .year:first-of-type::after {
     top: -5%;
   }
+
+}
+
+@media screen and (max-width: 767px) {
+  main .section {
+    padding: 5% 5% 0%;
+  }
 }
 
 @media screen and (min-width: 767px) {
