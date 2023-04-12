@@ -22,8 +22,6 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
-import integrateMartech from './third-party.js';
-
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
