@@ -225,10 +225,6 @@ main pre {
   white-space: pre;
 }
 
-header {
-  height: var(--mt-nav-height);
-}
-
 hr {
   box-sizing: content-box;
   height: 0;
