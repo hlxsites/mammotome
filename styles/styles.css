@@ -101,6 +101,7 @@
   --mt-list-line-height: 1.95rem;
   --mt-hero-line-height-title: 1;
   --mt-hero-line-height-subtitle: 1.5;
+  --mt-nav-height: 90px;
 
   /* feature font sizes */
   --mt-body-font-size-m: var(--mt-font-size-100);
@@ -126,9 +127,6 @@
   /* history */
   --mt-our-history-color-primary: var(--mt-global-color-base-primary);
   --mt-our-history-color-secondary: var(--mt-global-color-accent-primary);
-
-  /* nav height */
-  --mt-nav-height: 64px;
 }
 
 *, ::before, ::after {
@@ -143,10 +141,6 @@ body {
   line-height: var(--mt-body-line-height);
   color: var(--mt-text-color);
   background-color: var(--mt-background-color-primary);
-}
-
-header {
-  height: var(--mt-nav-height);
 }
 
 h1, h2, h3,
@@ -211,6 +205,10 @@ main pre {
   border-radius: .25em;
   overflow-x: auto;
   white-space: pre;
+}
+
+header {
+  height: var(--mt-nav-height);
 }
 
 hr {
@@ -326,13 +324,19 @@ main img {
   width: 24px;
 }
 
+@media (min-width: 1025px) {
+  .icon {
+    width: 136px;
+  }
+}
+
 .icon svg {
   height: 100%;
   width: 100%;
 }
 
 main .section {
-  padding: 5% 10% 0%;
+  padding: 5% 10% 0;
 }
 
 main .section .default-content-wrapper {
@@ -383,7 +387,7 @@ main .section.our-history .year.highlight .description {
 
 main .section.our-history .year h3 {
   order: 2;
-  font-size: var(--mt-body-font-size-100);
+  font-size: var(--mt-font-size-100);
   color: var(--mt-background-color-primary);
 }
 

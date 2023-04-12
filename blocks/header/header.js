@@ -1,7 +1,7 @@
 import { getMetadata, decorateIcons, getPlaceholderOrDefault } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
-const isDesktop = window.matchMedia('(min-width: 900px)');
+const isDesktop = window.matchMedia('(min-width: 1025px)');
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
@@ -35,6 +35,50 @@ function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
 }
 
+function createMobileMenuControlsBlock() {
+  const mobileMenuControls = document.createElement('li');
+  mobileMenuControls.classList.add('mobile-menu-controls');
+
+  const backButton = document.createElement('div');
+  backButton.classList.add('mobile-menu-back');
+
+  mobileMenuControls.addEventListener('click', (e) => {
+    e.stopPropagation();
+    backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
+  });
+
+  mobileMenuControls.append(backButton);
+
+  return mobileMenuControls;
+}
+
+function addNavigationLogoForScrollingPage(nav) {
+  const homePageLink = nav.querySelector('.nav-brand > p > a');
+  const scrollingLogo = document.createElement('img');
+  scrollingLogo.setAttribute('src', '/icons/logo-round.webp');
+  scrollingLogo.setAttribute('class', 'scrolling-logo');
+  scrollingLogo.setAttribute('height', '40px');
+  scrollingLogo.setAttribute('width', '40px');
+  scrollingLogo.classList.add('logo-hidden');
+
+  const defaultLogo = homePageLink.firstChild;
+
+  homePageLink.append(scrollingLogo);
+
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.scrollY;
+    if (scrollPosition > 40) {
+      nav.classList.add('narrow');
+      defaultLogo.classList.add('logo-hidden');
+      scrollingLogo.classList.remove('logo-hidden');
+    } else {
+      nav.classList.remove('narrow');
+      defaultLogo.classList.remove('logo-hidden');
+      scrollingLogo.classList.add('logo-hidden');
+    }
+  });
+}
+
 /**
  * Toggles all nav sections
  * @param {Element} sections The container element
@@ -42,7 +86,9 @@ function focusNavSection() {
  */
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
+    if (!section.classList.contains('mobile-menu-controls')) {
+      section.setAttribute('aria-expanded', expanded.toString());
+    }
   });
   const searchElement = document.querySelector('.icon-search');
   if (searchElement) {
@@ -59,17 +105,18 @@ function toggleAllNavSections(sections, expanded = false) {
 function toggleMenu(nav, navSections, forceExpanded = null) {
   const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
+
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
+
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+
   // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
   if (isDesktop.matches) {
     navDrops.forEach((drop) => {
       if (!drop.hasAttribute('tabindex')) {
         drop.setAttribute('role', 'button');
-        drop.setAttribute('tabindex', 0);
+        drop.setAttribute('tabindex', '0');
         drop.addEventListener('focus', focusNavSection);
       }
     });
@@ -108,9 +155,8 @@ async function fetchSearchData() {
 
 async function search(value) {
   const searchData = await fetchSearchData();
-  const hits = searchData.data
+  return searchData.data
     .filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
-  return hits;
 }
 
 async function searchInput(event) {
@@ -258,14 +304,30 @@ export default async function decorate(block) {
     if (navSections) {
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+        if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
+
+        navSection.querySelector('ul').prepend(createMobileMenuControlsBlock());
+
         navSection.addEventListener('click', () => {
-          if (isDesktop.matches) {
+          if (!isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
+
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
           }
         });
       });
+
+      const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li > a');
+      firstLevelLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+          if (!isDesktop.matches) {
+            event.preventDefault();
+          }
+        });
+      });
+
+      navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
     }
 
     // hamburger for mobile
@@ -275,15 +337,27 @@ export default async function decorate(block) {
         <span class="nav-hamburger-icon"></span>
       </button>`;
     hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
-    nav.prepend(hamburger);
+    nav.insertBefore(hamburger, nav.querySelector('.nav-tools'));
+
     nav.setAttribute('aria-expanded', 'false');
     // prevent mobile nav behavior on window resize
     toggleMenu(nav, navSections, isDesktop.matches);
     isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
-    decorateIcons(nav);
+    const mobileCover = document.createElement('div');
+    mobileCover.classList.add('nav-mobile-cover');
+    nav.insertBefore(mobileCover, nav.querySelector('.nav-hamburger'));
+    mobileCover.addEventListener('click', () => {
+      block.querySelectorAll('[aria-expanded="true"]').forEach((expanded) => {
+        expanded.setAttribute('aria-expanded', 'false');
+      });
+    });
 
+    await decorateIcons(nav);
     decorateSearch(nav);
+
+    // add logo for scroling page
+    addNavigationLogoForScrollingPage(nav);
 
     const navWrapper = document.createElement('div');
     navWrapper.className = 'nav-wrapper';
