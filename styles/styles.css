@@ -548,7 +548,7 @@ main .schedule-demo .default-content-wrapper h2 {
 .section.inverted-text,
 .section.inverted-text h2,
 .section.inverted-text h3 {
-  color: var(--mt-global-color-white);
+  color: var(--mt-background-color-primary);
 }
 
 .section.gradient-primary-blur-overlay,
