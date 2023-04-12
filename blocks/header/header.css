@@ -573,6 +573,7 @@ header nav .nav-search-result-title {
   text-align: center;
   width: 80%;
   padding-top: 20px;
+  overflow-wrap: break-word;
 }
 
 header nav .nav-search-result-title-divider {

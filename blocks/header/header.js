@@ -1,4 +1,4 @@
-import { decorateIcons, getMetadata } from '../../scripts/lib-franklin.js';
+import { getMetadata, decorateIcons, getPlaceholderOrDefault } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -174,7 +174,7 @@ async function searchInput(event) {
   if (value.length >= 3) {
     const title = document.createElement('h1');
     title.classList.add('nav-search-result-title');
-    title.textContent = `Search Results for: ${value}`;
+    title.textContent = `${await getPlaceholderOrDefault('navSearchResultsFor', 'Search Results for')}: ${value}`;
     aside.append(title);
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
 
@@ -198,10 +198,16 @@ async function searchInput(event) {
           aside.appendChild(wrapper);
         });
       } else {
-        aside.insertAdjacentHTML('beforeend', '<h3 class="nav-search-title">No Result</h3>');
+        const searchTitle = document.createElement('h3');
+        searchTitle.classList.add('nav-search-title');
+        searchTitle.textContent = await getPlaceholderOrDefault('navSearchNoResult', 'No Result');
+        aside.appendChild(searchTitle);
       }
     } catch (error) {
-      aside.insertAdjacentHTML('beforeend', '<h3 class="nav-search-title">Search could not be completed at this time - please try again later.</h3>');
+      const searchTitle = document.createElement('h3');
+      searchTitle.classList.add('nav-search-title');
+      searchTitle.textContent = await getPlaceholderOrDefault('navSearchFailure', 'Search could not be completed at this time - please try again later.');
+      aside.appendChild(searchTitle);
     }
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
   }
@@ -209,9 +215,10 @@ async function searchInput(event) {
   history.replaceState(null, '', url);
 }
 
-function searchClick(event) {
+async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
   if (!input.active) {
+    input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
     searchElement.prepend(input);
     searchElement.append(input.aside);
     input.active = true;
@@ -232,7 +239,7 @@ function searchDisable(event) {
   }
 }
 
-function decorateSearch(block) {
+async function decorateSearch(block) {
   const searchSection = block.querySelector('div.nav-tools > p > a > .icon-search');
 
   if (!searchSection) return;
@@ -243,7 +250,6 @@ function decorateSearch(block) {
   const input = document.createElement('input');
   input.classList.add('nav-search-input');
   input.type = 'search';
-  input.placeholder = 'What are you looking for?';
   input.value = new URL(window.location).searchParams.get('ee_search_query');
   input.aside = aside;
   input.active = input.value;
@@ -264,6 +270,7 @@ function decorateSearch(block) {
   searchSection.addEventListener('disable', searchDisable);
 
   if (input.active) {
+    input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
     searchElement.prepend(input);
     searchElement.append(aside);
     input.dispatchEvent(new Event('input', { bubbles: true }));
