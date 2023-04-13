@@ -176,8 +176,6 @@ async function loadLazy(doc) {
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
 
-  integrateMartech();
-
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
     const preview = await import(`${window.hlx.codeBasePath}/tools/preview/preview.js`);
