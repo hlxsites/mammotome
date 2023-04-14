@@ -1,4 +1,4 @@
-import { getMetadata, decorateIcons, getPlaceholderOrDefault } from '../../scripts/lib-franklin.js';
+import { getMetadata, decorateIcons, translate } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -174,7 +174,7 @@ async function searchInput(event) {
   if (value.length >= 3) {
     const title = document.createElement('h1');
     title.classList.add('nav-search-result-title');
-    title.textContent = `${await getPlaceholderOrDefault('navSearchResultsFor', 'Search Results for')}: ${value}`;
+    title.textContent = `${await translate('navSearchResultsFor', 'Search Results for')}: ${value}`;
     aside.append(title);
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
 
@@ -200,13 +200,13 @@ async function searchInput(event) {
       } else {
         const searchTitle = document.createElement('h3');
         searchTitle.classList.add('nav-search-title');
-        searchTitle.textContent = await getPlaceholderOrDefault('navSearchNoResult', 'No Result');
+        searchTitle.textContent = await translate('navSearchNoResult', 'No Result');
         aside.appendChild(searchTitle);
       }
     } catch (error) {
       const searchTitle = document.createElement('h3');
       searchTitle.classList.add('nav-search-title');
-      searchTitle.textContent = await getPlaceholderOrDefault('navSearchFailure', 'Search could not be completed at this time - please try again later.');
+      searchTitle.textContent = await translate('navSearchFailure', 'Search could not be completed at this time - please try again later.');
       aside.appendChild(searchTitle);
     }
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
@@ -218,7 +218,7 @@ async function searchInput(event) {
 async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
   if (!input.active) {
-    input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
+    input.placeholder = await translate('navSearchPlaceholder', 'What are you looking for?');
     searchElement.prepend(input);
     searchElement.append(input.aside);
     input.active = true;
@@ -270,7 +270,7 @@ async function decorateSearch(block) {
   searchSection.addEventListener('disable', searchDisable);
 
   if (input.active) {
-    input.placeholder = await getPlaceholderOrDefault('navSearchPlaceholder', 'What are you looking for?');
+    input.placeholder = await translate('navSearchPlaceholder', 'What are you looking for?');
     searchElement.prepend(input);
     searchElement.append(aside);
     input.dispatchEvent(new Event('input', { bubbles: true }));
