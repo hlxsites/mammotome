@@ -242,28 +242,33 @@ export async function fetchPlaceholders(prefix = 'default') {
   return window.placeholders[prefix];
 }
 
-export async function getPlaceholderOrDefault(key, defaultText) {
-  try {
-    const placeholders = await fetchPlaceholders();
-    if (placeholders.config && placeholders.config[key]) {
-      return placeholders.config[key];
-    }
-  } catch (error) { /* empty */ }
-  return defaultText;
+async function getPlaceHolder(root, key) {
+  const placeholders = await fetchPlaceholders();
+  if (placeholders[root] && placeholders[root][key]) {
+    return placeholders[root][key];
+  }
+  throw new Error('undefined');
 }
 
-export async function getI18nOrDefault(key, defaultText) {
+export async function getConfigValue(key, defaultValue) {
+  try {
+    return await getPlaceHolder('config', key);
+  } catch (error) {
+    return defaultValue;
+  }
+}
+
+export async function translate(key, defaultText) {
   const i18n = `i18n-${window.location.pathname.split('/')[1]}`;
   const i18nDefault = 'i18n-en';
   try {
-    const placeholders = await fetchPlaceholders();
-    if (placeholders[i18n] && placeholders[i18n][key]) {
-      return placeholders[i18n][key];
-    }
-    if (placeholders[i18nDefault] && placeholders[i18nDefault][key]) {
-      return placeholders[i18nDefault][key];
-    }
+    return await getPlaceHolder(i18n, key, defaultText);
   } catch (error) { /* empty */ }
+  if (i18n !== i18nDefault) {
+    try {
+      return await getPlaceHolder(i18nDefault, key);
+    } catch (error) { /* empty */ }
+  }
   return defaultText;
 }
 
