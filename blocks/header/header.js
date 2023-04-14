@@ -306,7 +306,11 @@ export default async function decorate(block) {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
 
-        navSection.querySelector('ul').prepend(createMobileMenuControlsBlock());
+        const navList = navSection.querySelector('ul');
+        if (navList) navList.prepend(createMobileMenuControlsBlock());
+        else {
+          navSection.classList.add('nav-button');
+        }
 
         navSection.addEventListener('click', () => {
           if (!isDesktop.matches) {

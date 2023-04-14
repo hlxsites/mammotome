@@ -137,6 +137,10 @@ header nav .nav-sections ul {
   padding-left: 0;
 }
 
+header nav .nav-sections picture {
+  margin-right: 6px;
+}
+
 header nav .nav-sections ul > li > ul {
   margin-top: 0;
 }
@@ -449,7 +453,8 @@ header nav .nav-tools .icon-search {
     position: inherit;
   }
 
-  header nav .nav-sections .nav-drop {
+  header nav .nav-sections .nav-drop,
+  header nav .nav-sections .nav-button{
     display: flex;
     align-items: center;
     position: relative;
@@ -495,6 +500,7 @@ header nav .nav-tools .icon-search {
     gap: unset;
     transition: top 300ms ease;
     animation: 300ms fade-in;
+    min-width: 200px;
   }
 
   header nav .nav-sections > ul > li > ul > li {
