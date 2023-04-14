@@ -283,7 +283,7 @@ header nav .nav-tools .icon-search {
     overflow-y: auto;
     top: 0;
     z-index: 100;
-    transition: right 300ms var(--mt-nav-transition-timing);
+    /*transition: right 300ms var(--mt-nav-transition-timing);*/
   }
 
   header nav[aria-expanded="true"] .nav-sections {
@@ -302,7 +302,6 @@ header nav .nav-tools .icon-search {
   }
 
   header nav[aria-expanded="true"] .nav-mobile-cover {
-    width: calc(100vw - var(--mt-nav-width));
     animation: 300ms fade-in;
     animation-timing-function: var(--mt-nav-transition-timing);
     transition: width 300ms var(--mt-nav-transition-timing);
