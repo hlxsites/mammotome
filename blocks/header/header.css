@@ -133,6 +133,10 @@ header nav .nav-sections ul {
   padding-left: 0;
 }
 
+header nav .nav-sections picture {
+  margin-right: 6px;
+}
+
 header nav .nav-sections ul > li > ul {
   margin-top: 0;
 }
@@ -403,7 +407,8 @@ header nav .nav-tools .icon-search {
     position: inherit;
   }
 
-  header nav .nav-sections .nav-drop {
+  header nav .nav-sections .nav-drop,
+  header nav .nav-sections .nav-button{
     display: flex;
     align-items: center;
     position: relative;
@@ -455,6 +460,7 @@ header nav .nav-tools .icon-search {
     border-color: var(--mt-header-menu-border-color);
     color: var(--mt-global-color-white);
     gap: unset;
+    min-width: 200px;
   }
 
   header nav .nav-drop:hover > ul:has(li):has(ul) {
