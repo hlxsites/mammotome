@@ -73,24 +73,48 @@ export function sampleRUM(checkpoint, data = {}) {
   }
 }
 
+const HEAD_RESOURCE_TYPES = {
+  LINK: {
+    tagName: 'link',
+    attributes: [['rel', 'stylesheet']],
+    sourceAttribute: 'href',
+  },
+  SCRIPT: {
+    tagName: 'script',
+    attributes: [],
+    sourceAttribute: 'src',
+  },
+};
+
+const loadHeadResource = (href, type, callback) => {
+  if (!document.querySelector(`head > ${type.tagName}[${type.sourceAttribute}="${href}"]`)) {
+    const element = document.createElement(type.tagName);
+    element.setAttribute(type.sourceAttribute, href);
+    type.attributes.forEach((attribute) => {
+      element.setAttribute(attribute[0], attribute[1]);
+    });
+
+    if (typeof callback === 'function') {
+      element.onload = (e) => callback(e.type);
+      element.onerror = (e) => callback(e.type);
+    }
+    document.head.appendChild(element);
+  } else if (typeof callback === 'function') {
+    callback('noop');
+  }
+};
+
+export function loadScript(href, callback) {
+  loadHeadResource(href, HEAD_RESOURCE_TYPES.SCRIPT, callback);
+}
+
 /**
  * Loads a CSS file.
  * @param {string} href The path to the CSS file
  * @param {function} callback A function called after CSS is loaded
  */
 export function loadCSS(href, callback) {
-  if (!document.querySelector(`head > link[href="${href}"]`)) {
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', href);
-    if (typeof callback === 'function') {
-      link.onload = (e) => callback(e.type);
-      link.onerror = (e) => callback(e.type);
-    }
-    document.head.appendChild(link);
-  } else if (typeof callback === 'function') {
-    callback('noop');
-  }
+  loadHeadResource(href, HEAD_RESOURCE_TYPES.LINK, callback);
 }
 
 /**
