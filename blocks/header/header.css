@@ -129,7 +129,6 @@ header nav .nav-sections {
 header nav[aria-expanded="true"] .nav-sections {
   display: block;
   visibility: visible;
-  align-self: start;
 }
 
 header nav .nav-sections ul {
@@ -139,6 +138,20 @@ header nav .nav-sections ul {
 
 header nav .nav-sections picture {
   margin-right: 6px;
+}
+
+header nav .nav-sections .nav-button {
+  border: 1px solid #833799;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+header nav .nav-sections .nav-button a {
+  font-size: var(--mt-button-font-size);
+  font-weight: var(--mt-font-weight-bold);
+  padding: 7px;
 }
 
 header nav .nav-sections ul > li > ul {
@@ -283,7 +296,6 @@ header nav .nav-tools .icon-search {
     overflow-y: auto;
     top: 0;
     z-index: 100;
-    /*transition: right 300ms var(--mt-nav-transition-timing);*/
   }
 
   header nav[aria-expanded="true"] .nav-sections {
@@ -458,7 +470,6 @@ header nav .nav-tools .icon-search {
     align-items: center;
     position: relative;
     cursor: pointer;
-    height: var(--mt-nav-content-height);
   }
 
   header nav .nav-sections .nav-drop[aria-expanded="true"]::after {
