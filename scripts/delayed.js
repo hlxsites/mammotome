@@ -5,7 +5,9 @@ import { sampleRUM, fetchPlaceholders, getPlaceholderOrDefault } from './lib-fra
 sampleRUM('cwv');
 
 // add more delayed functionality here
-fetchPlaceholders(`/${window.location.pathname.split('/')[1]}`);
+try {
+  await fetchPlaceholders();
+} catch (error) { /* empty */ }
 
 // eslint-disable-next-line import/prefer-default-export
 export async function getCookieConsentID(hostname) {
