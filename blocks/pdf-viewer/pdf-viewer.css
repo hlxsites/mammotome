@@ -8,4 +8,5 @@
     max-height: 800px;
     max-width: 1200px;
     border: 1px solid var(--mt-global-color-gallery);
+    margin: 0 auto;
 }
