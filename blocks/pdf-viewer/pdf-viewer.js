@@ -6,7 +6,7 @@ import { fetchPlaceholders, loadScript } from '../../scripts/lib-franklin.js';
 const ADOBE_DC_VIEW_SDK_SRC = 'https://documentservices.adobe.com/view-sdk/viewer.js';
 const ADOBE_DC_VIEW_SDK_READY_EVENT = 'adobe_dc_view_sdk.ready';
 
-const placeholders = await fetchPlaceholders();
+const config = (await fetchPlaceholders()).config || {};
 
 let sdkLoaded = false;
 
@@ -29,19 +29,19 @@ const getApiKey = () => {
   const { host } = window.location;
 
   if (host.startsWith('localhost')) {
-    return placeholders.pdfapikeylocalhost;
+    return config.pdfApiKeyLocalhost;
   }
 
   if (host.endsWith('.page')) {
-    return placeholders.pdfapikeypage;
+    return config.pdfApiKeyPage;
   }
 
   if (host.endsWith('.live')) {
-    return placeholders.pdfapikeylive;
+    return config.pdfApiKeyLive;
   }
 
   if (host.endsWith('mammotome.com')) {
-    return placeholders.pdfapikey;
+    return config.pdfApiKeyProduction;
   }
 
   return undefined;
