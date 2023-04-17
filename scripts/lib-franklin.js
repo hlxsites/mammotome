@@ -229,7 +229,7 @@ export async function fetchPlaceholders(prefix = 'default') {
   const loaded = window.placeholders[`${prefix}-loaded`];
   if (!loaded) {
     window.placeholders[`${prefix}-loaded`] = new Promise((resolve, reject) => {
-      fetch(`${prefix === 'default' ? '' : prefix}/i18n.json`)
+      fetch(`${prefix === 'default' ? '' : prefix}/placeholders.json`)
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -237,11 +237,22 @@ export async function fetchPlaceholders(prefix = 'default') {
           throw new Error(`${resp.status}: ${resp.statusText}`);
         }).then((json) => {
           const placeholders = {};
-          json.data
-            .filter((placeholder) => placeholder.Key && placeholder.Text)
-            .forEach((placeholder) => {
-              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+          if (json[':type'] === 'multi-sheet') {
+            json[':names'].forEach((name) => {
+              placeholders[name] = {};
+              json[name].data
+                .filter((placeholder) => placeholder.Key && placeholder.Text)
+                .forEach((placeholder) => {
+                  placeholders[name][toCamelCase(placeholder.Key)] = placeholder.Text;
+                });
             });
+          } else {
+            json.data
+              .filter((placeholder) => placeholder.Key && placeholder.Text)
+              .forEach((placeholder) => {
+                placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+              });
+          }
           window.placeholders[prefix] = placeholders;
           resolve();
         }).catch((error) => {
@@ -255,13 +266,33 @@ export async function fetchPlaceholders(prefix = 'default') {
   return window.placeholders[prefix];
 }
 
-export async function getPlaceholderOrDefault(key, defaultText) {
+async function getPlaceHolder(root, key) {
+  const placeholders = await fetchPlaceholders();
+  if (placeholders[root] && placeholders[root][key]) {
+    return placeholders[root][key];
+  }
+  throw new Error('undefined');
+}
+
+export async function getConfigValue(key, defaultValue) {
   try {
-    const placeholders = await fetchPlaceholders(`/${window.location.pathname.split('/')[1]}`);
-    if (placeholders[key]) {
-      return placeholders[key];
-    }
+    return await getPlaceHolder('config', key);
+  } catch (error) {
+    return defaultValue;
+  }
+}
+
+export async function translate(key, defaultText) {
+  const i18n = `i18n-${window.location.pathname.split('/')[1]}`;
+  const i18nDefault = 'i18n-en';
+  try {
+    return await getPlaceHolder(i18n, key, defaultText);
   } catch (error) { /* empty */ }
+  if (i18n !== i18nDefault) {
+    try {
+      return await getPlaceHolder(i18nDefault, key);
+    } catch (error) { /* empty */ }
+  }
   return defaultText;
 }
 
