@@ -5,11 +5,33 @@ export default function decorate(block) {
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
     const li = document.createElement('li');
-    li.innerHTML = row.innerHTML;
-    [...li.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
-      else div.className = 'cards-card-body';
-    });
+    let cardLink;
+    
+    const cardSections = [...row.children];  
+    for (const i in cardSections) {
+      const div = cardSections[i];  
+      if (div.children.length === 1 && div.querySelector('picture')) {
+        div.className = 'cards-card-image';
+      } else {
+        div.className = 'cards-card-body';
+        const action = div.querySelector('p > a');
+        if (action) {
+          const actionBlock = action.parentElement;
+          actionBlock.className="";
+          actionBlock.classList.add("callout");
+          actionBlock.innerHTML = action.innerHTML;
+
+          cardLink = document.createElement('a');
+          cardLink.href = action.href;
+          cardLink.innerHTML = row.innerHTML;
+        }
+      }  
+    }  
+    if (cardLink) {
+      li.appendChild(cardLink);
+    } else {
+      li.innerHTML = row.innerHTML;
+    }
     ul.append(li);
   });
   ul
