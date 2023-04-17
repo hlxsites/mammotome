@@ -78,6 +78,10 @@
   align-items: center;
 }
 
+.cards.block > ul > li:hover {
+  box-shadow: 2px 4px 12px 0px rgba(28,28,73,0.25);
+}
+
 .section.cards-container {
   padding: 0% 5% 10% 5%;
 }
