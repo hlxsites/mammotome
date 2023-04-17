@@ -5,6 +5,7 @@ import { fetchPlaceholders, loadScript } from '../../scripts/lib-franklin.js';
  */
 const ADOBE_DC_VIEW_SDK_SRC = 'https://documentservices.adobe.com/view-sdk/viewer.js';
 const ADOBE_DC_VIEW_SDK_READY_EVENT = 'adobe_dc_view_sdk.ready';
+const FRANKLIN_DELAYED_BEGIN = 'franklin.loadLazy_completed';
 
 const siteConfig = (await fetchPlaceholders()).config || {};
 
@@ -60,13 +61,6 @@ const createAdobeDCViewSDKReadyHandler = (config) => (event) => {
   );
 };
 
-const addEventListener = (config) => {
-  document.addEventListener(
-    ADOBE_DC_VIEW_SDK_READY_EVENT,
-    createAdobeDCViewSDKReadyHandler(config),
-  );
-};
-
 const onEmbedPDFScriptLoaded = () => {
   sdkLoaded = true;
 };
@@ -75,6 +69,17 @@ const loadAdobeDCViewSDK = () => {
   if (!sdkLoaded) {
     loadScript(ADOBE_DC_VIEW_SDK_SRC, onEmbedPDFScriptLoaded);
   }
+};
+
+const addEventListeners = (config) => {
+  document.addEventListener(
+    ADOBE_DC_VIEW_SDK_READY_EVENT,
+    createAdobeDCViewSDKReadyHandler(config),
+  );
+  document.addEventListener(
+    FRANKLIN_DELAYED_BEGIN,
+    loadAdobeDCViewSDK,
+  );
 };
 
 const setupDOM = (block, divId) => {
@@ -124,8 +129,7 @@ const embedPDF = (block, href) => {
   };
 
   setupDOM(block, divId);
-  addEventListener(config);
-  loadAdobeDCViewSDK();
+  addEventListeners(config);
 };
 
 export default async function decorate(block) {
