@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-cycle
 import { sampleRUM, fetchPlaceholders, getConfigValue } from './lib-franklin.js';
 
+document.dispatchEvent(new Event('franklin.delayed_begin'));
+
 // Core Web Vitals RUM collection
 sampleRUM('cwv');
 
@@ -44,3 +46,5 @@ await loadCookieConsent(document, window.location.hostname);
 // The OneTrust website says to define this function like this.
 // eslint-disable-next-line no-unused-vars
 function OptanonWrapper() { }
+
+document.dispatchEvent(new Event('franklin.delayed_completed'));
