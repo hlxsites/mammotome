@@ -28,7 +28,7 @@ const getApiKey = async () => {
   const { host } = window.location;
 
   if (host.startsWith('localhost')) {
-    return getConfigValue('pdfApiKeyLocalHost');
+    return getConfigValue('pdfApiKeyLocalhost');
   }
 
   if (host.endsWith('.page')) {
