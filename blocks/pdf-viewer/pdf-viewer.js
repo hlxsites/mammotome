@@ -6,8 +6,7 @@ import { fetchPlaceholders, loadScript } from '../../scripts/lib-franklin.js';
 const ADOBE_DC_VIEW_SDK_SRC = 'https://documentservices.adobe.com/view-sdk/viewer.js';
 const ADOBE_DC_VIEW_SDK_READY_EVENT = 'adobe_dc_view_sdk.ready';
 const FRANKLIN_DELAYED_COMPLETED_EVENT = 'franklin.delayed_completed';
-
-const siteConfig = (await fetchPlaceholders()).config || {};
+const FRANKLIN_LOAD_LAZY_COMPLETED_EVENT = 'franklin.loadLazy_completed';
 
 let sdkLoaded = false;
 
@@ -26,7 +25,8 @@ let sdkLoaded = false;
  *
  * @returns {undefined|string} The key or undefined if no matching domain was found.
  */
-const getApiKey = () => {
+const getApiKey = async () => {
+  const siteConfig = (await fetchPlaceholders()).config || {};
   const { host } = window.location;
 
   if (host.startsWith('localhost')) {
@@ -50,6 +50,11 @@ const getApiKey = () => {
 
 // eslint-disable-next-line no-unused-vars
 const createAdobeDCViewSDKReadyHandler = (config) => (event) => {
+  if (config.apiKey === null) {
+    // eslint-disable-next-line no-console
+    console.warn('no PDF viewer API key provided');
+  }
+
   // eslint-disable-next-line no-undef
   const adobeDCView = new AdobeDC.View({
     clientId: config.apiKey,
@@ -71,6 +76,10 @@ const loadAdobeDCViewSDK = () => {
   }
 };
 
+const loadSiteConfig = (config) => async () => {
+  config.apiKey = await getApiKey();
+};
+
 const addEventListeners = (config) => {
   document.addEventListener(
     ADOBE_DC_VIEW_SDK_READY_EVENT,
@@ -79,6 +88,10 @@ const addEventListeners = (config) => {
   document.addEventListener(
     FRANKLIN_DELAYED_COMPLETED_EVENT,
     loadAdobeDCViewSDK,
+  );
+  document.addEventListener(
+    FRANKLIN_LOAD_LAZY_COMPLETED_EVENT,
+    loadSiteConfig(config),
   );
 };
 
@@ -91,21 +104,15 @@ const setupDOM = (block, divId) => {
   block.appendChild(div);
 };
 
-const embedPDF = (block, href) => {
+const embedPDF = async (block, href) => {
   if (!href) {
     return;
   }
-
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    return;
-  }
-
   const divId = `pdf-viewer-${Math.random().toString(36).slice(2)}`;
   const fileName = href.slice(href.lastIndexOf('/') + 1);
 
   const config = {
-    apiKey,
+    apiKey: null,
     divId,
     viewer: {
       // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos/
@@ -139,5 +146,5 @@ export default async function decorate(block) {
     return;
   }
 
-  embedPDF(block, pdfSource.href);
+  await embedPDF(block, pdfSource.href);
 }
