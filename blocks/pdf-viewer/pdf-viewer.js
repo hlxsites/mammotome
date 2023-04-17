@@ -1,4 +1,4 @@
-import { fetchPlaceholders, loadScript } from '../../scripts/lib-franklin.js';
+import { getConfigValue, loadScript } from '../../scripts/lib-franklin.js';
 
 /**
  * https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/gettingstarted/
@@ -6,7 +6,6 @@ import { fetchPlaceholders, loadScript } from '../../scripts/lib-franklin.js';
 const ADOBE_DC_VIEW_SDK_SRC = 'https://documentservices.adobe.com/view-sdk/viewer.js';
 const ADOBE_DC_VIEW_SDK_READY_EVENT = 'adobe_dc_view_sdk.ready';
 const FRANKLIN_DELAYED_COMPLETED_EVENT = 'franklin.delayed_completed';
-const FRANKLIN_LOAD_LAZY_COMPLETED_EVENT = 'franklin.loadLazy_completed';
 
 let sdkLoaded = false;
 
@@ -26,38 +25,38 @@ let sdkLoaded = false;
  * @returns {undefined|string} The key or undefined if no matching domain was found.
  */
 const getApiKey = async () => {
-  const siteConfig = (await fetchPlaceholders()).config || {};
   const { host } = window.location;
 
   if (host.startsWith('localhost')) {
-    return siteConfig.pdfApiKeyLocalhost;
+    return getConfigValue('pdfApiKeyLocalHost');
   }
 
   if (host.endsWith('.page')) {
-    return siteConfig.pdfApiKeyPage;
+    return getConfigValue('pdfApiKeyPage');
   }
 
   if (host.endsWith('.live')) {
-    return siteConfig.pdfApiKeyLive;
+    return getConfigValue('pdfApiKeyLive;');
   }
 
   if (host.endsWith('mammotome.com')) {
-    return siteConfig.pdfApiKeyProduction;
+    return getConfigValue('pdfApiKeyProduction');
   }
 
   return undefined;
 };
 
 // eslint-disable-next-line no-unused-vars
-const createAdobeDCViewSDKReadyHandler = (config) => (event) => {
-  if (config.apiKey === null) {
+const createAdobeDCViewSDKReadyHandler = (config) => async (event) => {
+  const apiKey = await getApiKey();
+  if (apiKey === null) {
     // eslint-disable-next-line no-console
     console.warn('no PDF viewer API key provided');
   }
 
   // eslint-disable-next-line no-undef
   const adobeDCView = new AdobeDC.View({
-    clientId: config.apiKey,
+    clientId: apiKey,
     divId: config.divId,
   });
   adobeDCView.previewFile(
@@ -70,14 +69,10 @@ const onEmbedPDFScriptLoaded = () => {
   sdkLoaded = true;
 };
 
-const loadAdobeDCViewSDK = () => {
+const loadAdobeDCViewSDK = async () => {
   if (!sdkLoaded) {
     loadScript(ADOBE_DC_VIEW_SDK_SRC, onEmbedPDFScriptLoaded);
   }
-};
-
-const loadSiteConfig = (config) => async () => {
-  config.apiKey = await getApiKey();
 };
 
 const addEventListeners = (config) => {
@@ -88,10 +83,6 @@ const addEventListeners = (config) => {
   document.addEventListener(
     FRANKLIN_DELAYED_COMPLETED_EVENT,
     loadAdobeDCViewSDK,
-  );
-  document.addEventListener(
-    FRANKLIN_LOAD_LAZY_COMPLETED_EVENT,
-    loadSiteConfig(config),
   );
 };
 
@@ -108,7 +99,9 @@ const embedPDF = async (block, href) => {
   if (!href) {
     return;
   }
-  const divId = `pdf-viewer-${Math.random().toString(36).slice(2)}`;
+  const divId = `pdf-viewer-${Math.random()
+    .toString(36)
+    .slice(2)}`;
   const fileName = href.slice(href.lastIndexOf('/') + 1);
 
   const config = {
@@ -118,7 +111,10 @@ const embedPDF = async (block, href) => {
       // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos/
       preview: {
         content: { location: { url: href } },
-        metaData: { fileName, hasReadOnlyAccess: true },
+        metaData: {
+          fileName,
+          hasReadOnlyAccess: true,
+        },
       },
       // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_ui/
       options: {
