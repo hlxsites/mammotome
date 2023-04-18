@@ -1,30 +1,37 @@
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
+const isValidUrl = (urlString) => {
+  try {
+    return Boolean(new URL(urlString));
+  } catch (e) {
+    return false;
+  }
+};
+
 export default function decorate(block) {
   /* change to ul, li */
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
     const li = document.createElement('li');
     let cardLink;
-    
-    const cardSections = [...row.children];  
-    for (const i in cardSections) {
-      const div = cardSections[i];  
+
+    // const cardSections = [...row.children];
+    [...row.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) {
         div.className = 'cards-card-image';
       } else if (div.children.length === 0) {
         div.className = 'cards-card-body empty';
-      }else {
+      } else {
         div.className = 'cards-card-body';
         const action = div.querySelector('p > a');
         if (action) {
           const actionBlock = action.parentElement;
-          actionBlock.className="";
+          actionBlock.className = '';
           if (isValidUrl(action.text)) {
-            actionBlock.className = "callout hidden";
+            actionBlock.className = 'callout hidden';
             div.className = 'cards-card-body callout-hidden';
           } else {
-            actionBlock.className = "callout";
+            actionBlock.className = 'callout';
           }
           actionBlock.innerHTML = action.innerHTML;
 
@@ -32,8 +39,8 @@ export default function decorate(block) {
           cardLink.href = action.href;
           cardLink.innerHTML = row.innerHTML;
         }
-      }  
-    }  
+      }
+    });
     if (cardLink) {
       li.appendChild(cardLink);
     } else {
@@ -59,13 +66,4 @@ export default function decorate(block) {
     });
   block.textContent = '';
   block.append(ul);
-}
-
-const isValidUrl = urlString => {
-  try { 
-    return Boolean(new URL(urlString)); 
-  }
-  catch(e){ 
-    return false; 
-  }
 }
