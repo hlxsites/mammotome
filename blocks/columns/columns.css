@@ -3,6 +3,13 @@
   flex-direction: column;
 }
 
+.columns.simple h2 {
+  color: var(--mt-global-color-base-secondary);
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.3em;
+  text-transform: none;
+}
 .columns > div > .columns-txt-wrapper h2 {
   font-size: 1 rem;
   font-weight: 900;
@@ -18,46 +25,40 @@
 }
 
 .columns > div > .columns-txt-wrapper {
+  align-items: center;
   margin-bottom: 40px;
   padding: 10px;
 }
 
 
-.columns img {
+.columns .columns-img-wrapper img {
   width: 100%;
   max-width: 500px;
 }
 
-.columns > div > div {
-  order: 1;
+.columns.simple img {
+  width: 100%;
 }
 
-.columns > div > .columns-img-wrapper {
-  order: 0;
-}
-
-.columns > div > .columns-img-decoration {
+.columns > div > .columns-img-wrapper > .columns-img-decoration {
   background-image: url('../../styles/icons/Rectangle-BG.svg');
   background-repeat: no-repeat;
   background-size: contain;
   padding: 15% 0% 15% 0%;
 }
 
-.columns > div > .columns-img-wrapper > .columns-img-col img {
+.columns > div > .columns-img-wrapper > .columns-img-decoration > .columns-img img {
   border-radius: 5px 5px 5px 5px;
   box-shadow: 8px 22px 50px 0px rgba(28, 28, 73, 0.37);
 }
 
-.columns > div > div > .columns-img-col {
+.columns > div > .columns-img-wrapper > .columns-img-decoration > .columns-img {
   display: block;
   padding-left: 20px;
 }
 
-@media screen and (max-width: 767px) {
-  .columns > div > .columns-img-wrapper {
-    order: 10;
-  }
 
+@media screen and (max-width: 767px) {
   .columns > div > .columns-txt-wrapper h2 {
     font-size: 0.8rem;
   }
@@ -71,10 +72,14 @@
 }
 
 @media (min-width: 900px) {
-  .columns>div {
+  .columns > div {
     align-items: center;
     flex-direction: unset;
     gap: 32px;
+  }
+
+  .columns.simple > div {
+    align-items: normal;
   }
 
   .columns>div>div {
