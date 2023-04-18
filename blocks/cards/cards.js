@@ -20,7 +20,12 @@ export default function decorate(block) {
         if (action) {
           const actionBlock = action.parentElement;
           actionBlock.className="";
-          actionBlock.classList.add("callout");
+          if (isValidUrl(action.text)) {
+            actionBlock.className = "callout hidden";
+            div.className = 'cards-card-body callout-hidden';
+          } else {
+            actionBlock.className = "callout";
+          }
           actionBlock.innerHTML = action.innerHTML;
 
           cardLink = document.createElement('a');
@@ -54,4 +59,13 @@ export default function decorate(block) {
     });
   block.textContent = '';
   block.append(ul);
+}
+
+const isValidUrl = urlString => {
+  try { 
+    return Boolean(new URL(urlString)); 
+  }
+  catch(e){ 
+    return false; 
+  }
 }
