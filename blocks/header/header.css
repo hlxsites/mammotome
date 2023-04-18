@@ -546,7 +546,11 @@ header nav .nav-search-description {
     display: none;
   }
 
-  .icon-logo {
+  header nav .icon {
+    width: 136px;
+  }
+
+  header nav .icon-logo {
     width: 200px;
     height: 15px;
   }
