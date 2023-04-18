@@ -416,6 +416,18 @@ header nav .nav-tools .icon-search {
     height: var(--mt-nav-content-height);
   }
 
+  header nav .nav-sections .nav-button a {
+    border: 1px solid #833799;
+    padding: 7px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+  }
+
+  header nav .nav-sections .nav-button .btn-invert {
+    background-color: #833799;
+    color: white;
+  }
+
   header nav .nav-sections .nav-drop[aria-expanded="true"]::after {
     top: unset;
     bottom: .5em;
