@@ -161,4 +161,8 @@
     max-width: 1300px;
     flex-wrap: unset;
   }
+
+  .cards.three-columns > ul {
+    grid-template-columns: repeat(3,1fr);
+  }
 }
