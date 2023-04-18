@@ -133,6 +133,7 @@
   font-family: var(--mt-cards-font-family);
   line-height: 1.5em;
   color: #777;
+  margin-bottom: 25px;
 }
 
 .cards-card-body > p.callout {
