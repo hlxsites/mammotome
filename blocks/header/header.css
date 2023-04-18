@@ -417,14 +417,14 @@ header nav .nav-tools .icon-search {
   }
 
   header nav .nav-sections .nav-button a {
-    border: 1px solid #833799;
+    border: 1px solid var(--mt-global-color-base-primary);
     padding: 7px 10px;
     border-radius: 5px;
     margin-left: 10px;
   }
 
   header nav .nav-sections .nav-button .btn-invert {
-    background-color: #833799;
+    background-color: var(--mt-global-color-base-primary);
     color: white;
   }
 
