@@ -111,6 +111,10 @@
   padding: 0 30px 50px!important;
 }
 
+.cards-card-body.empty {
+  padding: 0 30px 0!important;
+}
+
 .cards-card-body > p {
   font-weight: var(--mt-font-weight-regular);
   font-size: var(--mt-cards-text-font-size);

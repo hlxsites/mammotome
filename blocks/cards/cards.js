@@ -12,7 +12,9 @@ export default function decorate(block) {
       const div = cardSections[i];  
       if (div.children.length === 1 && div.querySelector('picture')) {
         div.className = 'cards-card-image';
-      } else {
+      } else if (div.children.length === 0) {
+        div.className = 'cards-card-body empty';
+      }else {
         div.className = 'cards-card-body';
         const action = div.querySelector('p > a');
         if (action) {
