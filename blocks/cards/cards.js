@@ -15,7 +15,6 @@ export default function decorate(block) {
     const li = document.createElement('li');
     let cardLink;
 
-    // const cardSections = [...row.children];
     [...row.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) {
         div.className = 'cards-card-image';
