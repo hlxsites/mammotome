@@ -40,6 +40,10 @@
   align-items: center;
 }
 
+.cards.wideimage.block > ul > li {
+  padding: 0!important;
+}  
+
 .cards.block > ul > li:hover {
   box-shadow: 2px 4px 12px 0 var(--mt-cards-box-shadow-color);
 }
@@ -69,8 +73,17 @@
   display: inline-block;
 }
 
+.cards.wideimage .cards-card-image {
+  width: 100%;
+  max-width: 100%!important;
+}
+
 .cards-card-image > picture {
   display: block;
+}
+
+.cards.wideimage img {
+  width: 100%;
 }
 
 .cards-card-body {
