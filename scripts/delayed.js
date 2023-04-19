@@ -1,11 +1,15 @@
 // eslint-disable-next-line import/no-cycle
-import { sampleRUM, fetchPlaceholders, getPlaceholderOrDefault } from './lib-franklin.js';
+import { sampleRUM, fetchPlaceholders, getConfigValue } from './lib-franklin.js';
+
+document.dispatchEvent(new Event('franklin.delayed_begin'));
 
 // Core Web Vitals RUM collection
 sampleRUM('cwv');
 
 // add more delayed functionality here
-fetchPlaceholders(`/${window.location.pathname.split('/')[1]}`);
+try {
+  await fetchPlaceholders();
+} catch (error) { /* empty */ }
 
 // eslint-disable-next-line import/prefer-default-export
 export async function getCookieConsentID(hostname) {
@@ -13,9 +17,9 @@ export async function getCookieConsentID(hostname) {
     return undefined;
   }
   // The domains we want to use the id for - otherwise, we will append '-test'
-  const domains = [].concat(await getPlaceholderOrDefault('otDomain', '.mammotome.com'));
+  const domains = [].concat(await getConfigValue('otDomain', '.mammotome.com'));
   // The cookie ID
-  let csID = await getPlaceholderOrDefault('otID', '65cf64d7-d2d8-4632-92ad-35ad2676f463');
+  let csID = await getConfigValue('otID', '65cf64d7-d2d8-4632-92ad-35ad2676f463');
   if (!domains.some((domain) => hostname.endsWith(domain))) {
     // The OneTrust documentation specifies to suffix the ID with -test when running in
     // a dev or stage testing domain
@@ -42,3 +46,5 @@ await loadCookieConsent(document, window.location.hostname);
 // The OneTrust website says to define this function like this.
 // eslint-disable-next-line no-unused-vars
 function OptanonWrapper() { }
+
+document.dispatchEvent(new Event('franklin.delayed_completed'));
