@@ -76,7 +76,7 @@
   margin-bottom: 20px;
   max-width: 90%!important;
   height: auto!important;
-  display: block;
+  display: inline-flex;
 }
 
 .cards.wideimage .cards-card-image {
