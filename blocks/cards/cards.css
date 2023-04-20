@@ -77,6 +77,9 @@
   height: auto!important;
   display: flex;
   justify-content: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
 
 .cards-card-image > picture {
