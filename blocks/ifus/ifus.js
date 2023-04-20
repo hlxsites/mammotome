@@ -1,33 +1,31 @@
 import { translate } from '../../scripts/lib-franklin.js';
 
-function buildTags(tags) {
-  return tags.map((tag) => {
-    const element = document.createElement(tag.name);
-    if (tag.text) {
-      element.textContent = tag.text;
+function createDomStructure(structure, parentElement = document.body) {
+  structure.forEach((element) => {
+    const domElement = document.createElement(element.type);
+    if (element.attributes) {
+      Object.keys(element.attributes).forEach((attr) => {
+        domElement.setAttribute(attr, element.attributes[attr]);
+      });
     }
-    if (tag.next) {
-      element.append(...buildTags(tag.next));
+
+    if (element.textContent) {
+      domElement.textContent = element.textContent;
     }
-    if (tag.first) {
-      element.prepend(...buildTags(tag.first));
+
+    if (element.children) {
+      createDomStructure(element.children, domElement);
     }
-    if (tag.href) {
-      element.href = tag.href;
+
+    if (element.classes) {
+      element.classes.forEach((c) => domElement.classList.add(c));
     }
-    if (tag.target) {
-      element.target = tag.target;
+
+    if (element.position === 'prepend') {
+      parentElement.prepend(domElement);
+    } else {
+      parentElement.appendChild(domElement);
     }
-    if (tag.class) {
-      element.classList.add(tag.class);
-    }
-    if (tag.classes) {
-      tag.classes.forEach((c) => element.classList.add(c));
-    }
-    if (tag.id) {
-      element.id = tag.id;
-    }
-    return element;
   });
 }
 
@@ -43,17 +41,14 @@ function populateSearch(
   clear,
 ) {
   idProducer().forEach((value) => {
-    const option = document.createElement('option');
-    option.text = value;
-    idSelector.append(option);
+    createDomStructure([{ type: 'option', textContent: value }], idSelector);
   });
   idSelector.disabled = false;
 
   countryProducer().forEach((country) => {
-    const option = document.createElement('option');
-    option.text = country['Country Name'];
-    option.value = country.ISO_3166_1_alpha_2_code;
-    countrySelector.append(option);
+    createDomStructure([
+      { type: 'option', attributes: { value: country.ISO_3166_1_alpha_2_code }, textContent: country['Country Name'] },
+    ], countrySelector);
   });
   countrySelector.disabled = false;
 
@@ -63,9 +58,9 @@ function populateSearch(
     const assets = idSelector.value && countrySelector.value
       ? assetFilter(idSelector, countrySelector) : [];
     result.innerHTML = '';
-    result.append(...buildTags([{ name: 'h4', text: await translate('ifuSearchTitle', 'Search results') }]));
+    createDomStructure([{ type: 'h4', textContent: await translate('ifuSearchTitle', 'Search results') }], result);
     if (assets.length === 0) {
-      result.append(...buildTags([{ name: 'div', next: [{ name: 'strong', text: await translate('ifuSearchNoResult', 'No result') }] }]));
+      createDomStructure([{ type: 'div', children: [{ type: 'strong', textContent: await translate('ifuSearchNoResult', 'No result') }] }], result);
     } else {
       const map = new Map();
       assets.forEach((asset) => {
@@ -77,50 +72,48 @@ function populateSearch(
         }
       });
       await Promise.all(Array.from(map).map(async ([key, value]) => {
-        const entry = buildTags(
-          [
-            {
-              name: 'div',
-              next: [{ name: 'h5', text: key },
-                {
-                  name: 'div',
-                  next: [
-                    {
-                      name: 'div',
-                      next:
-                        [
-                          {
-                            name: 'div',
-                            text: productCodes(idSelector),
-                            first:
-                              [
-                                { name: 'h6', text: await translate('ifuSearchProductCodes', 'Product Code(s)') },
-                              ],
-                          },
-                        ],
-                    },
-                    {
-                      name: 'div',
-                      text: countrySelector.value,
-                      first:
-                        [
-                          { name: 'h6', text: await translate('ifuSearchCountrySelected', 'Country Selected') },
-                        ],
-                    },
-                    {
-                      name: 'div',
-                      next: value.map(
-                        (link) => ({
-                          name: 'a', href: link, target: 'blank', next: [{ name: 'button', text: link.substring(link.lastIndexOf('/') + 1) }],
-                        }),
-                      ),
-                    },
-                  ],
-                }],
-            },
-          ],
-        );
-        result.append(...entry);
+        createDomStructure([
+          {
+            type: 'div',
+            children: [
+              { type: 'h5', textContent: key },
+              {
+                type: 'div',
+                children: [
+                  {
+                    type: 'div',
+                    children:
+                      [
+                        {
+                          type: 'div',
+                          textContent: productCodes(idSelector),
+                          children:
+                            [
+                              { type: 'h6', position: 'prepend', textContent: await translate('ifuSearchProductCodes', 'Product Code(s)') },
+                            ],
+                        },
+                      ],
+                  },
+                  {
+                    type: 'div',
+                    textContent: countrySelector.value,
+                    children:
+                      [
+                        { type: 'h6', position: 'prepend', textContent: await translate('ifuSearchCountrySelected', 'Country Selected') },
+                      ],
+                  },
+                  {
+                    type: 'div',
+                    children: value.map(
+                      (link) => ({
+                        type: 'a', attributes: { href: link, target: 'blank' }, children: [{ type: 'button', textContent: link.substring(link.lastIndexOf('/') + 1) }],
+                      }),
+                    ),
+                  },
+                ],
+              }],
+          },
+        ], result);
       }));
     }
     result.classList.remove('no-result');
@@ -141,6 +134,7 @@ async function populate(block) {
     const productCountry = block.querySelector('#product-country');
     const productSearch = block.querySelector('#product-code-search');
     const result = block.querySelector('.ifu-result');
+
     populateSearch(
       eIFUCode,
       eIFUCountry,
@@ -199,150 +193,56 @@ async function populate(block) {
 }
 
 export default async function decorate(block) {
-  block.append(...buildTags([
+  createDomStructure([
     {
-      name: 'div',
+      type: 'div',
       classes: ['ifu-result', 'no-result'],
-      next: [{ name: 'h4', text: await translate('ifuSearchTitle', 'Search results') }],
+      children: [{ type: 'h4', textContent: await translate('ifuSearchTitle', 'Search results') }],
     },
     {
-      name: 'div',
-      class: 'ifu',
-      next: [
+      type: 'div',
+      classes: ['ifu'],
+      children: await Promise.all([['eIFU', 'eIFU'], ['udi', 'UDI'], ['product', 'Product Code']].map(async (entry) => (
         {
-          name: 'div',
-          class: 'ifu-selection',
-          next: [
+          type: 'div',
+          classes: ['ifu-selection'],
+          children: [
             {
-              name: 'h5',
-              class: 'ifu-title',
-              text: await translate('ifuSearchByIFU', 'Search by eIFU'),
+              type: 'h5',
+              classes: ['ifu-title'],
+              textContent: await translate(`ifuSearchBy${entry[0]}`, `Search by ${entry[1]}`),
             },
             {
-              name: 'select',
-              id: 'eIFU-code',
-              next: [
+              type: 'select',
+              attributes: { id: `${entry[0]}-code`, name: `Select ${entry[1]}`, disabled: true },
+              children: [
                 {
-                  name: 'option',
-                  text: await translate('ifuSelectIFU', 'Select eIFU'),
+                  type: 'option',
+                  attributes: { hidden: true, disabled: true, selected: true },
+                  textContent: await translate(`ifuSelect${entry[0]}`, `Select ${entry[1]}`),
                 },
               ],
             },
             {
-              name: 'select',
-              id: 'eIFU-country',
-              next: [
+              type: 'select',
+              attributes: { id: `${entry[0]}-country`, name: 'Select Country', disabled: true },
+              children: [
                 {
-                  name: 'option',
-                  text: await translate('ifuSelectCountry', 'Select Country'),
+                  type: 'option',
+                  attributes: { hidden: true, disabled: true, selected: true },
+                  textContent: await translate('ifuSelectCountry', 'Select Country'),
                 },
               ],
             },
             {
-              name: 'button',
-              id: 'eIFU-code-search',
-              text: await translate('ifuSearch', 'Search'),
+              type: 'button',
+              attributes: { id: `${entry[0]}-code-search`, disabled: true },
+              textContent: await translate('ifuSearch', 'Search'),
             },
           ],
-        },
-        {
-          name: 'div',
-          class: 'ifu-selection',
-          next: [
-            {
-              name: 'h5',
-              class: 'ifu-title',
-              text: await translate('ifuSearchByUDI', 'Search by UDI'),
-            },
-            {
-              name: 'select',
-              id: 'udi-code',
-              next: [
-                {
-                  name: 'option',
-                  text: await translate('ifuSelectUDI', 'Select UDI'),
-                },
-              ],
-            },
-            {
-              name: 'select',
-              id: 'udi-country',
-              next: [
-                {
-                  name: 'option',
-                  text: await translate('ifuSelectCountry', 'Select Country'),
-                },
-              ],
-            },
-            {
-              name: 'button',
-              id: 'udi-code-search',
-              text: await translate('ifuSearch', 'Search'),
-            },
-          ],
-        },
-        {
-          name: 'div',
-          class: 'ifu-selection',
-          next: [
-            {
-              name: 'h5',
-              class: 'ifu-title',
-              text: await translate('ifuSearchByProductCode', 'Search by Product Code'),
-            },
-            {
-              name: 'select',
-              id: 'product-code',
-              next: [
-                {
-                  name: 'option',
-                  text: await translate('ifuSelectProductCode', 'Select Product Code'),
-                },
-              ],
-            },
-            {
-              name: 'select',
-              id: 'product-country',
-              next: [
-                {
-                  name: 'option',
-                  text: await translate('ifuSelectCountry', 'Select Country'),
-                },
-              ],
-            },
-            {
-              name: 'button',
-              id: 'product-code-search',
-              text: await translate('ifuSearch', 'Search'),
-            },
-          ],
-        },
-      ],
+        }))),
     },
-  ]));
-
-  function mix(name, title) {
-    let element = block.querySelector(`#${name}-code`);
-    element.name = `Select ${title}`;
-    element.disabled = true;
-    element.firstChild.hidden = true;
-    element.firstChild.disabled = true;
-    element.firstChild.selected = true;
-
-    element = block.querySelector(`#${name}-country`);
-    element.name = 'Select Country';
-    element.disabled = true;
-    element.firstChild.hidden = true;
-    element.firstChild.disabled = true;
-    element.firstChild.selected = true;
-
-    element = block.querySelector(`#${name}-code-search`);
-    element.disabled = true;
-  }
-
-  mix('eIFU', 'eIFU');
-  mix('udi', 'UDI');
-  mix('product', 'Product Code');
+  ], block);
 
   populate(block);
 }
