@@ -503,7 +503,6 @@ header nav .nav-search-description {
     padding-left: revert;
   }
 
-
   header nav .nav-sections > ul > li > ul {
     display: block;
     visibility: hidden;
@@ -524,9 +523,6 @@ header nav .nav-search-description {
     padding-left: 0;
   }
 
-
-
-
   header nav .nav-drop > ul:has(li):has(ul) {
     left: -15em;
   }
@@ -535,7 +531,6 @@ header nav .nav-search-description {
     display: flex !important;
     color: var(--mt-global-color-white);
   }
-
 
   header nav .nav-sections > ul > li[aria-expanded="false"] > ul,
   header nav .nav-sections > ul > li:not([aria-expanded]) > ul {
