@@ -324,12 +324,6 @@ main img {
   width: 24px;
 }
 
-@media (min-width: 1025px) {
-  .icon {
-    width: 136px;
-  }
-}
-
 .icon svg {
   height: 100%;
   width: 100%;

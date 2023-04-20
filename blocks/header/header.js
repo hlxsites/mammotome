@@ -341,13 +341,19 @@ export default async function decorate(block) {
     hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
         <span class="nav-hamburger-icon"></span>
       </button>`;
-    hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
+    hamburger.addEventListener('click', () => {
+      toggleMenu(nav, navSections);
+      navSections.style.transition = 'right 300ms var(--mt-nav-transition-timing)';
+    });
     nav.insertBefore(hamburger, nav.querySelector('.nav-tools'));
 
     nav.setAttribute('aria-expanded', 'false');
     // prevent mobile nav behavior on window resize
     toggleMenu(nav, navSections, isDesktop.matches);
-    isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+    isDesktop.addEventListener('change', () => {
+      toggleMenu(nav, navSections, isDesktop.matches);
+      navSections.style.transition = '';
+    });
 
     const mobileCover = document.createElement('div');
     mobileCover.classList.add('nav-mobile-cover');
