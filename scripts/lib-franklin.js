@@ -73,24 +73,48 @@ export function sampleRUM(checkpoint, data = {}) {
   }
 }
 
+const HEAD_RESOURCE_TYPES = {
+  LINK: {
+    tagName: 'link',
+    attributes: [['rel', 'stylesheet']],
+    sourceAttribute: 'href',
+  },
+  SCRIPT: {
+    tagName: 'script',
+    attributes: [],
+    sourceAttribute: 'src',
+  },
+};
+
+const loadHeadResource = (href, type, callback) => {
+  if (!document.querySelector(`head > ${type.tagName}[${type.sourceAttribute}="${href}"]`)) {
+    const element = document.createElement(type.tagName);
+    element.setAttribute(type.sourceAttribute, href);
+    type.attributes.forEach((attribute) => {
+      element.setAttribute(attribute[0], attribute[1]);
+    });
+
+    if (typeof callback === 'function') {
+      element.onload = (e) => callback(e.type);
+      element.onerror = (e) => callback(e.type);
+    }
+    document.head.appendChild(element);
+  } else if (typeof callback === 'function') {
+    callback('noop');
+  }
+};
+
+export function loadScript(href, callback) {
+  loadHeadResource(href, HEAD_RESOURCE_TYPES.SCRIPT, callback);
+}
+
 /**
  * Loads a CSS file.
  * @param {string} href The path to the CSS file
  * @param {function} callback A function called after CSS is loaded
  */
 export function loadCSS(href, callback) {
-  if (!document.querySelector(`head > link[href="${href}"]`)) {
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', href);
-    if (typeof callback === 'function') {
-      link.onload = (e) => callback(e.type);
-      link.onerror = (e) => callback(e.type);
-    }
-    document.head.appendChild(link);
-  } else if (typeof callback === 'function') {
-    callback('noop');
-  }
+  loadHeadResource(href, HEAD_RESOURCE_TYPES.LINK, callback);
 }
 
 /**
@@ -205,7 +229,7 @@ export async function fetchPlaceholders(prefix = 'default') {
   const loaded = window.placeholders[`${prefix}-loaded`];
   if (!loaded) {
     window.placeholders[`${prefix}-loaded`] = new Promise((resolve, reject) => {
-      fetch(`${prefix === 'default' ? '' : prefix}/i18n.json`)
+      fetch(`${prefix === 'default' ? '' : prefix}/placeholders.json`)
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -213,11 +237,22 @@ export async function fetchPlaceholders(prefix = 'default') {
           throw new Error(`${resp.status}: ${resp.statusText}`);
         }).then((json) => {
           const placeholders = {};
-          json.data
-            .filter((placeholder) => placeholder.Key && placeholder.Text)
-            .forEach((placeholder) => {
-              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+          if (json[':type'] === 'multi-sheet') {
+            json[':names'].forEach((name) => {
+              placeholders[name] = {};
+              json[name].data
+                .filter((placeholder) => placeholder.Key && placeholder.Text)
+                .forEach((placeholder) => {
+                  placeholders[name][toCamelCase(placeholder.Key)] = placeholder.Text;
+                });
             });
+          } else {
+            json.data
+              .filter((placeholder) => placeholder.Key && placeholder.Text)
+              .forEach((placeholder) => {
+                placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+              });
+          }
           window.placeholders[prefix] = placeholders;
           resolve();
         }).catch((error) => {
@@ -231,13 +266,33 @@ export async function fetchPlaceholders(prefix = 'default') {
   return window.placeholders[prefix];
 }
 
-export async function getPlaceholderOrDefault(key, defaultText) {
+async function getPlaceHolder(root, key) {
+  const placeholders = await fetchPlaceholders();
+  if (placeholders[root] && placeholders[root][key]) {
+    return placeholders[root][key];
+  }
+  throw new Error('undefined');
+}
+
+export async function getConfigValue(key, defaultValue) {
   try {
-    const placeholders = await fetchPlaceholders(`/${window.location.pathname.split('/')[1]}`);
-    if (placeholders[key]) {
-      return placeholders[key];
-    }
+    return await getPlaceHolder('config', key);
+  } catch (error) {
+    return defaultValue;
+  }
+}
+
+export async function translate(key, defaultText) {
+  const i18n = `i18n-${window.location.pathname.split('/')[1]}`;
+  const i18nDefault = 'i18n-en';
+  try {
+    return await getPlaceHolder(i18n, key, defaultText);
   } catch (error) { /* empty */ }
+  if (i18n !== i18nDefault) {
+    try {
+      return await getPlaceHolder(i18nDefault, key);
+    } catch (error) { /* empty */ }
+  }
   return defaultText;
 }
 
