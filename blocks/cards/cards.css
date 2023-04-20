@@ -74,18 +74,18 @@
 
 .cards-card-image {
   margin-bottom: 20px;
-  max-width: 90%!important;
   height: auto!important;
-  display: block;
-}
-
-.cards.wideimage .cards-card-image {
-  width: 100%;
-  max-width: 100%!important;
+  display: flex;
+  justify-content: center;
 }
 
 .cards-card-image > picture {
+  max-width: 90%!important;
   display: block;
+}
+
+.cards.wideimage .cards-card-image > picture{
+  max-width: 100%!important;
 }
 
 .cards.wideimage img {
