@@ -5,6 +5,7 @@
   /* font sizes */
   --mt-cards-title-font-size: 21px;
   --mt-cards-text-font-size: 14px;
+  --mt-cards-callout-text-font-size: var(--mt-body-font-size-s);
 
   /* font family */
   --mt-cards-font-family: (--mt-body-font-family);
@@ -131,7 +132,7 @@
 .cards-card-body > p.callout {
   text-transform: uppercase;
   color: var(--mt-cards-callout-text-color);
-  font-size: 12px;
+  font-size: var(--mt-cards-callout-text-font-size);
   font-weight: var(--mt-font-weight-boldest);
   line-height: 1.5;
   margin-bottom: 20px;
