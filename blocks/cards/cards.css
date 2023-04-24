@@ -15,6 +15,7 @@
   /* colors */
   --mt-cards-box-shadow-color: #1c1c4940;
   --mt-cards-callout-text-color: var(--mt-global-color-accent-primary);
+  --mt-cards-text-color: var(--mt-global-color-accent-senary)
 }
 
 .cards > ul {
@@ -113,7 +114,7 @@
   font-size: var(--mt-cards-text-font-size);
   font-family: var(--mt-cards-font-family);
   line-height: 1.5em;
-  color: #777;
+  color: var(--mt-cards-text-color);
   margin-bottom: 25px;
 }
 
