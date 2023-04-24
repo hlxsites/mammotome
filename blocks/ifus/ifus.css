@@ -32,7 +32,7 @@
 
 .ifu-result > div > div {
     padding: 0 1rem 2rem;
-    border-bottom: 1px solid #75787b;
+    border-bottom: 1px solid var(--mt-global-color-accent-quaternary);
     overflow-wrap: break-word;
     display: flex;
     flex-flow: row nowrap;
@@ -48,7 +48,7 @@
 .ifu > .ifu-selection > select {
     display: block;
     width: 100%;
-    border: 1px solid #666;
+    border: 1px solid var(--mt-global-color-dove-gray);
     border-radius: 3px;
     padding: .5rem 1rem;
     transition: all .3s;
@@ -60,8 +60,8 @@
 
 .ifu-result > div > div > div > a > button {
     padding: 15px 50px;
-    background-color: #487ed9;
-    color: #fff;
+    background-color: var(--mt-button-background-color-primary);
+    color: var(--mt-background-color-primary);
     margin-top: 2.5rem;
     display: block;
     white-space: nowrap;
@@ -70,7 +70,7 @@
 }
 
 .ifu > .ifu-selection > button {
-    background-color: #487ed9;
-    color: #fff;
+    background-color: var(--mt-button-background-color-primary);
+    color: var(--mt-background-color-primary);
     width: auto;
 }
