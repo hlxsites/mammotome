@@ -14,6 +14,7 @@
 
   /* colors */
   --mt-cards-box-shadow-color: #1c1c4940;
+  --mt-cards-callout-text-color: var(--mt-global-color-accent-primary);
 }
 
 .cards > ul {
@@ -128,7 +129,7 @@
 
 .cards-card-body > p.callout {
   text-transform: uppercase;
-  color: #5F8DDA;
+  color: var(--mt-cards-callout-text-color);
   font-size: 12px;
   font-weight: var(--mt-font-weight-boldest);
   line-height: 1.5;
