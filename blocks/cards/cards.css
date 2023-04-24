@@ -30,7 +30,7 @@
 
 
 .cards.block > ul > li {
-  padding: 5%!important;
+  padding: 5%;
   box-shadow: 2px 12px 28px 0 var(--mt-cards-box-shadow-color);
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@
 }
 
 .cards.wideimage.block > ul > li {
-  padding: 0!important;
+  padding: 0;
 }  
 
 .cards.block > ul > li:hover {
@@ -74,7 +74,7 @@
 
 .cards-card-image {
   margin-bottom: 20px;
-  height: auto!important;
+  height: auto;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -83,12 +83,12 @@
 }
 
 .cards-card-image > picture {
-  max-width: 90%!important;
+  max-width: 90%;
   display: block;
 }
 
 .cards.wideimage .cards-card-image > picture{
-  max-width: 100%!important;
+  max-width: 100%;
 }
 
 .cards.wideimage img {
@@ -96,15 +96,15 @@
 }
 
 .cards-card-body {
-  padding: 0 30px 50px!important;
+  padding: 0 30px 50px;
 }
 
 .cards-card-body.callout-hidden {
-  padding: 0 30px!important;
+  padding: 0 30px;
 }
 
 .cards-card-body.empty {
-  padding: 0 30px!important;
+  padding: 0 30px;
 }
 
 .cards-card-body > p {
