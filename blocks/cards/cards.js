@@ -2,7 +2,7 @@ import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 const isValidUrl = (urlString) => {
   try {
-    return Boolean(new URL(urlString));
+    return new URL(urlString);
   } catch (e) {
     return false;
   }
