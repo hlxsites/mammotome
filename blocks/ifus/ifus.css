@@ -60,15 +60,14 @@
 
 .ifu-result > div > div > div > a > button {
     padding: 15px 50px;
-    background-color: var(--mt-button-background-color-primary);
-    color: var(--mt-background-color-primary);
     margin-top: 2.5rem;
     display: block;
     white-space: nowrap;
     text-align: center;
-    width: 100%
+    width: 100%;
 }
 
+.ifu-result > div > div > div > a > button,
 .ifu > .ifu-selection > button {
     background-color: var(--mt-button-background-color-primary);
     color: var(--mt-background-color-primary);

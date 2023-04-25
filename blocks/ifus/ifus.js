@@ -14,7 +14,7 @@ async function handleSearch(selectors, allSelectors) {
   selectors.result.classList.remove('no-result');
 
   const assets = selectors.code.value && selectors.country.value
-    ? selectors.assetFilter(selectors.code, selectors.country) : [];
+    ? selectors.assets(selectors.code.value, selectors.country.value) : [];
 
   if (assets.length === 0) {
     createDomStructure([{
@@ -48,7 +48,7 @@ async function handleSearch(selectors, allSelectors) {
                 children: [
                   {
                     type: 'div',
-                    textContent: selectors.productProducer(selectors.code),
+                    textContent: selectors.productCodes(selectors.code.value),
                     children: [{
                       type: 'h6',
                       position: 'prepend',
@@ -93,10 +93,10 @@ function populateSearch(selectors, allSelectors) {
     selector.disabled = false;
   };
 
-  createOptions(selectors.idMap(), selectors.code);
+  createOptions(selectors.ids(), selectors.code);
 
   createOptions(
-    selectors.countryMap(),
+    selectors.countries(),
     selectors.country,
     (country) => country['Country Name'],
     (country) => ({ value: country.ISO_3166_1_alpha_2_code }),
@@ -114,52 +114,77 @@ async function populate(block) {
 
   const json = await resp.json();
 
-  const getSelectors = (prefix, idMap, assetFilter, productProducer) => ({
+  const getSelectors = (prefix, ids, assets, productCodes) => ({
     code: block.querySelector(`#${prefix}-code`),
     country: block.querySelector(`#${prefix}-country`),
     search: block.querySelector(`#${prefix}-code-search`),
     result: block.querySelector('.ifu-result'),
-    idMap,
-    countryMap: () => json.countries.data,
-    assetFilter,
-    productProducer,
+    ids,
+    countries: () => json.countries.data,
+    assets,
+    productCodes,
   });
+
+  const unique = (value, index, array) => array.indexOf(value) === index;
+
+  const getIFUIDs = () => json.eIFUs.data.map((value) => value.ID);
+
+  const getUDIIDs = () => json.UDIs.data.map((value) => value.Code);
+
+  const getProductCodeIDs = () => json.productCodes.data.map((value) => value.Code);
+
+  const getProductCodesByIFU = (id) => json.eIFUToProductCodes.data
+    .filter((match) => match.eIFU_ID === id)
+    .map((match) => match['Product Code'])
+    .filter(unique)
+    .join(', ');
+
+  const getProductCodesByUDI = (id) => json.UDIToProductCodes.data
+    .filter((match) => match.UDI_DI === id)
+    .map((match) => match['Product Code'])
+    .filter(unique)
+    .join(', ');
+
+  const getProductCodesByProductCode = (id) => json.eIFUToProductCodes.data
+    .filter((match) => match['Product Code'] === id)
+    .flatMap((match) => json.eIFUToProductCodes.data
+      .filter((innerMatch) => innerMatch.eIFU_ID === match.eIFU_ID)
+      .map((innerMatch) => innerMatch['Product Code']))
+    .filter(unique)
+    .join(', ');
+
+  const getAssetbyIFUandCountry = (id, country) => json.IFUAssets.data.filter(
+    (asset) => asset.eIFU === id && asset.Country === country,
+  );
+
+  const getAssetsByUDIandCountry = (id, country) => json.eIFUToUDIs.data
+    .filter((entry) => entry.UDI_DI === id)
+    .flatMap((entry) => json.IFUAssets.data
+      .filter((asset) => asset.eIFU === entry.eIFU && asset.Country === country));
+
+  const getAssetsByProductCodeandCountry = (id, country) => json.eIFUToProductCodes.data
+    .filter((entry) => entry['Product Code'] === id)
+    .flatMap((entry) => json.IFUAssets.data
+      .filter((asset) => asset.eIFU === entry.eIFU_ID && asset.Country === country));
 
   const selectors = [
     getSelectors(
       'eIFU',
-      () => json.eIFUs.data.map((value) => value.ID),
-      (idSelector, countrySelector) => json.IFUAssets.data.filter(
-        (asset) => asset.eIFU === idSelector.value && asset.Country === countrySelector.value,
-      ),
-      (idSelector) => json.eIFUToProductCodes.data
-        .filter((match) => match.eIFU_ID === idSelector.value)
-        .map((match) => match['Product Code']).join(', '),
+      getIFUIDs,
+      getAssetbyIFUandCountry,
+      getProductCodesByIFU,
     ),
     getSelectors(
       'udi',
-      () => json.UDIs.data.map((value) => value.Code),
-      (idSelector, countrySelector) => json.eIFUToUDIs.data
-        .filter((entry) => entry.UDI_DI === idSelector.value)
-        .flatMap((entry) => json.IFUAssets.data
-          .filter((asset) => asset.eIFU === entry.eIFU && asset.Country === countrySelector.value)),
-      (idSelector) => json.UDIToProductCodes.data
-        .filter((match) => match.UDI_DI === idSelector.value)
-        .map((match) => match['Product Code']).join(', '),
+      getUDIIDs,
+      getAssetsByUDIandCountry,
+      getProductCodesByUDI,
     ),
     getSelectors(
       'product',
-      () => json.productCodes.data.map((value) => value.Code),
-      (idSelector, countrySelector) => json.eIFUToProductCodes.data
-        .filter((entry) => entry['Product Code'] === idSelector.value)
-        .flatMap((entry) => json.IFUAssets.data
-          .filter((asset) => asset.eIFU === entry.eIFU_ID
-            && asset.Country === countrySelector.value)),
-      (idSelector) => json.eIFUToProductCodes.data
-        .filter((match) => match['Product Code'] === idSelector.value)
-        .flatMap((match) => json.eIFUToProductCodes.data
-          .filter((innerMatch) => innerMatch.eIFU_ID === match.eIFU_ID)
-          .map((innerMatch) => innerMatch['Product Code'])).join(', '),
+      getProductCodeIDs,
+      getAssetsByProductCodeandCountry,
+      getProductCodesByProductCode,
     ),
   ];
 
