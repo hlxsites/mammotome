@@ -52,6 +52,28 @@ function createMobileMenuControlsBlock() {
   return mobileMenuControls;
 }
 
+function createOverflowDropdown(navSections) {
+  const overflowDropdown = document.createElement('li');
+  overflowDropdown.classList.add('nav-button');
+  overflowDropdown.classList.add('nav-overflow');
+  const overflowButton = document.createElement('a');
+  overflowButton.innerHTML = '...';
+  overflowDropdown.append(overflowButton);
+
+  const overflowDropdownList = document.createElement('ul');
+  overflowDropdownList.classList.add('nav-overflow-list');
+
+  overflowDropdown.append(overflowDropdownList);
+
+  const sections = Array.from(navSections.querySelectorAll(':scope > ul > li'));
+  // add last two items to dropdown
+  const overflowSections =  sections.slice(sections.length - 2);
+  overflowSections.forEach((s) => {
+    overflowDropdownList.append(s.cloneNode(true));
+  });
+  return overflowDropdown;
+}
+
 function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = nav.querySelector('.nav-brand > p > a');
   const scrollingLogo = document.createElement('img');
@@ -301,7 +323,22 @@ export default async function decorate(block) {
     });
 
     const navSections = nav.querySelector('.nav-sections');
+
+    const navWidth = navSections.clientWidth;
+    const navLogoWidth = nav.querySelector('.nav-brand').clientWidth;
+    const navSectionsWidth = navSections.clientWidth;
+    const navToolsWidth = nav.querySelector('.nav-tools').clientWidth;
+    const dropDownButtonWidth = 30;
+
+    let tooSmall = false;
+
+    if (navWidth < navLogoWidth + navSectionsWidth + navToolsWidth + dropDownButtonWidth) {
+      console.log('tos mall')
+      tooSmall = true;
+    }
+
     if (navSections) {
+      let currentNavWidth = 0;
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection, i) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
@@ -312,6 +349,13 @@ export default async function decorate(block) {
           navSection.classList.add('nav-button');
           if (i % 2) navSection.querySelector('a').classList.add('btn-invert');
         }
+
+        // if (tooSmall) {
+        //   if (currentNavWidth + navSection.clientWidth > navWidth) {
+        //     navSection.classList.add('.nav-overflow');
+        //   }
+        //   currentNavWidth += navSection.clientWidth;
+        // }
 
         navSection.addEventListener('click', () => {
           if (!isDesktop.matches) {
@@ -333,6 +377,7 @@ export default async function decorate(block) {
       });
 
       navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
+      navSections.querySelector('ul').append(createOverflowDropdown(navSections));
     }
 
     // hamburger for mobile
