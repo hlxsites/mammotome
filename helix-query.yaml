@@ -2,6 +2,10 @@ indices:
   de:
     include:
       - /de/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /de/query-index.json
     properties:
       lastModified:
@@ -19,6 +23,10 @@ indices:
   en:
     include:
       - /en/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /en/query-index.json
     properties:
       lastModified:
@@ -36,6 +44,10 @@ indices:
   en-gb:
     include:
       - /en-gb/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /en-gb/query-index.json
     properties:
       lastModified:
@@ -53,6 +65,10 @@ indices:
   es:
     include:
       - /es/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /es/query-index.json
     properties:
       lastModified:
@@ -70,6 +86,10 @@ indices:
   fr:
     include:
       - /fr/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /fr/query-index.json
     properties:
       lastModified:
@@ -87,6 +107,10 @@ indices:
   it:
     include:
       - /it/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /it/query-index.json
     properties:
       lastModified:
@@ -104,6 +128,10 @@ indices:
   pl:
     include:
       - /pl/**
+    exclude:
+      - /en/nav
+      - /en/footer
+      - /en/experimentation/**
     target: /pl/query-index.json
     properties:
       lastModified:
