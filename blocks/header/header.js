@@ -66,8 +66,8 @@ function createOverflowDropdown(navSections) {
   overflowDropdown.append(overflowDropdownList);
 
   const sections = Array.from(navSections.querySelectorAll(':scope > ul > li'));
-  // add last two items to dropdown
-  const overflowSections =  sections.slice(sections.length - 2);
+  // add last three items to dropdown
+  const overflowSections = sections.slice(sections.length - 3);
   overflowSections.forEach((s) => {
     overflowDropdownList.append(s.cloneNode(true));
   });
@@ -324,21 +324,7 @@ export default async function decorate(block) {
 
     const navSections = nav.querySelector('.nav-sections');
 
-    const navWidth = navSections.clientWidth;
-    const navLogoWidth = nav.querySelector('.nav-brand').clientWidth;
-    const navSectionsWidth = navSections.clientWidth;
-    const navToolsWidth = nav.querySelector('.nav-tools').clientWidth;
-    const dropDownButtonWidth = 30;
-
-    let tooSmall = false;
-
-    if (navWidth < navLogoWidth + navSectionsWidth + navToolsWidth + dropDownButtonWidth) {
-      console.log('tos mall')
-      tooSmall = true;
-    }
-
     if (navSections) {
-      let currentNavWidth = 0;
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection, i) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
@@ -349,13 +335,6 @@ export default async function decorate(block) {
           navSection.classList.add('nav-button');
           if (i % 2) navSection.querySelector('a').classList.add('btn-invert');
         }
-
-        // if (tooSmall) {
-        //   if (currentNavWidth + navSection.clientWidth > navWidth) {
-        //     navSection.classList.add('.nav-overflow');
-        //   }
-        //   currentNavWidth += navSection.clientWidth;
-        // }
 
         navSection.addEventListener('click', () => {
           if (!isDesktop.matches) {
