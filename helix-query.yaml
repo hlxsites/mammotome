@@ -3,9 +3,9 @@ indices:
     include:
       - /de/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
+      - /de/nav
+      - /de/footer
+      - /de/experimentation/**
     target: /de/query-index.json
     properties:
       lastModified:
@@ -45,9 +45,9 @@ indices:
     include:
       - /en-gb/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
+      - /en-gb/nav
+      - /en-gb/footer
+      - /en-gb/experimentation/**
     target: /en-gb/query-index.json
     properties:
       lastModified:
@@ -66,9 +66,9 @@ indices:
     include:
       - /es/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
+      - /es/nav
+      - /es/footer
+      - /es/experimentation/**
     target: /es/query-index.json
     properties:
       lastModified:
@@ -87,9 +87,9 @@ indices:
     include:
       - /fr/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
+      - /fr/nav
+      - /fr/footer
+      - /fr/experimentation/**
     target: /fr/query-index.json
     properties:
       lastModified:
@@ -108,9 +108,9 @@ indices:
     include:
       - /it/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
+      - /it/nav
+      - /it/footer
+      - /it/experimentation/**
     target: /it/query-index.json
     properties:
       lastModified:
@@ -129,9 +129,9 @@ indices:
     include:
       - /pl/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
+      - /pl/nav
+      - /pl/footer
+      - /pl/experimentation/**
     target: /pl/query-index.json
     properties:
       lastModified:
