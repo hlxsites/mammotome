@@ -564,7 +564,7 @@ header nav .nav-search-description {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    top: 40px;
+    top: 45px;
     left: -1em;
     margin-top: 12px;
     white-space: nowrap;
@@ -574,7 +574,7 @@ header nav .nav-search-description {
     border-color: var(--mt-header-menu-border-color);
     color: var(--mt-global-color-white);
     gap: unset;
-    transition: top 300ms ease;
+    transition: top 300ms ease, opacity 300ms ease;
     min-width: 200px;
     padding-left: 0;
   }
@@ -637,14 +637,16 @@ header nav .nav-search-description {
   }
 
   header nav .nav-sections ul > li.nav-overflow > ul.nav-overflow-list > li.nav-drop > ul {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: top 300ms ease, opacity 300ms ease;
+    top: 0;
+    left: -14em;
   }
 
   header nav .nav-sections ul > li.nav-overflow > ul.nav-overflow-list > li.nav-drop:hover > ul {
-    display: block;
     visibility: visible;
     opacity: 1;
-    left: -14em;
     top: -1em;
   }
 
