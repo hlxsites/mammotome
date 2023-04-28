@@ -134,6 +134,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
   if (isDesktop.matches) {
+    nav.classList.remove('nav-mobile');
     navDrops.forEach((drop) => {
       if (!drop.hasAttribute('tabindex')) {
         drop.setAttribute('role', 'button');
@@ -142,6 +143,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
       }
     });
   } else {
+    nav.classList.add('nav-mobile');
     navDrops.forEach((drop) => {
       drop.removeAttribute('role');
       drop.removeAttribute('tabindex');
