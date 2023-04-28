@@ -1,4 +1,4 @@
-import { createDomStructure } from '../../scripts/lib-franklin.js';
+import { createDomStructure, translate } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -36,6 +36,29 @@ export default async function decorate(block) {
     return;
   }
 
+  const translation = json.ProductTranslation.data
+    .find((entry) => entry.ProductRef === product.ProductCodes
+      && entry.Language === language);
+
+  if (translation) {
+    if (translation.Name) {
+      product.Name = translation.Name;
+    }
+    if (translation.Image) {
+      product.Image = translation.Image;
+    }
+  }
+
+  const heading = await translate('productSupportHeading', 'Product and Technical documents');
+  const allDocuments = await translate('productSupportAllDocuments', 'All Product Documents');
+  const empty = await translate('productSupportNoResult', 'No data was found');
+
+  const types = json.ProductAsset.data
+    .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
+      .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase()))
+    .map((asset) => asset.Type)
+    .filter((value, index, array) => array.indexOf(value) === index);
+
   const elements = [];
   elements.push({ type: 'h1', textContent: product.Name });
   if (product.Image) {
@@ -47,7 +70,7 @@ export default async function decorate(block) {
       children: [
         {
           type: 'h2',
-          textContent: 'Product and Technical documents',
+          textContent: heading,
         },
         {
           type: 'div',
@@ -56,12 +79,8 @@ export default async function decorate(block) {
               type: 'select',
               children: [{
                 type: 'option',
-                textContent: 'All Product Documents',
-              }].concat(json.ProductAsset.data
-                .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
-                  .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase()))
-                .map((asset) => asset.Type)
-                .filter((value, index, array) => array.indexOf(value) === index)
+                textContent: allDocuments,
+              }].concat(types
                 .map((type) => (
                   {
                     type: 'option',
@@ -87,7 +106,7 @@ export default async function decorate(block) {
     const assets = json.ProductAsset.data
       .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
         .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase())
-        && (select.value === 'All Product Documents' || asset.Type === select.value));
+        && (select.value === allDocuments || asset.Type === select.value));
 
     if (assets.length > 0) {
       createDomStructure(assets.map((asset) => (
@@ -106,7 +125,7 @@ export default async function decorate(block) {
     } else {
       createDomStructure([{
         type: 'div',
-        textContent: 'No data was found',
+        textContent: empty,
       }], container);
     }
   };
