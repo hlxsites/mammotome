@@ -1,0 +1,62 @@
+.product-support {
+  width: 100%;
+     padding: 2rem 0 0;
+     max-width: 1300px;
+     margin: auto;
+}
+
+.product-support > h1 {
+  text-align: center;
+}
+
+.product-support > img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 40%;
+}
+
+.product-support > div > h2 {
+  text-align: center;
+  margin-bottom: 3%;
+  margin-top: 3%;
+}
+
+.product-support > div > div > select {
+  color: #84329B;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: #84329B;
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+  linear-gradient(135deg, gray 50%, transparent 50%),
+  linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 20px) calc(1em + 2px),
+  calc(100% - 15px) calc(1em + 2px),
+  calc(100% - 2.5em) 0.5em;
+  background-size: 5px 5px,
+  5px 5px,
+  1px 1.5em;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-width: 320px;
+  background-color: white;
+  border: thin solid #707070;
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  line-height: 1.5em;
+  padding: 0.5em 3.5em 0.5em 1em;
+  margin: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.product-support > div > div {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 3% 0;
+  margin-bottom: 20px;
+}
