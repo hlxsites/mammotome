@@ -54,8 +54,7 @@ function createMobileMenuControlsBlock() {
 
 function createOverflowDropdown(navSections) {
   const overflowDropdown = document.createElement('li');
-  overflowDropdown.classList.add('nav-button');
-  overflowDropdown.classList.add('nav-overflow');
+  overflowDropdown.classList.add('nav-button', 'nav-overflow');
   const overflowButton = document.createElement('a');
   overflowButton.innerHTML = '...';
   overflowDropdown.append(overflowButton);
@@ -68,8 +67,8 @@ function createOverflowDropdown(navSections) {
   const sections = Array.from(navSections.querySelectorAll(':scope > ul > li'));
   // add last three items to dropdown
   const overflowSections = sections.slice(sections.length - 3);
-  overflowSections.forEach((s) => {
-    overflowDropdownList.append(s.cloneNode(true));
+  overflowSections.forEach((section) => {
+    overflowDropdownList.append(section.cloneNode(true));
   });
   return overflowDropdown;
 }
