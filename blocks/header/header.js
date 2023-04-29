@@ -1,4 +1,8 @@
-import { getMetadata, decorateIcons, translate } from '../../scripts/lib-franklin.js';
+import {
+  getMetadata,
+  decorateIcons,
+  translate,
+} from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -134,6 +138,26 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   } else {
     window.removeEventListener('keydown', closeOnEscape);
   }
+}
+
+/**
+ * Change metadata tag
+ * @param name
+ * @param value
+ */
+function changeMetadata(name, value) {
+  const meta = document.querySelector(`meta[name="${name}"]`);
+  meta.setAttribute('content', value);
+}
+
+/**
+ * Language switch
+ */
+function languageSwitch() {
+  const docLang = document.documentElement.lang;
+  const langPath = `/${docLang}/`;
+  changeMetadata('nav', `${langPath}nav`);
+  changeMetadata('footer', `${langPath}footer`);
 }
 
 async function fetchSearchData() {
@@ -283,6 +307,7 @@ async function decorateSearch(block) {
  */
 export default async function decorate(block) {
   // fetch nav content
+  languageSwitch();
   const navPath = getMetadata('nav') || '/nav';
   const resp = await fetch(`${navPath}.plain.html`);
 
@@ -365,9 +390,8 @@ export default async function decorate(block) {
     });
 
     await decorateIcons(nav);
-    decorateSearch(nav);
-
-    // add logo for scroling page
+    await decorateSearch(nav);
+    // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
 
     const navWrapper = document.createElement('div');
