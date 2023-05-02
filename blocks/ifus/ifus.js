@@ -107,7 +107,7 @@ function populateSearch(selectors, allSelectors) {
 }
 
 async function populate(block) {
-  const resp = await fetch('/en/dj-test.json?limit=10000');
+  const resp = await fetch('/products.json?limit=10000');
   if (!resp.ok) {
     throw new Error(`${resp.status}: ${resp.statusText}`);
   }
@@ -120,52 +120,37 @@ async function populate(block) {
     search: block.querySelector(`#${prefix}-code-search`),
     result: block.querySelector('.ifu-result'),
     ids,
-    countries: () => json.countries.data,
+    countries: () => json.Countries.data,
     assets,
     productCodes,
   });
 
   const unique = (value, index, array) => array.indexOf(value) === index;
 
-  const getIFUIDs = () => json.eIFUs.data.map((value) => value.ID);
+  const getIFUIDs = () => json.eIFU.data.map((value) => value.eIFU).filter(unique).sort();
 
-  const getUDIIDs = () => json.UDIs.data.map((value) => value.Code);
+  const getProductCodeIDs = () => json.eIFU.data.flatMap((value) => value.ProductRef.split('|')).filter(unique).sort();
 
-  const getProductCodeIDs = () => json.productCodes.data.map((value) => value.Code);
-
-  const getProductCodesByIFU = (id) => json.eIFUToProductCodes.data
-    .filter((match) => match.eIFU_ID === id)
-    .map((match) => match['Product Code'])
+  const getProductCodesByIFU = (id) => json.eIFU.data
+    .filter((match) => match.eIFU === id)
+    .flatMap((match) => match.ProductRef.split('|'))
     .filter(unique)
+    .sort()
     .join(', ');
 
-  const getProductCodesByUDI = (id) => json.UDIToProductCodes.data
-    .filter((match) => match.UDI_DI === id)
-    .map((match) => match['Product Code'])
+  const getProductCodesByProductCode = (id) => json.eIFU.data
+    .filter((match) => match.ProductRef.split('|').includes(id))
+    .flatMap((match) => match.ProductRef.split('|'))
     .filter(unique)
+    .sort()
     .join(', ');
 
-  const getProductCodesByProductCode = (id) => json.eIFUToProductCodes.data
-    .filter((match) => match['Product Code'] === id)
-    .flatMap((match) => json.eIFUToProductCodes.data
-      .filter((innerMatch) => innerMatch.eIFU_ID === match.eIFU_ID)
-      .map((innerMatch) => innerMatch['Product Code']))
-    .filter(unique)
-    .join(', ');
-
-  const getAssetbyIFUandCountry = (id, country) => json.IFUAssets.data.filter(
+  const getAssetbyIFUandCountry = (id, country) => json.eIFU.data.filter(
     (asset) => asset.eIFU === id && asset.Country === country,
   );
 
-  const getAssetsByUDIandCountry = (id, country) => json.eIFUToUDIs.data
-    .filter((entry) => entry.UDI_DI === id)
-    .flatMap((entry) => json.IFUAssets.data
-      .filter((asset) => asset.eIFU === entry.eIFU && asset.Country === country));
-
-  const getAssetsByProductCodeandCountry = (id, country) => json.eIFUToProductCodes.data
-    .filter((entry) => entry['Product Code'] === id)
-    .flatMap((entry) => json.IFUAssets.data
-      .filter((asset) => asset.eIFU === entry.eIFU_ID && asset.Country === country));
+  const getAssetsByProductCodeandCountry = (id, country) => json.eIFU.data
+    .filter((entry) => entry.ProductRef.split('|').includes(id) && entry.Country === country);
 
   const selectors = [
     getSelectors(
@@ -173,12 +158,6 @@ async function populate(block) {
       getIFUIDs,
       getAssetbyIFUandCountry,
       getProductCodesByIFU,
-    ),
-    getSelectors(
-      'udi',
-      getUDIIDs,
-      getAssetsByUDIandCountry,
-      getProductCodesByUDI,
     ),
     getSelectors(
       'product',
@@ -201,7 +180,7 @@ export default async function decorate(block) {
     {
       type: 'div',
       classes: ['ifu'],
-      children: await Promise.all([['eIFU', 'eIFU'], ['udi', 'UDI'], ['product', 'Product Code']].map(async (entry) => (
+      children: await Promise.all([['eIFU', 'eIFU'], ['product', 'Product Code']].map(async (entry) => (
         {
           type: 'div',
           classes: ['ifu-selection'],
