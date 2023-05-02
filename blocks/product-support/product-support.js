@@ -56,7 +56,7 @@ function getAssets(json, product, language, type, allType) {
 }
 
 export default async function decorate(block) {
-  const resp = await fetch('/kp-test.json?limit=10000');
+  const resp = await fetch('/products.json?limit=10000');
   if (!resp.ok) {
     throw new Error(`${resp.status}: ${resp.statusText}`);
   }
