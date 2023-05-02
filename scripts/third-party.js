@@ -10,14 +10,6 @@ function createInlineScript(parent, id) {
   script.type = 'text/javascript';
   script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
   script.async = true;
-  script.addEventListener('load', () => {
-    // eslint-disable-next-line no-console
-    console.log('GTM loaded');
-
-    // Debug: Reset dataLayer and prevent cookie consent from loading.
-    window.dataLayer = [];
-  });
-
   parent.appendChild(script);
 }
 
