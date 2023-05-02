@@ -1,33 +1,66 @@
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
+const isValidUrl = (urlString) => {
+  try {
+    return new URL(urlString);
+  } catch (e) {
+    return false;
+  }
+};
+
 export default function decorate(block) {
   /* change to ul, li */
   const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
+
+  const processRow = (row) => {
     const li = document.createElement('li');
-    li.innerHTML = row.innerHTML;
-    [...li.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
-      else div.className = 'cards-card-body';
-    });
-    ul.append(li);
+    let cardLink;
+
+    const processDiv = (div) => {
+      const { children } = div;
+      const picture = div.querySelector('picture');
+
+      if (children.length === 1 && picture) {
+        div.className = 'cards-card-image';
+      } else {
+        div.className = children.length ? 'cards-card-body' : 'cards-card-body empty';
+        const action = div.querySelector('p > a');
+
+        if (action) {
+          const actionBlock = action.parentElement;
+          actionBlock.className = isValidUrl(action.text) ? 'callout hidden' : 'callout';
+          div.classList.toggle('callout-hidden', actionBlock.classList.contains('hidden'));
+
+          actionBlock.innerHTML = action.innerHTML;
+
+          cardLink = document.createElement('a');
+          cardLink.href = action.href;
+          cardLink.innerHTML = row.innerHTML;
+        }
+      }
+    };
+
+    [...row.children].forEach(processDiv);
+
+    if (cardLink) {
+      li.appendChild(cardLink);
+    } else {
+      li.innerHTML = row.innerHTML;
+    }
+    return li;
+  };
+
+  [...block.children].forEach((row) => {
+    ul.append(processRow(row));
   });
-  ul
-    .querySelectorAll('img')
-    .forEach((img) => {
-      img
-        .closest('picture')
-        .replaceWith(
-          createOptimizedPicture(
-            img.src,
-            img.alt,
-            false,
-            null,
-            null,
-            [{ width: '600' }],
-          ),
-        );
-    });
+
+  const processImg = (img) => {
+    const picture = img.closest('picture');
+    picture.replaceWith(createOptimizedPicture(img.src, img.alt, false, null, null, [{ width: '600' }]));
+  };
+
+  ul.querySelectorAll('img').forEach(processImg);
+
   block.textContent = '';
   block.append(ul);
 }
