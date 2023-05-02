@@ -15,6 +15,46 @@ function getInfo() {
   }
   return { productSupport: url.pathname.substring(0, url.pathname.length - 1) };
 }
+
+function getProduct(json, productCode, language) {
+  const product = json.Product.data
+    .find((entry) => entry.ProductCodes.split('|')
+      .some((code) => code === productCode)
+        && entry.Languages.split('|')
+          .some((productLanguage) => productLanguage.toUpperCase() === language.toUpperCase()));
+
+  if (product) {
+    const translation = json.ProductTranslation.data
+      .find((entry) => entry.ProductRef === product.ProductCodes
+        && entry.Language === language);
+    if (translation) {
+      if (translation.Name) {
+        product.Name = translation.Name;
+      }
+      if (translation.Image) {
+        product.Image = translation.Image;
+      }
+    }
+  }
+
+  return product;
+}
+
+function getTypes(json, product, language) {
+  return json.ProductAsset.data
+    .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
+      .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase()))
+    .map((asset) => asset.Type)
+    .filter((value, index, array) => array.indexOf(value) === index);
+}
+
+function getAssets(json, product, language, type, allType) {
+  return json.ProductAsset.data
+    .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
+      .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase())
+      && (type === allType || asset.Type === type));
+}
+
 export default async function decorate(block) {
   const resp = await fetch('/kp-test.json?limit=10000');
   if (!resp.ok) {
@@ -25,46 +65,22 @@ export default async function decorate(block) {
 
   const json = await resp.json();
 
-  const product = json.Product.data
-    .find((entry) => entry.ProductCodes.split('|')
-      .some((code) => code === productCode)
-        && entry.Languages.split('|')
-          .some((productLanguage) => productLanguage.toUpperCase() === language.toUpperCase()));
+  const product = getProduct(json, productCode, language);
 
   if (!product) {
     window.location.replace(productSupport);
     return;
   }
 
-  const translation = json.ProductTranslation.data
-    .find((entry) => entry.ProductRef === product.ProductCodes
-      && entry.Language === language);
-
-  if (translation) {
-    if (translation.Name) {
-      product.Name = translation.Name;
-    }
-    if (translation.Image) {
-      product.Image = translation.Image;
-    }
-  }
-
   const heading = await translate('productSupportHeading', 'Product and Technical documents');
   const allDocuments = await translate('productSupportAllDocuments', 'All Product Documents');
   const empty = await translate('productSupportNoResult', 'No data was found');
 
-  const types = json.ProductAsset.data
-    .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
-      .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase()))
-    .map((asset) => asset.Type)
-    .filter((value, index, array) => array.indexOf(value) === index);
-
-  const elements = [];
-  elements.push({ type: 'h1', textContent: product.Name });
+  createDomStructure([{ type: 'h1', textContent: product.Name }], block);
   if (product.Image) {
-    elements.push({ type: 'img', attributes: { src: product.Image } });
+    createDomStructure([{ type: 'img', attributes: { src: product.Image } }], block);
   }
-  elements.push(
+  createDomStructure([
     {
       type: 'div',
       children: [
@@ -77,15 +93,20 @@ export default async function decorate(block) {
           children: [
             {
               type: 'select',
-              children: [{
-                type: 'option',
-                textContent: allDocuments,
-              }].concat(types
-                .map((type) => (
-                  {
-                    type: 'option',
-                    textContent: type,
-                  }))),
+              children: [
+                {
+                  type: 'option',
+                  textContent: allDocuments,
+                },
+              ].concat(
+                getTypes(json, product, language)
+                  .map((type) => (
+                    {
+                      type: 'option',
+                      textContent: type,
+                    }
+                  )),
+              ),
             },
           ],
         },
@@ -95,18 +116,14 @@ export default async function decorate(block) {
         },
       ],
     },
-  );
-  createDomStructure(elements, block);
+  ], block);
 
   const select = block.querySelector('select');
   const container = block.querySelector('.link-container');
 
   const handler = () => {
     container.innerHTML = '';
-    const assets = json.ProductAsset.data
-      .filter((asset) => asset.ProductRef === product.ProductCodes && asset.Languages
-        .split('|').some((assetLanguage) => assetLanguage.toUpperCase() === language.toUpperCase())
-        && (select.value === allDocuments || asset.Type === select.value));
+    const assets = getAssets(json, product, language, select.value, allDocuments);
 
     if (assets.length > 0) {
       createDomStructure(assets.map((asset) => (
