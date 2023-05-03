@@ -6,21 +6,17 @@ function getInfo() {
 }
 
 function getProducts(json, language) {
+  const languageUpper = language.toUpperCase();
   return json.Product.data
     .filter((entry) => entry.Languages.split('|')
-      .some((productLanguage) => productLanguage.toUpperCase() === language.toUpperCase()))
+      .map((lang) => lang.toUpperCase())
+      .includes(languageUpper))
     .map((product) => {
       const translation = json.ProductTranslation.data
         .find((entry) => entry.ProductRef === product.ProductCodes
           && entry.Language === language);
-      if (translation) {
-        if (translation.Name) {
-          product.Name = translation.Name;
-        }
-        if (translation.Image) {
-          product.Image = translation.Image;
-        }
-      }
+      product.Name = translation?.Name || product.Name;
+      product.Image = translation?.Image || product.Image;
       return product;
     });
 }
