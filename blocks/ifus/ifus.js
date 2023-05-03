@@ -1,4 +1,4 @@
-import { createDomStructure, translate } from '../../scripts/lib-franklin.js';
+import { createDomStructure, getProductDB, translate } from '../../scripts/lib-franklin.js';
 
 async function handleSearch(selectors, allSelectors) {
   const { result, code, country } = selectors;
@@ -109,12 +109,7 @@ function populateSearch(selectors, allSelectors) {
 }
 
 async function populate(block) {
-  const resp = await fetch('/products.json?limit=10000');
-  if (!resp.ok) {
-    throw new Error(`${resp.status}: ${resp.statusText}`);
-  }
-
-  const json = await resp.json();
+  const json = await getProductDB();
 
   const getSelectors = (prefix, ids, assets, productCodes) => ({
     code: block.querySelector(`#${prefix}-code`),
