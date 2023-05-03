@@ -1,4 +1,8 @@
-import { getMetadata, decorateIcons, translate } from '../../scripts/lib-franklin.js';
+import {
+  getMetadata,
+  decorateIcons,
+  translate,
+} from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -390,9 +394,8 @@ export default async function decorate(block) {
     });
 
     await decorateIcons(nav);
-    decorateSearch(nav);
-
-    // add logo for scroling page
+    await decorateSearch(nav);
+    // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
 
     const navWrapper = document.createElement('div');
