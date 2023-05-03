@@ -1,40 +1,42 @@
 import { createDomStructure, translate } from '../../scripts/lib-franklin.js';
 
 async function handleSearch(selectors, allSelectors) {
-  selectors.result.innerHTML = '';
+  const { result, code, country } = selectors;
+
+  result.innerHTML = '';
   createDomStructure([{
     type: 'h4',
     textContent: await translate('ifuSearchTitle', 'Search results'),
-  }], selectors.result);
+  }], result);
 
   allSelectors.filter((entry) => entry !== selectors)
     .flatMap((entry) => [entry.code, entry.country])
     .forEach((value) => { value.options[0].selected = true; });
 
-  selectors.result.classList.remove('no-result');
+  result.classList.remove('no-result');
 
-  const assets = selectors.code.value && selectors.country.value
-    ? selectors.assets(selectors.code.value, selectors.country.value) : [];
+  const assets = code.value && country.value
+    ? selectors.assets(code.value, country.value) : [];
 
   if (assets.length === 0) {
     createDomStructure([{
       type: 'div',
       children: [{ type: 'strong', textContent: await translate('ifuSearchNoResult', 'No result') }],
-    }], selectors.result);
+    }], result);
     return;
   }
 
-  const map = new Map();
+  const assetMap = new Map();
   assets.forEach((asset) => {
-    if (map.has(asset.Title)) {
-      const links = map.get(asset.Title);
+    if (assetMap.has(asset.Title)) {
+      const links = assetMap.get(asset.Title);
       links.push(asset.URL);
     } else {
-      map.set(asset.Title, [asset.URL]);
+      assetMap.set(asset.Title, [asset.URL]);
     }
   });
 
-  await Promise.all(Array.from(map).map(async ([key, value]) => {
+  await Promise.all(Array.from(assetMap).map(async ([key, value]) => {
     createDomStructure([
       {
         type: 'div',
@@ -48,7 +50,7 @@ async function handleSearch(selectors, allSelectors) {
                 children: [
                   {
                     type: 'div',
-                    textContent: selectors.productCodes(selectors.code.value),
+                    textContent: selectors.productCodes(code.value),
                     children: [{
                       type: 'h6',
                       position: 'prepend',
@@ -59,7 +61,7 @@ async function handleSearch(selectors, allSelectors) {
               },
               {
                 type: 'div',
-                textContent: selectors.country.value,
+                textContent: country.value,
                 children: [{
                   type: 'h6',
                   position: 'prepend',
@@ -80,7 +82,7 @@ async function handleSearch(selectors, allSelectors) {
           },
         ],
       },
-    ], selectors.result);
+    ], result);
   }));
 }
 
