@@ -331,6 +331,14 @@ export async function translate(key, defaultText) {
   return defaultText;
 }
 
+export async function getProductDB() {
+  const resp = await fetch('/products.json?limit=10000');
+  if (!resp.ok) {
+    throw new Error(`${resp.status}: ${resp.statusText}`);
+  }
+  return resp.json();
+}
+
 /**
  * Decorates a block.
  * @param {Element} block The block element

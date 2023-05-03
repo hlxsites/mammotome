@@ -1,4 +1,4 @@
-import { createDomStructure, translate } from '../../scripts/lib-franklin.js';
+import { createDomStructure, getProductDB, translate } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -56,14 +56,9 @@ function getAssets(json, product, language, type, allType) {
 }
 
 export default async function decorate(block) {
-  const resp = await fetch('/products.json?limit=10000');
-  if (!resp.ok) {
-    throw new Error(`${resp.status}: ${resp.statusText}`);
-  }
+  const json = await getProductDB();
 
   const { productCode, productSupport, language } = getInfo();
-
-  const json = await resp.json();
 
   const product = getProduct(json, productCode, language);
 

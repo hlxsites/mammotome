@@ -1,4 +1,4 @@
-import { createDomStructure } from '../../scripts/lib-franklin.js';
+import { createDomStructure, getProductDB } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -22,43 +22,28 @@ function getProducts(json, language) {
 }
 
 function decorateProduct(product) {
-  const result = {
+  const children = [
+    { type: 'h3', textContent: product.Name },
+  ];
+
+  if (product.Image) {
+    children.unshift({
+      type: 'div',
+      classes: ['container'],
+      children: [{ type: 'img', attributes: { src: product.Image } }],
+    });
+  }
+
+  return {
     type: 'a',
     classes: ['product'],
     attributes: { href: `product-support/${product.ProductCodes.split('|')[0]}` },
-    children: [
-      {
-        type: 'h3',
-        textContent: product.Name,
-      },
-    ],
+    children,
   };
-
-  if (product.Image) {
-    result.children = [
-      {
-        type: 'div',
-        classes: ['container'],
-        children: [
-          {
-            type: 'img',
-            attributes: { src: product.Image },
-          },
-        ],
-      }, ...result.children,
-    ];
-  }
-
-  return result;
 }
 
 export default async function decorate(block) {
-  const resp = await fetch('/products.json?limit=10000');
-  if (!resp.ok) {
-    throw new Error(`${resp.status}: ${resp.statusText}`);
-  }
-
-  const json = await resp.json();
+  const json = await getProductDB();
   const { language } = getInfo();
   const products = getProducts(json, language);
 
