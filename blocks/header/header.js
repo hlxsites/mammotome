@@ -147,7 +147,9 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  */
 function changeMetadata(name, value) {
   const meta = document.querySelector(`meta[name="${name}"]`);
-  meta.setAttribute('content', value);
+  if (meta) {
+    meta.setAttribute('content', value);
+  }
 }
 
 /**
