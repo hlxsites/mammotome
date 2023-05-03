@@ -220,11 +220,19 @@ export async function decorateIcons(element) {
 }
 
 /**
+<<<<<<< HEAD
   * Creates a (nested) dom structure based on a given template and appends or prepends
   * it to a given parentElement (default is the document body).
   * @param {object} structure The template
   * @param {object} parentElement The dom element to append or prepend to.
   */
+=======
+ * Creates a (nested) dom structure based on a given template and appends or prepends
+ * it to a given parentElement (default is the document body).
+ * @param {object} structure The template
+ * @param {object} parentElement The dom element to append or prepend to.
+ */
+>>>>>>> main
 export function createDomStructure(structure, parentElement = document.body) {
   structure.forEach((element) => {
     const domElement = document.createElement(element.type);
