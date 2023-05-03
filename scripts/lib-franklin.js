@@ -670,7 +670,8 @@ export function getPreferredLanguage() {
 }
 
 export function setLanguage() {
-  const preferredLanguage = getPreferredLanguage();
+  const [, l] = window.location.pathname.split('/');
+  const preferredLanguage = SUPPORTED_LANGUAGES.includes(l) ? l : getPreferredLanguage();
   const preferredLanguagePath = `/${preferredLanguage}/`;
 
   if (window.location.pathname === '/' && window.location.origin.match(/\.hlx\.(page|live)$/)) {

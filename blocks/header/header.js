@@ -140,28 +140,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-/**
- * Change metadata tag
- * @param name
- * @param value
- */
-function changeMetadata(name, value) {
-  const meta = document.querySelector(`meta[name="${name}"]`);
-  if (meta) {
-    meta.setAttribute('content', value);
-  }
-}
-
-/**
- * Language switch
- */
-function languageSwitch() {
-  const docLang = document.documentElement.lang;
-  const langPath = `/${docLang}/`;
-  changeMetadata('nav', `${langPath}nav`);
-  changeMetadata('footer', `${langPath}footer`);
-}
-
 async function fetchSearchData() {
   if (!window.searchData) {
     const resp = await fetch(`/${window.location.pathname.split('/')[1]}/query-index.json`);
@@ -309,7 +287,6 @@ async function decorateSearch(block) {
  */
 export default async function decorate(block) {
   // fetch nav content
-  languageSwitch();
   const navPath = getMetadata('nav') || '/nav';
   const resp = await fetch(`${navPath}.plain.html`);
 
