@@ -80,7 +80,7 @@ export default async function decorate(block) {
 
   createDomStructure([{ type: 'h1', textContent: product.Name }], block);
   if (product.Image) {
-    createDomStructure([{ type: 'img', attributes: { src: product.Image } }], block);
+    createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image } }] }], block);
   }
   createDomStructure([
     {

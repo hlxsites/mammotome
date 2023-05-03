@@ -1,21 +1,25 @@
 .product-support {
-  width: 100%;
-  padding: 2rem 0 0;
   max-width: 1300px;
   margin: auto;
 }
 
 .product-support > h1 {
   text-align: center;
-  margin-bottom: 3rem;
 }
 
-.product-support > img {
+.product-support > .container {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 25rem;
-  margin-bottom: 3rem;
+  width: 16rem;
+  height: 16rem;
+}
+
+.product-support > .container > img {
+  object-position: center center;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
 
 .product-support > div > h2 {
@@ -72,12 +76,11 @@
 }
 
 .product-support > div > div > .link {
-  max-width: 25rem;
   font-size: var(--mt-heading-font-size-m);
   overflow-wrap: break-word;
-  padding: 50px;
   margin-left: auto;
   margin-right: auto;
+  padding-bottom: 1rem;
 }
 
 @media (min-width: 1025px) {
