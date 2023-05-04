@@ -51,7 +51,7 @@ header nav {
   align-items: center;
   margin: auto;
   padding: 15px var(--mt-nav-padding);
-  height: 85px;
+  height: 90px;
   font-family: var(--mt-nav-nav-item-font-family);
   max-width: 1300px;
 }
