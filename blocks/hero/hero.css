@@ -16,7 +16,7 @@ main .hero {
 main .hero::after {
   position: absolute;
   z-index: -1;
-  top: 0;
+  top: -5px;
   left: 0;
   height: 100%;
   width: 100%;
