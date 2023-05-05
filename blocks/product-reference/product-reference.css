@@ -18,20 +18,13 @@
   display: flex;
 }
 
-.product-reference > div > .product-ref-container > div {
+.product-ref-container > div {
   width: 25rem;
 }
 
 .product-ref-container > div > a > button {
   width: 100%;
   margin: 10px;
-  background-color: var(--mt-button-background-color-secondary);
-  color: var(--mt-button-background-color-secondary);
-}
-
-.product-ref-container > div > a:first-of-type > button {
-  background-color: var(--mt-button-background-color-primary);
-  color: var(--mt-background-color-primary);
 }
 
 .product-ref-container > div > img {
