@@ -1,6 +1,10 @@
+.product-reference-wrapper, .product-reference {
+  max-width: 1300px;
+  margin: auto;
+}
+
 .product-reference > div {
   display: flex;
-  max-width: 1200px;
   margin: auto;
   flex-direction: column;
 }
