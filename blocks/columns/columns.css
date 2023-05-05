@@ -45,6 +45,7 @@
   background-repeat: no-repeat;
   background-size: contain;
   padding: 15% 0% 15% 0%;
+  max-width: fit-content;
 }
 
 .columns > div > .columns-img-wrapper-odd > .columns-img-decoration {
@@ -63,6 +64,7 @@
 .columns > div > .columns-img-wrapper > .columns-img-decoration > .columns-img {
   display: block;
   padding-left: 20px;
+  padding-right: 20px;
 }
 
 
