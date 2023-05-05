@@ -23,10 +23,13 @@ function getProduct(json, productCode, language) {
 
 export default async function decorate(block) {
   const productCode = block.querySelector('div > div')?.textContent?.trim();
+
   block.innerHTML = '';
+
   if (!productCode) {
     return;
   }
+
   const { language } = getInfo();
   const json = await getProductDB();
   const product = getProduct(json, productCode, language);
@@ -35,66 +38,58 @@ export default async function decorate(block) {
     return;
   }
 
-  createDomStructure([{
-    type: 'div',
-    children: [
-      {
-        type: 'div',
-        classes: ['product-ref-container'],
-        children: [
+  const buttons = [
+    [
+      await translate('productReferenceInformationURL', '../contact/'),
+      ['primary'],
+      await translate('productReferenceInformation', 'Request Information'),
+    ],
+    [
+      await translate('productReferenceSupportURL', '../product-support'),
+      ['secondary'],
+      await translate('productReferenceSupport', 'Product Support'),
+    ],
+    [
+      `${await translate('productReferenceSupportURL', '../product-support')}/${product.ProductCodes.split('|')[0]}`,
+      ['secondary'],
+      await translate('productReferenceDocuments', 'Product Documents'),
+    ],
+  ];
+
+  createDomStructure([
+    {
+      type: 'div',
+      children: [
+        [
           {
-            type: 'div',
+            type: 'img',
+            attributes: { src: product.Image },
+          },
+        ],
+        buttons.map(([href, classes, textContent]) => (
+          {
+            type: 'a',
+            attributes: { href },
             children: [
               {
-                type: 'img',
-                attributes: { src: product.Image },
+                type: 'button',
+                classes,
+                textContent,
               },
             ],
-          },
-        ],
-      },
-      {
-        type: 'div',
-        classes: ['product-ref-container'],
-        children: [
-          {
-            type: 'div',
-            children: [{
-              type: 'a',
-              attributes: { href: '../contact/' },
-              children: [
-                {
-                  type: 'button',
-                  classes: ['primary'],
-                  textContent: await translate('productReferenceInformation', 'Request Information'),
-                },
-              ],
-            },
+          }
+        )),
+      ].map((children) => (
+        {
+          type: 'div',
+          classes: ['product-ref-container'],
+          children: [
             {
-              type: 'a',
-              attributes: { href: '../product-support' },
-              children: [
-                {
-                  type: 'button',
-                  classes: ['secondary'],
-                  textContent: await translate('productReferenceSupport', 'Product Support'),
-                },
-              ],
+              type: 'div',
+              children,
             },
-            {
-              type: 'a',
-              attributes: { href: `../product-support/${product.ProductCodes.split('|')[0]}` },
-              children: [
-                {
-                  type: 'button',
-                  classes: ['secondary'],
-                  textContent: await translate('productReferenceDocuments', 'Product Documents'),
-                },
-              ],
-            }],
-          },
-        ],
-      },
-    ],
-  }], block);
+          ],
+        })),
+    },
+  ], block);
 }
