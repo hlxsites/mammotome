@@ -127,11 +127,11 @@ header nav .nav-sections {
   position: absolute;
   right: calc(0px - var(--mt-nav-width));
   width: var(--mt-nav-width);
-  height: 100vh;
   background-color: var(--mt-global-color-base-primary);
   color: var(--mt-global-color-white);
   font-size: var(--mt-font-size-100);
-  padding: var(--mt-nav-padding-m);
+  padding-left: var(--mt-nav-padding-m);
+  padding-right: var(--mt-nav-padding-m);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
