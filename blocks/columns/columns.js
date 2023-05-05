@@ -3,8 +3,8 @@ export default function decorate(block) {
   block.classList.add(`columns-${cols.length}-cols`);
 
   // setup image columns
-  [...block.children].forEach((row, index) => {
-    [...row.children].forEach((col) => {
+  [...block.children].forEach((row) => {
+    [...row.children].forEach((col, index) => {
       const pic = col.querySelector('picture');
       const text = col.querySelector('p');
 

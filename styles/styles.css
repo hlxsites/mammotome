@@ -625,6 +625,10 @@ main .schedule-demo .default-content-wrapper h2 {
   background-color: var(--mt-global-color-accent-primary);
 }
 
+.section.accent-quinary-solid-background {
+  background-color: var(--mt-global-color-accent-quinary);
+}
+
 .section.logo-secondary-background {
   background-image: url('/styles/icons/Mammotome-BG_Pattern-2.svg');
   background-position: center center;
