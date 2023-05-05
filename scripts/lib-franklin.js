@@ -220,6 +220,41 @@ export async function decorateIcons(element) {
 }
 
 /**
+ * Creates a (nested) dom structure based on a given template and appends or prepends
+ * it to a given parentElement (default is the document body).
+ * @param {object} structure The template
+ * @param {object} parentElement The dom element to append or prepend to.
+ */
+export function createDomStructure(structure, parentElement = document.body) {
+  structure.forEach((element) => {
+    const domElement = document.createElement(element.type);
+    if (element.attributes) {
+      Object.keys(element.attributes).forEach((attr) => {
+        domElement.setAttribute(attr, element.attributes[attr]);
+      });
+    }
+
+    if (element.textContent) {
+      domElement.textContent = element.textContent;
+    }
+
+    if (element.children) {
+      createDomStructure(element.children, domElement);
+    }
+
+    if (element.classes) {
+      element.classes.forEach((c) => domElement.classList.add(c));
+    }
+
+    if (element.position === 'prepend') {
+      parentElement.prepend(domElement);
+    } else {
+      parentElement.appendChild(domElement);
+    }
+  });
+}
+
+/**
  * Gets placeholders object.
  * @param {string} [prefix] Location of placeholders
  * @returns {object} Window placeholders object
@@ -294,6 +329,14 @@ export async function translate(key, defaultText) {
     } catch (error) { /* empty */ }
   }
   return defaultText;
+}
+
+export async function getProductDB() {
+  const resp = await fetch('/products.json?limit=10000');
+  if (!resp.ok) {
+    throw new Error(`${resp.status}: ${resp.statusText}`);
+  }
+  return resp.json();
 }
 
 /**
@@ -670,7 +713,8 @@ export function getPreferredLanguage() {
 }
 
 export function setLanguage() {
-  const preferredLanguage = getPreferredLanguage();
+  const [, l] = window.location.pathname.split('/');
+  const preferredLanguage = SUPPORTED_LANGUAGES.includes(l) ? l : getPreferredLanguage();
   const preferredLanguagePath = `/${preferredLanguage}/`;
 
   if (window.location.pathname === '/' && window.location.origin.match(/\.hlx\.(page|live)$/)) {

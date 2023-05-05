@@ -1,4 +1,8 @@
-import { getMetadata, decorateIcons, translate } from '../../scripts/lib-franklin.js';
+import {
+  getMetadata,
+  decorateIcons,
+  translate,
+} from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
@@ -50,6 +54,27 @@ function createMobileMenuControlsBlock() {
   mobileMenuControls.append(backButton);
 
   return mobileMenuControls;
+}
+
+function createOverflowDropdown(navSections) {
+  const overflowDropdown = document.createElement('li');
+  overflowDropdown.classList.add('nav-button', 'nav-overflow');
+  const overflowButton = document.createElement('a');
+  overflowButton.innerHTML = '...';
+  overflowDropdown.append(overflowButton);
+
+  const overflowDropdownList = document.createElement('ul');
+  overflowDropdownList.classList.add('nav-overflow-list');
+
+  overflowDropdown.append(overflowDropdownList);
+
+  const sections = Array.from(navSections.querySelectorAll(':scope > ul > li'));
+  // add last three items to dropdown
+  const overflowSections = sections.slice(sections.length - 3);
+  overflowSections.forEach((section) => {
+    overflowDropdownList.append(section.cloneNode(true));
+  });
+  return overflowDropdown;
 }
 
 function addNavigationLogoForScrollingPage(nav) {
@@ -113,6 +138,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
   if (isDesktop.matches) {
+    nav.classList.remove('nav-mobile');
     navDrops.forEach((drop) => {
       if (!drop.hasAttribute('tabindex')) {
         drop.setAttribute('role', 'button');
@@ -121,6 +147,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
       }
     });
   } else {
+    nav.classList.add('nav-mobile');
     navDrops.forEach((drop) => {
       drop.removeAttribute('role');
       drop.removeAttribute('tabindex');
@@ -301,6 +328,7 @@ export default async function decorate(block) {
     });
 
     const navSections = nav.querySelector('.nav-sections');
+
     if (navSections) {
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection, i) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
@@ -333,6 +361,7 @@ export default async function decorate(block) {
       });
 
       navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
+      navSections.querySelector('ul').append(createOverflowDropdown(navSections));
     }
 
     // hamburger for mobile
@@ -365,9 +394,8 @@ export default async function decorate(block) {
     });
 
     await decorateIcons(nav);
-    decorateSearch(nav);
-
-    // add logo for scroling page
+    await decorateSearch(nav);
+    // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
 
     const navWrapper = document.createElement('div');
