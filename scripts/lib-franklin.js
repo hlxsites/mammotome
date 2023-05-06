@@ -659,6 +659,7 @@ export function decorateTemplateAndTheme() {
 export function decorateButtons(element) {
   element.querySelectorAll('a')
     .forEach((a) => {
+      // Suppress a to button decoration when prev-next bottom navigation is being used
       if (a.parentElement.tagName !== 'DIV') {
         a.title = a.title || a.textContent;
         if (a.href !== a.textContent) {
