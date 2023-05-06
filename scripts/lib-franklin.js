@@ -657,7 +657,7 @@ export function decorateTemplateAndTheme() {
  * @param {Element} element container element
  */
 export function decorateButtons(element) {
-  if (!element.querySelectorAll('.columns .prev-next')) {
+  if (element.querySelectorAll('.columns.prev-next').length === 0) {
     element.querySelectorAll('a')
       .forEach((a) => {
         a.title = a.title || a.textContent;
