@@ -657,9 +657,9 @@ export function decorateTemplateAndTheme() {
  * @param {Element} element container element
  */
 export function decorateButtons(element) {
-  if (element.querySelectorAll('.columns.prev-next').length === 0) {
-    element.querySelectorAll('a')
-      .forEach((a) => {
+  element.querySelectorAll('a')
+    .forEach((a) => {
+      if (a.parentElement.tagName !== 'DIV') {
         a.title = a.title || a.textContent;
         if (a.href !== a.textContent) {
           const up = a.parentElement;
@@ -681,8 +681,8 @@ export function decorateButtons(element) {
             }
           }
         }
-      });
-  }
+      }
+    });
 }
 
 /**
