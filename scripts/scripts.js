@@ -109,43 +109,47 @@ async function buildPrevNext(main) {
     return newDiv;
   };
 
-  const prevNextContainer = main.querySelector('.columns.prev-next').firstElementChild;
-  // Build Vertical Separator
-  const verticalSeparator = document.createElement('div');
-  verticalSeparator.classList.add('vertical-line');
-  prevNextContainer.firstElementChild.insertAdjacentElement('afterend', verticalSeparator);
+  // build nav only if prev-next is available
+  const prevNext = main.querySelector('.columns.prev-next');
+  if (prevNext) {
+    const prevNextContainer = prevNext.firstElementChild;
+    // Build Vertical Separator
+    const verticalSeparator = document.createElement('div');
+    verticalSeparator.classList.add('vertical-line');
+    prevNextContainer.firstElementChild.insertAdjacentElement('afterend', verticalSeparator);
 
-  // Get PREVIOUS and NEXT navigation elements
-  const prevBox = prevNextContainer.firstElementChild.querySelector('a');
-  const nextBox = prevNextContainer.lastElementChild.querySelector('a');
+    // Get PREVIOUS and NEXT navigation elements
+    const prevBox = prevNextContainer.firstElementChild.querySelector('a');
+    const nextBox = prevNextContainer.lastElementChild.querySelector('a');
 
-  // Build PREVIOUS navigation if available
-  if (prevBox) {
-    // Move header link into Div
-    moveHeaderLinkDiv(prevBox);
-    // Add Prev and Next button
-    const prevButton = await buildNavButtons('navPreviousText', 'Previous');
-    if (prevBox) prevBox.insertAdjacentElement('afterbegin', prevButton);
-    // build left Arrow
-    const leftArrow = document.createElement('div');
-    leftArrow.classList.add('left-arrow');
-    leftArrow.innerHTML = HTML_ARROW_PREV;
-    if (prevBox) prevBox.insertAdjacentElement('afterbegin', leftArrow);
-  }
+    // Build PREVIOUS navigation if available
+    if (prevBox) {
+      // Move header link into Div
+      moveHeaderLinkDiv(prevBox);
+      // Add Prev and Next button
+      const prevButton = await buildNavButtons('navPreviousText', 'Previous');
+      if (prevBox) prevBox.insertAdjacentElement('afterbegin', prevButton);
+      // build left Arrow
+      const leftArrow = document.createElement('div');
+      leftArrow.classList.add('left-arrow');
+      leftArrow.innerHTML = HTML_ARROW_PREV;
+      if (prevBox) prevBox.insertAdjacentElement('afterbegin', leftArrow);
+    }
 
-  // Build NEXT navigation if available
-  if (nextBox) {
-    // Move header link into Div
-    moveHeaderLinkDiv(nextBox);
-    // Add Prev and Next button
-    const nextButton = await buildNavButtons('navNextText', 'Next');
-    nextBox.insertAdjacentElement('afterbegin', nextButton);
+    // Build NEXT navigation if available
+    if (nextBox) {
+      // Move header link into Div
+      moveHeaderLinkDiv(nextBox);
+      // Add Prev and Next button
+      const nextButton = await buildNavButtons('navNextText', 'Next');
+      nextBox.insertAdjacentElement('afterbegin', nextButton);
 
-    // build right arrow
-    const rightArrow = document.createElement('div');
-    rightArrow.classList.add('right-arrow');
-    rightArrow.innerHTML = HTML_ARROW_NEXT;
-    nextBox.insertAdjacentElement('afterbegin', rightArrow);
+      // build right arrow
+      const rightArrow = document.createElement('div');
+      rightArrow.classList.add('right-arrow');
+      rightArrow.innerHTML = HTML_ARROW_NEXT;
+      nextBox.insertAdjacentElement('afterbegin', rightArrow);
+    }
   }
 }
 
