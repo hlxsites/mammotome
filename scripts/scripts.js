@@ -14,7 +14,7 @@ import {
   setLanguage,
   createMetadata,
   getMetadata,
-  toClassName, translate,
+  toClassName,
 } from './lib-franklin.js';
 
 import {
@@ -33,13 +33,6 @@ const ARC_BOTTOM_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 143
 const ARC_TOP_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
 + '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z" transform="translate(718.500000, 105.211150) scale(-1, -1) translate(-718.500000, -105.211150)" />\n'
 + '</svg>';
-
-const HTML_ARROW_PREV = '<svg fill="rgba(129,51,151,1)" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 -120 600 600">\n'
-  + '<path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"/>\n'
-  + '</svg>';
-const HTML_ARROW_NEXT = '<svg fill="rgba(129,51,151,1)" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 -120 600 600">\n'
-  + '<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"/>\n'
-  + '</svg>\n';
 
 // Define the custom audiences mapping for experimentation
 const EXPERIMENTATION_CONFIG = {
@@ -86,81 +79,12 @@ function buildHeroBlock(main) {
 }
 
 /**
- * Build Prev Next Bottom Navigation
- * @param main
- * @returns {Promise<void>}
- */
-async function buildPrevNext(main) {
-  // Move Header link text into a DIV
-  const moveHeaderLinkDiv = (el) => {
-    const text = el.innerText;
-    const newDiv = document.createElement('div');
-    newDiv.classList.add('prev-next-header-link');
-    newDiv.innerText = text;
-    el.innerText = '';
-    el.insertAdjacentElement('afterbegin', newDiv);
-  };
-
-  // Build prev next nav buttons
-  const buildNavButtons = async (key, defaultText) => {
-    const newDiv = document.createElement('div');
-    newDiv.classList.add('prev-next-button');
-    newDiv.innerText = await translate(key, defaultText);
-    return newDiv;
-  };
-
-  // build nav only if prev-next is available
-  const prevNext = main.querySelector('.columns.prev-next');
-  if (prevNext) {
-    const prevNextContainer = prevNext.firstElementChild;
-    // Build Vertical Separator
-    const verticalSeparator = document.createElement('div');
-    verticalSeparator.classList.add('vertical-line');
-    prevNextContainer.firstElementChild.insertAdjacentElement('afterend', verticalSeparator);
-
-    // Get PREVIOUS and NEXT navigation elements
-    const prevBox = prevNextContainer.firstElementChild.querySelector('a');
-    const nextBox = prevNextContainer.lastElementChild.querySelector('a');
-
-    // Build PREVIOUS navigation if available
-    if (prevBox) {
-      // Move header link into Div
-      moveHeaderLinkDiv(prevBox);
-      // Add Prev and Next button
-      const prevButton = await buildNavButtons('navPreviousText', 'Previous');
-      if (prevBox) prevBox.insertAdjacentElement('afterbegin', prevButton);
-      // build left Arrow
-      const leftArrow = document.createElement('div');
-      leftArrow.classList.add('left-arrow');
-      leftArrow.innerHTML = HTML_ARROW_PREV;
-      if (prevBox) prevBox.insertAdjacentElement('afterbegin', leftArrow);
-    }
-
-    // Build NEXT navigation if available
-    if (nextBox) {
-      // Move header link into Div
-      moveHeaderLinkDiv(nextBox);
-      // Add Prev and Next button
-      const nextButton = await buildNavButtons('navNextText', 'Next');
-      nextBox.insertAdjacentElement('afterbegin', nextButton);
-
-      // build right arrow
-      const rightArrow = document.createElement('div');
-      rightArrow.classList.add('right-arrow');
-      rightArrow.innerHTML = HTML_ARROW_NEXT;
-      nextBox.insertAdjacentElement('afterbegin', rightArrow);
-    }
-  }
-}
-
-/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
 function buildAutoBlocks(main) {
   try {
     buildHeroBlock(main);
-    buildPrevNext(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);

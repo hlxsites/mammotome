@@ -657,33 +657,31 @@ export function decorateTemplateAndTheme() {
  * @param {Element} element container element
  */
 export function decorateButtons(element) {
-  element.querySelectorAll('a')
-    .forEach((a) => {
-      // Suppress a-to-button decoration when prev-next bottom navigation is being used
-      if (!a.closest('.columns.prev-next')) {
-        a.title = a.title || a.textContent;
-        if (a.href !== a.textContent) {
-          const up = a.parentElement;
-          const twoup = a.parentElement.parentElement;
-          if (!a.querySelector('img')) {
-            if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
-              a.className = 'button primary'; // default
-              up.classList.add('button-container');
-            }
-            if (up.childNodes.length === 1 && up.tagName === 'STRONG'
-              && twoup.childNodes.length === 1 && twoup.tagName === 'P') {
-              a.className = 'button primary';
-              twoup.classList.add('button-container');
-            }
-            if (up.childNodes.length === 1 && up.tagName === 'EM'
-              && twoup.childNodes.length === 1 && twoup.tagName === 'P') {
-              a.className = 'button secondary';
-              twoup.classList.add('button-container');
-            }
-          }
+  element.querySelectorAll('a').forEach((a) => {
+    // Suppress a-to-button decoration when prev-next bottom navigation is being used
+    if (!a.closest('.prev-next')) {
+      a.title = a.title || a.textContent;
+
+      if (a.href !== a.textContent && !a.querySelector('img')) {
+        const parent = a.parentElement;
+        const grandparent = parent.parentElement;
+
+        const isSingleChild = (el, tagName) => el.childNodes.length === 1 && el.tagName === tagName;
+        const addClassAndContainer = (el, className, containerClass) => {
+          a.className = className;
+          el.classList.add(containerClass);
+        };
+
+        if (isSingleChild(parent, 'P') || isSingleChild(parent, 'DIV')) {
+          addClassAndContainer(parent, 'button primary', 'button-container');
+        } else if (isSingleChild(parent, 'STRONG') && isSingleChild(grandparent, 'P')) {
+          addClassAndContainer(grandparent, 'button primary', 'button-container');
+        } else if (isSingleChild(parent, 'EM') && isSingleChild(grandparent, 'P')) {
+          addClassAndContainer(grandparent, 'button secondary', 'button-container');
         }
       }
-    });
+    }
+  });
 }
 
 /**
