@@ -70,8 +70,6 @@ function buildHeroBlock(main) {
 
     elems.push(arc);
 
-    // move metadata to this auto block section...
-
     section.append(buildBlock('hero', { elems }));
     if (metaData) {
       section.append(metaData);
