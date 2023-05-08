@@ -15,6 +15,7 @@ import {
   createMetadata,
   getMetadata,
   toClassName,
+  getConfigValue,
 } from './lib-franklin.js';
 
 import {
@@ -213,7 +214,7 @@ async function loadLazy(doc) {
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
 
-  integrateMartech(document.body, 'GTM-KNBZTHP');
+  integrateMartech(document.body, await getConfigValue('gtmApiKeyProduction', 'GTM-KNBZTHP'));
 
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
