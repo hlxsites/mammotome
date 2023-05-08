@@ -57,6 +57,7 @@ function buildHeroBlock(main) {
   const h2 = main.querySelector('div:first-child > h2');
   const button = main.querySelector('div:first-child > p > a');
   const picture = main.querySelector('div:first-child picture');
+  const metaData = main.querySelector('div:first-child .section-metadata');
 
   function appendArcAndBuildBlock(section, elems) {
     if (button) {
@@ -72,6 +73,9 @@ function buildHeroBlock(main) {
     // move metadata to this auto block section...
 
     section.append(buildBlock('hero', { elems }));
+    if (metaData) {
+      section.append(metaData);
+    }
     main.prepend(section);
   }
 
