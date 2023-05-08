@@ -1,0 +1,43 @@
+:root {
+    --mt-collapsible-question-font-color: var(--mt-global-color-base-primary);
+
+    /* font weight */
+    --mt-collapsible-question-hover-font-weight: var(--mt-font-weight-boldest);
+
+    /* line height */
+    --mt-collapsible-question-line-height: 1rem;
+    --mt-collapsible-answer-line-height: 1.5rem;
+
+    /* border color */
+    --mt-collapsible-answer-border-color: #d5d8dc;
+}
+
+.collapsible .question {
+    text-decoration: underline;
+    line-height: var(--mt-collapsible-question-line-height);
+    padding: 15px;
+}
+
+.collapsible .question a:hover {
+    font-weight: var(--mt-collapsible-question-hover-font-weight);
+    color: unset;
+}
+
+.collapsible .expanded .question a {
+    color: var(--mt-collapsible-question-font-color);
+}
+
+.collapsible .answer {
+    line-height: var(--mt-collapsible-answer-line-height);
+    padding: 15px;
+    border-bottom: 1px solid var(--mt-collapsible-answer-border-color);
+}   
+
+.collapsible .collapsed .answer {
+    display: none;
+} 
+
+.collapsible .answer p {
+    display: block;
+    margin-block-end: 1em;
+}
