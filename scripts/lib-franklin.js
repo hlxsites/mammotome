@@ -10,6 +10,11 @@
  * governing permissions and limitations under the License.
  */
 
+const PDF_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">'
+  + '<!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->'
+  + '<path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm64 236c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-72v8c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm96-114.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"/>'
+  + '</svg>';
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -658,24 +663,34 @@ export function decorateTemplateAndTheme() {
  */
 export function decorateButtons(element) {
   element.querySelectorAll('a').forEach((a) => {
-    a.title = a.title || a.textContent;
-    if (a.href !== a.textContent) {
-      const up = a.parentElement;
-      const twoup = a.parentElement.parentElement;
-      if (!a.querySelector('img')) {
-        if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
-          a.className = 'button primary'; // default
-          up.classList.add('button-container');
+    // Suppress a-to-button decoration when prev-next bottom navigation is being used
+    if (!a.closest('.prev-next')) {
+      a.title = a.title || a.textContent;
+      if (a.href !== a.textContent && !a.querySelector('img')) {
+        const parent = a.parentElement;
+        const grandparent = parent.parentElement;
+        if (a.href.includes('.pdf')) {
+          const icon = document.createElement('i');
+          icon.classList.add('link-icon');
+          icon.innerHTML = PDF_ICON;
+          const spanText = document.createElement('span');
+          spanText.innerHTML = a.innerHTML;
+          a.innerHTML = '';
+          a.appendChild(icon);
+          a.appendChild(spanText);
         }
-        if (up.childNodes.length === 1 && up.tagName === 'STRONG'
-          && twoup.childNodes.length === 1 && twoup.tagName === 'P') {
-          a.className = 'button primary';
-          twoup.classList.add('button-container');
-        }
-        if (up.childNodes.length === 1 && up.tagName === 'EM'
-          && twoup.childNodes.length === 1 && twoup.tagName === 'P') {
-          a.className = 'button secondary';
-          twoup.classList.add('button-container');
+        const isSingleChild = (el, tagName) => el.childNodes.length === 1 && el.tagName === tagName;
+        const addClassAndContainer = (el, className, containerClass) => {
+          a.className = className;
+          el.classList.add(containerClass);
+        };
+
+        if (isSingleChild(parent, 'P') || isSingleChild(parent, 'DIV')) {
+          addClassAndContainer(parent, 'button primary', 'button-container');
+        } else if (isSingleChild(parent, 'STRONG') && isSingleChild(grandparent, 'P')) {
+          addClassAndContainer(grandparent, 'button primary', 'button-container');
+        } else if (isSingleChild(parent, 'EM') && isSingleChild(grandparent, 'P')) {
+          addClassAndContainer(grandparent, 'button secondary', 'button-container');
         }
       }
     }

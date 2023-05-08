@@ -34,6 +34,8 @@
   --mt-global-color-silver: #ccc;
   --mt-global-color-alabaste: #F7F7F7;
   --mt-global-color-gallery: #ECECEC;
+  --mt-global-color-accent-grey: #BFBFBF;
+  --mt-global-color-line-grey: #D5D8DC;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
@@ -60,6 +62,9 @@
   --mt-link-hover-color: var(--mt-global-color-accent-secondary);
   --mt-text-color: var(--mt-global-color-base-secondary);
   --mt-list-color: var(--mt-global-color-accent-senary);
+  --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
+  --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
+
 
   /* fonts families */
   --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
@@ -76,6 +81,8 @@
   /* feature font weights */
   --mt-body-font-weight: var(--mt-font-weight-regular);
   --mt-button-font-weight: var(--mt-font-weight-bolder);
+  --mt-prev-next-header-link: var(--mt-font-weight-bold);
+  --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
 
   /* font sizes */
   --mt-font-size-50: 0.5rem;
@@ -83,11 +90,13 @@
   --mt-font-size-80: 0.8rem;
   --mt-font-size-90: 0.9rem;
   --mt-font-size-100: 1rem;
+  --mt-font-size-120: 1.20rem;
   --mt-font-size-125: 1.25rem;
   --mt-font-size-130: 1.3rem;
   --mt-font-size-150: 1.5rem;
   --mt-font-size-175: 1.75rem;
   --mt-font-size-180: 1.75rem;
+  --mt-font-size-185: 1.85rem;
   --mt-font-size-200: 2rem;
   --mt-font-size-215: 2.15rem;
   --mt-font-size-250: 2.5rem;
@@ -102,6 +111,8 @@
   --mt-hero-line-height-title: 1;
   --mt-hero-line-height-subtitle: 1.5;
   --mt-nav-height: 90px;
+  --mt-prev-next-header-link-line-height: var(--mt-font-size-185);
+  --mt-prev-next-button-line-height: var(--mt-font-size-120);
 
   /* feature font sizes */
   --mt-body-font-size-m: var(--mt-font-size-100);
@@ -122,6 +133,7 @@
   --mt-footer-font-size-footer-s: var(--mt-font-size-80);
   --mt-footer-font-size-footer-m: var(--mt-font-size-90);
   --mt-footer-font-size-footer-l: var(--mt-font-size-100);
+  --mt-prev-next-button-font-size: var(--mt-font-size-80);
 
 
   /* history */
@@ -218,6 +230,10 @@ pre {
   overflow: scroll;
 }
 
+main {
+  overflow: hidden;
+}
+
 main pre {
   padding: 1em;
   border-radius: .25em;
@@ -295,6 +311,29 @@ button.secondary:focus {
   background-color: var(--mt-button-hover-color-secondary);
 }
 
+a.button i.link-icon {
+  padding-right: 15px;
+}
+
+a.button:has(i.link-icon) span {
+  white-space: break-spaces;
+  text-align: left;
+}
+
+a.button:has(i.link-icon) {
+  display: flex;
+  width: 100%;
+  font-weight: var(--mt-body-font-weight);
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--mt-global-color-accent-primary);
+}
+
+a.button:has(i.link-icon):hover {
+  background: none;
+}
+
 main input {
   font-size: var(--mt-input-font-size);
   width: 100%;
@@ -345,6 +384,11 @@ main img {
 .icon svg {
   height: 100%;
   width: 100%;
+}
+
+a.button i.link-icon svg {
+  width: 1.25em;
+  fill: var(--mt-global-color-accent-primary);;
 }
 
 main .section {
