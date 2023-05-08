@@ -35,7 +35,6 @@
   --mt-global-color-alabaste: #F7F7F7;
   --mt-global-color-gallery: #ECECEC;
   --mt-global-color-accent-grey: #BFBFBF;
-  --mt-global-color-accent-black: #3D3E40;
   --mt-global-color-line-grey: #D5D8DC;
 
   /* feature background colors */
@@ -64,7 +63,7 @@
   --mt-text-color: var(--mt-global-color-base-secondary);
   --mt-list-color: var(--mt-global-color-accent-senary);
   --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
-  --mt-prev-next-header-link-text-color: var(--mt-global-color-accent-black);
+  --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
 
 
   /* fonts families */
@@ -658,4 +657,3 @@ main .schedule-demo .default-content-wrapper h2 {
   fill: var(--mt-background-color-primary);
   background-color: transparent;
 }
-

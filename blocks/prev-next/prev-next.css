@@ -40,14 +40,14 @@
 /* Previous button box */
 .prev-next > div > div:first-child > a {
     grid-template-columns: auto 1fr;
-    grid-column-gap: 5px;
+    grid-column-gap: 6px;
 }
 
 /* Next button box */
 .prev-next > div > div:last-child > a {
     grid-template-columns: 1fr auto;
     justify-items: end;
-    grid-column-gap: 16px;
+    grid-column-gap: 10px;
 }
 
 /* Prev and Next Button */
