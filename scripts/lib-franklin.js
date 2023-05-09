@@ -663,8 +663,10 @@ export function decorateTemplateAndTheme() {
  */
 export function decorateButtons(element) {
   element.querySelectorAll('a').forEach((a) => {
-    // Suppress a-to-button decoration when prev-next bottom navigation is being used
-    if (!a.closest('.prev-next')) {
+    // Suppress a-to-button decoration when in excludedParentClasses
+    const excludedParentClasses = ['.prev-next', '.tab-navigation'];
+    const isClosest = (el) => a.closest(el);
+    if (!excludedParentClasses.some(isClosest)) {
       a.title = a.title || a.textContent;
       if (a.href !== a.textContent && !a.querySelector('img')) {
         const parent = a.parentElement;
