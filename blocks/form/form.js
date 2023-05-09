@@ -1,5 +1,21 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 
+const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
+const FORM_SUBMIT_ENDPOINT = 'http://localhost:8787';
+
+function loadScript(url) {
+  const head = document.querySelector('head');
+  let script = head.querySelector(`script[src="${url}"]`);
+  if (!script) {
+    script = document.createElement('script');
+    script.src = url;
+    script.async = true;
+    head.append(script);
+    return script;
+  }
+  return script;
+}
+
 function constructPayload(form) {
   const payload = {};
   [...form.elements].forEach((fe) => {
@@ -12,25 +28,48 @@ function constructPayload(form) {
   return payload;
 }
 
-async function submitForm(form) {
+async function submissionFailure(error, form) {
+  console.log('Err', error);
+  alert(error); // TODO define error mechansim
+  form.setAttribute('data-submitting', 'false');
+  form.querySelector('button[type="submit"]').disabled = false;
+}
+
+async function submitForm(form, token) {
+  const url = `${FORM_SUBMIT_ENDPOINT}${form.dataset.action}`;
   const payload = constructPayload(form);
-  const resp = await fetch(form.dataset.action, {
+  fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ data: payload }),
+    body: JSON.stringify({ data: payload, token }),
+  }).then(async (response) => {
+    if (response.ok) {
+      sampleRUM('form:submit');
+      window.location.href = form.dataset?.redirect || 'thankyou';
+    } else {
+      const error = await response.text();
+      submissionFailure(error, form);
+    }
+  }).catch((error) => {
+    submissionFailure(error, form);
   });
-  await resp.text();
-  sampleRUM('form:submit');
-  return payload;
 }
 
-async function handleSubmit(form, redirectTo) {
+async function handleSubmit(form) {
   if (form.getAttribute('data-submitting') !== 'true') {
     form.setAttribute('data-submitting', 'true');
-    await submitForm(form);
-    window.location.href = redirectTo || 'thankyou';
+    const { grecaptcha } = window;
+    if (grecaptcha) {
+      grecaptcha.ready(() => {
+        grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(async (token) => {
+          await submitForm(form, token);
+        });
+      });
+    } else {
+      await submitForm(form);
+    }
   }
 }
 
@@ -92,6 +131,21 @@ function createButton(fd) {
   button.id = fd.Id;
   button.name = fd.Name;
   wrapper.replaceChildren(button);
+  return wrapper;
+}
+function createSubmit(fd) {
+  const wrapper = createButton(fd);
+  if (SITE_KEY) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadScript(`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`);
+          obs.disconnect();
+        }
+      });
+    });
+    obs.observe(wrapper);
+  }
   return wrapper;
 }
 
@@ -199,10 +253,10 @@ const getId = (function getId() {
 const fieldRenderers = {
   radio: createRadio,
   checkbox: createRadio,
-  submit: createButton,
   textarea: createTextArea,
   select: createSelect,
   button: createButton,
+  submit: createSubmit,
   output: createOutput,
   hidden: createHidden,
   fieldset: createFieldSet,
