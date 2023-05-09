@@ -231,9 +231,9 @@ header nav:not(.nav-mobile) .nav-sections ul > li > ul > li > ul > li:hover {
   background-color: var(--mt-header-menu-item-selected-color);
 }
 
-.icon-logo {
+.icon-logo svg{
   width: 200px;
-  height: 22px;
+  height: 23px;
 }
 
 header nav .icon-search {

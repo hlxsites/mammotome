@@ -170,7 +170,8 @@ footer > .footer > div > div:last-child > ul > li:last-child {
 
 /* corp logo (mobile) */
 footer > .footer > div > div:last-child span.icon-logo {
-  width: 106px;
+  width: 200px;
+  height: 23px;
 }
 
 /* Copyright and logo (larger screens) */
