@@ -1,6 +1,7 @@
 :root {
   --columns-max-width: 1300px;
   --columns-image-width: 500px;
+  --columns-image-xs-height: 110px;
   --columns-image-padding: 30px;
   --columns-gap: 65px;
   --columns-link-color: #c36;
@@ -33,18 +34,12 @@
   align-items: center;
 }
 
-.columns > div p {
-  font-weight: 300;
-  font-size: 1.3rem;
-  line-height: 1.5;
-}
-
 .columns > div > div {
   order: 0;
 }
 
-.columns.simple > div {
-  align-items: flex-start;
+.columns.centered > div {
+  text-align: center;
 }
 
 div[class^="columns image-color-"] img {
@@ -57,8 +52,27 @@ div[class^="columns image-color-"] img {
   display: block;
 }
 
+.columns.images-small > div img {
+  height: var(--columns-image-xs-height);
+}
+
 div[class^="columns image-color-"] > div > div:last-child img {
   margin: 0 0 0 auto;
+}
+
+.columns > div p {
+  font-weight: 300;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+.columns.text-small > div p {
+    font-size: 1rem;
+    padding: 0 15%;
+}
+
+.columns.simple > div {
+  align-items: flex-start;
 }
 
 .columns > div > .columns-img-col {
