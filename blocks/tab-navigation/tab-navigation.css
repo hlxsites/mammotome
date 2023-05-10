@@ -1,0 +1,21 @@
+.tab-navigation > div {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex: 1 0 auto;
+}
+
+.tab-navigation > div div {
+    padding: 7px 9px;
+}
+
+.tab-navigation > div div a {
+    font-size: var(--mt-tab-navigation-font-size);
+    font-weight: var(--mt-tab-navigation-font-weight);
+    color: var( --mt-top-navigation-link-color);
+}
+
+.tab-navigation > div a.active {
+    text-decoration: none;
+    color: var(--mt-top-navigation-actual-page-color);
+}

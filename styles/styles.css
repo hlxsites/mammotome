@@ -64,6 +64,8 @@
   --mt-list-color: var(--mt-global-color-accent-senary);
   --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
   --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
+  --mt-top-navigation-actual-page-color: var(--mt-global-color-base-secondary);
+  --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
 
 
   /* fonts families */
@@ -83,6 +85,7 @@
   --mt-button-font-weight: var(--mt-font-weight-bolder);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
+  --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
 
   /* font sizes */
   --mt-font-size-50: 0.5rem;
@@ -134,6 +137,7 @@
   --mt-footer-font-size-footer-m: var(--mt-font-size-90);
   --mt-footer-font-size-footer-l: var(--mt-font-size-100);
   --mt-prev-next-button-font-size: var(--mt-font-size-80);
+  --mt-tab-navigation-font-size: var(--mt-font-size-90);
 
 
   /* history */
@@ -167,6 +171,7 @@ h3,
 h4,
 h5,
 h6 {
+  text-align: center;
   margin: 0.5rem 0 1rem;
   font-weight: var(--mt-font-weight-bold);
   line-height: 1.2;
