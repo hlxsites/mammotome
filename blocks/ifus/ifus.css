@@ -1,0 +1,75 @@
+.ifu {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    padding: 2rem 0 0;
+    max-width: 1300px;
+    margin: auto;
+}
+
+.ifu-result {
+    width: 100%;
+    padding: 2rem 0 0;
+    max-width: 1300px;
+    margin: auto;
+}
+
+.ifu-result.no-result {
+    visibility: hidden;
+    padding: 0;
+}
+
+@media (max-width: 1024px) {
+    .ifu {
+        flex-direction: column;
+    }
+}
+
+.ifu > div {
+    padding: 15px 20px;
+    width: 100%;
+}
+
+.ifu-result > div > div {
+    padding: 0 1rem 2rem;
+    border-bottom: 1px solid var(--mt-global-color-accent-quaternary);
+    overflow-wrap: break-word;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+    .ifu-result > div > div {
+        flex-direction: column;
+    }
+}
+
+.ifu > .ifu-selection > select {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--mt-global-color-dove-gray);
+    border-radius: 3px;
+    padding: .5rem 1rem;
+    transition: all .3s;
+    margin: 0 0 15px;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.ifu-result > div > div > div > a > button {
+    padding: 15px 50px;
+    margin-top: 2.5rem;
+    display: block;
+    white-space: nowrap;
+    text-align: center;
+    width: 100%;
+}
+
+.ifu-result > div > div > div > a > button,
+.ifu > .ifu-selection > button {
+    background-color: var(--mt-button-background-color-primary);
+    color: var(--mt-background-color-primary);
+    width: auto;
+}

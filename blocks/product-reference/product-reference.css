@@ -1,0 +1,39 @@
+.product-reference-wrapper, .product-reference {
+  max-width: 1300px;
+  margin: auto;
+}
+
+.product-reference > div {
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+}
+
+@media (min-width: 1025px) {
+  .product-reference > div {
+    flex-direction: row;
+  }
+}
+
+.product-ref-container {
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.product-ref-container > div {
+  width: 25rem;
+}
+
+.product-ref-container > div > a > button {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.product-ref-container > div > img {
+  object-position: center center;
+  object-fit: contain;
+  width: 100%;
+  height: 20rem;
+}
