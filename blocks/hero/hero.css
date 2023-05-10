@@ -54,8 +54,21 @@ main .hero h2 {
   line-height: var(--mt-hero-line-height-subtitle);
 }
 
+main .hero a {
+  color: var(--mt-global-color-white);
+  background-color: rgb(0 0 0 / 0%);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  padding: 15px 50px;
+}
+
+main .hero a:hover {
+  background-color: rgb(132 50 155 / 27%);
+}
+
 main .hero .hero-arc {
-  margin: 5% 0 0;
+  margin: 8% 0 0;
 }
 
 main .hero .hero-arc svg {
@@ -87,7 +100,6 @@ main .hero img {
 @media (min-width: 500px) {
   main .hero picture {
     bottom: 0;
-    top: unset;
   }
 }
 

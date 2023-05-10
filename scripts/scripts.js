@@ -53,18 +53,15 @@ const EXPERIMENTATION_CONFIG = {
  * @param {Element} main The container element
  */
 function buildHeroBlock(main) {
-  const h1 = main.querySelector('h1');
-  const h2 = main.querySelector('h2');
-  const picture = main.querySelector('picture');
+  const h1 = main.querySelector('div:first-child > h1');
+  const h2 = main.querySelector('div:first-child > h2');
+  const button = main.querySelector('div:first-child > p > a');
+  const picture = main.querySelector('div:first-child picture');
+  const metaData = main.querySelector('div:first-child .section-metadata');
 
-  // eslint-disable-next-line no-bitwise
-  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
-    const section = document.createElement('div');
-    const elems = [picture, h1];
-
-    // optional H2 following the hero's H1
-    if (h2 && h1.nextElementSibling === h2) {
-      elems.push(h2);
+  function appendArcAndBuildBlock(section, elems) {
+    if (button) {
+      elems.push(button);
     }
 
     const arc = document.createElement('div');
@@ -74,7 +71,29 @@ function buildHeroBlock(main) {
     elems.push(arc);
 
     section.append(buildBlock('hero', { elems }));
+    if (metaData) {
+      section.append(metaData);
+    }
     main.prepend(section);
+  }
+
+  // eslint-disable-next-line no-bitwise
+  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    const section = document.createElement('div');
+    const elems = [picture, h1];
+
+    if (h2 && h1.nextElementSibling === h2) {
+      elems.push(h2);
+    }
+
+    appendArcAndBuildBlock(section, elems);
+  } else if (h2 && picture
+    // eslint-disable-next-line no-bitwise
+    && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    const section = document.createElement('div');
+    const elems = [picture, h2];
+
+    appendArcAndBuildBlock(section, elems);
   }
 }
 
