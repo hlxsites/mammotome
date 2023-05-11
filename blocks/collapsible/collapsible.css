@@ -12,6 +12,9 @@
     --mt-collapsible-answer-border-color: #d5d8dc;
 }
 
+.collapsible.block > div{
+    border-bottom: 1px solid var(--mt-collapsible-answer-border-color);
+}
 .collapsible .question {
     text-decoration: underline;
     line-height: var(--mt-collapsible-question-line-height);
@@ -30,12 +33,21 @@
 .collapsible .answer {
     line-height: var(--mt-collapsible-answer-line-height);
     padding: 15px;
-    border-bottom: 1px solid var(--mt-collapsible-answer-border-color);
+    overflow: hidden;
 }   
 
-.collapsible .collapsed .answer {
+.collapsible .answer.collapsed {
     display: none;
 } 
+
+.collapsible .answer.before-transition > p {
+    height: 0px;
+    overflow: hidden;
+}
+
+.collapsible .answer.transition > p {
+    transition: height 1s;
+}
 
 .collapsible .answer p {
     display: block;
