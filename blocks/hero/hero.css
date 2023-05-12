@@ -8,10 +8,11 @@ main .hero-container {
   padding: 0;
 }
 
-main .hero {
+main .hero-big {
   position: relative;
   padding: 10% 0 0;
 }
+
 
 main .hero::after {
   position: absolute;
@@ -21,14 +22,27 @@ main .hero::after {
   height: 100%;
   width: 100%;
   content: '';
+}
+
+main .hero-big::after {
   background-color: transparent;
   background-image: linear-gradient(180deg, rgb(0 15 41 / 69%) 45%, rgb(0 15 41 / 27%) 67%);
   opacity: 0.61;
   transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
 }
 
-main .hero > div > div {
+main .hero-big > div > div {
   text-align: center;
+}
+
+main .hero-light > div > div {
+  position: relative;
+  z-index: -1;
+}
+
+main .hero-light > div > div:first-child {
+    background-color: var(--mt-hero-light-arc-color);
+    opacity: 0.8;
 }
 
 main .hero h1, main .hero h2 {
@@ -54,6 +68,16 @@ main .hero h2 {
   line-height: var(--mt-hero-line-height-subtitle);
 }
 
+main .hero-light h1 {
+  font-size: var(--mt-hero-font-size-xl);
+  padding-top: max(37px,3%);
+}
+
+main .hero-light h2 {
+  font-size: var(--mt-hero-light-font-size-s);
+  font-weight: var(--mt-font-weight-regular);
+}
+
 main .hero a {
   color: var(--mt-global-color-white);
   background-color: rgb(0 0 0 / 0%);
@@ -67,9 +91,14 @@ main .hero a:hover {
   background-color: rgb(132 50 155 / 27%);
 }
 
-main .hero .hero-arc {
+main .hero-big .hero-arc {
   margin: 8% 0 0;
 }
+
+main .hero-light .hero-arc {
+  margin: 15% 0 0;
+}
+
 
 main .hero .hero-arc svg {
   display: block;
@@ -79,7 +108,11 @@ main .hero .hero-arc svg {
   background-color: transparent;
 }
 
-main .hero picture {
+main .hero-light .hero-arc svg {
+  background-color: transparent;
+}
+
+main .hero-big picture {
   position: absolute;
   width: 110%;
   z-index: -2;
@@ -91,10 +124,26 @@ main .hero picture {
   box-sizing: border-box;
 }
 
-main .hero img {
+main .hero-light picture {
+  justify-content: center;
+  width: 100%;
+  display: flex;
+  margin-top: -29%;
+  padding: 0 12px;
+}
+
+
+main .hero-big img {
   object-fit: cover;
   width: 100%;
   height: 100%;
+}
+
+main .hero-light img {
+  width: 483px;
+  border-radius: 5px;
+  box-shadow: rgb(28 28 73 / 37%) 8px 22px 50px 0;
+  z-index: 3;
 }
 
 @media (min-width: 500px) {
@@ -111,5 +160,9 @@ main .hero img {
   main .hero h2 {
     padding: 0 40px;
     font-size: var(--mt-hero-font-size-m);
+  }
+
+  main .hero-light h2 {
+    font-size: var(--mt-hero-light-font-size-s);
   }
 }
