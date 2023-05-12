@@ -1,33 +1,148 @@
+:root {
+  --columns-max-width: 1300px;
+  --columns-image-width: 500px;
+  --columns-image-xs-height: 110px;
+  --columns-image-padding: 30px;
+  --columns-gap: 65px;
+  --columns-link-color: #c36;
+}
+
+.columns {
+  max-width: var(--columns-max-width);
+  margin: auto;
+}
+
+.columns h2 {
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+}
+
+.columns a:not(.button) {
+    color: var(--columns-link-color);
+    font-size: 1rem;
+}
+
+.columns sup {
+  font-size: 1rem;
+}
+
 .columns > div {
   display: flex;
   flex-direction: column;
-}
-
-.columns img {
-  width: 100%;
+  align-items: center;
 }
 
 .columns > div > div {
-  order: 1;
+  order: 0;
 }
 
-.columns > div > .columns-img-col {
-  order: 0;
+.columns.centered > div {
+  text-align: center;
+}
+
+div[class^="columns image-color-"] img {
+  width: calc((var(--columns-max-width)/2) - var(--columns-image-padding));
+  border-radius: 5px;
+  box-shadow: 8px 22px 50px 0 rgb(28 28 73 / 37%);
 }
 
 .columns > div > .columns-img-col img {
   display: block;
 }
 
+.columns.images-small > div img {
+  height: var(--columns-image-xs-height);
+}
+
+div[class^="columns image-color-"] > div > div:last-child img {
+  margin: 0 0 0 auto;
+}
+
+.columns > div p {
+  font-weight: 300;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+.columns.simple > div p {
+  font-size: initial;
+}
+
+.columns.text-small > div p {
+    font-size: 1rem;
+    padding: 0 15%;
+}
+
+.columns.simple > div {
+  align-items: flex-start;
+}
+
+.columns > div > .columns-img-col {
+  order: 1;
+  position: relative;
+  margin-bottom: 10%;
+  padding: 7% 0;
+}
+
+div[class^="columns image-color-"] > div > div:first-child.columns-img-col {
+  padding-left: var(--columns-image-padding);
+  max-width: calc((var(--columns-max-width)/2));
+}
+
+div[class^="columns image-color-"] > div > div:last-child.columns-img-col {
+  padding-right: var(--columns-image-padding);
+  max-width: calc((var(--columns-max-width)/2));
+}
+
+.columns > div > .columns-img-col::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  border-radius: 5px;
+  display: block;
+  z-index: -1;
+}
+
+.columns div > div:first-child.columns-img-col::before {
+  left: 0;
+}
+
+.columns > div > div:last-child.columns-img-col::before {
+  right: 0;
+}
+
+.columns.image-color-primary-blue > div > .columns-img-col::before {
+  background-color: var(--mt-global-color-accent-primary);
+}
+
+.columns.image-color-light-blue > div > .columns-img-col::before {
+  background-color: var(--mt-global-color-light-blue);
+}
+
 @media (min-width: 900px) {
+  .columns h2 {
+    font-size: 1rem;
+  }
+
   .columns > div {
-    align-items: center;
     flex-direction: unset;
-    gap: 32px;
+    gap: var(--columns-gap);
+  }
+
+  .columns > div p {
+    font-size: 1.8rem;
   }
 
   .columns > div > div {
     flex: 1;
+    order: unset;
+  }
+
+  .columns > div > .columns-img-col {
     order: unset;
   }
 }
