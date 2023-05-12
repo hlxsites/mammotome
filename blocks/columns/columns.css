@@ -66,6 +66,10 @@ div[class^="columns image-color-"] > div > div:last-child img {
   line-height: 1.5;
 }
 
+.columns.simple > div p {
+  font-size: initial;
+}
+
 .columns.text-small > div p {
     font-size: 1rem;
     padding: 0 15%;
