@@ -34,20 +34,28 @@
     line-height: var(--mt-collapsible-answer-line-height);
     padding: 15px;
     overflow: hidden;
+    box-sizing: content-box;
 }   
 
 .collapsible .answer.collapsed {
     display: none;
 } 
-
-.collapsible .answer.before-transition > p {
+.collapsible .answer.transition {
+    transition: height 1s, padding-top 1s, padding-bottom 1s;
+}
+.collapsible .answer.before-transition {
+    height: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}    
+/* .collapsible .answer.before-transition > p {
     height: 0px;
     overflow: hidden;
 }
 
 .collapsible .answer.transition > p {
     transition: height 1s;
-}
+} */
 
 .collapsible .answer p {
     display: block;

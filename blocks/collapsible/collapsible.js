@@ -27,23 +27,36 @@ export default function decorate(block) {
       answerArea.className = 'answer';
       answerArea.removeEventListener('transitionend', ontransitionend);
 
-      answerArea.style.height = null;
+      //answerArea.style.height = null;
+      answerArea.style = null;
     }
     
+    const ontransitionend2 = () => {
+      answerArea.className = 'answer collapsed';
+      answerArea.style = null;
+      answerArea.removeEventListener('transitionend', ontransitionend2);
+    }
+
     const collapseAnswer = () => {
-      const answerAreaHeight = answerArea.scrollHeight;
+
+      //answerArea.className = 'answer collapsed';
+
+      
+      //const answerAreaHeight = answerArea.scrollHeight;
+      const answerAreaHeight = window.getComputedStyle(answerArea).height
 
 
       requestAnimationFrame(function() {
-        answerBlock.style.height = answerAreaHeight + 'px';
+        answerArea.style.height = answerAreaHeight;
         answerArea.className = 'answer transition';
   
         requestAnimationFrame(function() {
-          answerBlock.style.height = 0 + 'px';
 
-          answerArea.addEventListener('transitionend', function(){
-            answerArea.className = 'answer collapsed';
-          });
+          answerArea.style.height = 0 + 'px';
+          answerArea.style.paddingTop = 0 + 'px';
+          answerArea.style.paddingBottom = 0 + 'px';
+
+          answerArea.addEventListener('transitionend', ontransitionend2);
           
         });
       });  
@@ -61,10 +74,9 @@ export default function decorate(block) {
 
       answerArea.addEventListener('transitionend', ontransitionend);
 
-      answerArea.className = 'answer before-transition transition';
-
-      answerBlock.style.height = answerAreaHeight + 'px';
-      // answerArea.style.height = answerAreaHeight + 'px';
+      answerArea.style.height = answerAreaHeight + 'px';
+      answerArea.style.height = answerAreaHeight + 'px';
+      answerArea.className = 'answer transition';
       
       answerArea.setAttribute('data-expanded', 'true');
     } 
