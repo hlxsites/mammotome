@@ -77,7 +77,7 @@ function buildHeroBlock(main) {
     main.prepend(section);
   }
 
-  // eslint-disable-next-line no-bitwise
+  // eslint-disable-next-line no-bitwise,max-len
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
     const elems = [picture, h1];
@@ -87,6 +87,24 @@ function buildHeroBlock(main) {
     }
 
     appendArcAndBuildBlock(section, elems);
+    // Hero light version
+    // eslint-disable-next-line max-len,no-bitwise
+  } else if (h1 && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+    const section = document.createElement('div');
+    const elems = [h1];
+
+    if (h2 && h1.nextElementSibling === h2) {
+      elems.push(h2);
+    }
+    elems.push(picture);
+
+    appendArcAndBuildBlock(section, elems);
+
+    // TODO: For testing
+    const pic = main.querySelector('.hero picture');
+    const arcParent = main.querySelector('.hero-arc').parentElement;
+    pic.remove();
+    arcParent.appendChild(pic);
   } else if (h2 && picture
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
