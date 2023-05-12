@@ -133,6 +133,7 @@
   --mt-hero-font-size-m: var(--mt-font-size-180);
   --mt-hero-font-size-l: var(--mt-font-size-200);
   --mt-hero-font-size-xl: var(--mt-font-size-250);
+  --mt-hero-light-font-size-s: var(--mt-font-size-125);
   --mt-input-font-size: var(--mt-font-size-175);
   --mt-footer-font-size-footer-s: var(--mt-font-size-80);
   --mt-footer-font-size-footer-m: var(--mt-font-size-90);

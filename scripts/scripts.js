@@ -59,6 +59,11 @@ function buildHeroBlock(main) {
   const picture = main.querySelector('div:first-child picture');
   const metaData = main.querySelector('div:first-child .section-metadata');
 
+  const setHeroType = (heroType) => {
+    const heroBlock = main.querySelector('.hero');
+    heroBlock.classList.add(`hero-${heroType}`);
+  };
+
   function appendArcAndBuildBlock(section, elems) {
     if (button) {
       elems.push(button);
@@ -87,24 +92,24 @@ function buildHeroBlock(main) {
     }
 
     appendArcAndBuildBlock(section, elems);
-    // Hero light version
+    setHeroType('big');
     // eslint-disable-next-line max-len,no-bitwise
   } else if (h1 && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+    // Hero light version
     const section = document.createElement('div');
     const elems = [h1];
 
     if (h2 && h1.nextElementSibling === h2) {
       elems.push(h2);
     }
-    elems.push(picture);
 
     appendArcAndBuildBlock(section, elems);
-
-    // TODO: For testing
-    const pic = main.querySelector('.hero picture');
-    const arcParent = main.querySelector('.hero-arc').parentElement;
-    pic.remove();
-    arcParent.appendChild(pic);
+    setHeroType('light');
+    // position PICTURE to the right place for hero light
+    const newPictureParent = main.querySelector('.hero-light').firstChild;
+    const newPictureDiv = document.createElement('div');
+    newPictureDiv.appendChild(picture);
+    newPictureParent.appendChild(newPictureDiv);
   } else if (h2 && picture
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
@@ -112,6 +117,7 @@ function buildHeroBlock(main) {
     const elems = [picture, h2];
 
     appendArcAndBuildBlock(section, elems);
+    setHeroType('big');
   }
 }
 
