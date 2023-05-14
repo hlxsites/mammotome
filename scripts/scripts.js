@@ -94,7 +94,7 @@ function buildHeroBlock(main) {
     appendArcAndBuildBlock(section, elems);
     setHeroType('big');
     // eslint-disable-next-line max-len,no-bitwise
-  } else if (h1 && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+  } else if (h1 && h2 && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_FOLLOWING)) {
     // Hero light version
     const section = document.createElement('div');
     const elems = [h1];
