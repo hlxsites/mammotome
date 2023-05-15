@@ -68,6 +68,7 @@
   --mt-top-navigation-actual-page-color: var(--mt-global-color-base-secondary);
   --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
   --mt-hero-light-arc-color: var(--mt-global-color-accent-secondary);
+  --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
 
 
   /* fonts families */
@@ -88,6 +89,8 @@
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
   --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
+  --mt-search-result-font-weight: var(--mt-font-weight-regular);
+
 
   /* font sizes */
   --mt-font-size-50: 0.5rem;
