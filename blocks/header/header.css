@@ -51,13 +51,13 @@ header nav {
   align-items: center;
   margin: auto;
   padding: 15px var(--mt-nav-padding);
-  height: 85px;
+  height: var(--mt-nav-height);
   font-family: var(--mt-nav-nav-item-font-family);
   max-width: 1300px;
 }
 
 header nav.narrow {
-  height: 60px;
+  height: var(--mt-nav-height-narrow);
 }
 
 header nav p {
@@ -433,6 +433,11 @@ header nav .nav-search-aside {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+header nav.narrow .nav-search-aside {
+  top: var(--mt-nav-height-narrow);
+  height: calc(100vh - var(--mt-nav-height-narrow));
 }
 
 header nav input[type='search'].nav-search-input  {
