@@ -12,9 +12,7 @@ export default function decorate(block) {
     const question = document.createElement('a');
 
     question.innerText = questionArea.innerText;
-
     questionArea.innerText = '';
-
     questionArea.appendChild(question);
 
     const answerBlock = document.createElement('p');
@@ -26,25 +24,17 @@ export default function decorate(block) {
     const ontransitionend = () => {
       answerArea.className = 'answer';
       answerArea.removeEventListener('transitionend', ontransitionend);
-
-      //answerArea.style.height = null;
       answerArea.style = null;
     }
     
     const ontransitionend2 = () => {
       answerArea.className = 'answer collapsed';
-      answerArea.style = null;
       answerArea.removeEventListener('transitionend', ontransitionend2);
+      answerArea.style = null;
     }
 
     const collapseAnswer = () => {
-
-      //answerArea.className = 'answer collapsed';
-
-      
-      //const answerAreaHeight = answerArea.scrollHeight;
       const answerAreaHeight = window.getComputedStyle(answerArea).height
-
 
       requestAnimationFrame(function() {
         answerArea.style.height = answerAreaHeight;
@@ -68,9 +58,6 @@ export default function decorate(block) {
 
     const expandAnswer = () => {
       answerArea.className = 'answer before-transition';
-      // answerArea.classList.toggle('before-transition');
-      // answerArea.classList.toggle('collapsed');
-      
       
       const answerAreaHeight = answerArea.scrollHeight;
 
@@ -94,11 +81,7 @@ export default function decorate(block) {
       } else {
         expandAnswer();
       }
-
-      // answerArea.classList.toggle('collapsed');
-      // answerArea.classList.toggle('expanded');
     }
-
     questionArea.addEventListener('click', toggleAnswer);
   };
 
