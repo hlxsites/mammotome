@@ -1,5 +1,7 @@
 :root {
+    /* font color */
     --mt-collapsible-question-font-color: var(--mt-global-color-base-primary);
+    --mt-collapsible-question-expanded-font-color: var(--mt-global-color-accent-quinary);
 
     /* font weight */
     --mt-collapsible-question-hover-font-weight: var(--mt-font-weight-boldest);
@@ -26,8 +28,8 @@
     color: unset;
 }
 
-.collapsible .expanded .question a {
-    color: var(--mt-collapsible-question-font-color);
+.question.expanded a {
+    color: var(--mt-collapsible-question-expanded-font-color);
 }
 
 .collapsible .answer {
@@ -41,7 +43,7 @@
     display: none;
 } 
 .collapsible .answer.transition {
-    transition: height 1s, padding-top 1s, padding-bottom 1s;
+    transition: height 0.5s, padding-top 0.5s, padding-bottom 0.5s;
 }
 .collapsible .answer.before-transition {
     height: 0px;

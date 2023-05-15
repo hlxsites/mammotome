@@ -62,6 +62,8 @@ export default function decorate(block) {
       });  
 
       answerArea.setAttribute('data-expanded', 'false');
+
+      questionArea.classList.toggle('expanded');
     }  
 
     const expandAnswer = () => {
@@ -79,6 +81,8 @@ export default function decorate(block) {
       answerArea.className = 'answer transition';
       
       answerArea.setAttribute('data-expanded', 'true');
+
+      questionArea.classList.toggle('expanded');
     } 
 
     const toggleAnswer = () => {
