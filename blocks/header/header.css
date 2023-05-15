@@ -66,6 +66,7 @@ header nav p {
 }
 
 header nav a:any-link {
+  display: block;
   color: currentcolor;
   width: 100%;
 }
