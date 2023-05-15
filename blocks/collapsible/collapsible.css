@@ -17,6 +17,7 @@
 .collapsible.block > div{
     border-bottom: 1px solid var(--mt-collapsible-answer-border-color);
 }
+
 .collapsible .question {
     text-decoration: underline;
     line-height: var(--mt-collapsible-question-line-height);
@@ -74,9 +75,9 @@
 }
 
 .collapsible .answer.before-transition {
-    height: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }    
 
 .collapsible .answer p {
