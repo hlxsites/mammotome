@@ -507,6 +507,7 @@ header nav .nav-search-title {
   font-weight: var(--mt-font-weight-bold);
   margin-bottom: 14px;
   overflow-wrap: break-word;
+  text-align: left;
 }
 
 header nav .nav-search-description {
