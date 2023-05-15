@@ -337,11 +337,47 @@ export async function translate(key, defaultText) {
 }
 
 export async function getProductDB() {
-  const resp = await fetch('/products.json?limit=10000');
-  if (!resp.ok) {
-    throw new Error(`${resp.status}: ${resp.statusText}`);
+  if (!window.productDB) {
+    const resp = await fetch('/products.json?limit=10000');
+    if (!resp.ok) {
+      throw new Error(`${resp.status}: ${resp.statusText}`);
+    }
+    window.productDB = await resp.json();
   }
-  return resp.json();
+  return window.productDB;
+}
+
+export async function getProduct(productCode, language) {
+  const productDB = await getProductDB();
+
+  const languageUpper = language.toUpperCase();
+
+  const product = productDB.Product.data
+    .find((entry) => entry.ProductCodes.split('|').includes(productCode)
+      && entry.Languages.split('|').map((lang) => lang.toUpperCase()).includes(languageUpper));
+
+  if (product) {
+    const translation = productDB.ProductTranslation.data
+      .find((entry) => entry.ProductRef === product.ProductCodes && entry.Language === language);
+
+    product.Name = translation?.Name || product.Name;
+    product.Image = translation?.Image || product.Image;
+
+    product.assets = productDB.ProductAsset.data.filter(
+      (asset) => asset.ProductRef === product.ProductCodes
+        && asset.Languages.split('|').map((lang) => lang.toUpperCase()).includes(languageUpper),
+    );
+  }
+
+  return product;
+}
+
+export async function getProducts(language) {
+  const productDB = await getProductDB();
+
+  return (await Promise.all(productDB.Product.data
+    .map(async (product) => getProduct(product.ProductCodes.split('|')[0], language))))
+    .filter((product) => product);
 }
 
 /**
