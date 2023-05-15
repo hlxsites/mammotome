@@ -1,7 +1,5 @@
 export default function decorate(block) {
-  
   const processRow = (row) => {
-    
     const rowContent = [...row.children];
     const questionArea = rowContent[0];
     const answerArea = rowContent[1];
@@ -21,67 +19,63 @@ export default function decorate(block) {
     answerArea.innerText = '';
     answerArea.appendChild(answerBlock);
 
-    const ontransitionend = () => {
+    const onTransitionendExpand = () => {
       answerArea.className = 'answer';
-      answerArea.removeEventListener('transitionend', ontransitionend);
+      answerArea.removeEventListener('transitionend', onTransitionendExpand);
       answerArea.style = null;
-    }
-    
-    const ontransitionend2 = () => {
+    };
+
+    const onTransitionendCollpse = () => {
       answerArea.className = 'answer collapsed';
-      answerArea.removeEventListener('transitionend', ontransitionend2);
+      answerArea.removeEventListener('transitionend', onTransitionendCollpse);
       answerArea.style = null;
-    }
+    };
 
     const collapseAnswer = () => {
-      const answerAreaHeight = window.getComputedStyle(answerArea).height
+      const answerAreaHeight = window.getComputedStyle(answerArea).height;
 
-      requestAnimationFrame(function() {
+      requestAnimationFrame(() => {
         answerArea.style.height = answerAreaHeight;
         answerArea.className = 'answer transition';
-  
-        requestAnimationFrame(function() {
 
-          answerArea.style.height = 0 + 'px';
-          answerArea.style.paddingTop = 0 + 'px';
-          answerArea.style.paddingBottom = 0 + 'px';
+        requestAnimationFrame(() => {
+          answerArea.style.height = '0px';
+          answerArea.style.paddingTop = '0px';
+          answerArea.style.paddingBottom = '0px';
 
-          answerArea.addEventListener('transitionend', ontransitionend2);
-          
+          answerArea.addEventListener('transitionend', onTransitionendCollpse);
         });
-      });  
+      });
 
       answerArea.setAttribute('data-expanded', 'false');
 
       questionArea.classList.toggle('expanded');
-    }  
+    };
 
     const expandAnswer = () => {
       answerArea.className = 'answer before-transition';
-      
+
       const answerAreaHeight = answerArea.scrollHeight;
 
-      answerArea.addEventListener('transitionend', ontransitionend);
+      answerArea.addEventListener('transitionend', onTransitionendExpand);
 
-      answerArea.style.height = answerAreaHeight + 'px';
-      answerArea.style.height = answerAreaHeight + 'px';
+      answerArea.style.height = `${answerAreaHeight}px`;
       answerArea.className = 'answer transition';
-      
+
       answerArea.setAttribute('data-expanded', 'true');
 
       questionArea.classList.toggle('expanded');
-    } 
+    };
 
     const toggleAnswer = () => {
-
       const isExpanded = answerArea.getAttribute('data-expanded') === 'true';
 
-      if(isExpanded) {
+      if (isExpanded) {
         collapseAnswer();
       } else {
         expandAnswer();
       }
-    }
+    };
     questionArea.addEventListener('click', toggleAnswer);
   };
 
