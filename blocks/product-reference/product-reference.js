@@ -1,24 +1,8 @@
-import { createDomStructure, getProductDB, translate } from '../../scripts/lib-franklin.js';
+import { createDomStructure, getProduct, translate } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
   return { language: url.pathname.substring(1, url.pathname.indexOf('/', 1)) };
-}
-
-function getProduct(json, productCode, language) {
-  const product = json.Product.data
-    .find((entry) => entry.ProductCodes.split('|').includes(productCode)
-      && entry.Languages.split('|').map((lang) => lang.toUpperCase()).includes(language.toUpperCase()));
-
-  if (product) {
-    const translation = json.ProductTranslation.data
-      .find((entry) => entry.ProductRef === product.ProductCodes && entry.Language === language);
-
-    product.Name = translation?.Name || product.Name;
-    product.Image = translation?.Image || product.Image;
-  }
-
-  return product;
 }
 
 async function createButtons(productCode) {
@@ -51,8 +35,8 @@ export default async function decorate(block) {
   }
 
   const { language } = getInfo();
-  const json = await getProductDB();
-  const product = getProduct(json, productCode, language);
+
+  const product = await getProduct(productCode, language);
 
   if (!product) {
     return;
