@@ -2,6 +2,7 @@ import {
   getMetadata,
   decorateIcons,
   translate,
+  getProducts,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -165,7 +166,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
 async function fetchSearchData() {
   if (!window.searchData) {
-    const resp = await fetch(`/${window.location.pathname.split('/')[1]}/query-index.json`);
+    const resp = await fetch(`/${window.location.pathname.substring(1, window.location.pathname.indexOf('/', 1))}/query-index.json`);
     if (resp.ok) {
       const json = await resp.json();
       if (json.data) {
@@ -177,12 +178,33 @@ async function fetchSearchData() {
       throw new Error(`Fetching search data failed with: ${resp.status}`);
     }
   }
-  return window.searchData;
+  return window.searchData.data;
+}
+
+async function fetchProductSupportSearchData() {
+  if (!window.productSearchData) {
+    const languagePath = window.location.pathname;
+    const language = languagePath.substring(1, languagePath.indexOf('/', 1));
+    const products = await getProducts(language);
+    window.productSearchData = products.flatMap(({
+      Name, Description, ProductCodes, assets,
+    }) => ([{
+      title: Name,
+      description: Description,
+      path: `/${language}/product-support/${ProductCodes.split('|')[0]}`,
+    }, ...assets.map((asset) => ({
+      title: asset.Name,
+      description: asset.Description,
+      path: asset.URL,
+    }))]));
+  }
+  return window.productSearchData;
 }
 
 async function search(value) {
   const searchData = await fetchSearchData();
-  return searchData.data
+  const productSupportData = await fetchProductSupportSearchData();
+  return [...searchData, ...productSupportData]
     .filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
 }
 
