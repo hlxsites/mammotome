@@ -1,6 +1,6 @@
 :root {
-  --mt-cards-grid-column-gap: 30px;
-  --mt-cards-grid-row-gap: 35px;
+  --mt-cards-grid-column-gap: 19px;
+  --mt-cards-grid-row-gap: 19px;
 
   /* font sizes */
   --mt-cards-title-font-size: 21px;
@@ -8,7 +8,7 @@
   --mt-cards-callout-text-font-size: var(--mt-body-font-size-s);
 
   /* font family */
-  --mt-cards-font-family: (--mt-body-font-family);
+  --mt-cards-font-family: var(--mt-body-font-family);
 
   /* font color */
   --mt-cards-title-font-color: var(--mt-global-color-base-primary);
@@ -17,6 +17,10 @@
   --mt-cards-box-shadow-color: #1c1c4940;
   --mt-cards-callout-text-color: var(--mt-global-color-accent-primary);
   --mt-cards-text-color: var(--mt-global-color-accent-senary)
+}
+
+.cards {
+  width: 1280px
 }
 
 .cards > ul {
@@ -33,7 +37,7 @@
 
 
 .cards.block > ul > li {
-  padding: 5%;
+  padding: 25px 50px;
   box-shadow: 2px 12px 28px 0 var(--mt-cards-box-shadow-color);
   display: flex;
   flex-direction: column;
@@ -41,6 +45,13 @@
   transition-property: background,border,box-shadow;
   transition-duration: .25s;
   align-items: center;
+}
+
+/* Center last child if it is the 4th card */
+@media (min-width: 1050px) {
+  .cards > ul  li:last-child:nth-child(3n+1):not(:only-of-type)  {
+    grid-column: 2 / 3
+  }
 }
 
 .cards > ul > li img {
@@ -51,14 +62,14 @@
 
 .cards.wideimage.block > ul > li {
   padding: 0;
-}  
+}
 
 .cards.block > ul > li:hover {
   box-shadow: 2px 4px 12px 0 var(--mt-cards-box-shadow-color);
 }
 
 .section.cards-container {
-  padding: 0% 5% 10%;
+  padding: 0 5% 10%;
 }
 
 .section.cards-container .cards-wrapper {
@@ -98,7 +109,7 @@
   width: 100%;
 }
 
-.cards-card-body {
+.cards > ul > li > a >.cards-card-bodyx {
   padding: 0 30px 50px;
 }
 
@@ -135,7 +146,7 @@
   font-size: var(--mt-cards-callout-text-font-size);
   font-weight: var(--mt-font-weight-boldest);
   line-height: 1.5;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -148,25 +159,21 @@
 
 @media (min-width: 768px) {
   .section.cards-container {
-    margin-top: 0%;
-    margin-bottom: 0%;
-    padding: 0% 03% 10% 3%;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0 3% 10%;
   }
 
   .section.cards-container .cards-wrapper {
     max-width: 1024px;
-  }
-
-  .cards > ul {
-    grid-template-columns: repeat(2,1fr);
   }
 }
 
 @media (min-width: 1025px) {
   .section.cards-container {
     margin-top: 3%;
-    margin-bottom: 0%;
-    padding: 0% 10% 10%;
+    margin-bottom: 0;
+    padding: 0 10% 10%;
   }
 
   .section.cards-container .cards-wrapper {
