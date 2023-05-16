@@ -183,13 +183,16 @@ async function fetchSearchData() {
 
 async function fetchProductSupportSearchData() {
   if (!window.productSearchData) {
-    const language = window.location.pathname.substring(1, window.location.pathname.indexOf('/', 1));
+    const languagePath = window.location.pathname;
+    const language = languagePath.substring(1, languagePath.indexOf('/', 1));
     const products = await getProducts(language);
-    window.productSearchData = products.flatMap((product) => ([{
-      title: product.Name,
-      description: product.Description,
-      path: `/${language}/product-support/${product.ProductCodes.split('|')[0]}`,
-    }, ...product.assets.map((asset) => ({
+    window.productSearchData = products.flatMap(({
+      Name, Description, ProductCodes, assets,
+    }) => ([{
+      title: Name,
+      description: Description,
+      path: `/${language}/product-support/${ProductCodes.split('|')[0]}`,
+    }, ...assets.map((asset) => ({
       title: asset.Name,
       description: asset.Description,
       path: asset.URL,
