@@ -197,7 +197,7 @@ const optimizeThumbnails = (picture) => {
 };
 
 // Add P around LI inner text
-const addEnclosingP = (block) => {
+const addEnclosingDiv = (block) => {
   const listItems = block.querySelectorAll('.carousel > div > div > ul li');
   listItems.forEach((el) => {
     const li = el.innerHTML;
@@ -208,7 +208,7 @@ const addEnclosingP = (block) => {
 
 export default function decorate(block) {
   optimizeThumbnails(block);
-  addEnclosingP(block);
+  addEnclosingDiv(block);
 
   const sliderWrapper = createSliderWrapper(block);
   const slider = createPictures(sliderWrapper);
