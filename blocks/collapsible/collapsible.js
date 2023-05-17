@@ -7,6 +7,12 @@ export default function decorate(block) {
 
     const question = document.createElement('a');
 
+    const answerBlock = document.createElement('p');
+    answerBlock.innerText = answerArea.innerText;
+
+    answerArea.innerText = '';
+    answerArea.appendChild(answerBlock);
+
     question.innerText = questionArea.innerText;
     questionArea.innerText = '';
     questionArea.appendChild(question);
