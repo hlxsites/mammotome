@@ -213,8 +213,10 @@ h6 {
 }
 
 sup {
-  font-size: var(--mt-font-size-50);
+  font-size: var(--mt-font-size-80);
   vertical-align: top;
+  position: relative;
+  top: -0.65em;
 }
 
 p,

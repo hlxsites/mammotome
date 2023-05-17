@@ -150,13 +150,11 @@ const createArrowNav = () => {
 
   const arrowLeft = document.createElement('a');
   arrowLeft.setAttribute('id', 'slider-arrow-left');
-  arrowLeft.setAttribute('href', '#');
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
   arrowNavContainer.appendChild(arrowLeft);
 
   const arrowRight = document.createElement('a');
   arrowRight.setAttribute('id', 'slider-arrow-right');
-  arrowRight.setAttribute('href', '#');
   arrowRight.innerHTML = HTML_ARROW_RIGHT;
   arrowNavContainer.appendChild(arrowRight);
   return arrowNavContainer;
@@ -171,7 +169,6 @@ const createBottomNav = (slides) => {
   slides.forEach((el) => {
     const bottomNavEl = document.createElement('a');
     bottomNavEl.setAttribute('id', el);
-    bottomNavEl.setAttribute('href', '#');
     bottomNavEl.classList.add('bullet');
     bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
     bottomNavContainer.appendChild(bottomNavEl);
@@ -199,19 +196,31 @@ const optimizeThumbnails = (picture) => {
     });
 };
 
+// Add P around LI inner text
+const addEnclosingP = (block) => {
+  const listItems = block.querySelectorAll('.carousel > div > div > ul li');
+  listItems.forEach((el) => {
+    const li = el.innerHTML;
+    el.innerHTML = '';
+    el.innerHTML = `<div>${li}</div>`;
+  });
+};
+
 export default function decorate(block) {
   optimizeThumbnails(block);
+  addEnclosingP(block);
 
   const sliderWrapper = createSliderWrapper(block);
   const slider = createPictures(sliderWrapper);
   const slides = setPictureIds(slider);
   slideCount = slides.length;
+  if (slideCount > 1) {
+    const arrowNav = createArrowNav();
+    slider.appendChild(arrowNav);
 
-  const arrowNav = createArrowNav();
-  slider.appendChild(arrowNav);
+    const bottomNavContainer = createBottomNav(slides);
+    sliderWrapper.appendChild(bottomNavContainer);
 
-  const bottomNavContainer = createBottomNav(slides);
-  sliderWrapper.appendChild(bottomNavContainer);
-
-  initSlider();
+    initSlider();
+  }
 }
