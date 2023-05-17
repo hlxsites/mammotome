@@ -1,11 +1,9 @@
 export default function decorate(block) {
   const processRow = (row) => {
-    const rowContent = [...row.children];
-    const questionArea = rowContent[0];
-    const answerArea = rowContent[1];
+    const [questionArea, answerArea] = Array.from(row.children);
 
-    questionArea.className = 'question';
-    answerArea.className = 'answer collapsed';
+    questionArea.classList.add('question');
+    answerArea.classList.add('answer', 'collapsed');
 
     const question = document.createElement('a');
 
@@ -20,14 +18,15 @@ export default function decorate(block) {
     answerArea.appendChild(answerBlock);
 
     const onTransitionendExpand = () => {
-      answerArea.className = 'answer';
+      answerArea.classList.toggle('transition');
       answerArea.removeEventListener('transitionend', onTransitionendExpand);
       answerArea.style = null;
     };
 
-    const onTransitionendCollpse = () => {
-      answerArea.className = 'answer collapsed';
-      answerArea.removeEventListener('transitionend', onTransitionendCollpse);
+    const onTransitionendCollapse = () => {
+      answerArea.classList.toggle('transition');
+      answerArea.classList.toggle('collapsed');
+      answerArea.removeEventListener('transitionend', onTransitionendCollapse);
       answerArea.style = null;
     };
 
@@ -36,48 +35,41 @@ export default function decorate(block) {
 
       requestAnimationFrame(() => {
         answerArea.style.height = answerAreaHeight;
-        answerArea.className = 'answer transition';
+        answerArea.classList.add('transition');
 
         requestAnimationFrame(() => {
           answerArea.style.height = '0px';
           answerArea.style.paddingTop = '0px';
           answerArea.style.paddingBottom = '0px';
 
-          answerArea.addEventListener('transitionend', onTransitionendCollpse);
+          answerArea.addEventListener('transitionend', onTransitionendCollapse);
         });
       });
-
-      answerArea.setAttribute('data-expanded', 'false');
-
       questionArea.classList.toggle('expanded');
     };
 
     const expandAnswer = () => {
-      answerArea.className = 'answer before-transition';
+      answerArea.classList.replace('collapsed', 'before-transition');
 
       const answerAreaHeight = answerArea.scrollHeight;
 
       answerArea.addEventListener('transitionend', onTransitionendExpand);
 
       answerArea.style.height = `${answerAreaHeight}px`;
-      answerArea.className = 'answer transition';
-
-      answerArea.setAttribute('data-expanded', 'true');
-
+      answerArea.classList.replace('before-transition', 'transition');
       questionArea.classList.toggle('expanded');
     };
 
     const toggleAnswer = () => {
-      const isExpanded = answerArea.getAttribute('data-expanded') === 'true';
-
-      if (isExpanded) {
-        collapseAnswer();
-      } else {
+      if (answerArea.classList.contains('collapsed')) {
         expandAnswer();
+      } else {
+        collapseAnswer();
       }
     };
+
     questionArea.addEventListener('click', toggleAnswer);
   };
 
-  [...block.children].forEach(processRow);
+  Array.from(block.children).forEach(processRow);
 }
