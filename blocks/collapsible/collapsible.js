@@ -38,9 +38,9 @@ export default function decorate(block) {
         answerArea.classList.add('transition');
 
         requestAnimationFrame(() => {
-          answerArea.style.height = '0px';
-          answerArea.style.paddingTop = '0px';
-          answerArea.style.paddingBottom = '0px';
+          answerArea.style.height = '0';
+          answerArea.style.paddingTop = '0';
+          answerArea.style.paddingBottom = '0';
 
           answerArea.addEventListener('transitionend', onTransitionendCollapse);
         });
