@@ -1,6 +1,8 @@
 :root {
   --mt-cards-grid-column-gap: 19px;
   --mt-cards-grid-row-gap: 19px;
+  --mt-cards-grid-column-wide-gap: 30px;
+  --mt-cards-grid-row-wide-gap: 35px;
 
   /* font sizes */
   --mt-cards-title-font-size: 21px;
@@ -35,6 +37,13 @@
   grid-template-columns: repeat(1,1fr);
 }
 
+.cards.wideimage > ul {
+  gap: var(--mt-cards-grid-row-wide-gap) var(--mt-cards-grid-column-wide-gap);
+}
+
+.cards a.button {
+  width: auto;
+}
 
 .cards.block > ul > li {
   padding: 25px 50px;
@@ -94,6 +103,12 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+
+.cards.wideimage .cards-card-image {
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  align-items: center;
 }
 
 .cards-card-image > picture {
@@ -164,6 +179,10 @@
     padding: 0 3% 10%;
   }
 
+  .cards.three-columns > ul {
+    grid-template-columns: repeat(2,1fr);
+  }
+
   .section.cards-container .cards-wrapper {
     max-width: 1024px;
   }
@@ -173,7 +192,7 @@
   .section.cards-container {
     margin-top: 3%;
     margin-bottom: 0;
-    padding: 0 10% 10%;
+    padding: 0 5% 10%;
   }
 
   .section.cards-container .cards-wrapper {
