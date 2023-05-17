@@ -1,4 +1,6 @@
-import { createDomStructure, getProduct, translate } from '../../scripts/lib-franklin.js';
+import {
+  createDomStructure, decorateBlockImgs, getProduct, translate,
+} from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -43,6 +45,7 @@ export default async function decorate(block) {
   createDomStructure([{ type: 'h1', textContent: product.Name }], block);
   if (product.Image) {
     createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image } }] }], block);
+    decorateBlockImgs(block);
   }
   createDomStructure([
     {

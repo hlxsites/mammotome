@@ -1,4 +1,4 @@
-import { createDomStructure, getProducts } from '../../scripts/lib-franklin.js';
+import { createDomStructure, decorateBlockImgs, getProducts } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -36,4 +36,6 @@ export default async function decorate(block) {
       classes: ['product-list'],
       children: products.map(decorateProduct),
     }], block);
+
+  decorateBlockImgs(block);
 }
