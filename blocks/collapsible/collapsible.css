@@ -65,21 +65,14 @@
     padding: 15px;
     overflow: hidden;
     box-sizing: content-box;
+    transition: height 0.5s, padding-top 0.5s, padding-bottom 0.5s;
 }   
 
 .collapsible .answer.collapsed {
-    display: none;
-} 
-
-.collapsible .answer.transition {
-    transition: height 0.5s, padding-top 0.5s, padding-bottom 0.5s;
-}
-
-.collapsible .answer.before-transition {
     height: 0;
     padding-top: 0;
     padding-bottom: 0;
-}    
+} 
 
 .collapsible .answer p {
     display: block;

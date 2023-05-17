@@ -3,7 +3,7 @@ export default function decorate(block) {
     const [questionArea, answerArea] = Array.from(row.children);
 
     questionArea.classList.add('question');
-    answerArea.classList.add('answer', 'collapsed');
+    answerArea.classList.add('answer');
 
     const question = document.createElement('a');
 
@@ -11,64 +11,21 @@ export default function decorate(block) {
     questionArea.innerText = '';
     questionArea.appendChild(question);
 
-    const answerBlock = document.createElement('p');
-    answerBlock.innerText = answerArea.innerText;
+    answerArea.classList.add('collapsed');
 
-    answerArea.innerText = '';
-    answerArea.appendChild(answerBlock);
-
-    const onTransitionendExpand = () => {
-      answerArea.classList.toggle('transition');
-      answerArea.removeEventListener('transitionend', onTransitionendExpand);
-      answerArea.style = null;
-    };
-
-    const onTransitionendCollapse = () => {
-      answerArea.classList.toggle('transition');
-      answerArea.classList.toggle('collapsed');
-      answerArea.removeEventListener('transitionend', onTransitionendCollapse);
-      answerArea.style = null;
-    };
-
-    const collapseAnswer = () => {
-      const answerAreaHeight = window.getComputedStyle(answerArea).height;
-
-      requestAnimationFrame(() => {
-        answerArea.style.height = answerAreaHeight;
-        answerArea.classList.add('transition');
-
-        requestAnimationFrame(() => {
-          answerArea.style.height = '0';
-          answerArea.style.paddingTop = '0';
-          answerArea.style.paddingBottom = '0';
-
-          answerArea.addEventListener('transitionend', onTransitionendCollapse);
-        });
-      });
+    questionArea.addEventListener('click', () => {
       questionArea.classList.toggle('expanded');
-    };
 
-    const expandAnswer = () => {
-      answerArea.classList.replace('collapsed', 'before-transition');
-
-      const answerAreaHeight = answerArea.scrollHeight;
-
-      answerArea.addEventListener('transitionend', onTransitionendExpand);
-
-      answerArea.style.height = `${answerAreaHeight}px`;
-      answerArea.classList.replace('before-transition', 'transition');
-      questionArea.classList.toggle('expanded');
-    };
-
-    const toggleAnswer = () => {
-      if (answerArea.classList.contains('collapsed')) {
-        expandAnswer();
+      if (questionArea.classList.contains('expanded')) {
+        // Expand the answer
+        answerArea.style.height = `${answerArea.scrollHeight}px`;
       } else {
-        collapseAnswer();
+        // Collapse the answer
+        answerArea.style.height = '0';
       }
-    };
 
-    questionArea.addEventListener('click', toggleAnswer);
+      answerArea.classList.toggle('collapsed');
+    });
   };
 
   Array.from(block.children).forEach(processRow);
