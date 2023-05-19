@@ -1,0 +1,80 @@
+:root {
+    /* font color */
+    --mt-collapsible-question-font-color: var(--mt-global-color-base-primary);
+    --mt-collapsible-question-expanded-font-color: var(--mt-global-color-accent-quinary);
+
+    /* font weight */
+    --mt-collapsible-question-hover-font-weight: var(--mt-font-weight-boldest);
+
+    /* line height */
+    --mt-collapsible-question-line-height: 1rem;
+    --mt-collapsible-answer-line-height: 1.5rem;
+
+    /* border color */
+    --mt-collapsible-answer-border-color: #d5d8dc;
+}
+
+.collapsible.block > div{
+    border-bottom: 1px solid var(--mt-collapsible-answer-border-color);
+}
+
+.collapsible .question {
+    text-decoration: underline;
+    line-height: var(--mt-collapsible-question-line-height);
+    padding: 15px;
+    cursor: pointer;
+}
+
+.collapsible .question a:hover {
+    font-weight: var(--mt-collapsible-question-hover-font-weight);
+    color: unset;
+}
+
+.collapsible .question a::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid black;
+    margin-right: 0.5em;
+    transform: rotate(270deg);
+    vertical-align: 0.1em;
+}
+
+.collapsible .question.expanded a {
+    color: var(--mt-collapsible-question-expanded-font-color);
+}
+
+.collapsible .question.expanded a::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid var(--mt-global-color-accent-quinary);
+    margin-right: 0.5em;
+    transform: rotate(180deg);
+    vertical-align: 0.1em;
+}
+
+.collapsible .answer {
+    line-height: var(--mt-collapsible-answer-line-height);
+    padding: 15px;
+    overflow: hidden;
+    box-sizing: content-box;
+    transition: height 0.5s, padding-top 0.5s, padding-bottom 0.5s;
+}   
+
+.collapsible .answer.collapsed {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+} 
+
+.collapsible .answer p {
+    display: block;
+    margin-block-end: 1em;
+}
