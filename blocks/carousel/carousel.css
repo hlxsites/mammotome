@@ -10,6 +10,7 @@
     justify-content: center;
     column-gap: 30px;
     flex-grow: 1;
+    margin-top: 5%;
 }
 
 @media (min-width: 1024px) {
@@ -89,7 +90,7 @@
 }
 
 .carousel .slider-wrapper .slider picture img {
-    width: 400px;
+    width: 100%;
     height: 232px;
     object-fit: cover;
 }
