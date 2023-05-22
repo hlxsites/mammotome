@@ -331,18 +331,23 @@ async function decorateSearch(block) {
  * @param navSections
  */
 function decorateLanguageNav(navSections) {
-  const pictures = navSections.querySelectorAll('.nav-drop > ul > li > picture');
-  pictures.forEach((picture) => {
-    const li = picture.parentElement;
-    if (li.tagName === 'LI') {
-      const a = li.querySelector('a');
+  const listItems = navSections.querySelectorAll('.nav-drop > ul > li');
+
+  listItems.forEach((li) => {
+    const picture = li.querySelector('picture');
+    const a = li.querySelector('a');
+
+    if (picture && a) {
       const href = a.getAttribute('href');
       const txt = a.innerHTML;
+
       li.innerHTML = '';
       const newA = document.createElement('a');
+
       newA.setAttribute('href', href);
       newA.appendChild(picture);
       newA.appendChild(document.createTextNode(txt));
+
       li.appendChild(newA);
     }
   });
