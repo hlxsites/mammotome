@@ -104,6 +104,7 @@ header .nav-brand {
   padding: var(--mt-nav-padding);
   display: flex;
   align-items: center;
+  min-width: 200px;
 }
 
 header nav .nav-brand img {
