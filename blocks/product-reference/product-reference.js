@@ -1,4 +1,6 @@
-import { createDomStructure, getProduct, translate } from '../../scripts/lib-franklin.js';
+import {
+  createDomStructure, decorateBlockImgs, getProduct, translate,
+} from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -76,4 +78,5 @@ export default async function decorate(block) {
         })),
     },
   ], block);
+  decorateBlockImgs(block);
 }

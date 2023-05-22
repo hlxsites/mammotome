@@ -31,7 +31,7 @@
   margin-bottom: 10px;
 }
 
-.product-ref-container > div > img {
+.product-ref-container > div img {
   object-position: center center;
   object-fit: contain;
   width: 100%;
