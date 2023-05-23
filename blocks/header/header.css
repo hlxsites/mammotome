@@ -168,6 +168,7 @@ header nav .nav-sections ul > li > ul > li {
 
 header nav .nav-sections ul > li[aria-expanded="true"] > ul > li > a {
   font-weight: var(--mt-nav-desktop-multilevel-font-weight);
+  padding: 10px 0;
 }
 
 header nav .nav-sections ul > li > ul > li > ul {
