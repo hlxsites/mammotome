@@ -19,10 +19,6 @@
   --mt-cards-text-color: var(--mt-global-color-accent-senary)
 }
 
-.cards {
-  width: 1280px
-}
-
 .cards > ul {
   list-style: none;
   width: 100%;
@@ -157,6 +153,10 @@
   display: none;
 }
 
+.section.mobile-wrap .cards {
+  padding: 0% 5%;
+}
+
 @media (min-width: 768px) {
   .section.cards-container {
     margin-top: 0;
@@ -166,6 +166,14 @@
 
   .section.cards-container .cards-wrapper {
     max-width: 1024px;
+  }
+
+  .section.mobile-wrap .cards.align-right {
+    padding: 0% 20% 0% 0%;
+  }
+
+  .section.mobile-wrap .cards.align-left {
+    padding: 0% 0% 0% 20%;
   }
 }
 
@@ -183,5 +191,9 @@
 
   .cards.three-columns > ul {
     grid-template-columns: repeat(3,1fr);
+  }
+
+  .section.mobile-wrap .cards {
+    padding: 0% 0% 0% 20%;
   }
 }

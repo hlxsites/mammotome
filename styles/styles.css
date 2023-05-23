@@ -714,3 +714,18 @@ main .schedule-demo .default-content-wrapper h2 {
   fill: var(--mt-background-color-primary);
   background-color: transparent;
 }
+
+.section.mobile-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .section.mobile-wrap {
+    flex-wrap: nowrap;
+  }
+
+  .section.mobile-wrap > div{
+    flex-basis: 50%;
+  }
+}
