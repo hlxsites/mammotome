@@ -86,6 +86,17 @@ div[class^="columns image-color-"] > div > div:last-child img {
   padding: 7% 0;
 }
 
+.columns.image-cards p:has(picture) {
+  box-shadow: 2px 12px 28px 0 rgb(28 28 73 / 25%);
+  border-radius: 5px;
+  background: white;
+  text-align: center;
+  line-height: 2;
+  font-size: var(--mt-font-size-130);
+  font-weight: 500;
+  padding-bottom: 15px;
+}
+
 div[class^="columns image-color-"] > div > div:first-child.columns-img-col {
   padding-left: var(--columns-image-padding);
   max-width: calc((var(--columns-max-width)/2));
