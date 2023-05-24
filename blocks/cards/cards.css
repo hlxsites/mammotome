@@ -179,10 +179,6 @@
     padding: 0 3% 10%;
   }
 
-  .cards.three-columns > ul {
-    grid-template-columns: repeat(2,1fr);
-  }
-
   .section.cards-container .cards-wrapper {
     max-width: 1024px;
   }
