@@ -735,6 +735,21 @@ export function decorateButtons(element) {
   });
 }
 
+export function decorateBlockImgs(block) {
+  block.querySelectorAll('img')
+    .forEach((img) => {
+      const { hostname } = new URL(img.src);
+      if (hostname === window.location.hostname
+        || hostname.endsWith('-mammotome--hlxsites.hlx.page')
+        || hostname.endsWith('-mammotome--hlxsites.hlx.live')
+        || hostname === 'localhost') {
+        img.replaceWith(
+          createOptimizedPicture(img.src, img.alt, false, img.width, img.height),
+        );
+      }
+    });
+}
+
 /**
  * Load LCP block and/or wait for LCP in default content.
  */

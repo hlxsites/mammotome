@@ -327,6 +327,33 @@ async function decorateSearch(block) {
 }
 
 /**
+ * decorate Language to include flag image in href
+ * @param navSections
+ */
+function decorateLanguageNav(navSections) {
+  const listItems = navSections.querySelectorAll('.nav-drop > ul > li');
+
+  listItems.forEach((li) => {
+    const picture = li.querySelector('picture');
+    const a = li.querySelector('a');
+
+    if (picture && a) {
+      const href = a.getAttribute('href');
+      const txt = a.innerHTML;
+
+      li.innerHTML = '';
+      const newA = document.createElement('a');
+
+      newA.setAttribute('href', href);
+      newA.appendChild(picture);
+      newA.appendChild(document.createTextNode(txt));
+
+      li.appendChild(newA);
+    }
+  });
+}
+
+/**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
@@ -384,6 +411,7 @@ export default async function decorate(block) {
 
       navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
       navSections.querySelector('ul').append(createOverflowDropdown(navSections));
+      decorateLanguageNav(navSections);
     }
 
     // hamburger for mobile

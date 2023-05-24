@@ -213,8 +213,10 @@ h6 {
 }
 
 sup {
-  font-size: var(--mt-font-size-50);
+  font-size: var(--mt-font-size-80);
   vertical-align: top;
+  position: relative;
+  top: -0.65em;
 }
 
 p,
@@ -626,7 +628,7 @@ main .schedule-demo .default-content-wrapper h2 {
   top: 0;
   left: 0;
   z-index: -1;
-  height: 180%;
+  height: 100%;
   width: 100%;
   content: '';
   background-color: transparent;

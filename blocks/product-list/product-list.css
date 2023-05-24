@@ -29,7 +29,7 @@
   max-width: 100%;
 }
 
-.product-list > .product > .container > img {
+.product-list > .product > .container img {
   object-position: center center;
   object-fit: contain;
   width: 100%;
