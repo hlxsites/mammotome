@@ -694,6 +694,21 @@ export function decorateTemplateAndTheme() {
 }
 
 /**
+ * Set Link class to active when on the same page
+ * @param links {NodeListOf<Element>} Array of links to check
+ */
+export function setActiveLink(links) {
+  if (!links.length) return;
+  const actualPage = getMetadata('og:url').split('/').slice(-1)[0].toLowerCase();
+  links.forEach((a) => {
+    const href = a.getAttribute('href') ? a.getAttribute('href').toLowerCase() : '';
+    if (href.includes(actualPage)) {
+      a.classList.add('active');
+    }
+  });
+}
+
+/**
  * Decorates paragraphs containing a single link as buttons.
  * @param {Element} element container element
  */

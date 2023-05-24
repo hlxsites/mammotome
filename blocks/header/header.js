@@ -3,6 +3,7 @@ import {
   decorateIcons,
   translate,
   getProducts,
+  setActiveLink,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -412,6 +413,8 @@ export default async function decorate(block) {
       navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
       navSections.querySelector('ul').append(createOverflowDropdown(navSections));
       decorateLanguageNav(navSections);
+      const multiLevelNav = navSections.querySelectorAll('li.nav-multilevel > ul > li > ul > li a');
+      setActiveLink(multiLevelNav);
     }
 
     // hamburger for mobile

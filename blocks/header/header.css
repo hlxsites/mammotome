@@ -569,6 +569,9 @@ header nav.nav-mobile .nav-overflow {
     background-color: var(--mt-header-menu-item-selected-color);
   }
 
+  header nav li .active {
+    background-color: var(--mt-header-menu-item-selected-color);
+  }
 
   header nav .nav-sections .nav-button a {
     border: 1px solid var(--mt-global-color-base-primary);
