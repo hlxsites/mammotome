@@ -118,6 +118,7 @@
 
 .cards.wideimage .cards-card-image > picture {
   max-width: 100%;
+  width: 100%;
 }
 
 .cards.wideimage img {
