@@ -55,8 +55,9 @@
   --mt-button-color-secondary: var(--mt-global-color-accent-primary);
   --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
   --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
-  --mt-heading-color-primary: var(--mt-global-color-base-secondary);
+  --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
+  --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-input-color: var(--mt-text-color);
   --mt-input-hover-color: var(--mt-text-color);
   --mt-link-color: var(--mt-global-color-accent-primary);
@@ -182,7 +183,7 @@ h6 {
   margin: 0.5rem 0 1rem;
   font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
-  color: var(--mt-heading-color-primary);
+  color: var(--mt-global-color-base-secondary);
 }
 
 /* Section styles for heading */
@@ -198,8 +199,8 @@ h3 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-.logo-primary-background.header-bold h3,
-.logo-secondary-background.header-bold h3{
+.logo-primary-background h3,
+.logo-secondary-background h3{
   line-height: 2.7rem;
 }
 
@@ -215,20 +216,58 @@ h6 {
   font-size: var(--mt-heading-font-size-xs);
 }
 
-.header-bold:is(h1,h2,h3,h4,h5,h6) {
+.header-bold h1,
+.header-bold h2,
+.header-bold h3,
+.header-bold h4,
+.header-bold h5,
+.header-bold h6 {
   font-weight: var(--mt-font-weight-boldest);
 }
 
-.align-left:is(h1,h2,h3,h4,h5,h6) {
-  text-align: left;
-}
-
-.header-blue:is(h1,h2,h3,h4,h5,h6) {
+.header-blue h1,
+.header-blue h2,
+.header-blue h3,
+.header-blue h4,
+.header-blue h5,
+.header-blue h6 {
   color: var(--mt-heading-color-primary);
 }
 
-.header-uppercase:is(h1,h2,h3,h4,h5,h6) {
+.align-left h1,
+.align-left h2,
+.align-left h3,
+.align-left h4,
+.align-left h5,
+.align-left h6 {
+  text-align: left;
+}
+
+.header-inverted h1,
+.header-inverted h2,
+.header-inverted h3,
+.header-inverted h4,
+.header-inverted h5,
+.header-inverted h6 {
+  color: var(--mt-heading-color-inverted);
+}
+
+.header-uppercase h1,
+.header-uppercase h2,
+.header-uppercase h3,
+.header-uppercase h4,
+.header-uppercase h5,
+.header-uppercase h6 {
   text-transform: uppercase;
+}
+
+.header-wide h1,
+.header-wide h2,
+.header-wide h3,
+.header-wide h4,
+.header-wide h5,
+.header-wide h6 {
+  letter-spacing: 4px;
 }
 
 sup {
