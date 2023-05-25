@@ -198,8 +198,8 @@ h3 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-.logo-primary-background.text-large h3,
-.logo-secondary-background.text-large h3{
+.logo-primary-background.header-bold h3,
+.logo-secondary-background.header-bold h3{
   line-height: 2.7rem;
 }
 
