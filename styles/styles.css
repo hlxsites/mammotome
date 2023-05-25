@@ -103,7 +103,7 @@
   --mt-font-size-130: 1.3rem;
   --mt-font-size-150: 1.5rem;
   --mt-font-size-175: 1.75rem;
-  --mt-font-size-180: 1.75rem;
+  --mt-font-size-180: 1.80rem;
   --mt-font-size-185: 1.85rem;
   --mt-font-size-200: 2rem;
   --mt-font-size-215: 2.15rem;
@@ -130,9 +130,9 @@
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
   --mt-heading-font-size-xl: var(--mt-font-size-200);
-  --mt-heading-font-size-l: var(--mt-font-size-150);
-  --mt-heading-font-size-m: var(--mt-font-size-130);
-  --mt-heading-font-size-s: var(--mt-font-size-100);
+  --mt-heading-font-size-l: var(--mt-font-size-180);
+  --mt-heading-font-size-m: var(--mt-font-size-100);
+  --mt-heading-font-size-s: var(--mt-font-size-80);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
   --mt-hero-font-size-m: var(--mt-font-size-180);
@@ -180,36 +180,55 @@ h5,
 h6 {
   text-align: center;
   margin: 0.5rem 0 1rem;
-  font-weight: var(--mt-font-weight-bold);
+  font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
-  color: var(--mt-heading-color-secondary);
-}
-
-h1 {
-  font-size: var(--mt-heading-font-size-xxl);
   color: var(--mt-heading-color-primary);
 }
 
+/* Section styles for heading */
+h1 {
+  font-size: var(--mt-heading-font-size-xxl);
+}
+
 h2 {
-  font-size: var(--mt-heading-font-size-s);
-  font-weight: var(--mt-font-weight-heavy);
-  text-transform: uppercase;
+  font-size: var(--mt-heading-font-size-xl);
 }
 
 h3 {
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.logo-primary-background.text-large h3,
+.logo-secondary-background.text-large h3{
+  line-height: 2.7rem;
 }
 
 h4 {
-  font-size: var(--mt-heading-font-size-s);
+  font-size: var(--mt-heading-font-size-m);
 }
 
 h5 {
-  font-size: var(--mt-heading-font-size-xs);
+  font-size: var(--mt-heading-font-size-s);
 }
 
 h6 {
   font-size: var(--mt-heading-font-size-xs);
+}
+
+.header-bold:is(h1,h2,h3,h4,h5,h6) {
+  font-weight: var(--mt-font-weight-boldest);
+}
+
+.align-left:is(h1,h2,h3,h4,h5,h6) {
+  text-align: left;
+}
+
+.header-blue:is(h1,h2,h3,h4,h5,h6) {
+  color: var(--mt-heading-color-primary);
+}
+
+.header-uppercase:is(h1,h2,h3,h4,h5,h6) {
+  text-transform: uppercase;
 }
 
 sup {
@@ -226,6 +245,22 @@ ul,
 pre,
 blockquote {
   margin: 0 0 0.9rem;
+}
+
+p {
+  font-size: var(--mt-body-font-size-s);
+  line-height: var(--mt-body-line-height);
+  font-weight: var(--mt-body-font-weight);
+  text-align: center;
+}
+
+/* Section style for P */
+.text-large p {
+    font-size: var(--mt-body-font-size-m);
+}
+
+.align-left p {
+  text-align: left;
 }
 
 code,
