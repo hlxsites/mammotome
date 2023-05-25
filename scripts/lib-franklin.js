@@ -699,10 +699,10 @@ export function decorateTemplateAndTheme() {
  * @param className {string} Class to add to active link
  */
 export function setActiveLink(links, className) {
-  if (!links.length) return;
+  if (!links || links.length === 0) return;
   const actualPage = getMetadata('og:url').split('/').slice(-1)[0].toLowerCase();
   links.forEach((a) => {
-    const href = a.getAttribute('href') ? a.getAttribute('href').toLowerCase() : '';
+    const href = (a.getAttribute('href') || '').toLowerCase();
     if (href.includes(actualPage)) {
       a.classList.add(className);
     }
