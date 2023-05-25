@@ -414,7 +414,7 @@ export default async function decorate(block) {
       navSections.querySelector('ul').append(createOverflowDropdown(navSections));
       decorateLanguageNav(navSections);
       const multiLevelNav = navSections.querySelectorAll('li.nav-multilevel > ul > li > ul > li a');
-      setActiveLink(multiLevelNav);
+      setActiveLink(multiLevelNav, 'active');
     }
 
     // hamburger for mobile

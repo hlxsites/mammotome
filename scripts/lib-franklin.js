@@ -696,14 +696,15 @@ export function decorateTemplateAndTheme() {
 /**
  * Set Link class to active when on the same page
  * @param links {NodeListOf<Element>} Array of links to check
+ * @param className {string} Class to add to active link
  */
-export function setActiveLink(links) {
+export function setActiveLink(links, className) {
   if (!links.length) return;
   const actualPage = getMetadata('og:url').split('/').slice(-1)[0].toLowerCase();
   links.forEach((a) => {
     const href = a.getAttribute('href') ? a.getAttribute('href').toLowerCase() : '';
     if (href.includes(actualPage)) {
-      a.classList.add('active');
+      a.classList.add(className);
     }
   });
 }
