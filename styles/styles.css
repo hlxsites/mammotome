@@ -63,6 +63,7 @@
   --mt-link-color: var(  --mt-global-color-base-primary);
   --mt-link-hover-color: var(--mt-global-color-base-primary);
   --mt-text-color: var(--mt-global-color-base-secondary);
+  --mt-text-color-inverted: var(--mt-global-color-white);
   --mt-list-color: var(--mt-global-color-accent-senary);
   --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
   --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
@@ -301,6 +302,10 @@ p {
 
 .text-large p {
     font-size: var(--mt-body-font-size-l);
+}
+
+.text-inverted p {
+  color: var(--mt-text-color-inverted);
 }
 
 .align-left p {
