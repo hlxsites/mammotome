@@ -605,6 +605,7 @@ main .schedule-demo .default-content-wrapper h2 {
 
 /* stylelint-disable-next-line no-descending-specificity */
 .section.inverted-text,
+.section.inverted-text h1,
 .section.inverted-text h2,
 .section.inverted-text h3 {
   color: var(--mt-background-color-primary);
@@ -714,3 +715,23 @@ main .schedule-demo .default-content-wrapper h2 {
   fill: var(--mt-background-color-primary);
   background-color: transparent;
 }
+
+.section.callout {
+  padding: 0 0 10% 0;
+}
+
+.section.callout h1 {
+  padding: 3% 5% 3% 5%;
+}
+
+.section.callout .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.section.callout .button-container {
+    text-align: center;
+}
+
