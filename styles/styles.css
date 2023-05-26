@@ -125,15 +125,15 @@
   --mt-prev-next-button-line-height: var(--mt-font-size-120);
 
   /* feature font sizes */
-  --mt-body-font-size-m: var(--mt-font-size-100);
-  --mt-body-font-size-s: var(--mt-font-size-75);
-  --mt-body-font-size-xs: var(--mt-font-size-50);
+  --mt-body-font-size-m: var(--mt-font-size-130);
+  --mt-body-font-size-s: var(--mt-font-size-100);
+  --mt-body-font-size-xs: var(--mt-font-size-75);
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
   --mt-heading-font-size-xl: var(--mt-font-size-200);
   --mt-heading-font-size-l: var(--mt-font-size-180);
-  --mt-heading-font-size-m: var(--mt-font-size-100);
-  --mt-heading-font-size-s: var(--mt-font-size-80);
+  --mt-heading-font-size-m: var(--mt-font-size-130);
+  --mt-heading-font-size-s: var(--mt-font-size-100);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
   --mt-hero-font-size-m: var(--mt-font-size-180);
