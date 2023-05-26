@@ -60,8 +60,8 @@
   --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-input-color: var(--mt-text-color);
   --mt-input-hover-color: var(--mt-text-color);
-  --mt-link-color: var(--mt-global-color-accent-primary);
-  --mt-link-hover-color: var(--mt-global-color-accent-secondary);
+  --mt-link-color: var(  --mt-global-color-base-primary);
+  --mt-link-hover-color: var(--mt-global-color-base-primary);
   --mt-text-color: var(--mt-global-color-base-secondary);
   --mt-list-color: var(--mt-global-color-accent-senary);
   --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
@@ -766,6 +766,8 @@ main .schedule-demo .default-content-wrapper h2 {
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
+  background-color: #F4F4F4;
+  padding: 3% 0;
 }
 
 .section.logo-primary-background {
@@ -774,6 +776,7 @@ main .schedule-demo .default-content-wrapper h2 {
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
+  padding: 3% 0;
 }
 
 .section .arc {
