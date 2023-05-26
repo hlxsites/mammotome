@@ -125,6 +125,7 @@
   --mt-prev-next-button-line-height: var(--mt-font-size-120);
 
   /* feature font sizes */
+  --mt-body-font-size-l: var(--mt-font-size-180);
   --mt-body-font-size-m: var(--mt-font-size-130);
   --mt-body-font-size-s: var(--mt-font-size-100);
   --mt-body-font-size-xs: var(--mt-font-size-75);
@@ -294,8 +295,12 @@ p {
 }
 
 /* Section style for P */
-.text-large p {
+.text-medium p {
     font-size: var(--mt-body-font-size-m);
+}
+
+.text-large p {
+    font-size: var(--mt-body-font-size-l);
 }
 
 .align-left p {
