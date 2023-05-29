@@ -1,4 +1,9 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
+import decorateFile from './file.js';
+
+function isMandatory(fd) {
+  return fd.Mandatory && fd.Mandatory.toLowerCase() === 'true';
+}
 
 function constructPayload(form) {
   const payload = {};
@@ -54,7 +59,7 @@ function setNumberConstraints(element, fd) {
 function createLabel(fd, tagName = 'label') {
   const label = document.createElement(tagName);
   label.setAttribute('for', fd.Id);
-  label.className = 'field-label';
+  label.className = 'field-label' + (isMandatory(fd) && fd.Label ? ' asterisk' : '');
   label.textContent = fd.Label || '';
   if (fd.Tooltip) {
     label.title = fd.Tooltip;
@@ -128,6 +133,9 @@ const createSelect = withFieldWrapper((fd) => {
     const option = document.createElement('option');
     option.textContent = o.trim();
     option.value = o.trim();
+    if (fd.Value === o.trim()) {
+      option.selected = true;
+    }
     select.append(option);
   });
   return select;
@@ -247,13 +255,11 @@ async function createForm(formURL) {
   data.forEach((fd) => {
     const el = renderField(fd);
     const input = el.querySelector('input,textarea,select');
-    if (fd.Mandatory && fd.Mandatory.toLowerCase() === 'true') {
-      input.setAttribute('required', 'required');
-    }
     if (input) {
       input.id = fd.Id;
       input.name = fd.Name;
       input.value = fd.Value;
+      input[isMandatory(fd) ? 'setAttribute' : 'removeAttribute']('required', '');
       if (fd.Description) {
         input.setAttribute('aria-describedby', `${fd.Id}-description`);
       }
@@ -261,6 +267,7 @@ async function createForm(formURL) {
     form.append(el);
   });
   groupFieldsByFieldSet(form);
+  decorateFile(form);
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
