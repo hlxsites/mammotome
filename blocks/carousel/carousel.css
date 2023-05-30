@@ -36,7 +36,7 @@
 
 .carousel > div > div ul {
     list-style-type: none;
-    font-size: var(--mt-heading-font-size-m);
+    font-size: var(--mt-body-font-size-m);
     font-weight: var(--mt-font-weight-thin);
     line-height: var(--mt-list-line-height);
     color: var(--mt-list-color);
