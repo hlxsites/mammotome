@@ -55,13 +55,15 @@
   --mt-button-color-secondary: var(--mt-global-color-accent-primary);
   --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
   --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
-  --mt-heading-color-primary: var(--mt-global-color-base-secondary);
+  --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
+  --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-input-color: var(--mt-text-color);
   --mt-input-hover-color: var(--mt-text-color);
-  --mt-link-color: var(--mt-global-color-accent-primary);
-  --mt-link-hover-color: var(--mt-global-color-accent-secondary);
+  --mt-link-color: var(  --mt-global-color-base-primary);
+  --mt-link-hover-color: var(--mt-global-color-base-primary);
   --mt-text-color: var(--mt-global-color-base-secondary);
+  --mt-text-color-inverted: var(--mt-global-color-white);
   --mt-list-color: var(--mt-global-color-accent-senary);
   --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
   --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
@@ -103,7 +105,7 @@
   --mt-font-size-130: 1.3rem;
   --mt-font-size-150: 1.5rem;
   --mt-font-size-175: 1.75rem;
-  --mt-font-size-180: 1.75rem;
+  --mt-font-size-180: 1.80rem;
   --mt-font-size-185: 1.85rem;
   --mt-font-size-200: 2rem;
   --mt-font-size-215: 2.15rem;
@@ -124,15 +126,16 @@
   --mt-prev-next-button-line-height: var(--mt-font-size-120);
 
   /* feature font sizes */
-  --mt-body-font-size-m: var(--mt-font-size-100);
-  --mt-body-font-size-s: var(--mt-font-size-75);
-  --mt-body-font-size-xs: var(--mt-font-size-50);
+  --mt-body-font-size-l: var(--mt-font-size-180);
+  --mt-body-font-size-m: var(--mt-font-size-130);
+  --mt-body-font-size-s: var(--mt-font-size-100);
+  --mt-body-font-size-xs: var(--mt-font-size-75);
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
-  --mt-heading-font-size-xl: var(--mt-font-size-200);
-  --mt-heading-font-size-l: var(--mt-font-size-150);
-  --mt-heading-font-size-m: var(--mt-font-size-130);
-  --mt-heading-font-size-s: var(--mt-font-size-100);
+  --mt-heading-font-size-xl: var(--mt-font-size-180);
+  --mt-heading-font-size-l: var(--mt-font-size-130);
+  --mt-heading-font-size-m: var(--mt-font-size-100);
+  --mt-heading-font-size-s: var(--mt-font-size-80);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
   --mt-hero-font-size-m: var(--mt-font-size-180);
@@ -180,36 +183,81 @@ h5,
 h6 {
   text-align: center;
   margin: 0.5rem 0 1rem;
-  font-weight: var(--mt-font-weight-bold);
+  font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
-  color: var(--mt-heading-color-secondary);
+  color: var(--mt-global-color-base-secondary);
+  letter-spacing: 0;
 }
 
+/* Section styles for heading */
 h1 {
   font-size: var(--mt-heading-font-size-xxl);
-  color: var(--mt-heading-color-primary);
 }
 
 h2 {
-  font-size: var(--mt-heading-font-size-s);
-  font-weight: var(--mt-font-weight-heavy);
-  text-transform: uppercase;
+  font-size: var(--mt-heading-font-size-xl);
 }
 
 h3 {
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.logo-primary-background h2,
+.logo-secondary-background h2{
+  line-height: 2.7rem;
 }
 
 h4 {
-  font-size: var(--mt-heading-font-size-s);
+  font-size: var(--mt-heading-font-size-m);
 }
 
 h5 {
   font-size: var(--mt-heading-font-size-xs);
 }
 
-h6 {
-  font-size: var(--mt-heading-font-size-xs);
+
+.header-colored h1,
+.header-colored h2,
+.header-colored h3,
+.header-colored h4,
+.header-colored h5 {
+  color: var(--mt-heading-color-primary);
+}
+
+.align-left h1,
+.align-left h2,
+.align-left h3,
+.align-left h4,
+.align-left h5 {
+  text-align: left;
+}
+
+.header-inverted h1,
+.header-inverted h2,
+.header-inverted h3,
+.header-inverted h4,
+.header-inverted h5 {
+  color: var(--mt-heading-color-inverted);
+}
+
+.header-uppercase h1,
+.header-uppercase h2,
+.header-uppercase h3,
+.header-uppercase h4,
+.header-uppercase h5 {
+  text-transform: uppercase;
+}
+
+.header-wide h1,
+.header-wide h2,
+.header-wide h3,
+.header-wide h4,
+.header-wide h5 {
+  letter-spacing: 4px;
+}
+
+strong {
+  font-weight: var(--mt-font-weight-boldest);
 }
 
 sup {
@@ -226,6 +274,30 @@ ul,
 pre,
 blockquote {
   margin: 0 0 0.9rem;
+}
+
+p {
+  font-size: var(--mt-body-font-size-s);
+  line-height: var(--mt-body-line-height);
+  font-weight: var(--mt-body-font-weight);
+  text-align: center;
+}
+
+/* Section style for P */
+.text-large p {
+  font-size: var(--mt-body-font-size-l);
+}
+
+.text-medium p {
+    font-size: var(--mt-body-font-size-s);
+}
+
+.text-inverted p {
+  color: var(--mt-text-color-inverted);
+}
+
+.align-left p {
+  text-align: left;
 }
 
 code,
@@ -692,6 +764,8 @@ main .schedule-demo .default-content-wrapper h2 {
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
+  background-color: #F4F4F4;
+  padding: 3% 0;
 }
 
 .section.logo-primary-background {
@@ -700,6 +774,7 @@ main .schedule-demo .default-content-wrapper h2 {
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
+  padding: 3% 0;
 }
 
 .section .arc {
