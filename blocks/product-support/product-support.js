@@ -10,7 +10,7 @@ function getInfo() {
     if (slug) {
       return {
         productCode: slug,
-        productSupport: url.pathname.substring(0, url.pathname.indexOf(`${slug}`)),
+        productSupport: url.pathname.substring(0, url.pathname.indexOf(`${slug}`) - 1),
         language: url.pathname.substring(1, url.pathname.indexOf('/', 1)),
       };
     }
