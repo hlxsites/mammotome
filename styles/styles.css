@@ -132,10 +132,10 @@
   --mt-body-font-size-xs: var(--mt-font-size-75);
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
-  --mt-heading-font-size-xl: var(--mt-font-size-200);
-  --mt-heading-font-size-l: var(--mt-font-size-180);
-  --mt-heading-font-size-m: var(--mt-font-size-130);
-  --mt-heading-font-size-s: var(--mt-font-size-100);
+  --mt-heading-font-size-xl: var(--mt-font-size-180);
+  --mt-heading-font-size-l: var(--mt-font-size-130);
+  --mt-heading-font-size-m: var(--mt-font-size-100);
+  --mt-heading-font-size-s: var(--mt-font-size-80);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
   --mt-hero-font-size-m: var(--mt-font-size-180);
@@ -185,7 +185,8 @@ h6 {
   margin: 0.5rem 0 1rem;
   font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
-  color: var(--mt-global-color-base-secondary);
+  color: var(--mt-heading-color-primary);
+  letter-spacing: 0;
 }
 
 /* Section styles for heading */
@@ -201,8 +202,8 @@ h3 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-.logo-primary-background h3,
-.logo-secondary-background h3{
+.logo-primary-background h2,
+.logo-secondary-background h2{
   line-height: 2.7rem;
 }
 
@@ -211,37 +212,23 @@ h4 {
 }
 
 h5 {
-  font-size: var(--mt-heading-font-size-s);
-}
-
-h6 {
   font-size: var(--mt-heading-font-size-xs);
 }
 
-.header-bold h1,
-.header-bold h2,
-.header-bold h3,
-.header-bold h4,
-.header-bold h5,
-.header-bold h6 {
-  font-weight: var(--mt-font-weight-boldest);
-}
 
-.header-blue h1,
-.header-blue h2,
-.header-blue h3,
-.header-blue h4,
-.header-blue h5,
-.header-blue h6 {
-  color: var(--mt-heading-color-primary);
+.header-black h1,
+.header-black h2,
+.header-black h3,
+.header-black h4,
+.header-black h5 {
+  color: var(--mt-global-color-base-secondary);
 }
 
 .align-left h1,
 .align-left h2,
 .align-left h3,
 .align-left h4,
-.align-left h5,
-.align-left h6 {
+.align-left h5 {
   text-align: left;
 }
 
@@ -249,8 +236,7 @@ h6 {
 .header-inverted h2,
 .header-inverted h3,
 .header-inverted h4,
-.header-inverted h5,
-.header-inverted h6 {
+.header-inverted h5 {
   color: var(--mt-heading-color-inverted);
 }
 
@@ -258,8 +244,7 @@ h6 {
 .header-uppercase h2,
 .header-uppercase h3,
 .header-uppercase h4,
-.header-uppercase h5,
-.header-uppercase h6 {
+.header-uppercase h5 {
   text-transform: uppercase;
 }
 
@@ -267,9 +252,12 @@ h6 {
 .header-wide h2,
 .header-wide h3,
 .header-wide h4,
-.header-wide h5,
-.header-wide h6 {
+.header-wide h5 {
   letter-spacing: 4px;
+}
+
+strong {
+  font-weight: var(--mt-font-weight-boldest);
 }
 
 sup {
@@ -296,12 +284,12 @@ p {
 }
 
 /* Section style for P */
-.text-medium p {
-    font-size: var(--mt-body-font-size-m);
+.text-large p {
+  font-size: var(--mt-body-font-size-l);
 }
 
-.text-large p {
-    font-size: var(--mt-body-font-size-l);
+.text-medium p {
+    font-size: var(--mt-body-font-size-s);
 }
 
 .text-inverted p {
