@@ -185,7 +185,7 @@ h6 {
   margin: 0.5rem 0 1rem;
   font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
-  color: var(--mt-heading-color-primary);
+  color: var(--mt-global-color-base-secondary);
   letter-spacing: 0;
 }
 
@@ -216,12 +216,12 @@ h5 {
 }
 
 
-.header-black h1,
-.header-black h2,
-.header-black h3,
-.header-black h4,
-.header-black h5 {
-  color: var(--mt-global-color-base-secondary);
+.header-colored h1,
+.header-colored h2,
+.header-colored h3,
+.header-colored h4,
+.header-colored h5 {
+  color: var(--mt-heading-color-primary);
 }
 
 .align-left h1,
