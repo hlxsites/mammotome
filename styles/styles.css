@@ -720,7 +720,8 @@ main .schedule-demo .default-content-wrapper h2 {
   padding: 0 0 10% 0;
 }
 
-.section.callout h1 {
+.section.callout h1,
+.section.callout h2 {
   padding: 3% 5% 3% 5%;
 }
 
