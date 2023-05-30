@@ -491,6 +491,10 @@ header nav .nav-search-wrapper {
   padding: 0 30px;
 }
 
+header nav .nav-search-wrapper sup {
+  top: 0;
+}
+
 @media (min-width: 768px) {
   header nav .nav-search-wrapper {
     width: 60%;

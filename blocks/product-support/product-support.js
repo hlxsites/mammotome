@@ -1,5 +1,5 @@
 import {
-  createDomStructure, decorateBlockImgs, getProduct, translate,
+  createDomStructure, decorateBlockImgs, getProduct, translate, decorateSupScript,
 } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
@@ -42,7 +42,7 @@ export default async function decorate(block) {
     translate('productSupportNoResult', 'No data was found'),
   ]);
 
-  createDomStructure([{ type: 'h1', textContent: product.Name }], block);
+  createDomStructure([{ type: 'h1', children: decorateSupScript(product.Name) }], block);
   if (product.Image) {
     createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image } }] }], block);
     decorateBlockImgs(block);
@@ -100,7 +100,7 @@ export default async function decorate(block) {
             {
               type: 'a',
               attributes: { href: asset.URL, target: 'blank' },
-              textContent: asset.Name,
+              children: decorateSupScript(asset.Name),
             },
           ],
         }

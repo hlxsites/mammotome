@@ -4,6 +4,8 @@ import {
   translate,
   getProducts,
   setActiveLink,
+  createDomStructure,
+  decorateSupScript,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -238,10 +240,10 @@ async function searchInput(event) {
           searchTitle.classList.add('nav-search-title');
           const searchLink = document.createElement('a');
           searchLink.href = hit.path;
-          searchLink.textContent = hit.title;
+          createDomStructure(decorateSupScript(hit.title), searchLink);
           const searchDescription = document.createElement('div');
           searchDescription.classList.add('nav-search-description');
-          searchDescription.textContent = hit.description;
+          createDomStructure(decorateSupScript(hit.description, searchDescription));
           searchTitle.appendChild(searchLink);
           wrapper.appendChild(searchTitle);
           wrapper.appendChild(searchDescription);
