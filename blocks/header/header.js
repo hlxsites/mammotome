@@ -243,7 +243,7 @@ async function searchInput(event) {
           createDomStructure(decorateSupScript(hit.title), searchLink);
           const searchDescription = document.createElement('div');
           searchDescription.classList.add('nav-search-description');
-          createDomStructure(decorateSupScript(hit.description, searchDescription));
+          createDomStructure(decorateSupScript(hit.description), searchDescription);
           searchTitle.appendChild(searchLink);
           wrapper.appendChild(searchTitle);
           wrapper.appendChild(searchDescription);
