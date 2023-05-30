@@ -83,6 +83,10 @@
   padding-bottom: 1rem;
 }
 
+.product-support sup {
+  top: 0;
+}
+
 @media (min-width: 1025px) {
   .product-support > div > div > .link {
     width: 30%;
