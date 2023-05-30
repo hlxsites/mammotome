@@ -69,6 +69,14 @@
   object-fit: cover;
 }
 
+.cards.wideimage img {
+  width: 100%;
+}
+
+.cards.fullimage > ul > li img {
+  object-fit: contain;
+}
+
 .cards.wideimage.block > ul > li {
   padding: 0;
 }
@@ -111,6 +119,11 @@
   align-items: center;
 }
 
+.cards.fullimage .cards-card-image {
+  display: block;
+  width: auto;
+}
+
 .cards-card-image > picture {
   max-width: 90%;
   display: block;
@@ -118,10 +131,6 @@
 
 .cards.wideimage .cards-card-image > picture {
   max-width: 100%;
-  width: 100%;
-}
-
-.cards.wideimage img {
   width: 100%;
 }
 
@@ -195,6 +204,10 @@
   .section.cards-container .cards-wrapper {
     max-width: 1300px;
     flex-wrap: unset;
+  }
+
+  .cards.two-columns > ul {
+    grid-template-columns: repeat(2,1fr);
   }
 
   .cards.three-columns > ul {
