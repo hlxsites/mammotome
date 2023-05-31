@@ -12,11 +12,37 @@
   margin: auto;
 }
 
+.columns h1,
+.columns h2,
+.columns h3,
+.columns h4,
+.columns h5,
+.columns h6,
+.columns p {
+ text-align: left;
+}
+
 .columns h2 {
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 4px;
   margin-bottom: 20px;
+}
+
+.columns > div p {
+  font-weight: 300;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+.columns.centered h1,
+.columns.centered h2,
+.columns.centered h3,
+.columns.centered h4,
+.columns.centered h5,
+.columns.centered h6,
+.columns.centered p {
+  text-align: center;
 }
 
 .columns a:not(.button) {
@@ -58,12 +84,6 @@ div[class^="columns image-color-"] img {
 
 div[class^="columns image-color-"] > div > div:last-child img {
   margin: 0 0 0 auto;
-}
-
-.columns > div p {
-  font-weight: 300;
-  font-size: 1.3rem;
-  line-height: 1.5;
 }
 
 .columns.simple > div p {
