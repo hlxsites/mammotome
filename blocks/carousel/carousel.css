@@ -64,7 +64,9 @@
     border: 3px solid var(--mt-global-color-accent-quinary);
     border-radius: 50%;
     margin-left: -23px;
-
+    left: unset;
+    top: unset;
+    background-image: unset;
 }
 
 .carousel .slider-wrapper {;

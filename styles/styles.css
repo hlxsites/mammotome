@@ -130,6 +130,7 @@
   --mt-body-font-size-m: var(--mt-font-size-130);
   --mt-body-font-size-s: var(--mt-font-size-100);
   --mt-body-font-size-xs: var(--mt-font-size-75);
+  --mt-list-font-size: var(--mt-font-size-100);
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
   --mt-heading-font-size-xl: var(--mt-font-size-180);
@@ -202,8 +203,6 @@ h3 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-
-
 h4 {
   font-size: var(--mt-heading-font-size-m);
 }
@@ -261,13 +260,6 @@ strong {
   font-weight: var(--mt-font-weight-boldest);
 }
 
-sup {
-  font-size: var(--mt-font-size-80);
-  vertical-align: top;
-  position: relative;
-  top: -0.65em;
-}
-
 p,
 dl,
 ol,
@@ -275,6 +267,55 @@ ul,
 pre,
 blockquote {
   margin: 0 0 0.9rem;
+}
+
+/* UL decoration */
+.section ul {
+  list-style-type: none;
+  padding-left: 15px;
+  line-height: 30px;
+  font-size: var(--mt-list-font-size);
+}
+
+.text-large ul {
+  font-size: var(--mt-body-font-size-l);
+}
+
+.text-small ul {
+  font-size: var(--mt-body-font-size-xs);
+}
+
+.section .columns ul {
+  line-height: 24px;
+}
+
+.section li {
+  padding-left: 17px;
+  position: relative;
+}
+
+.section li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background-image: url('/styles/icons/circle.svg');
+  background-repeat: no-repeat;
+  background-size: 10px 10px;
+}
+
+.section .columns li::before {
+  top: 0.8rem;
+}
+
+sup {
+  font-size: var(--mt-font-size-80);
+  vertical-align: top;
+  position: relative;
+  top: -0.65em;
 }
 
 p {
@@ -289,8 +330,8 @@ p {
   font-size: var(--mt-body-font-size-l);
 }
 
-.text-medium p {
-    font-size: var(--mt-body-font-size-s);
+.text-small p {
+    font-size: var(--mt-body-font-size-xs);
 }
 
 .text-inverted p {
@@ -301,6 +342,7 @@ p {
   text-align: left;
 }
 
+/* H and P with background logo gets higher line height */
 .logo-primary-background h2,
 .logo-secondary-background h2,
 .logo-primary-background.text-large p ,
@@ -492,6 +534,11 @@ main .section {
 main .section .default-content-wrapper {
   max-width: 1300px;
   margin: auto;
+}
+
+/* Narrow content section metadata */
+main .section.narrow .default-content-wrapper  {
+  max-width: 610px;
 }
 
 /* progressive section appearance */
