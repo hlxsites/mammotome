@@ -230,14 +230,6 @@ h5 {
   text-align: left;
 }
 
-.header-inverted h1,
-.header-inverted h2,
-.header-inverted h3,
-.header-inverted h4,
-.header-inverted h5 {
-  color: var(--mt-heading-color-inverted);
-}
-
 .header-uppercase h1,
 .header-uppercase h2,
 .header-uppercase h3,
@@ -294,12 +286,25 @@ p {
     font-size: var(--mt-body-font-size-s);
 }
 
-.text-inverted p {
-  color: var(--mt-text-color-inverted);
-}
-
 .align-left p {
   text-align: left;
+}
+
+.logo-primary-background h1,
+.logo-primary-background h2,
+.logo-primary-background h3,
+.logo-primary-background h4,
+.logo-primary-background h5,
+.logo-primary-background h6,
+.logo-primary-background p,
+.base-primary-blur-overlay h1,
+.base-primary-blur-overlay h2,
+.base-primary-blur-overlay h3,
+.base-primary-blur-overlay h4,
+.base-primary-blur-overlay h5,
+.base-primary-blur-overlay h6,
+.base-primary-blur-overlay p {
+  color: var(--mt-heading-color-inverted);
 }
 
 .logo-primary-background h2,
@@ -685,12 +690,6 @@ main .schedule-demo .default-content-wrapper h2 {
 /* STYLED SECTIONS */
 
 /* stylelint-disable-next-line no-descending-specificity */
-.section.inverted-text,
-.section.inverted-text h2,
-.section.inverted-text h3 {
-  color: var(--mt-background-color-primary);
-}
-
 .section.gradient-primary-blur-overlay,
 .section.gradient-secondary-blur-overlay,
 .section.accent-secondary-blur-overlay,
