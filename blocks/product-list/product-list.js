@@ -1,4 +1,6 @@
-import { createDomStructure, decorateBlockImgs, getProducts } from '../../scripts/lib-franklin.js';
+import {
+  createDomStructure, decorateBlockImgs, decorateSupScript, getProducts,
+} from '../../scripts/lib-franklin.js';
 
 function getInfo() {
   const url = new URL(window.location);
@@ -7,7 +9,7 @@ function getInfo() {
 
 function decorateProduct(product) {
   const children = [
-    { type: 'h3', textContent: product.Name },
+    { type: 'h3', children: decorateSupScript(product.Name) },
   ];
 
   if (product.Image) {

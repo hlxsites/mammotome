@@ -7,64 +7,64 @@
   --columns-link-color: #c36;
 }
 
-.columns {
+main .columns {
   max-width: var(--columns-max-width);
   margin: auto;
 }
 
-.columns h1,
-.columns h2,
-.columns h3,
-.columns h4,
-.columns h5,
-.columns h6,
-.columns p {
+main .columns h1,
+main .columns h2,
+main .columns h3,
+main .columns h4,
+main .columns h5,
+main .columns h6,
+main .columns p {
  text-align: left;
 }
 
-.columns h2 {
+main .columns h2 {
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 4px;
   margin-bottom: 20px;
 }
 
-.columns > div p {
+main .columns > div p {
   font-weight: 300;
   font-size: 1.3rem;
   line-height: 1.5;
 }
 
-.columns.centered h1,
-.columns.centered h2,
-.columns.centered h3,
-.columns.centered h4,
-.columns.centered h5,
-.columns.centered h6,
-.columns.centered p {
+main .columns.centered h1,
+main .columns.centered h2,
+main .columns.centered h3,
+main .columns.centered h4,
+main .columns.centered h5,
+main .columns.centered h6,
+main .columns.centered p {
   text-align: center;
 }
 
-.columns a:not(.button) {
+main .columns a:not(.button) {
     color: var(--columns-link-color);
     font-size: 1rem;
 }
 
-.columns sup {
+main .columns sup {
   font-size: 1rem;
 }
 
-.columns > div {
+main .columns > div {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.columns > div > div {
+main .columns > div > div {
   order: 0;
 }
 
-.columns.centered > div {
+main .columns.centered > div {
   text-align: center;
 }
 
@@ -74,11 +74,11 @@ div[class^="columns image-color-"] img {
   box-shadow: 8px 22px 50px 0 rgb(28 28 73 / 37%);
 }
 
-.columns > div > .columns-img-col img {
+main .columns > div > .columns-img-col img {
   display: block;
 }
 
-.columns.images-small > div img {
+main .columns.images-small > div img {
   height: var(--columns-image-xs-height);
 }
 
@@ -86,27 +86,33 @@ div[class^="columns image-color-"] > div > div:last-child img {
   margin: 0 0 0 auto;
 }
 
+.columns > div p {
+  font-weight: 300;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
 .columns.simple > div p {
   font-size: initial;
 }
 
-.columns.text-small > div p {
+main .columns.text-small > div p {
     font-size: 1rem;
     padding: 0 15%;
 }
 
-.columns.simple > div {
+main .columns.simple > div {
   align-items: flex-start;
 }
 
-.columns > div > .columns-img-col {
+main .columns > div > .columns-img-col {
   order: 1;
   position: relative;
   margin-bottom: 10%;
   padding: 7% 0;
 }
 
-.columns.image-cards p:has(picture) {
+main .columns.image-cards p:has(picture) {
   box-shadow: 2px 12px 28px 0 rgb(28 28 73 / 25%);
   border-radius: 5px;
   background: white;
@@ -127,7 +133,7 @@ div[class^="columns image-color-"] > div > div:last-child.columns-img-col {
   max-width: calc((var(--columns-max-width)/2));
 }
 
-.columns > div > .columns-img-col::before {
+main .columns > div > .columns-img-col::before {
   content: '';
   position: absolute;
   top: 0;
@@ -138,42 +144,42 @@ div[class^="columns image-color-"] > div > div:last-child.columns-img-col {
   z-index: -1;
 }
 
-.columns div > div:first-child.columns-img-col::before {
+main .columns div > div:first-child.columns-img-col::before {
   left: 0;
 }
 
-.columns > div > div:last-child.columns-img-col::before {
+main .columns > div > div:last-child.columns-img-col::before {
   right: 0;
 }
 
-.columns.image-color-primary-blue > div > .columns-img-col::before {
+main .columns.image-color-primary-blue > div > .columns-img-col::before {
   background-color: var(--mt-global-color-accent-primary);
 }
 
-.columns.image-color-light-blue > div > .columns-img-col::before {
+main .columns.image-color-light-blue > div > .columns-img-col::before {
   background-color: var(--mt-global-color-light-blue);
 }
 
 @media (min-width: 900px) {
-  .columns h2 {
+  main .columns h2 {
     font-size: 1rem;
   }
 
-  .columns > div {
+  main .columns > div {
     flex-direction: unset;
     gap: var(--columns-gap);
   }
 
-  .columns > div p {
+  main .columns > div p {
     font-size: 1.8rem;
   }
 
-  .columns > div > div {
+  main .columns > div > div {
     flex: 1;
     order: unset;
   }
 
-  .columns > div > .columns-img-col {
+  main .columns > div > .columns-img-col {
     order: unset;
   }
 }

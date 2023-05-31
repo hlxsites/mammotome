@@ -336,6 +336,36 @@ export async function translate(key, defaultText) {
   return defaultText;
 }
 
+export function decorateSupScript(string, result = []) {
+  if (!string) {
+    return result;
+  }
+
+  const idx = string.search(/®|™/);
+
+  if (idx !== -1) {
+    result.push(
+      {
+        type: 'span',
+        textContent: string.substr(0, idx),
+      },
+      {
+        type: 'sup',
+        textContent: string.substr(idx, 1),
+      },
+    );
+
+    return decorateSupScript(string.substr(idx + 1), result);
+  }
+
+  result.push({
+    type: 'span',
+    textContent: string,
+  });
+
+  return result;
+}
+
 export async function getProductDB() {
   if (!window.productDB) {
     const resp = await fetch('/products.json?limit=10000');
