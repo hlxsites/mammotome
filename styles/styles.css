@@ -492,6 +492,27 @@ main .section[data-section-status='initialized'] {
   display: none;
 }
 
+/* callout block */
+.section.callout {
+  padding: 0 0 10%;
+}
+
+.section.callout h1,
+.section.callout h2 {
+  padding: 3% 5%;
+}
+
+.section.callout .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.section.callout .button-container {
+    text-align: center;
+}
+
 /* about-us/our-history */
 
 main .section.our-history h2 {
@@ -677,6 +698,7 @@ main .schedule-demo .default-content-wrapper h2 {
 
 /* stylelint-disable-next-line no-descending-specificity */
 .section.inverted-text,
+.section.inverted-text h1,
 .section.inverted-text h2,
 .section.inverted-text h3 {
   color: var(--mt-background-color-primary);
