@@ -22,6 +22,15 @@ main .columns p {
  text-align: left;
 }
 
+main .columns h4 {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: calc(4% + 20px);
+  line-height: 1.5;
+  color: var(--mt-heading-color-primary);
+}
+
 main .columns h2 {
   font-size: 0.8rem;
   font-weight: 900;
