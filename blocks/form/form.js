@@ -18,18 +18,20 @@ function loadScript(url) {
 
 function constructPayload(form) {
   const payload = {};
+  const attachments = {};
   [...form.elements].forEach((fe) => {
     if (fe.type === 'checkbox') {
       if (fe.checked) payload[fe.id] = fe.value;
+    } else if (fe.type === 'file' && fe.files?.length > 0) {
+      attachments[fe.name] = fe.files;
     } else if (fe.id) {
       payload[fe.id] = fe.value;
     }
   });
-  return payload;
+  return { payload, attachments };
 }
 
 async function submissionFailure(error, form) {
-  console.log('Err', error);
   alert(error); // TODO define error mechansim
   form.setAttribute('data-submitting', 'false');
   form.querySelector('button[type="submit"]').disabled = false;
@@ -37,13 +39,27 @@ async function submissionFailure(error, form) {
 
 async function submitForm(form, token) {
   const url = `${FORM_SUBMIT_ENDPOINT}${form.dataset.action}`;
-  const payload = constructPayload(form);
+  const { payload, attachments } = constructPayload(form);
+  let headers = {
+    'Content-Type': 'application/json',
+  };
+  let body = JSON.stringify({ data: payload, token });
+  if (attachments && Object.keys(attachments).length > 0) {
+    headers = {};
+    body = new FormData();
+    const fileNames = [];
+    Object.entries(attachments).forEach(([dataRef, files]) => {
+      fileNames.push(dataRef);
+      [...files].forEach((file) => body.append(dataRef, file));
+    });
+    body.append('token', token);
+    body.append('fileFields', JSON.stringify(fileNames));
+    body.append('data', JSON.stringify(payload));
+  }
   fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ data: payload, token }),
+    headers,
+    body,
   }).then(async (response) => {
     if (response.ok) {
       sampleRUM('form:submit');
