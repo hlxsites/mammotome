@@ -86,12 +86,6 @@ div[class^="columns image-color-"] > div > div:last-child img {
   margin: 0 0 0 auto;
 }
 
-.columns > div p {
-  font-weight: 300;
-  font-size: 1.3rem;
-  line-height: 1.5;
-}
-
 .columns.simple > div p {
   font-size: initial;
 }
