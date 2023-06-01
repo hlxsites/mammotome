@@ -1,7 +1,7 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
-const FORM_SUBMIT_ENDPOINT = 'http://localhost:8787';
+const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
 
 function loadScript(url) {
   const head = document.querySelector('head');
@@ -37,8 +37,7 @@ async function submissionFailure(error, form) {
   form.querySelector('button[type="submit"]').disabled = false;
 }
 
-async function submitForm(form, token) {
-  const url = `${FORM_SUBMIT_ENDPOINT}${form.dataset.action}`;
+function prepareRequest(form, token) {
   const { payload, attachments } = constructPayload(form);
   let headers = {
     'Content-Type': 'application/json',
@@ -56,21 +55,26 @@ async function submitForm(form, token) {
     body.append('fileFields', JSON.stringify(fileNames));
     body.append('data', JSON.stringify(payload));
   }
-  fetch(url, {
-    method: 'POST',
-    headers,
-    body,
-  }).then(async (response) => {
+  return { headers, body };
+}
+
+async function submitForm(form, token) {
+  try {
+    const url = `${FORM_SUBMIT_ENDPOINT}${form.dataset.action}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      ...prepareRequest(form, token),
+    });
     if (response.ok) {
       sampleRUM('form:submit');
       window.location.href = form.dataset?.redirect || 'thankyou';
     } else {
       const error = await response.text();
-      submissionFailure(error, form);
+      throw new Error(error);
     }
-  }).catch((error) => {
+  } catch (error) {
     submissionFailure(error, form);
-  });
+  }
 }
 
 async function handleSubmit(form) {
