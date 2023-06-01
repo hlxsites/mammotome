@@ -291,8 +291,8 @@ blockquote {
   top: 0.8rem;
 }
 
-.section:not(:has(.cards) li::before,
-.section:has(.carousel)) li::before {
+.section .columns li::before,
+.section .default-content-wrapper li::before {
   content: "";
   position: absolute;
   left: 0;
