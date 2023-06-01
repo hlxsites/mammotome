@@ -544,7 +544,7 @@ main .section .default-content-wrapper {
 }
 
 /* Narrow content section metadata */
-main .section.narrow .default-content-wrapper  {
+main .section.narrow .default-content-wrapper {
   max-width: 610px;
 }
 
