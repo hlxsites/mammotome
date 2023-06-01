@@ -287,7 +287,12 @@ blockquote {
   position: relative;
 }
 
-.section:not(:has(.cards)) li::before {
+.section .columns li::before {
+  top: 0.8rem;
+}
+
+.section:not(:has(.cards) li::before,
+.section:has(.carousel)) li::before {
   content: "";
   position: absolute;
   left: 0;
@@ -298,10 +303,6 @@ blockquote {
   background-image: url('/styles/icons/circle.svg');
   background-repeat: no-repeat;
   background-size: 10px 10px;
-}
-
-.section .columns li::before {
-  top: 0.8rem;
 }
 
 sup {
