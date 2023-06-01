@@ -36,6 +36,8 @@ main .columns h2 {
   font-weight: 900;
   letter-spacing: 4px;
   margin-bottom: 20px;
+  color: var(--mt-heading-color-primary);
+  text-transform: uppercase;
 }
 
 main .columns > div p {

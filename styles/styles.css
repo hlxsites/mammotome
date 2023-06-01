@@ -822,6 +822,8 @@ main .schedule-demo .default-content-wrapper h2 {
   background-size: 60px auto;
   background-color: #F4F4F4;
   padding: 3% 0;
+  position: relative;
+  z-index: -1;
 }
 
 .section.logo-primary-background {
@@ -831,6 +833,8 @@ main .schedule-demo .default-content-wrapper h2 {
   background-repeat: repeat;
   background-size: 60px auto;
   padding: 3% 0;
+  position: relative;
+  z-index: -1;
 }
 
 .section .arc {
