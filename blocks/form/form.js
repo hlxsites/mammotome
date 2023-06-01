@@ -155,6 +155,12 @@ const createOutput = withFieldWrapper((fd) => {
   return output;
 });
 
+const createFile = withFieldWrapper((fd) => {
+  const input = createInput(fd);
+  input.accept = fd.Accept;
+  return input;
+});
+
 function createHidden(fd) {
   const input = document.createElement('input');
   input.type = 'hidden';
@@ -215,6 +221,7 @@ const fieldRenderers = {
   hidden: createHidden,
   fieldset: createFieldSet,
   plaintext: createPlainText,
+  file: createFile
 };
 
 function renderField(fd) {

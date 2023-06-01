@@ -11,6 +11,7 @@
     --form-padding: 16px 0 0;
     --form-grid-gap: 26px 32px;
     --form-max-width: 100%;
+    --form-fieldset-columns:1;
     --form-fieldset-border: 0;
     --form-fieldset-marign: 0;
     --form-fieldset-padding: 0;
@@ -70,12 +71,13 @@ main .form form {
 }
 
 main .form fieldset {
-    border: var(--form-fieldset-border);
-    margin: var(--form-fieldset-marign);
-    padding: var(--form-fieldset-padding);
     display: grid;
     align-content: flex-start;
     gap: var(--form-fieldset-grid-gap);
+    grid-template-columns: repeat(var(--form-fieldset-columns), minmax(0, 1fr));
+    border: var(--form-fieldset-border);
+    margin: var(--form-fieldset-marign);
+    padding: var(--form-fieldset-padding);
 }
 
 main .form fieldset > legend {
@@ -156,6 +158,12 @@ main .form-submit-wrapper button {
     border-radius: 3px;
 }
 
+main .form fieldset > fieldset > legend {
+    margin-bottom: 8px;
+    padding: 0;
+    font-size: var(--mt-font-size-100);
+}
+
 main .contact {
     --form-default-wrapper-padding: calc(5% + 48px) calc(5% + 8px) 0;
     --form-wrapper-padding: 0 calc(5% + 8px) calc(10% + 48px);
@@ -200,6 +208,7 @@ main .schedule-demo .form-message {
     border-bottom: solid 2px var(--mt-global-color-gallery);
     line-height: 1.5;
     padding: 0 0 4%;
+    grid-column: 1/-1;
 }
 
 main .contact .form-consent,
@@ -208,6 +217,7 @@ main .schedule-demo .form-consent {
     padding: 0.375rem 0 4%;
     border-bottom: solid 2px var(--mt-global-color-gallery);   
     margin: 0;
+    grid-column: 1/-1;
 }
 
 main .contact :is(.form-product-fs, .form-solution-fs, .form-service-fs) label,
@@ -217,41 +227,44 @@ main .schedule-demo :is(.form-product-fs, .form-solution-fs) label {
 
 main .study-request {
     --form-default-wrapper-padding: 0;
-    --form-wrapper-padding: 0;
+    --form-wrapper-padding: 2%;
     --form-wrapper-max-width: 1060px;
     --form-max-width: 800px;
     --form-label-color: var(--mt-global-color-white);
-    --form-fieldset-grid-gap: 0 24px;
+    --form-fieldset-grid-gap: 24px 0;
     --form-label-padding: 0;
     --form-input-margin: 7px 0 0;
-    --form-fieldset-legend-padding: 32px 0 15px 0;
+    --form-fieldset-legend-padding: 22px 0 15px 0;
     --form-fieldset-legend-font-size: 24px;
     --form-fieldset-legend-font-weight: 400;
+    --form-padding: 16px 0;
+}
+
+main .study-request .default-content-wrapper p {
+    margin: 0;
+}
+
+main .study-request .default-content-wrapper strong {
+    color: var(--mt-global-color-red);
 }
 
 main .study-request form {
     color: var(--form-label-color);
 }
 
-main .study-request .field-description {
-    font-size: 15px;
-    line-height: 1;
-    padding-top: 5px;
-}
-
-main .study-request fieldset {
-    align-items: end;
-}
-
-main .study-request form > fieldset > legend {
-    border-bottom: 2px dashed var(--mt-global-color-white);
-    margin-bottom: 24px;
-    width: 100%;
-}
-
-main .study-request .form-study-fs textarea {
+main .study-request textarea {
     height: 288px;
     padding: 15px;
+}
+
+main .study-request .field-description {
+    font-size: 15px;
+    padding-top: 5px;
+    line-height: normal;
+}
+
+main .study-request .form-pi-and-contact-fs {
+    align-items: end;
 }
 
 main .study-request .form-information {
@@ -266,21 +279,133 @@ main .study-request .form-information {
     border-image-slice: 1;
 }
 
+main .study-request :is(.form-pi-and-contact-fs, .form-study-fs) > legend,
+main .study-request :is(.form-statistical-fs, .form-budget-fs) > legend  {
+    border-bottom: 2px dashed var(--mt-global-color-white);
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+main .study-request :is(.form-milestones-fs, .form-publication-fs, .form-document-fs) > .field-description {
+    border-bottom: 2px dashed var(--mt-global-color-white);
+    width: 100%;
+    padding-bottom: 25px;
+    grid-column: 1/-1;
+} 
+
+main .study-request .form-milestones-fs > fieldset {
+    --form-fieldset-columns: 3;
+    --form-fieldset-grid-gap: 24px 2%;
+    grid-template-columns: repeat(var(--form-fieldset-columns), 84px);
+}
+
+main .study-request .form-submission-type-fs {
+    --form-fieldset-columns: 1;
+    --form-fieldset-grid-gap: 10px 0;
+}
+
+main .study-request .form-submission-type-fs > legend {
+    font-weight: bold;
+}
+
+main .study-request .form-submission-type-fs input {
+    margin-left: 0;
+}
+
+main .study-request .form-browse > .field-description {
+    margin-top: 20px;
+    line-height: 22.5px;
+}
+
+main .study-request .form-browse-dropArea {
+    background: rgba(0,0,0,.02);
+    border: 1px dashed var(--mt-global-color-silver);
+    border-radius: 4px;
+    margin: 11px 0 8px;
+    padding: 32px;
+    text-align: center;
+}
+
+main .study-request .form-browse-dropArea > button {
+    color: var(--mt-global-color-red);
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid var(--mt-global-color-red);
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    width: unset;
+    line-height: 1.5;
+}
+
 main .study-request .form-browse input[type=file] {
     display: none;
 }
 
+main .study-request .form-browse .attached-file {
+    margin: 16px 0;
+    color: var(--mt-global-color-charcoal);
+    text-align: baseline;
+}
+
 main .study-request .form-browse .remove {
-    
+    background: none;
+    background-image: url(../../icons/trash.svg);
+    background-repeat: no-repeat;
+    width: unset;
+    border: unset;
+    text-align: center;
+    --form-button-padding: 15px;
 }
 
-main .innovate .form-wrapper {
-    max-width: 1080px;
-    padding: 2%;
+main .study-request .form-authorize {
+    padding-top: 20px;
 }
 
-main  .form-wrapper {
-    max-width: 1080px;
+main .study-request :is(.form-authorize, .form-terms, .form-submit-wrapper) {
+    width: 500px;
+    margin: auto;
+    text-align: center;
+    font-style: oblique;
+}
+
+main .innovate {
+    --form-padding: 16px 0 72px;
+    --form-grid-gap: 36px 0;
+    --form-default-wrapper-padding: 0;
+    --form-wrapper-padding: 2%;
+    --form-wrapper-max-width: 1060px;
+    --form-max-width: 800px;
+    --form-input-margin: 7px 0 0;
+    --form-label-color: var(--mt-global-color-white);
+    --form-submit-wrapper-margin: 0;
+}
+
+main .innovate form > fieldset > legend {
+    --form-fieldset-legend-padding: 0.3rem 0 1.25rem 0;
+    width: 100%;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid;
+    border-image-source: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.75), rgba(0, 0, 0, 0));
+    border-image-slice: 1;
+    margin-bottom: 30px;
+}
+
+main .innovate .form-ack-fs {
+    --form-fieldset-legend-padding: 20px 0 40px;
+    --form-fieldset-padding: 40px 15% 32px;
+    --form-fieldset-grid-gap: 5px;
+    background-color: rgba(0, 0, 0, .1);
+}
+
+main .innovate .form-ack-fs > legend {
+    float: left;
+}
+
+main .innovate .form-ack-fs label.asterisk::after {
+    color: var(--mt-global-color-red);
 }
 
 @media (min-width: 640px) {
@@ -295,17 +420,27 @@ main  .form-wrapper {
     .form-institutionaddress,
     .form-background,
     .form-statistical,
-    .form-submit-wrapper {
+    .form-publication,
+    .form-submit-wrapper,
+    .form-ideaTitle,
+    .form-ideaDesc,
+    .form-ideaArticle,
+    .form-intendedFS,
+    .form-intendedOther,
+    .form-departmentFS,
+    .form-departmentOther,
+    .form-categoryFS,
+    .form-categoryOther
+     {
         grid-column: 1/-1;
     }
 
-    .form-firstname,
-    .form-lastname,
-    .form-postalcode,
-    .form-country,
-    .form-phone,
-    .form-email {
+    main .form :is(.form-firstname, .form-lastname, .form-postalcode, .form-country, .form-phone, .form-email) {
         grid-column: span calc(var(--form-columns)/2);
+    }
+
+    main .form fieldset :is(.form-firstname, .form-lastname, .form-postalcode, .form-country, .form-phone, .form-email) {
+        grid-column: span calc(var(--form-fieldset-columns)/2);
     }
 
     main .contact form,
@@ -334,10 +469,18 @@ main  .form-wrapper {
         width: calc(100% + 21px);
     }
 
-    main .study-request form fieldset {
-        --form-columns: 2;
+    main .study-request fieldset {
+        --form-fieldset-columns: 2;
         --form-fieldset-grid-gap: 24px 2%;
-        grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+    }
+
+    main .study-request :is(.form-submission-fs, .form-enrollment-fs, .form-enrollment-end-fs, .form-final-data-fs),
+    main .study-request :is(.form-browse, .form-submission-type-fs) {
+        grid-column: span 1;
+    }
+
+    main .study-request :is(.form-submission-fs, .form-enrollment-fs, .form-enrollment-end-fs, .form-final-data-fs) > .field-wrapper {
+        grid-column: span 1;
     }
 }
 
@@ -360,7 +503,35 @@ main  .form-wrapper {
     }
 }
 
+@media (min-width: 768px) {
+    main .innovate {
+        --form-padding: 16px 0 72px;
+    }
+    main .innovate fieldset {
+        --form-fieldset-columns: 2;
+        --form-fieldset-grid-gap: 36px 14px;
+    }
+
+    main .innovate fieldset fieldset,
+    main .innovate .form-ack-fs {
+        --form-fieldset-columns: 1;
+        --form-fieldset-grid-gap: 0;
+    }
+
+    main .innovate fieldset .form-email {
+        grid-column: 1/-1;
+    }
+
+    main .innovate fieldset :is(.form-company, .form-role) {
+        grid-column: span 1;
+    }
+}
+
 @media (min-width: 1024px) {
+    main .study-request {
+        --form-wrapper-padding: 0;
+    }
+
     main .innovate .form-wrapper {
         padding: 50px 100px 0;
     }

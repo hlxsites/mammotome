@@ -38,6 +38,7 @@
   --mt-global-color-gallery: #ECECEC;
   --mt-global-color-accent-grey: #BFBFBF;
   --mt-global-color-line-grey: #D5D8DC;
+  --mt-global-color-red: #c36;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
