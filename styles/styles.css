@@ -543,6 +543,13 @@ main .section .default-content-wrapper {
   margin: auto;
 }
 
+.section.callout .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Narrow content section metadata */
 main .section.narrow .default-content-wrapper {
   max-width: 610px;
@@ -562,13 +569,6 @@ main .section[data-section-status='initialized'] {
 .section.callout h1,
 .section.callout h2 {
   padding: 3% 5%;
-}
-
-.section.callout .default-content-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .section.callout .button-container {
