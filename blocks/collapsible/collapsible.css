@@ -23,6 +23,7 @@
     line-height: var(--mt-collapsible-question-line-height);
     padding: 15px;
     cursor: pointer;
+    font-size: var(--mt-body-font-size-s);
 }
 
 .collapsible .question a:hover {
@@ -66,15 +67,16 @@
     overflow: hidden;
     box-sizing: content-box;
     transition: height 0.5s, padding-top 0.5s, padding-bottom 0.5s;
-}   
+}
 
 .collapsible .answer.collapsed {
     height: 0;
     padding-top: 0;
     padding-bottom: 0;
-} 
+}
 
 .collapsible .answer p {
     display: block;
     margin-block-end: 1em;
+    text-align: left;
 }
