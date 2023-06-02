@@ -15,7 +15,7 @@ Export from the wordpress `Tools/export`the following:
 * `Product Docs` into `productDocs.xml`, and 
 * `Media` into `media.xml` 
 
-(all xml files should go into the same dir as this Readme). 
+(all xml files need to go into the same dir as this Readme). 
 
 Then run:
 
@@ -23,4 +23,4 @@ Then run:
 node index.js
 ```
 
-which shoudl generate an `assets` folder (with the downloaded assets) and a `productDB.xlsl` with the product db.
+which should generate an `assets` folder (with the downloaded assets) and a `productDB.xlsl` with the product db.
