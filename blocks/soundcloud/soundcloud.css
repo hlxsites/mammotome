@@ -1,0 +1,20 @@
+@media (min-width: 768px) {
+    .soundcloud {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .soundcloud-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .soundcloud-col:nth-child(odd) {
+        padding-right: 30px;
+    }
+
+    .soundcloud-col:nth-child(even) {
+        padding-left: 30px;
+    }
+}
