@@ -183,10 +183,10 @@ const productDocs = await parseProductDocs(media);
 const productSupport = await parseProductSupport(media, productDocs);
 
 const result = {
-  ifus: [['eIFU', 'Title', 'Countries', 'URL', 'ProductCodes']],
-  assets: [['Page', 'Language', 'Name', 'URL']],
+  ifus: [['eIFU', 'Countries', 'Title', 'URL', 'ProductCodes']],
+  assets: [['Page', 'Countries', 'Languages', 'Name', 'URL']],
   products: [['Page', 'Countries', 'Name', 'Image']],
-  translations: [['Page', 'Language', 'Name', 'Image']],
+  translations: [['Page', 'Countries', 'Languages', 'Name', 'Image']],
 };
 
 let productRowCount = 2;
@@ -253,7 +253,8 @@ Array.from(slugs.entries()).forEach(([key, values]) => {
   translations.forEach((support) => {
     result.translations.push([
       { formula: `='helix-Product'!A${rowMap.get(key)}` },
-      support.language,
+      support.language === 'en-gb' ? 'GB' : '',
+      support.language === 'en-gb' ? 'en' : support.language,
       clean(support.title),
       support.images[0],
     ]);
@@ -280,8 +281,8 @@ await Promise.all(Array.from(ifuMap.values()).map(async ({ ifu, countries, asset
   const target = await download(asset);
   result.ifus.push([
     String(ifu.eIfu).padStart(6, '0'),
-    clean(ifu.title),
     Array.from(countries).join('|'),
+    clean(ifu.title),
     target,
     ifu.productCodes.join('|'),
   ]);
@@ -296,7 +297,8 @@ await Promise.all(
           docs.assets.map(async (asset) => {
             const target = await download(asset);
             result.assets.push([{ formula: `='helix-Product'!A${rowMap.get(key)}` },
-              support.language,
+              support.language === 'en-gb' ? 'GB' : 'US',
+              support.language === 'en-gb' ? 'en' : support.language,
               clean(docs.title),
               target,
             ]);
