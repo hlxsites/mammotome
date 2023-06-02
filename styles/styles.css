@@ -250,7 +250,7 @@ h5 {
 }
 
 strong {
-  font-weight: var(--mt-font-weight-boldest);
+  font-weight: var(--mt-font-weight-heavy);
 }
 
 p,
@@ -350,10 +350,16 @@ p {
   color: var(--mt-heading-color-inverted);
 }
 
+.logo-primary-background h1,
+.logo-secondary-background h1,
 .logo-primary-background h2,
 .logo-secondary-background h2,
-.logo-primary-background.text-large p ,
-.logo-secondary-background.text-large p {
+.logo-primary-background h3,
+.logo-secondary-background h3,
+.logo-primary-background h4,
+.logo-secondary-background h4,
+.logo-primary-background p ,
+.logo-secondary-background p {
   line-height: 2.7rem;
 }
 

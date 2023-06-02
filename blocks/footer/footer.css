@@ -1,5 +1,7 @@
 footer {
-  padding: 2rem;
+  padding: 0 5%;
+  margin-top: 5%;
+  margin-bottom: 0;
   background-color: var(--mt-background-color-primary);
   font-size: var(--mt-body-font-size-m);
 }
