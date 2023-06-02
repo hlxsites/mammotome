@@ -368,7 +368,7 @@ export function decorateSupScript(string, result = []) {
 
 export async function getProductDB() {
   if (!window.productDB) {
-    const resp = await fetch('/products.json?limit=10000');
+    const resp = await fetch('/productdb.json?limit=10000');
     if (!resp.ok) {
       throw new Error(`${resp.status}: ${resp.statusText}`);
     }
@@ -377,36 +377,46 @@ export async function getProductDB() {
   return window.productDB;
 }
 
-export async function getProduct(productCode, language) {
+function productDBMatches(entry, country, language) {
+  let matches;
+  if (country) {
+    matches = (entry.Countries === '' || entry.Countries.split('|').map((c) => c.toUpperCase()).includes(country.toUpperCase()));
+  } else {
+    matches = true;
+  }
+  if (matches && language) {
+    matches = (entry.Languages === '' || entry.Languages.split('|').map((l) => l.toUpperCase()).includes(language.toUpperCase()));
+  }
+  return matches;
+}
+
+export async function getProduct(page, country, language) {
   const productDB = await getProductDB();
 
-  const languageUpper = language.toUpperCase();
-
   const product = productDB.Product.data
-    .find((entry) => entry.ProductCodes.split('|').includes(productCode)
-      && entry.Languages.split('|').map((lang) => lang.toUpperCase()).includes(languageUpper));
+    .find((entry) => entry.Page === page && productDBMatches(entry, country));
 
   if (product) {
     const translation = productDB.ProductTranslation.data
-      .find((entry) => entry.ProductRef === product.ProductCodes && entry.Language === language);
+      .find((entry) => entry.Page === product.Page && productDBMatches(entry, country, language));
 
     product.Name = translation?.Name || product.Name;
+    product.Description = translation?.Description || product.Description;
     product.Image = translation?.Image || product.Image;
 
     product.assets = productDB.ProductAsset.data.filter(
-      (asset) => asset.ProductRef === product.ProductCodes
-        && asset.Languages.split('|').map((lang) => lang.toUpperCase()).includes(languageUpper),
+      (asset) => asset.Page === product.Page && productDBMatches(asset, country, language),
     );
   }
 
   return product;
 }
 
-export async function getProducts(language) {
+export async function getProducts(country, language) {
   const productDB = await getProductDB();
 
   return (await Promise.all(productDB.Product.data
-    .map(async (product) => getProduct(product.ProductCodes.split('|')[0], language))))
+    .map(async (product) => getProduct(product.Page, country, language))))
     .filter((product) => product);
 }
 

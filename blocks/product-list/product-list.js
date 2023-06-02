@@ -4,7 +4,7 @@ import {
 
 function getInfo() {
   const url = new URL(window.location);
-  return { language: url.pathname.substring(1, url.pathname.indexOf('/', 1)) };
+  return { country: 'US', language: url.pathname.substring(1, url.pathname.indexOf('/', 1)) };
 }
 
 function decorateProduct(product) {
@@ -23,14 +23,14 @@ function decorateProduct(product) {
   return {
     type: 'a',
     classes: ['product'],
-    attributes: { href: `product-support/${product.ProductCodes.split('|')[0]}` },
+    attributes: { href: `product-support/${product.Page}` },
     children,
   };
 }
 
 export default async function decorate(block) {
-  const { language } = getInfo();
-  const products = await getProducts(language);
+  const { country, language } = getInfo();
+  const products = await getProducts(country, language);
 
   createDomStructure([
     {
