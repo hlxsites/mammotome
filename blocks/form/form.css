@@ -3,10 +3,10 @@
     --form-font-size-s: 18px;
     --form-font-size-xs: 16px;
     --form-container-padding: 10px;
-    --form-default-wrapper-padding: 5% 5% 0;
-    --form-wrapper-padding: 0 5% 10%;
+    --form-default-wrapper-padding: 2% 5% 0;
+    --form-wrapper-padding: 0 5% 2%;
     --form-wrapper-max-width: 100%;
-    --form-wrapper-background-color: var(--mt-global-color-base-primary);
+    --form-wrapper-background-color: var(--mt-global-color-white);
     --form-columns: 1;
     --form-padding: 16px 0 0;
     --form-grid-gap: 26px 32px;
@@ -111,6 +111,7 @@ main .form :is(input, textarea, select) {
     font-size: var(--form-input-font-size);
     font-family: var(--mt-form-font-family);
     border-radius: 4px;
+    max-width: unset;
 }
 
 main .form textarea {
@@ -169,7 +170,6 @@ main .contact {
     --form-wrapper-padding: 0 calc(5% + 8px) calc(10% + 48px);
     --form-container-padding: 0;
     --form-wrapper-max-width: 740px;
-    --form-wrapper-background-color: var(--mt-global-color-white);
 }
 
 main .schedule-demo {
@@ -177,7 +177,6 @@ main .schedule-demo {
     --form-wrapper-padding: 0 calc(5% + 8px) calc(10% + 48px);
     --form-container-padding: 0;
     --form-wrapper-max-width: 740px;
-    --form-wrapper-background-color: var(--mt-global-color-white);
 }
 
 main .form-container.contact,
@@ -238,6 +237,7 @@ main .study-request {
     --form-fieldset-legend-font-size: 24px;
     --form-fieldset-legend-font-weight: 400;
     --form-padding: 16px 0;
+    --form-wrapper-background-color: var(--mt-global-color-base-primary);
 }
 
 main .study-request .default-content-wrapper p {
@@ -378,6 +378,8 @@ main .innovate {
     --form-input-margin: 7px 0 0;
     --form-label-color: var(--mt-global-color-white);
     --form-submit-wrapper-margin: 0;
+    --form-max-width: 860px;
+    --form-wrapper-background-color: var(--mt-global-color-base-primary);
 }
 
 main .innovate form > fieldset > legend {
@@ -390,13 +392,14 @@ main .innovate form > fieldset > legend {
     border-bottom: 1px solid;
     border-image-source: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.75), rgba(0, 0, 0, 0));
     border-image-slice: 1;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 }
 
 main .innovate .form-ack-fs {
-    --form-fieldset-legend-padding: 20px 0 40px;
+    --form-fieldset-legend-padding: 24px 0 40px;
     --form-fieldset-padding: 40px 15% 32px;
     --form-fieldset-grid-gap: 5px;
+    --form-label-line-height: 24px;
     background-color: rgba(0, 0, 0, .1);
 }
 
@@ -406,6 +409,45 @@ main .innovate .form-ack-fs > legend {
 
 main .innovate .form-ack-fs label.asterisk::after {
     color: var(--mt-global-color-red);
+}
+
+main .technical-inquiry {
+    --form-padding: 10px;
+    --form-fieldset-legend-padding: 8px 0 16px;
+    --form-fieldset-legend-font-size: 28px;
+    --form-fieldset-grid-gap: 10px 14px;
+    --form-input-margin: 0;
+    --form-input-padding: 8px 16px;
+    --form-label-font-weight: normal;
+    --form-input-background-color: var(--mt-background-color-primary);
+    --form-input-border-color: #69727d;
+    --form-submit-wrapper-margin: 0px;
+}
+
+main .technical-inquiry form > fieldset > legend {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-bottom: 20px;
+    color: var(--mt-global-color-base-primary);
+}
+
+main .technical-inquiry input[type=file] {
+    border: unset;
+    --form-input-padding: 0px;
+}
+
+main .technical-inquiry input[type=file]::file-selector-button {
+    height: 100%;
+    background-color: var(--mt-global-color-base-primary);
+    border: 1px solid var(--mt-global-color-base-primary);
+    border-radius: 3px;
+    color: var(--mt-global-color-white);
+}
+
+main .technical-inquiry :is(.form-authorizeMsg, .form-ackMsg) {
+    margin: 0px;
+    font-size: 14px;
+    font-style: italic;
 }
 
 @media (min-width: 640px) {
@@ -525,6 +567,14 @@ main .innovate .form-ack-fs label.asterisk::after {
     main .innovate fieldset :is(.form-company, .form-role) {
         grid-column: span 1;
     }
+
+    main .technical-inquiry {
+        --form-fieldset-columns: 2;
+    }
+
+    main .technical-inquiry fieldset :is(.form-country, .form-serialNo, .form-inquiry) {
+        grid-column: 1/-1;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -532,7 +582,7 @@ main .innovate .form-ack-fs label.asterisk::after {
         --form-wrapper-padding: 0;
     }
 
-    main .innovate .form-wrapper {
-        padding: 50px 100px 0;
+    main .innovate {
+        --form-wrapper-padding: 50px 100px 0;
     }
 }
