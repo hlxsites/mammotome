@@ -81,6 +81,11 @@ function buildHeroBlock(main) {
     if (metaData) {
       section.append(metaData);
     }
+
+    if (main.firstElementChild) {
+      main.firstElementChild.classList.toggle('arc-after-section');
+    }
+
     main.prepend(section);
   }
 
@@ -159,6 +164,9 @@ function decorateStyledSections(main) {
         arc.innerHTML = ARC_BOTTOM_SVG;
         section.append(arc);
       } else if (section.classList.contains('arc-top')) {
+        if (section.previousElementSibling) {
+          section.previousElementSibling.classList.add('arc-before-section');
+        }
         arc.innerHTML = ARC_TOP_SVG;
         section.prepend(arc);
       }
