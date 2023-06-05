@@ -46,7 +46,7 @@ Section Metadata allows the author to add two parameters to a section table with
 
 #### narrow
 
-Narrow style puts the content in a section that is fixed to 610px.
+Narrow style puts the content in a section that is fixed to **610px**.
 
 ![narrow-example.png](assets%2Fnarrow-example.png)
 
