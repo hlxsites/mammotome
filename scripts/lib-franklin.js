@@ -518,6 +518,23 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 }
 
 /**
+ * Add a divider into section from Section Metadata block
+ * @param section section element
+ * @param pos position of divider (before or after)
+ */
+export function addDivider(section, pos) {
+  const dividerContainerDiv = document.createElement('div');
+  const dividerDiv = document.createElement('div');
+  dividerDiv.classList.add('divider');
+  dividerContainerDiv.appendChild(dividerDiv);
+  if (pos === 'after') {
+    section.appendChild(dividerContainerDiv);
+  } else {
+    section.insertBefore(dividerContainerDiv, section.firstChild);
+  }
+}
+
+/**
  * Decorates all sections in a container element.
  * @param {Element} main The container element
  */
@@ -553,6 +570,10 @@ export function decorateSections(main) {
         if (key === 'style') {
           const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
           styles.forEach((style) => section.classList.add(style));
+        } else if (key === 'divider') { // add divider from section metadata
+          const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
+          const dividerPos = dividerMeta[0] || 'after';
+          addDivider(section, dividerPos);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
