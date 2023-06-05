@@ -296,8 +296,7 @@ blockquote {
   content: "";
   position: absolute;
   left: 0;
-  top: 1rem;
-  transform: translateY(-50%);
+  top: 0.5rem;
   width: 10px;
   height: 10px;
   background-image: url('/styles/icons/circle.svg');
