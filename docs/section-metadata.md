@@ -34,7 +34,6 @@ Section Metadata allows the author to add two parameters to a section table with
 | letter spacing | 0                                   | **text-wide** (letter-spacing: 4px)                        |
 
 
-
 ### Background styles
 
 #### Gradient primary blur overlay
@@ -44,6 +43,12 @@ Section Metadata allows the author to add two parameters to a section table with
 #### arc top
 
 #### callout
+
+#### narrow
+
+Narrow style puts the content in a section that is fixed to 610px.
+
+![narrow-example.png](assets%2Fnarrow-example.png)
 
 ## Divider
 
