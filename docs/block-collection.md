@@ -9,3 +9,10 @@ This is a collection of blocks, specifically developed as part of the Mammotome 
 - [Tab Navigation](blocks%2Ftab-nav.md)
 - [Previous-Next Navigation](blocks%2prevnext.md)
 
+### ProductDB related blocks:
+
+- [IFUS](blocks%2Fifus.md)
+- [Product-List](blocks%2Fproduct-list.md)
+- [Product-reference](blocks%2Fproduct-reference.md)
+- [Product-support](blocks%2Fproduct-support.md)
+
