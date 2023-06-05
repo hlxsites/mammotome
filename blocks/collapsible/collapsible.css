@@ -80,3 +80,16 @@
     margin-block-end: 1em;
     text-align: left;
 }
+
+.section.arc-after-section.collapsible-container {
+    margin-top: 0;
+}
+
+.collapsible-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.collapsible.narrow {
+    max-width: 610px;
+}
