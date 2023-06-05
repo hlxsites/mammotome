@@ -81,6 +81,11 @@ function buildHeroBlock(main) {
     if (metaData) {
       section.append(metaData);
     }
+
+    if (main.firstElementChild) {
+      main.firstElementChild.classList.toggle('arc-after-section');
+    }
+
     main.prepend(section);
   }
 

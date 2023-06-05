@@ -870,3 +870,11 @@ main .schedule-demo .default-content-wrapper h2 {
   fill: var(--mt-background-color-primary);
   background-color: transparent;
 }
+
+.section.arc-after-section {
+  margin-top: -20%;
+}
+
+.section.arc-top {
+  margin-top: -30px;
+}
