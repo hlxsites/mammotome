@@ -378,16 +378,21 @@ export async function getProductDB() {
 }
 
 function productDBMatches(entry, country, language) {
-  let matches;
-  if (country) {
-    matches = (entry.Countries === '' || entry.Countries.split('|').map((c) => c.toUpperCase()).includes(country.toUpperCase()));
-  } else {
-    matches = true;
+  if (country && entry.Countries !== '') {
+    const countries = entry.Countries.toUpperCase().split('|');
+    if (!countries.includes(country.toUpperCase())) {
+      return false;
+    }
   }
-  if (matches && language) {
-    matches = (entry.Languages === '' || entry.Languages.split('|').map((l) => l.toUpperCase()).includes(language.toUpperCase()));
+
+  if (language && entry.Languages !== '') {
+    const languages = entry.Languages.toUpperCase().split('|');
+    if (!languages.includes(language.toUpperCase())) {
+      return false;
+    }
   }
-  return matches;
+
+  return true;
 }
 
 export async function getProduct(page, country, language) {
