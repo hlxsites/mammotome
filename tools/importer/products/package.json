@@ -1,0 +1,19 @@
+{
+  "name": "product_import",
+  "version": "1.0.0",
+  "description": "Convert wordpress exports to productDB",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "exceljs": "^4.3.0",
+    "fast-xml-parser": "^4.2.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  }
+}

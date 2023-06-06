@@ -56,14 +56,17 @@
   --mt-button-color-primary: var(--mt-global-color-white);
   --mt-button-color-secondary: var(--mt-global-color-accent-primary);
   --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
+  --mt-button-hover-color: #215BBB;
   --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
-  --mt-heading-color-primary: var(--mt-global-color-base-secondary);
+  --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
+  --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-input-color: var(--mt-text-color);
   --mt-input-hover-color: var(--mt-text-color);
-  --mt-link-color: var(--mt-global-color-accent-primary);
-  --mt-link-hover-color: var(--mt-global-color-accent-secondary);
+  --mt-link-color: var(  --mt-global-color-base-primary);
+  --mt-link-hover-color: var(--mt-global-color-base-primary);
   --mt-text-color: var(--mt-global-color-base-secondary);
+  --mt-text-color-inverted: var(--mt-global-color-white);
   --mt-list-color: var(--mt-global-color-accent-senary);
   --mt-prev-next-button-text-color: var(--mt-global-color-accent-grey);
   --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
@@ -71,6 +74,7 @@
   --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
   --mt-hero-light-arc-color: var(--mt-global-color-accent-secondary);
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
+  --mt-global-horizontal-line-color: #EBE4E7;
 
 
   /* fonts families */
@@ -107,7 +111,7 @@
   --mt-font-size-150: 1.5rem;
   --mt-font-size-162: 1.625rem;
   --mt-font-size-175: 1.75rem;
-  --mt-font-size-180: 1.75rem;
+  --mt-font-size-180: 1.80rem;
   --mt-font-size-185: 1.85rem;
   --mt-font-size-200: 2rem;
   --mt-font-size-215: 2.15rem;
@@ -128,15 +132,17 @@
   --mt-prev-next-button-line-height: var(--mt-font-size-120);
 
   /* feature font sizes */
-  --mt-body-font-size-m: var(--mt-font-size-100);
-  --mt-body-font-size-s: var(--mt-font-size-75);
-  --mt-body-font-size-xs: var(--mt-font-size-50);
+  --mt-body-font-size-l: var(--mt-font-size-180);
+  --mt-body-font-size-m: var(--mt-font-size-130);
+  --mt-body-font-size-s: var(--mt-font-size-100);
+  --mt-body-font-size-xs: var(--mt-font-size-75);
+  --mt-list-font-size: var(--mt-font-size-100);
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
-  --mt-heading-font-size-xl: var(--mt-font-size-200);
-  --mt-heading-font-size-l: var(--mt-font-size-150);
-  --mt-heading-font-size-m: var(--mt-font-size-130);
-  --mt-heading-font-size-s: var(--mt-font-size-100);
+  --mt-heading-font-size-xl: var(--mt-font-size-180);
+  --mt-heading-font-size-l: var(--mt-font-size-130);
+  --mt-heading-font-size-m: var(--mt-font-size-100);
+  --mt-heading-font-size-s: var(--mt-font-size-80);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
   --mt-hero-font-size-m: var(--mt-font-size-180);
@@ -184,43 +190,72 @@ h5,
 h6 {
   text-align: center;
   margin: 0.5rem 0 1rem;
-  font-weight: var(--mt-font-weight-bold);
+  font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
-  color: var(--mt-heading-color-secondary);
+  color: var(--mt-global-color-base-secondary);
+  letter-spacing: 0;
 }
 
+/* Section styles for heading */
 h1 {
   font-size: var(--mt-heading-font-size-xxl);
-  color: var(--mt-heading-color-primary);
 }
 
 h2 {
-  font-size: var(--mt-heading-font-size-s);
-  font-weight: var(--mt-font-weight-heavy);
-  text-transform: uppercase;
+  font-size: var(--mt-heading-font-size-xl);
 }
 
 h3 {
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-l);
 }
 
 h4 {
-  font-size: var(--mt-heading-font-size-s);
+  font-size: var(--mt-heading-font-size-m);
 }
 
 h5 {
   font-size: var(--mt-heading-font-size-xs);
 }
 
-h6 {
-  font-size: var(--mt-heading-font-size-xs);
+
+.header-colored h1,
+.header-colored h2,
+.header-colored h3,
+.header-colored h4,
+.header-colored h5 {
+  color: var(--mt-heading-color-primary);
 }
 
-sup {
-  font-size: var(--mt-font-size-80);
-  vertical-align: top;
-  position: relative;
-  top: -0.65em;
+.align-left h1,
+.align-left h2,
+.align-left h3,
+.align-left h4,
+.align-left h5 {
+  text-align: left;
+}
+
+.header-uppercase h1,
+.header-uppercase h2,
+.header-uppercase h3,
+.header-uppercase h4,
+.header-uppercase h5 {
+  text-transform: uppercase;
+}
+
+.header-wide h1,
+.header-wide h2,
+.header-wide h3,
+.header-wide h4,
+.header-wide h5 {
+  letter-spacing: 4px;
+}
+
+.text-wide {
+  letter-spacing: 4px;
+}
+
+strong {
+  font-weight: var(--mt-font-weight-boldest);
 }
 
 p,
@@ -230,6 +265,101 @@ ul,
 pre,
 blockquote {
   margin: 0 0 0.9rem;
+}
+
+/* UL decoration */
+.section ul {
+  list-style-type: none;
+  padding-left: 15px;
+  line-height: 30px;
+  font-size: var(--mt-list-font-size);
+}
+
+.text-large ul {
+  font-size: var(--mt-body-font-size-l);
+}
+
+.text-small ul {
+  font-size: var(--mt-body-font-size-xs);
+}
+
+.section .columns ul {
+  line-height: 24px;
+}
+
+.section li {
+  padding-left: 17px;
+  position: relative;
+}
+
+.section .columns li::before {
+  top: 0.8rem;
+}
+
+.section .columns li::before,
+.section .default-content-wrapper li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background-image: url('/styles/icons/circle.svg');
+  background-repeat: no-repeat;
+  background-size: 10px 10px;
+}
+
+sup {
+  font-size: var(--mt-font-size-80);
+  vertical-align: top;
+  position: relative;
+  top: -0.65em;
+}
+
+p {
+  font-size: var(--mt-body-font-size-s);
+  line-height: var(--mt-body-line-height);
+  font-weight: var(--mt-body-font-weight);
+  text-align: center;
+}
+
+/* Section style for P */
+.text-large p {
+  font-size: var(--mt-body-font-size-l);
+}
+
+.text-small p {
+    font-size: var(--mt-body-font-size-xs);
+}
+
+.align-left p {
+  text-align: left;
+}
+
+/* H and P with background logo gets higher line height */
+.logo-primary-background h1,
+.logo-primary-background h2,
+.logo-primary-background h3,
+.logo-primary-background h4,
+.logo-primary-background h5,
+.logo-primary-background h6,
+.logo-primary-background p,
+.base-primary-blur-overlay h1,
+.base-primary-blur-overlay h2,
+.base-primary-blur-overlay h3,
+.base-primary-blur-overlay h4,
+.base-primary-blur-overlay h5,
+.base-primary-blur-overlay h6,
+.base-primary-blur-overlay p {
+  color: var(--mt-heading-color-inverted);
+}
+
+.logo-primary-background h2,
+.logo-secondary-background h2,
+.logo-primary-background.text-large p ,
+.logo-secondary-background.text-large p {
+  line-height: 2.7rem;
 }
 
 code,
@@ -419,10 +549,36 @@ main .section .default-content-wrapper {
   margin: auto;
 }
 
+.section.callout .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Narrow content section metadata */
+main .section.narrow .default-content-wrapper {
+  max-width: 610px;
+}
+
 /* progressive section appearance */
 main .section[data-section-status='loading'],
 main .section[data-section-status='initialized'] {
   display: none;
+}
+
+/* callout block */
+.section.callout {
+  padding: 0 0 10%;
+}
+
+.section.callout h1,
+.section.callout h2 {
+  padding: 3% 5%;
+}
+
+.section.callout .button-container {
+    text-align: center;
 }
 
 /* about-us/our-history */
@@ -574,7 +730,7 @@ main .schedule-demo .default-content-wrapper p {
 
 @media screen and (max-width: 767px) {
   main .section {
-    padding: 5% 5% 0%;
+    padding: 5% 5% 0;
   }
 }
 
@@ -619,12 +775,6 @@ main .schedule-demo .default-content-wrapper p {
 /* STYLED SECTIONS */
 
 /* stylelint-disable-next-line no-descending-specificity */
-.section.inverted-text,
-.section.inverted-text h2,
-.section.inverted-text h3 {
-  color: var(--mt-background-color-primary);
-}
-
 .section.gradient-primary-blur-overlay,
 .section.gradient-secondary-blur-overlay,
 .section.accent-secondary-blur-overlay,
@@ -707,6 +857,10 @@ main .schedule-demo .default-content-wrapper p {
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
+  background-color: #F4F4F4;
+  padding: 3% 0;
+  position: relative;
+  z-index: -1;
 }
 
 .section.logo-primary-background {
@@ -715,6 +869,9 @@ main .schedule-demo .default-content-wrapper p {
   background-position: center center;
   background-repeat: repeat;
   background-size: 60px auto;
+  padding: 3% 0;
+  position: relative;
+  z-index: -1;
 }
 
 .section .arc {
@@ -728,4 +885,29 @@ main .schedule-demo .default-content-wrapper p {
   max-width: 110%;
   fill: var(--mt-background-color-primary);
   background-color: transparent;
+}
+
+.section.arc-after-section {
+  margin-top: -20%;
+}
+
+.section.arc-top {
+  margin-top: -30px;
+}
+
+/* Divider as Section Metadata */
+.section .divider-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: calc(26px + 10px + 3%) 0 0;
+}
+
+.section .divider {
+  display: flex;
+  content: "";
+  height: 4px;
+  background-color: var(--mt-global-horizontal-line-color);
+  width: 50%;
 }

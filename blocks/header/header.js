@@ -3,6 +3,9 @@ import {
   decorateIcons,
   translate,
   getProducts,
+  setActiveLink,
+  createDomStructure,
+  decorateSupScript,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -183,15 +186,14 @@ async function fetchSearchData() {
 
 async function fetchProductSupportSearchData() {
   if (!window.productSearchData) {
-    const languagePath = window.location.pathname;
-    const language = languagePath.substring(1, languagePath.indexOf('/', 1));
-    const products = await getProducts(language);
+    const [, country, language] = window.location.pathname.split('/');
+    const products = await getProducts(country, language);
     window.productSearchData = products.flatMap(({
-      Name, Description, ProductCodes, assets,
+      Name, Description, Page, assets,
     }) => ([{
       title: Name,
       description: Description,
-      path: `/${language}/product-support/${ProductCodes.split('|')[0]}`,
+      path: `/${language}/product-support/${Page}`,
     }, ...assets.map((asset) => ({
       title: asset.Name,
       description: asset.Description,
@@ -237,10 +239,10 @@ async function searchInput(event) {
           searchTitle.classList.add('nav-search-title');
           const searchLink = document.createElement('a');
           searchLink.href = hit.path;
-          searchLink.textContent = hit.title;
+          createDomStructure(decorateSupScript(hit.title), searchLink);
           const searchDescription = document.createElement('div');
           searchDescription.classList.add('nav-search-description');
-          searchDescription.textContent = hit.description;
+          createDomStructure(decorateSupScript(hit.description), searchDescription);
           searchTitle.appendChild(searchLink);
           wrapper.appendChild(searchTitle);
           wrapper.appendChild(searchDescription);
@@ -412,6 +414,8 @@ export default async function decorate(block) {
       navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
       navSections.querySelector('ul').append(createOverflowDropdown(navSections));
       decorateLanguageNav(navSections);
+      const multiLevelNav = navSections.querySelectorAll('li.nav-multilevel > ul > li > ul > li a');
+      setActiveLink(multiLevelNav, 'active');
     }
 
     // hamburger for mobile

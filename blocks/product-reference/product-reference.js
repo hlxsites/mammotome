@@ -3,8 +3,8 @@ import {
 } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
-  const url = new URL(window.location);
-  return { language: url.pathname.substring(1, url.pathname.indexOf('/', 1)) };
+  const [, country, language] = window.location.pathname.split('/');
+  return { country, language };
 }
 
 async function createButtons(productCode) {
@@ -28,23 +28,23 @@ async function createButtons(productCode) {
 }
 
 export default async function decorate(block) {
-  const productCode = block.querySelector('div > div')?.textContent?.trim();
+  const page = block.querySelector('div > div')?.textContent?.trim();
 
   block.innerHTML = '';
 
-  if (!productCode) {
+  if (!page) {
     return;
   }
 
-  const { language } = getInfo();
+  const { country, language } = getInfo();
 
-  const product = await getProduct(productCode, language);
+  const product = await getProduct(page, country, language);
 
   if (!product) {
     return;
   }
 
-  const buttons = await createButtons(product.ProductCodes.split('|')[0]);
+  const buttons = await createButtons(product.Page);
 
   const imgStructure = [
     {

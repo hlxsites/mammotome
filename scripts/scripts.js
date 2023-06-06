@@ -55,11 +55,11 @@ const EXPERIMENTATION_CONFIG = {
  * @param {Element} main The container element
  */
 function buildHeroBlock(main) {
-  const h1 = main.querySelector('div:first-child > h1');
-  const h2 = main.querySelector('div:first-child > h2');
-  const button = main.querySelector('div:first-child > p > a');
-  const picture = main.querySelector('div:first-child picture');
-  const metaData = main.querySelector('div:first-child .section-metadata');
+  const h1 = main.querySelector(':scope > div:first-child > h1');
+  const h2 = main.querySelector(':scope > div:first-child > h2');
+  const button = main.querySelector(':scope > div:first-child > p > a');
+  const picture = main.querySelector(':scope > div:first-child picture');
+  const metaData = main.querySelector(':scope > div:first-child .section-metadata');
 
   const setHeroType = (heroType) => {
     const heroBlock = main.querySelector('.hero');
@@ -81,6 +81,11 @@ function buildHeroBlock(main) {
     if (metaData) {
       section.append(metaData);
     }
+
+    if (main.firstElementChild) {
+      main.firstElementChild.classList.toggle('arc-after-section');
+    }
+
     main.prepend(section);
   }
 

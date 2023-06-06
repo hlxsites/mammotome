@@ -21,7 +21,7 @@
 .video.block > div > div:first-child {
   flex-grow: 1;
   margin-bottom: 20px;
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-l);
   font-weight: var(--mt-font-weight-regular);
   text-align: center;
 }

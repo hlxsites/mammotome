@@ -491,6 +491,10 @@ header nav .nav-search-wrapper {
   padding: 0 30px;
 }
 
+header nav .nav-search-wrapper sup {
+  top: 0;
+}
+
 @media (min-width: 768px) {
   header nav .nav-search-wrapper {
     width: 60%;
@@ -569,6 +573,9 @@ header nav.nav-mobile .nav-overflow {
     background-color: var(--mt-header-menu-item-selected-color);
   }
 
+  header nav li .active {
+    background-color: var(--mt-header-menu-item-selected-color);
+  }
 
   header nav .nav-sections .nav-button a {
     border: 1px solid var(--mt-global-color-base-primary);

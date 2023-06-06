@@ -79,6 +79,7 @@ footer .columns ul li a[href] {
   color: var(--mt-global-color-accent-quinary);
   line-height: var(--mt-body-line-height);
   height: auto;
+  font-size: var(--mt-footer-font-size-footer-l);
 }
 
 
@@ -90,12 +91,13 @@ footer .columns h5 {
   margin-top: unset;
   margin-bottom: 20px;
   padding-bottom: 3%;
+  text-align: left;
 }
 
 /* footer nav headlines larger display */
 @media (min-width: 768px) {
   footer .columns h5 {
-    font-size: var(--mt-heading-font-size-s);
+    font-size: var(--mt-heading-font-size-m);
   }
 }
 
