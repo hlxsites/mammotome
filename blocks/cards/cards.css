@@ -144,7 +144,7 @@
 }
 
 .cards > ul > li > a >.cards-card-body {
-  padding: 0 5% 5%;
+  padding: 0 30px 50px;
 }
 
 .cards-card-body.callout-hidden {
