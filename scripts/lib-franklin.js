@@ -368,7 +368,7 @@ export function decorateSupScript(string, result = []) {
 
 export async function getProductDB() {
   if (!window.productDB) {
-    const resp = await fetch('/productdb.json?limit=10000');
+    const resp = await fetch('/products.json?limit=10000');
     if (!resp.ok) {
       throw new Error(`${resp.status}: ${resp.statusText}`);
     }
