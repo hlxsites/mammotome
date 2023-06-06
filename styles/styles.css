@@ -72,6 +72,7 @@
   --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
   --mt-hero-light-arc-color: var(--mt-global-color-accent-secondary);
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
+  --mt-global-horizontal-line-color: #EBE4E7;
 
 
   /* fonts families */
@@ -869,4 +870,29 @@ main .schedule-demo .default-content-wrapper h2 {
   max-width: 110%;
   fill: var(--mt-background-color-primary);
   background-color: transparent;
+}
+
+.section.arc-after-section {
+  margin-top: -20%;
+}
+
+.section.arc-top {
+  margin-top: -30px;
+}
+
+/* Divider as Section Metadata */
+.section .divider-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: calc(26px + 10px + 3%) 0 0;
+}
+
+.section .divider {
+  display: flex;
+  content: "";
+  height: 4px;
+  background-color: var(--mt-global-horizontal-line-color);
+  width: 50%;
 }
