@@ -1,6 +1,4 @@
-import addIframes from '../../scripts/delayed.js';
-
-const soundcloud = {
+const SOUNDCLOUD = {
   origin: 'https://w.soundcloud.com',
   url: 'https://api.soundcloud.com/tracks/',
 };
@@ -29,7 +27,7 @@ export default async function decorate(block) {
     if (match && match[1]) {
       const url = new URL(decodeURIComponent(match[1]));
       const urlParam = new URLSearchParams(url.search).get('url');
-      if (url.origin === soundcloud.origin && urlParam?.startsWith(soundcloud.url)) {
+      if (url.origin === SOUNDCLOUD.origin && urlParam?.startsWith(SOUNDCLOUD.url)) {
         const height = calculateIframeHeight(text);
         const soundCloudFrame = document.createElement('iframe');
         soundCloudFrame.height = `${height}px`;
