@@ -1,5 +1,5 @@
 mountpoints:
-  /: https://adobe.sharepoint.com/:f:/r/sites/HelixProjects/Shared%20Documents/sites/mammotome
+  /: https://adobe.sharepoint.com/:f:/r/sites/HelixProjects/Shared%20Documents/mammotome/website
 
 folders:
   /en/product-support/: /en/product-support-template
