@@ -7,7 +7,7 @@
   /* font sizes */
   --mt-cards-title-font-size: 21px;
   --mt-cards-text-font-size: 14px;
-  --mt-cards-callout-text-font-size: var(--mt-body-font-size-s);
+  --mt-cards-callout-text-font-size: 12px;
 
   /* font family */
   --mt-cards-font-family: var(--mt-body-font-family);
@@ -45,8 +45,13 @@
   width: auto;
 }
 
+.cards h3,
+.cards h3 a {
+  color: var(--mt-global-color-black);
+}
+
 .cards.block > ul > li {
-  padding: 25px 50px;
+  padding: 5%;
   box-shadow: 2px 12px 28px 0 var(--mt-cards-box-shadow-color);
   display: flex;
   flex-direction: column;
@@ -58,7 +63,7 @@
 
 /* Center last child if it is the 4th card */
 @media (min-width: 1050px) {
-  .cards > ul  li:last-child:nth-child(3n+1):not(:only-of-type)  {
+  .cards.cards.three-columns > ul  li:last-child:nth-child(3n+1):not(:only-of-type)  {
     grid-column: 2 / 3
   }
 }
@@ -134,7 +139,7 @@
   width: 100%;
 }
 
-.cards > ul > li > a >.cards-card-bodyx {
+.cards > ul > li > a >.cards-card-body {
   padding: 0 30px 50px;
 }
 
@@ -146,13 +151,37 @@
   padding: 0 30px;
 }
 
+.cards-card-body h1,
+.cards-card-body h2,
+.cards-card-body h3,
+.cards-card-body h4,
+.cards-card-body h5,
+.cards-card-body h6,
+.cards-card-body p {
+  padding: 0;
+  text-align: left;
+}
+
+.cards-card-body a.button {
+  background: none;
+  border: none;
+  color: var(--mt-global-color-accent-primary);
+  padding: 0;
+}
+
+.cards-card-body a.button:hover {
+    background: none;
+    border: none;
+    color: var(--mt-button-hover-color);
+}
+
 .cards-card-body > p {
   font-weight: var(--mt-font-weight-regular);
   font-size: var(--mt-cards-text-font-size);
   font-family: var(--mt-cards-font-family);
   line-height: 1.5em;
   color: var(--mt-cards-text-color);
-  margin-bottom: 25px;
+  text-align: center;
 }
 
 .cards-card-body > p:first-of-type,
@@ -162,6 +191,7 @@
   font-family: var(--mt-cards-font-family);
   color: var(--mt-cards-title-font-color);
   line-height: 1.2;
+  text-align: center;
   margin-bottom: 25px;
 }
 
@@ -192,6 +222,10 @@
   .section.cards-container .cards-wrapper {
     max-width: 1024px;
   }
+
+  .cards.four-columns > ul {
+    grid-template-columns: repeat(2,1fr);
+  }
 }
 
 @media (min-width: 1025px) {
@@ -212,5 +246,9 @@
 
   .cards.three-columns > ul {
     grid-template-columns: repeat(3,1fr);
+  }
+
+  .cards.four-columns > ul {
+    grid-template-columns: repeat(4,1fr);
   }
 }

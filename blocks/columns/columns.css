@@ -12,11 +12,48 @@ main .columns {
   margin: auto;
 }
 
+main .columns h1,
+main .columns h2,
+main .columns h3,
+main .columns h4,
+main .columns h5,
+main .columns h6,
+main .columns p {
+ text-align: left;
+}
+
+main .columns h4 {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: calc(4% + 20px);
+  line-height: 1.5;
+  color: var(--mt-heading-color-primary);
+}
+
 main .columns h2 {
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 4px;
   margin-bottom: 20px;
+  color: var(--mt-heading-color-primary);
+  text-transform: uppercase;
+}
+
+main .columns > div p {
+  font-weight: 300;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+main .columns.centered h1,
+main .columns.centered h2,
+main .columns.centered h3,
+main .columns.centered h4,
+main .columns.centered h5,
+main .columns.centered h6,
+main .columns.centered p {
+  text-align: center;
 }
 
 main .columns a:not(.button) {
@@ -60,13 +97,7 @@ div[class^="columns image-color-"] > div > div:last-child img {
   margin: 0 0 0 auto;
 }
 
-main .columns > div p {
-  font-weight: 300;
-  font-size: 1.3rem;
-  line-height: 1.5;
-}
-
-main .columns.simple > div p {
+.columns.simple > div p {
   font-size: initial;
 }
 
