@@ -3,8 +3,8 @@ import {
 } from '../../scripts/lib-franklin.js';
 
 function getInfo() {
-  const url = new URL(window.location);
-  return { country: 'US', language: url.pathname.substring(1, url.pathname.indexOf('/', 1)) };
+  const [, country, language] = window.location.pathname.split('/');
+  return { country, language };
 }
 
 function decorateProduct(product) {

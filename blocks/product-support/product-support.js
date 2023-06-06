@@ -8,11 +8,12 @@ function getInfo() {
   if (idx > 0) {
     const slug = url.pathname.substring(url.pathname.indexOf('/product-support/') + '/product-support/'.length);
     if (slug) {
+      const [, country, language] = url.pathname.split('/');
       return {
-        country: 'US',
+        country,
         page: slug,
         productSupport: url.pathname.substring(0, url.pathname.indexOf(`${slug}`) - 1),
-        language: url.pathname.substring(1, url.pathname.indexOf('/', 1)),
+        language,
       };
     }
   }

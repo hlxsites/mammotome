@@ -186,9 +186,8 @@ async function fetchSearchData() {
 
 async function fetchProductSupportSearchData() {
   if (!window.productSearchData) {
-    const languagePath = window.location.pathname;
-    const language = languagePath.substring(1, languagePath.indexOf('/', 1));
-    const products = await getProducts('US', language);
+    const [, country, language] = window.location.pathname.split('/');
+    const products = await getProducts(country, language);
     window.productSearchData = products.flatMap(({
       Name, Description, Page, assets,
     }) => ([{
