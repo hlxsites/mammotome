@@ -17,4 +17,12 @@
     .soundcloud-col:nth-child(even) {
         padding-left: 30px;
     }
+
+    .soundcloud-col:only-child {
+        padding: 0;
+    }
+
+    .soundcloud:has(.soundcloud-col:only-child) {
+        grid-template-columns: 1fr;
+    }
 }
