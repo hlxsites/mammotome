@@ -12,9 +12,3 @@ try {
 } catch (error) { /* empty */ }
 
 document.dispatchEvent(new Event('franklin.delayed_completed'));
-
-export default function addIframes(iframes) {
-  iframes.forEach(({ element, text }) => {
-    element.children[1].innerHTML = text;
-  });
-}

@@ -31,11 +31,18 @@ export default async function decorate(block) {
       const urlParam = new URLSearchParams(url.search).get('url');
       if (url.origin === soundcloud.origin && urlParam?.startsWith(soundcloud.url)) {
         const height = calculateIframeHeight(text);
-        element.children[1].style.height = `${height}px`;
+        const soundCloudFrame = document.createElement('iframe');
+        soundCloudFrame.height = `${height}px`;
+        soundCloudFrame.width = '100%';
+        soundCloudFrame.setAttribute('loading', 'lazy');
+        soundCloudFrame.setAttribute('scrolling', 'no');
+        soundCloudFrame.setAttribute('frameborder', 'no');
+        soundCloudFrame.setAttribute('allow', 'autoplay');
+        soundCloudFrame.src = url.toString();
+        element.children[1].innerHTML = '';
+        element.children[1].appendChild(soundCloudFrame);
         element.classList.add('soundcloud-col');
       }
     }
   });
-
-  addIframes(iframes);
 }
