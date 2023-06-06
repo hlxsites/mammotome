@@ -518,6 +518,23 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 }
 
 /**
+ * Add a divider into section from Section Metadata block
+ * @param section section element
+ * @param pos position of divider (before or after)
+ */
+export function addDivider(section, pos) {
+  const dividerContainerDiv = document.createElement('div');
+  const dividerDiv = document.createElement('div');
+  dividerDiv.classList.add('divider');
+  dividerContainerDiv.appendChild(dividerDiv);
+  if (pos === 'after') {
+    section.appendChild(dividerContainerDiv);
+  } else {
+    section.insertBefore(dividerContainerDiv, section.firstChild);
+  }
+}
+
+/**
  * Decorates all sections in a container element.
  * @param {Element} main The container element
  */
@@ -552,7 +569,11 @@ export function decorateSections(main) {
       Object.keys(meta).forEach((key) => {
         if (key === 'style') {
           const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
-          styles.forEach((style) => section.classList.add(style));
+          styles.forEach((style) => style && section.classList.add(style));
+        } else if (key === 'divider') { // add divider from section metadata
+          const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
+          const dividerPos = dividerMeta[0] || 'after';
+          addDivider(section, dividerPos);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
@@ -820,26 +841,35 @@ export async function waitForLCP(lcpBlocks) {
 export const SUPPORTED_LANGUAGES = ['de', 'en', 'en-gb', 'es', 'fr', 'it', 'pl'];
 export const DEFAULT_LANGUAGE = 'en';
 
+export const SUPPORTED_COUNTRIES = ['de', 'es', 'fr', 'gb', 'it', 'pl', 'us'];
+export const DEFAULT_COUNTRY = 'us';
+
 export function getPreferredLanguage() {
   return navigator.languages.find(
     (l) => SUPPORTED_LANGUAGES.includes(l),
   ) || DEFAULT_LANGUAGE;
 }
 
+export function getPreferredCountry() {
+  return DEFAULT_COUNTRY;
+}
+
 export function setLanguage() {
-  const [, l] = window.location.pathname.split('/');
-  const preferredLanguage = SUPPORTED_LANGUAGES.includes(l) ? l : getPreferredLanguage();
-  const preferredLanguagePath = `/${preferredLanguage}/`;
+  const [, country, language] = window.location.pathname.split('/');
+  const preferredLanguage = SUPPORTED_LANGUAGES.includes(language)
+    ? language : getPreferredLanguage();
+  const preferredCountry = SUPPORTED_COUNTRIES.includes(country)
+    ? country : getPreferredCountry();
+  const preferredCountryAndLanguagePath = `/${preferredCountry}/${preferredLanguage}/`;
 
   if (window.location.pathname === '/' && window.location.origin.match(/\.hlx\.(page|live)$/)) {
-    window.location.replace(preferredLanguagePath);
+    window.location.replace(preferredCountryAndLanguagePath);
   }
 
-  const [, lang] = window.location.pathname.split('/');
-  document.documentElement.lang = lang;
+  document.documentElement.lang = language;
 
-  createMetadata('nav', `${preferredLanguagePath}nav`);
-  createMetadata('footer', `${preferredLanguagePath}footer`);
+  createMetadata('nav', `${preferredCountryAndLanguagePath}nav`);
+  createMetadata('footer', `${preferredCountryAndLanguagePath}footer`);
 }
 
 /**

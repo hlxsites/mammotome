@@ -1,36 +1,95 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 
+const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
+const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
+
+function loadScript(url) {
+  const head = document.querySelector('head');
+  let script = head.querySelector(`script[src="${url}"]`);
+  if (!script) {
+    script = document.createElement('script');
+    script.src = url;
+    script.async = true;
+    head.append(script);
+    return script;
+  }
+  return script;
+}
+
 function constructPayload(form) {
   const payload = {};
+  const attachments = {};
   [...form.elements].forEach((fe) => {
     if (fe.type === 'checkbox') {
       if (fe.checked) payload[fe.id] = fe.value;
+    } else if (fe.type === 'file' && fe.files?.length > 0) {
+      attachments[fe.name] = fe.files;
     } else if (fe.id) {
       payload[fe.id] = fe.value;
     }
   });
-  return payload;
+  return { payload, attachments };
 }
 
-async function submitForm(form) {
-  const payload = constructPayload(form);
-  const resp = await fetch(form.dataset.action, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ data: payload }),
-  });
-  await resp.text();
-  sampleRUM('form:submit');
-  return payload;
+async function submissionFailure(error, form) {
+  alert(error); // TODO define error mechansim
+  form.setAttribute('data-submitting', 'false');
+  form.querySelector('button[type="submit"]').disabled = false;
 }
 
-async function handleSubmit(form, redirectTo) {
+function prepareRequest(form, token) {
+  const { payload, attachments } = constructPayload(form);
+  let headers = {
+    'Content-Type': 'application/json',
+  };
+  let body = JSON.stringify({ data: payload, token });
+  if (attachments && Object.keys(attachments).length > 0) {
+    headers = {};
+    body = new FormData();
+    const fileNames = [];
+    Object.entries(attachments).forEach(([dataRef, files]) => {
+      fileNames.push(dataRef);
+      [...files].forEach((file) => body.append(dataRef, file));
+    });
+    body.append('token', token);
+    body.append('fileFields', JSON.stringify(fileNames));
+    body.append('data', JSON.stringify(payload));
+  }
+  return { headers, body };
+}
+
+async function submitForm(form, token) {
+  try {
+    const url = `${FORM_SUBMIT_ENDPOINT}${form.dataset.action}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      ...prepareRequest(form, token),
+    });
+    if (response.ok) {
+      sampleRUM('form:submit');
+      window.location.href = form.dataset?.redirect || 'thankyou';
+    } else {
+      const error = await response.text();
+      throw new Error(error);
+    }
+  } catch (error) {
+    submissionFailure(error, form);
+  }
+}
+
+async function handleSubmit(form) {
   if (form.getAttribute('data-submitting') !== 'true') {
     form.setAttribute('data-submitting', 'true');
-    await submitForm(form);
-    window.location.href = redirectTo || 'thankyou';
+    const { grecaptcha } = window;
+    if (grecaptcha) {
+      grecaptcha.ready(() => {
+        grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(async (token) => {
+          await submitForm(form, token);
+        });
+      });
+    } else {
+      await submitForm(form);
+    }
   }
 }
 
@@ -92,6 +151,21 @@ function createButton(fd) {
   button.id = fd.Id;
   button.name = fd.Name;
   wrapper.replaceChildren(button);
+  return wrapper;
+}
+function createSubmit(fd) {
+  const wrapper = createButton(fd);
+  if (SITE_KEY) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadScript(`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`);
+          obs.disconnect();
+        }
+      });
+    });
+    obs.observe(wrapper);
+  }
   return wrapper;
 }
 
@@ -199,10 +273,10 @@ const getId = (function getId() {
 const fieldRenderers = {
   radio: createRadio,
   checkbox: createRadio,
-  submit: createButton,
   textarea: createTextArea,
   select: createSelect,
   button: createButton,
+  submit: createSubmit,
   output: createOutput,
   hidden: createHidden,
   fieldset: createFieldSet,
