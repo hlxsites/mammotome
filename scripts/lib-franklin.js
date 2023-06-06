@@ -851,26 +851,35 @@ export async function waitForLCP(lcpBlocks) {
 export const SUPPORTED_LANGUAGES = ['de', 'en', 'en-gb', 'es', 'fr', 'it', 'pl'];
 export const DEFAULT_LANGUAGE = 'en';
 
+export const SUPPORTED_COUNTRIES = ['de', 'es', 'fr', 'gb', 'it', 'pl', 'us'];
+export const DEFAULT_COUNTRY = 'us';
+
 export function getPreferredLanguage() {
   return navigator.languages.find(
     (l) => SUPPORTED_LANGUAGES.includes(l),
   ) || DEFAULT_LANGUAGE;
 }
 
+export function getPreferredCountry() {
+  return DEFAULT_COUNTRY;
+}
+
 export function setLanguage() {
-  const [, l] = window.location.pathname.split('/');
-  const preferredLanguage = SUPPORTED_LANGUAGES.includes(l) ? l : getPreferredLanguage();
-  const preferredLanguagePath = `/${preferredLanguage}/`;
+  const [, country, language] = window.location.pathname.split('/');
+  const preferredLanguage = SUPPORTED_LANGUAGES.includes(language)
+    ? language : getPreferredLanguage();
+  const preferredCountry = SUPPORTED_COUNTRIES.includes(country)
+    ? country : getPreferredCountry();
+  const preferredCountryAndLanguagePath = `/${preferredCountry}/${preferredLanguage}/`;
 
   if (window.location.pathname === '/' && window.location.origin.match(/\.hlx\.(page|live)$/)) {
-    window.location.replace(preferredLanguagePath);
+    window.location.replace(preferredCountryAndLanguagePath);
   }
 
-  const [, lang] = window.location.pathname.split('/');
-  document.documentElement.lang = lang;
+  document.documentElement.lang = language;
 
-  createMetadata('nav', `${preferredLanguagePath}nav`);
-  createMetadata('footer', `${preferredLanguagePath}footer`);
+  createMetadata('nav', `${preferredCountryAndLanguagePath}nav`);
+  createMetadata('footer', `${preferredCountryAndLanguagePath}footer`);
 }
 
 /**
