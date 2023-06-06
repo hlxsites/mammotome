@@ -8,10 +8,12 @@ function getInfo() {
   if (idx > 0) {
     const slug = url.pathname.substring(url.pathname.indexOf('/product-support/') + '/product-support/'.length);
     if (slug) {
+      const [, country, language] = url.pathname.split('/');
       return {
-        productCode: slug,
+        country,
+        page: slug,
         productSupport: url.pathname.substring(0, url.pathname.indexOf(`${slug}`) - 1),
-        language: url.pathname.substring(1, url.pathname.indexOf('/', 1)),
+        language,
       };
     }
   }
@@ -27,9 +29,11 @@ function getAssets(product, type, allType) {
 }
 
 export default async function decorate(block) {
-  const { productCode, productSupport, language } = getInfo();
+  const {
+    country, page, productSupport, language,
+  } = getInfo();
 
-  const product = await getProduct(productCode, language);
+  const product = await getProduct(page, country, language);
 
   if (!product) {
     window.location.replace(productSupport);
