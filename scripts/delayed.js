@@ -11,4 +11,5 @@ try {
   await fetchPlaceholders();
 } catch (error) { /* empty */ }
 
+console.log('delayed.js loaded');
 document.dispatchEvent(new Event('franklin.delayed_completed'));

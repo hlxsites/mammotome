@@ -13,7 +13,8 @@ const calculateIframeHeight = (text) => {
   return heightMatch && heightMatch[1] ? parseInt(heightMatch[1], 10) : 0;
 };
 
-const addSrcToIframes = async (iframe, url) => {
+// eslint-disable-next-line no-unused-vars
+const addSrcToIframes = (iframe, url) => async (event) => {
   iframe.src = url.toString();
 };
 
@@ -53,7 +54,6 @@ export default async function decorate(block) {
     soundCloudFrame.setAttribute('scrolling', 'no');
     soundCloudFrame.setAttribute('frameborder', 'no');
     soundCloudFrame.setAttribute('allow', 'autoplay');
-    // soundCloudFrame.src = url.toString();
     addEventListener(soundCloudFrame, url);
     element.children[1].innerHTML = '';
     element.children[1].appendChild(soundCloudFrame);
