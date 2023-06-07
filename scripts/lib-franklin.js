@@ -535,17 +535,15 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 /**
  * Add a divider into section from Section Metadata block
  * @param section section element
- * @param pos position of divider (before or after)
+ * @param pos position of divider (before or after) default is after
  */
 export function addDivider(section, pos) {
-  const dividerContainerDiv = document.createElement('div');
-  const dividerDiv = document.createElement('div');
-  dividerDiv.classList.add('divider');
-  dividerContainerDiv.appendChild(dividerDiv);
-  if (pos === 'after') {
-    section.appendChild(dividerContainerDiv);
+  const divider = document.createElement('hr');
+  divider.classList.add('divider');
+  if (pos === 'before') {
+    section.insertBefore(divider, section.firstChild);
   } else {
-    section.insertBefore(dividerContainerDiv, section.firstChild);
+    section.appendChild(divider);
   }
 }
 
