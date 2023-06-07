@@ -4,11 +4,24 @@ const SOUNDCLOUD = {
   apiUrl: 'https://api.soundcloud.com/tracks/',
 };
 
+const FRANKLIN_DELAYED_COMPLETED_EVENT = 'franklin.delayed_completed';
+
 const calculateIframeHeight = (text) => {
   // Extract the height value from the iframe HTML
   const heightRegex = /height="(\d+)"/;
   const heightMatch = text.match(heightRegex);
   return heightMatch && heightMatch[1] ? parseInt(heightMatch[1], 10) : 0;
+};
+
+const addSrcToIframes = async (iframe, url) => {
+  iframe.src = url.toString();
+};
+
+const addEventListener = (iframe, url) => {
+  document.addEventListener(
+    FRANKLIN_DELAYED_COMPLETED_EVENT,
+    addSrcToIframes(iframe, url),
+  );
 };
 
 export default async function decorate(block) {
@@ -40,7 +53,8 @@ export default async function decorate(block) {
     soundCloudFrame.setAttribute('scrolling', 'no');
     soundCloudFrame.setAttribute('frameborder', 'no');
     soundCloudFrame.setAttribute('allow', 'autoplay');
-    soundCloudFrame.src = url.toString();
+    // soundCloudFrame.src = url.toString();
+    addEventListener(soundCloudFrame, url);
     element.children[1].innerHTML = '';
     element.children[1].appendChild(soundCloudFrame);
     element.classList.add('soundcloud-col');
