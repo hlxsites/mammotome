@@ -881,18 +881,10 @@ main .schedule-demo .default-content-wrapper h2 {
 }
 
 /* Divider as Section Metadata */
-.section .divider-wrapper {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  padding: calc(26px + 10px + 3%) 0 0;
-}
-
-.section .divider {
-  display: flex;
-  content: "";
+.section hr.divider {
+  border: 0;
   height: 4px;
   background-color: var(--mt-global-horizontal-line-color);
   width: 50%;
+  margin: calc(26px + 10px + 3%) auto auto;
 }
