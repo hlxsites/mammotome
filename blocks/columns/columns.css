@@ -20,6 +20,7 @@ main .columns h5,
 main .columns h6,
 main .columns p {
  text-align: left;
+  position: relative;
 }
 
 main .columns h4 {
