@@ -226,7 +226,7 @@ main .section.connectus .form-wrapper {
     border-bottom-left-radius: 3px;
 }
 
-main .connectus :is(.form-contact-type-fs, .form-company, .form-description) {
+main .connectus :is(.form-contact-type-fs, .form-company, .form-message) {
     grid-column: 1/-1;
 }
 
@@ -234,7 +234,7 @@ main .connectus :is(.form-product-fs, .form-solution-fs, .form-service-fs) label
     line-height: 26px;
 }
 
-main .connectus .form-message {
+main .connectus .form-description {
     font-size: var(--mt-font-size-130);
     font-weight: var(--mt-font-weight-bolder);
     border-bottom: solid 2px var(--mt-global-color-gallery);
