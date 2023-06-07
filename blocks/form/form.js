@@ -1,10 +1,6 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 
-function isMandatory(fd) {
-  return fd.Mandatory && fd.Mandatory.toLowerCase() === 'true';
-}
-
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
 
@@ -25,12 +21,16 @@ function constructPayload(form) {
   const payload = {};
   const attachments = {};
   [...form.elements].forEach((fe) => {
-    if (fe.type === 'checkbox') {
-      if (fe.checked) payload[fe.id] = fe.value;
-    } else if (fe.type === 'file' && fe.files?.length > 0) {
-      attachments[fe.name] = fe.files;
-    } else if (fe.id) {
-      payload[fe.id] = fe.value;
+    if (fe.name) {
+      if (fe.type === 'radio') {
+        if (fe.checked) payload[fe.name] = fe.value;
+      } else if (fe.type === 'checkbox') {
+        if (fe.checked) payload[fe.name] = payload[fe.name] ? `${payload[fe.name]}, ${fe.value}` : fe.value;
+      } else if (fe.type === 'file' && fe.files?.length > 0) {
+        attachments[fe.name] = fe.files;
+      } else {
+        payload[fe.name] = fe.value;
+      }
     }
   });
   return { payload, attachments };
@@ -118,7 +118,7 @@ function setNumberConstraints(element, fd) {
 function createLabel(fd, tagName = 'label') {
   const label = document.createElement(tagName);
   label.setAttribute('for', fd.Id);
-  label.className = 'field-label' + (isMandatory(fd) && fd.Label ? ' asterisk' : '');
+  label.className = 'field-label';
   label.textContent = fd.Label || '';
   if (fd.Tooltip) {
     label.title = fd.Tooltip;
@@ -231,7 +231,7 @@ const createOutput = withFieldWrapper((fd) => {
 
 const createFile = withFieldWrapper((fd) => {
   const input = createInput(fd);
-  input.accept = fd.Accept;
+  input.accept = fd.Accept || '';
   return input;
 });
 
@@ -295,7 +295,7 @@ const fieldRenderers = {
   hidden: createHidden,
   fieldset: createFieldSet,
   plaintext: createPlainText,
-  file: createFile
+  file: createFile,
 };
 
 function renderField(fd) {
@@ -340,7 +340,8 @@ async function createForm(formURL) {
       input.id = fd.Id;
       input.name = fd.Name;
       input.value = fd.Value;
-      input[isMandatory(fd) ? 'setAttribute' : 'removeAttribute']('required', '');
+      input[fd.Mandatory && fd.Mandatory.toLowerCase() === 'true'
+        ? 'setAttribute' : 'removeAttribute']('required', '');
       if (fd.Description) {
         input.setAttribute('aria-describedby', `${fd.Id}-description`);
       }

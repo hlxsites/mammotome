@@ -26,7 +26,7 @@
   --mt-global-color-accent-quinary: #84329b;
   --mt-global-color-accent-senary: #777;
   --mt-global-color-black: #000;
-  --mt-global-color-charcoal: #333333;
+  --mt-global-color-charcoal: #333;
   --mt-global-color-white: #fff;
   --mt-global-color-orange: #ff5f3f;
   --mt-global-color-oslo-gray: #818a91;
@@ -80,7 +80,7 @@
   /* fonts families */
   --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
-  --mt-form-font-family: Helvetica, Arial, sans-serif;
+  --mt-form-font-family: helvetica, arial, sans-serif;
 
   /* font weights */
   --mt-font-weight-thin: 300;
@@ -678,53 +678,9 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(--mt-our-history-color-primary);
 }
 
-main .contact .default-content-wrapper h2,
-main .schedule-demo .default-content-wrapper h2 {
-  text-align: center;
-  font-size: var(--mt-font-size-162);
-  font-weight: var(--mt-font-weight-regular);
-  color: var(--mt-global-color-base-secondary);
-  text-transform: none;
-  margin: 0 auto;
-  padding-bottom: 10px;
-  line-height: 37px;
-}
-
-main .schedule-demo .default-content-wrapper h2 {
-  font-size: var(--mt-heading-font-size-l);
-  line-height: 24px;
-  color: var(--mt-global-color-base-primary);
-  width: 100%;
-  margin: 0 0 58px;
-}
-
-main .schedule-demo .default-content-wrapper p {
-  font-size: 20px;
-  line-height: 1.5;
-  margin: 0;
-}
-
 @media screen and (max-width: 530px) {
   main .section.our-history .year:first-of-type::after {
     top: -5%;
-  }
-}
-
-@media (min-width: 640px) {
-  main .schedule-demo .default-content-wrapper h2 {
-    width: calc(100% + 20vw);
-    margin-left: -10vw;
-  }
-}
-
-@media (min-width: 740px) {
-  main .contact .default-content-wrapper h2 {
-    width: 80%;
-  }
-
-  main .schedule-demo .default-content-wrapper h2 {
-    width: 100%;
-    margin: 0 0 58px;
   }
 }
 
@@ -887,8 +843,15 @@ main .schedule-demo .default-content-wrapper p {
   background-color: transparent;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .section.arc-after-section {
-  margin-top: -20%;
+  margin-top: -13%;
+  position: relative;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.section.arc-after-section p { 
+  text-align: left;
 }
 
 .section.arc-top {
