@@ -461,7 +461,7 @@ main .study-request .form-browse .field-attachment-wrapper button {
     --form-button-padding: 15px;
 
     background: none;
-    background-image: url("../../icons/trash.svg");
+    background-image: url("../../styles/icons/trash.svg");
     background-repeat: no-repeat;
     width: unset;
     border: unset;
