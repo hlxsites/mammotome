@@ -368,21 +368,24 @@ export function decorateSupScript(string, result = []) {
 
 export function getInfo() {
   const [, country, language] = window.location.pathname.split('/');
+  const getUrlPath = (path) => new URL(path, origin).pathname;
+
   return {
     country,
     language,
-    productDB: new URL('/products.json', window.location).pathname,
-    productSupport: new URL(`/${country}/${language}/product-support`, window.location).pathname,
-    queryIndex: new URL(`/${country}/${language}/query-index.json`, window.location).pathname,
+    productDB: getUrlPath('/products.json'),
+    productSupport: getUrlPath(`/${country}/${language}/product-support`),
+    queryIndex: getUrlPath(`/${country}/${language}/query-index.json`),
   };
 }
 
 export function adjustAssetURL(asset) {
   if (asset?.URL) {
     const url = new URL(asset.URL, window.location);
-    if (url.hostname.endsWith('-mammotome--hlxsites.hlx.page')
-      || url.hostname.endsWith('-mammotome--hlxsites.hlx.live')
-      || url.hostname === 'localhost') {
+    const isLocalOrHlx = ['localhost', '-mammotome--hlxsites.hlx.page', '-mammotome--hlxsites.hlx.live']
+      .some((domain) => url.hostname.endsWith(domain));
+
+    if (isLocalOrHlx) {
       asset.URL = url.pathname;
     }
   }
@@ -397,12 +400,13 @@ export async function getProductDB() {
       throw new Error(`${resp.status}: ${resp.statusText}`);
     }
     window.productDB = await resp.json();
-    if (window.productDB.ProductAsset?.data) {
-      window.productDB.ProductAsset.data = window.productDB.ProductAsset.data.map(adjustAssetURL);
-    }
-    if (window.productDB.eIFU?.data) {
-      window.productDB.eIFU.data = window.productDB.eIFU.data.map(adjustAssetURL);
-    }
+    const adjustData = (f) => (field) => {
+      if (window.productDB[field]?.data) {
+        window.productDB[field].data = window.productDB[field].data.map(f);
+      }
+    };
+
+    ['ProductAsset', 'eIFU'].forEach(adjustData(adjustAssetURL));
   }
   return window.productDB;
 }
