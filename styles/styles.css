@@ -429,7 +429,6 @@ a.button:any-link,
 button {
   display: inline-block;
   box-sizing: border-box;
-  width: 300px;
   padding: 15px 50px;
   margin: 0;
   border: 2px solid transparent;
