@@ -361,6 +361,25 @@ p {
 .logo-primary-background p ,
 .logo-secondary-background p {
   line-height: 2.7rem;
+  font-size: var(--mt-heading-font-size-l);
+  font-weight: var(--mt-font-weight-thin);
+  padding: 0 5%;;
+}
+
+@media screen and (min-width: 767px) {
+  .logo-primary-background h1,
+  .logo-secondary-background h1,
+  .logo-primary-background h2,
+  .logo-secondary-background h2,
+  .logo-primary-background h3,
+  .logo-secondary-background h3,
+  .logo-primary-background h4,
+  .logo-secondary-background h4,
+  .logo-primary-background p ,
+  .logo-secondary-background p {
+    font-size: var(--mt-heading-font-size-xl);
+    font-weight: var(--mt-font-weight-regular);
+  }
 }
 
 code,
