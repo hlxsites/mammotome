@@ -122,7 +122,6 @@
 }
 
 .cards.wideimage .cards-card-image {
-  aspect-ratio: 6 / 5;
   overflow: hidden;
   align-items: center;
   padding: 0;
