@@ -6,6 +6,7 @@ import {
   setActiveLink,
   createDomStructure,
   decorateSupScript,
+  getInfo,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -167,15 +168,9 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-function getInfo() {
-  const [, country, language] = window.location.pathname.split('/');
-  return { country, language };
-}
-
-async function fetchSearchData() {
+async function fetchSearchData({ queryIndex }) {
   if (!window.searchData) {
-    const { country, language } = getInfo();
-    const resp = await fetch(`/${country}/${language}/query-index.json`);
+    const resp = await fetch(`${queryIndex}?limit=10000`);
     if (resp.ok) {
       const json = await resp.json();
       if (json.data) {
@@ -190,16 +185,15 @@ async function fetchSearchData() {
   return window.searchData.data;
 }
 
-async function fetchProductSupportSearchData() {
+async function fetchProductSupportSearchData({ country, language, productSupport }) {
   if (!window.productSearchData) {
-    const [, country, language] = window.location.pathname.split('/');
     const products = await getProducts(country, language);
     window.productSearchData = products.flatMap(({
       Name, Description, Page, assets,
     }) => ([{
       title: Name,
       description: Description,
-      path: `/${language}/product-support/${Page}`,
+      path: `${productSupport}/${Page}`,
     }, ...assets.map((asset) => ({
       title: asset.Name,
       description: asset.Description,
@@ -210,8 +204,9 @@ async function fetchProductSupportSearchData() {
 }
 
 async function search(value) {
-  const searchData = await fetchSearchData();
-  const productSupportData = await fetchProductSupportSearchData();
+  const info = getInfo();
+  const searchData = await fetchSearchData(info);
+  const productSupportData = await fetchProductSupportSearchData(info);
   return [...searchData, ...productSupportData]
     .filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
 }
