@@ -395,6 +395,18 @@ function productDBMatches(entry, country, language) {
   return true;
 }
 
+export function adjustAssetURL(asset) {
+  if (asset?.URL) {
+    const url = new URL(asset.URL, window.location);
+    if (url.hostname.endsWith('-mammotome--hlxsites.hlx.page')
+      || url.hostname.endsWith('-mammotome--hlxsites.hlx.live')
+      || url.hostname === 'localhost') {
+      asset.URL = url.pathname;
+    }
+  }
+  return asset;
+}
+
 export async function getProduct(page, country, language) {
   const productDB = await getProductDB();
 
@@ -411,7 +423,7 @@ export async function getProduct(page, country, language) {
 
     product.assets = productDB.ProductAsset.data.filter(
       (asset) => asset.Page === product.Page && productDBMatches(asset, country, language),
-    );
+    ).map(adjustAssetURL);
   }
 
   return product;
@@ -818,7 +830,7 @@ export function decorateButtons(element) {
 export function decorateBlockImgs(block) {
   block.querySelectorAll('img')
     .forEach((img) => {
-      const { hostname } = new URL(img.src);
+      const { hostname } = new URL(img.src, window.location.href);
       if (hostname === window.location.hostname
         || hostname.endsWith('-mammotome--hlxsites.hlx.page')
         || hostname.endsWith('-mammotome--hlxsites.hlx.live')

@@ -1,4 +1,6 @@
-import { createDomStructure, getProductDB, translate } from '../../scripts/lib-franklin.js';
+import {
+  adjustAssetURL, createDomStructure, getProductDB, translate,
+} from '../../scripts/lib-franklin.js';
 
 async function handleSearch(selectors, allSelectors) {
   const { result, code, country } = selectors;
@@ -29,19 +31,8 @@ async function handleSearch(selectors, allSelectors) {
   const assetMap = new Map();
   const revisionedAssetMap = new Map();
 
-  assets.forEach((asset) => {
-    if (!asset.URL) {
-      return;
-    }
-
+  assets.map(adjustAssetURL).forEach((asset) => {
     const map = asset.Revised ? revisionedAssetMap : assetMap;
-    const url = new URL(asset.URL, window.location.href);
-
-    if (url.hostname.endsWith('-mammotome--hlxsites.hlx.page')
-      || url.hostname.endsWith('-mammotome--hlxsites.hlx.live')
-      || url.hostname === 'localhost') {
-      asset.URL = url.pathname;
-    }
 
     const links = map.get(asset.Title) || [];
     links.push(asset.URL);

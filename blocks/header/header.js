@@ -167,9 +167,15 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+function getInfo() {
+  const [, country, language] = window.location.pathname.split('/');
+  return { country, language };
+}
+
 async function fetchSearchData() {
   if (!window.searchData) {
-    const resp = await fetch(`/${window.location.pathname.substring(1, window.location.pathname.indexOf('/', 1))}/query-index.json`);
+    const { country, language } = getInfo();
+    const resp = await fetch(`/${country}/${language}/query-index.json`);
     if (resp.ok) {
       const json = await resp.json();
       if (json.data) {
