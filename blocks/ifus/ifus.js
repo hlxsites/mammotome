@@ -43,12 +43,9 @@ async function handleSearch(selectors, allSelectors) {
       asset.URL = url.pathname;
     }
 
-    if (map.has(asset.Title)) {
-      const links = map.get(asset.Title);
-      links.push(asset.URL);
-    } else {
-      map.set(asset.Title, [asset.URL]);
-    }
+    const links = map.get(asset.Title) || [];
+    links.push(asset.URL);
+    map.set(asset.Title, links);
   });
 
   async function createAssetDomStructure([key, value]) {
