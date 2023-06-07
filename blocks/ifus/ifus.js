@@ -126,28 +126,28 @@ async function populate(block) {
 
   const getIFUIDs = () => json.eIFU.data.map((value) => value.eIFU).filter(unique).sort();
 
-  const getProductCodeIDs = () => json.eIFU.data.flatMap((value) => value.ProductRef.split('|')).filter(unique).sort();
+  const getProductCodeIDs = () => json.eIFU.data.flatMap((value) => value.ProductCodes.split('|')).filter(unique).sort();
 
   const getProductCodesByIFU = (id) => json.eIFU.data
     .filter((match) => match.eIFU === id)
-    .flatMap((match) => match.ProductRef.split('|'))
+    .flatMap((match) => match.ProductCodes.split('|'))
     .filter(unique)
     .sort()
     .join(', ');
 
   const getProductCodesByProductCode = (id) => json.eIFU.data
-    .filter((match) => match.ProductRef.split('|').includes(id))
-    .flatMap((match) => match.ProductRef.split('|'))
+    .filter((match) => match.ProductCodes.split('|').includes(id))
+    .flatMap((match) => match.ProductCodes.split('|'))
     .filter(unique)
     .sort()
     .join(', ');
 
   const getAssetbyIFUandCountry = (id, country) => json.eIFU.data.filter(
-    (asset) => asset.eIFU === id && asset.Country === country,
+    (asset) => asset.eIFU === id && ((asset.Countries === '') || asset.Countries.split('|').includes(country)),
   );
 
   const getAssetsByProductCodeandCountry = (id, country) => json.eIFU.data
-    .filter((entry) => entry.ProductRef.split('|').includes(id) && entry.Country === country);
+    .filter((entry) => entry.ProductCodes.split('|').includes(id) && ((entry.Countries === '') || entry.Countries.split('|').includes(country)));
 
   const selectors = [
     getSelectors(
