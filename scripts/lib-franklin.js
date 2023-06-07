@@ -366,13 +366,47 @@ export function decorateSupScript(string, result = []) {
   return result;
 }
 
+export function getInfo() {
+  const [, country, language] = window.location.pathname.split('/');
+  const getUrlPath = (path) => new URL(path, origin).pathname;
+
+  return {
+    country,
+    language,
+    productDB: getUrlPath('/products.json'),
+    productSupport: getUrlPath(`/${country}/${language}/product-support`),
+    queryIndex: getUrlPath(`/${country}/${language}/query-index.json`),
+  };
+}
+
+export function adjustAssetURL(asset) {
+  if (asset?.URL) {
+    const url = new URL(asset.URL, window.location);
+    const isLocalOrHlx = ['localhost', '-mammotome--hlxsites.hlx.page', '-mammotome--hlxsites.hlx.live']
+      .some((domain) => url.hostname.endsWith(domain));
+
+    if (isLocalOrHlx) {
+      asset.URL = url.pathname;
+    }
+  }
+  return asset;
+}
+
 export async function getProductDB() {
   if (!window.productDB) {
-    const resp = await fetch('/products.json?limit=10000');
+    const { productDB } = getInfo();
+    const resp = await fetch(`${productDB}?limit=10000`);
     if (!resp.ok) {
       throw new Error(`${resp.status}: ${resp.statusText}`);
     }
     window.productDB = await resp.json();
+    const adjustData = (f) => (field) => {
+      if (window.productDB[field]?.data) {
+        window.productDB[field].data = window.productDB[field].data.map(f);
+      }
+    };
+
+    ['ProductAsset', 'eIFU'].forEach(adjustData(adjustAssetURL));
   }
   return window.productDB;
 }
@@ -395,18 +429,6 @@ function productDBMatches(entry, country, language) {
   return true;
 }
 
-export function adjustAssetURL(asset) {
-  if (asset?.URL) {
-    const url = new URL(asset.URL, window.location);
-    if (url.hostname.endsWith('-mammotome--hlxsites.hlx.page')
-      || url.hostname.endsWith('-mammotome--hlxsites.hlx.live')
-      || url.hostname === 'localhost') {
-      asset.URL = url.pathname;
-    }
-  }
-  return asset;
-}
-
 export async function getProduct(page, country, language) {
   const productDB = await getProductDB();
 
@@ -423,7 +445,7 @@ export async function getProduct(page, country, language) {
 
     product.assets = productDB.ProductAsset.data.filter(
       (asset) => asset.Page === product.Page && productDBMatches(asset, country, language),
-    ).map(adjustAssetURL);
+    );
   }
 
   return product;

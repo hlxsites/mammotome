@@ -1,6 +1,4 @@
-import {
-  adjustAssetURL, createDomStructure, getProductDB, translate,
-} from '../../scripts/lib-franklin.js';
+import { createDomStructure, getProductDB, translate } from '../../scripts/lib-franklin.js';
 
 async function handleSearch(selectors, allSelectors) {
   const { result, code, country } = selectors;
@@ -31,7 +29,7 @@ async function handleSearch(selectors, allSelectors) {
   const assetMap = new Map();
   const revisionedAssetMap = new Map();
 
-  assets.map(adjustAssetURL).forEach((asset) => {
+  assets.forEach((asset) => {
     const map = asset.Revised ? revisionedAssetMap : assetMap;
 
     const links = map.get(asset.Title) || [];

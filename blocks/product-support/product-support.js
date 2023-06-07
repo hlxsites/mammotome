@@ -1,23 +1,16 @@
 import {
-  createDomStructure, decorateBlockImgs, getProduct, translate, decorateSupScript,
+  createDomStructure, decorateBlockImgs, getProduct, translate, decorateSupScript, getInfo,
 } from '../../scripts/lib-franklin.js';
 
-function getInfo() {
+function getProductSupportInfo() {
+  const info = getInfo();
   const url = new URL(window.location);
   const idx = url.pathname.indexOf('/product-support/');
   if (idx > 0) {
-    const slug = url.pathname.substring(url.pathname.indexOf('/product-support/') + '/product-support/'.length);
-    if (slug) {
-      const [, country, language] = url.pathname.split('/');
-      return {
-        country,
-        page: slug,
-        productSupport: url.pathname.substring(0, url.pathname.indexOf(`${slug}`) - 1),
-        language,
-      };
-    }
+    const page = url.pathname.substring(url.pathname.indexOf('/product-support/') + '/product-support/'.length);
+    return { page, ...info };
   }
-  return { productSupport: url.pathname.substring(0, url.pathname.length - 1) };
+  return info;
 }
 
 function getTypes(product) {
@@ -31,7 +24,7 @@ function getAssets(product, type, allType) {
 export default async function decorate(block) {
   const {
     country, page, productSupport, language,
-  } = getInfo();
+  } = getProductSupportInfo();
 
   const product = await getProduct(page, country, language);
 
