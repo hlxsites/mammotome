@@ -27,16 +27,28 @@ async function handleSearch(selectors, allSelectors) {
   }
 
   const assetMap = new Map();
+  const revisionedAssetMap = new Map();
+
   assets.forEach((asset) => {
-    if (assetMap.has(asset.Title)) {
-      const links = assetMap.get(asset.Title);
-      links.push(asset.URL);
-    } else {
-      assetMap.set(asset.Title, [asset.URL]);
+    if (!asset.URL) {
+      return;
     }
+
+    const map = asset.Revised ? revisionedAssetMap : assetMap;
+    const url = new URL(asset.URL, window.location.href);
+
+    if (url.hostname.endsWith('-mammotome--hlxsites.hlx.page')
+      || url.hostname.endsWith('-mammotome--hlxsites.hlx.live')
+      || url.hostname === 'localhost') {
+      asset.URL = url.pathname;
+    }
+
+    const links = map.get(asset.Title) || [];
+    links.push(asset.URL);
+    map.set(asset.Title, links);
   });
 
-  await Promise.all(Array.from(assetMap).map(async ([key, value]) => {
+  async function createAssetDomStructure([key, value]) {
     createDomStructure([
       {
         type: 'div',
@@ -83,7 +95,20 @@ async function handleSearch(selectors, allSelectors) {
         ],
       },
     ], result);
-  }));
+  }
+
+  await Promise.all(Array.from(assetMap).map(createAssetDomStructure));
+
+  if (revisionedAssetMap.size === 0) {
+    return;
+  }
+
+  createDomStructure([{
+    type: 'h4',
+    textContent: await translate('ifuSearchRevisionedTitle', 'Past Revisions of Instructions for Use'),
+  }], result);
+
+  await Promise.all(Array.from(revisionedAssetMap).map(createAssetDomStructure));
 }
 
 function populateSearch(selectors, allSelectors) {
