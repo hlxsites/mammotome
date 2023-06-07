@@ -31,7 +31,6 @@
   align-content: flex-start;
   box-sizing: border-box;
   padding: 10px;
-  margin: 3% 0 0;
   display: grid;
   gap: var(--mt-cards-grid-row-gap) var(--mt-cards-grid-column-gap);
   grid-template-columns: repeat(1,1fr);
