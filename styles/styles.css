@@ -322,6 +322,7 @@ p {
 /* Section style for P */
 .text-large p {
   font-size: var(--mt-body-font-size-l);
+  line-height: 2.5rem;
 }
 
 .text-small p {
@@ -558,8 +559,12 @@ a.button i.link-icon svg {
   fill: var(--mt-global-color-accent-primary);;
 }
 
-main .section {
+main .section{
   padding: 5% 10% 0;
+}
+
+main .section.attached {
+  padding-top: 10px
 }
 
 main .section .default-content-wrapper {
