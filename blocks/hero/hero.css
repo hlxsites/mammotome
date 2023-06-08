@@ -6,6 +6,7 @@ main .hero-container > .hero-wrapper {
 
 main .hero-container {
   padding: 0;
+  z-index: -1;
 }
 
 main .hero-big {
