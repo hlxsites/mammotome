@@ -132,6 +132,10 @@ main .hero-light picture {
   padding: 0 12px;
 }
 
+main .hero-big picture:nth-child(2) {
+  position: initial;
+  object-fit: unset;
+}
 
 main .hero-big img {
   object-fit: cover;
@@ -144,6 +148,11 @@ main .hero-light img {
   border-radius: 5px;
   box-shadow: rgb(28 28 73 / 37%) 8px 22px 50px 0;
   z-index: 3;
+}
+
+main .hero-big picture:nth-child(2) img {
+  width: 271px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 500px) {
