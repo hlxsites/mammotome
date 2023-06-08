@@ -69,6 +69,7 @@ Adds a divider before or after the section.
 | Section Metadata |       |
 |------------------|-------|
 | divider          | after |
-....produces →
+
+....produce →
 
 ![line-example.png](assets%2Fline-example.png)
