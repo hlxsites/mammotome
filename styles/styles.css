@@ -537,6 +537,7 @@ a.button i.link-icon svg {
 
 main .section {
   padding: 5% 10% 0;
+  position: relative;
 }
 
 main .section .default-content-wrapper {
