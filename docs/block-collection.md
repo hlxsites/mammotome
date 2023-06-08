@@ -8,7 +8,7 @@ This is a collection of blocks, specifically developed as part of the Mammotome 
 - [Collapsible](blocks%2Fcollapsible.md)
 - [Tab Navigation](blocks%2Ftab-nav.md)
 - [Previous-Next Navigation](blocks%2prevnext.md)
-
+- [SoundCloud](blocks%2Fsoundcloud.md)
 ### ProductDB related blocks:
 
 - [IFUS](blocks%2Fifus.md)
