@@ -251,7 +251,7 @@ h5 {
 }
 
 strong {
-  font-weight: var(--mt-font-weight-boldest);
+  font-weight: var(--mt-font-weight-heavy);
 }
 
 p,
@@ -297,8 +297,7 @@ blockquote {
   content: "";
   position: absolute;
   left: 0;
-  top: 1rem;
-  transform: translateY(-50%);
+  top: 0.5rem;
   width: 10px;
   height: 10px;
   background-image: url('/styles/icons/circle.svg');
@@ -323,6 +322,7 @@ p {
 /* Section style for P */
 .text-large p {
   font-size: var(--mt-body-font-size-l);
+  line-height: 2.5rem;
 }
 
 .text-small p {
@@ -351,11 +351,36 @@ p {
   color: var(--mt-heading-color-inverted);
 }
 
+.logo-primary-background h1,
+.logo-secondary-background h1,
 .logo-primary-background h2,
 .logo-secondary-background h2,
-.logo-primary-background.text-large p ,
-.logo-secondary-background.text-large p {
+.logo-primary-background h3,
+.logo-secondary-background h3,
+.logo-primary-background h4,
+.logo-secondary-background h4,
+.logo-primary-background p ,
+.logo-secondary-background p {
   line-height: 2.7rem;
+  font-size: var(--mt-heading-font-size-l);
+  font-weight: var(--mt-font-weight-thin);
+  padding: 0 5%;;
+}
+
+@media screen and (min-width: 767px) {
+  .logo-primary-background h1,
+  .logo-secondary-background h1,
+  .logo-primary-background h2,
+  .logo-secondary-background h2,
+  .logo-primary-background h3,
+  .logo-secondary-background h3,
+  .logo-primary-background h4,
+  .logo-secondary-background h4,
+  .logo-primary-background p ,
+  .logo-secondary-background p {
+    font-size: var(--mt-heading-font-size-xl);
+    font-weight: var(--mt-font-weight-regular);
+  }
 }
 
 code,
@@ -405,7 +430,6 @@ a.button:any-link,
 button {
   display: inline-block;
   box-sizing: border-box;
-  width: 300px;
   padding: 15px 50px;
   margin: 0;
   border: 2px solid transparent;
@@ -535,9 +559,13 @@ a.button i.link-icon svg {
   fill: var(--mt-global-color-accent-primary);;
 }
 
-main .section {
+main .section{
   padding: 5% 10% 0;
   position: relative;
+}
+
+main .section.attached {
+  padding-top: 10px
 }
 
 main .section .default-content-wrapper {
