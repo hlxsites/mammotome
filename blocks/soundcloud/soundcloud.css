@@ -1,0 +1,41 @@
+.soundcloud-title,
+.soundcloud-title a{
+    font-size: 10px;
+    color: #ccc;
+    line-break: anywhere;
+    word-break: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: Interstate,"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Garuda,Verdana,Tahoma,sans-serif;
+    font-weight: 100;
+}
+
+@media (min-width: 768px) {
+    .soundcloud {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .soundcloud-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .soundcloud-col:nth-child(odd) {
+        padding-right: 30px;
+    }
+
+    .soundcloud-col:nth-child(even) {
+        padding-left: 30px;
+    }
+
+    .soundcloud-col:only-child {
+        padding: 0;
+    }
+
+    .soundcloud:has(.soundcloud-col:only-child) {
+        grid-template-columns: 1fr;
+    }
+}
