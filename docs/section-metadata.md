@@ -85,15 +85,39 @@ Example:
 
 ![accent-primary-solid-background-example.png](assets%2Faccent-primary-solid-background-example.png)
 
-#### Accent quinary solid background
+
+#### Accent quinary solid background xxx
 
 #### Base primary blur overlay
 
+Adds a blur overlay over a section.
+
+Example:
+
+| Section Metadata |                           |
+|------------------|---------------------------|
+| Style            | base primary blur overlay |
+
+
+![base-primary-blur-overlay-example.png](assets%2Fbase-primary-blur-overlay-example.png)
+
 #### Base secondary blur overlay
+
+#### Accent secondary blur overlay
+
+Adds an accent overlay over the section. 
+
+Example:
+
+| Section Metadata |                           |
+|------------------|---------------------------|
+| Style            | accent secondary blur overlay |
+
+![accent-secondary-blur-overlay-example.png](assets%2Faccent-secondary-blur-overlay-example.png)
 
 #### Gradient primary blur overlay
 
-Adds a gradient overlay to the section. The gradient is a linear gradient from top to bottom. The gradient is a mix of the primary and secondary color.
+Adds a gradient overlay over the section. 
 
 Example:
 
@@ -106,6 +130,27 @@ Example:
 
 
 #### Gradient secondary blur overlay
+
+Adds a gradient overlay over the section.
+
+Example:
+
+| Section Metadata |                                 |
+|------------------|---------------------------------|
+| Style            | gradient secondary blur overlay |
+
+
+#### Image
+
+Adds an image to the section. The image is being scaled to fit the section.
+
+Example:
+
+| Section Metadata |       | 
+|------------------|-------|
+| background-image | image |
+
+![image-example.png](assets%2Fimage-example.png)
 
 #### Arc top
 

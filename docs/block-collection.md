@@ -2,6 +2,7 @@
 
 This is a collection of blocks, specifically developed as part of the Mammotome Franklin project.
 
+- Hero Block
 - [Columns](blocks%2Fcolumns.md)
 - [Cards](blocks%2Fcards.md)
 - [Carousel](blocks%2Fcarousel.md)
