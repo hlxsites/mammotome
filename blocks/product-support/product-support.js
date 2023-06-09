@@ -1,5 +1,11 @@
 import {
-  createDomStructure, decorateBlockImgs, getProduct, translate, decorateSupScript, getInfo,
+  createDomStructure,
+  decorateBlockImgs,
+  getProduct,
+  translate,
+  decorateSupScript,
+  getInfo,
+  decorateButtons,
 } from '../../scripts/lib-franklin.js';
 
 function getProductSupportInfo() {
@@ -14,7 +20,7 @@ function getProductSupportInfo() {
 }
 
 function getTypes(product) {
-  return Array.from(new Set(product.assets.map((asset) => asset.Type)));
+  return Array.from(new Set(product.assets.map((asset) => asset.Type).filter((type) => type)));
 }
 
 function getAssets(product, type, allType) {
@@ -44,13 +50,19 @@ export default async function decorate(block) {
     createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image } }] }], block);
     decorateBlockImgs(block);
   }
+  const types = getTypes(product);
   createDomStructure([
     {
       type: 'div',
       children: [
         {
-          type: 'h2',
-          textContent: heading,
+          type: 'h4',
+          children: [
+            {
+              type: 'strong',
+              textContent: heading,
+            },
+          ],
         },
         {
           type: 'div',
@@ -62,7 +74,7 @@ export default async function decorate(block) {
                   type: 'option',
                   textContent: allDocuments,
                 },
-                ...getTypes(product)
+                ...types
                   .map((type) => (
                     {
                       type: 'option',
@@ -82,6 +94,9 @@ export default async function decorate(block) {
   ], block);
 
   const select = block.querySelector('select');
+  if (types.length === 0) {
+    select.style.display = 'none';
+  }
   const container = block.querySelector('.link-container');
 
   const handler = () => {
@@ -102,6 +117,7 @@ export default async function decorate(block) {
           ],
         }
       )), container);
+      decorateButtons(container);
     } else {
       createDomStructure([{
         type: 'div',

@@ -26,7 +26,7 @@
 }
 
 .ifus h2, h3, h4 {
-    font-weight: 500;
+    font-weight: var(--mt-font-weight-bold);
     text-align: left;
 }
 
