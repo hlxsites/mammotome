@@ -1,4 +1,5 @@
 ## Columns
+
 ### Variations
 - _Simple_
 - _Image Cards_: Displays images like cards
@@ -9,6 +10,13 @@
 - _Image Color Light Blue_: Creates a light blue background behind the image
 
 ### Content Structure
+
+| Columns ([Variations comma separated]) |                            |                            |
+|----------------------------------------|----------------------------|----------------------------|
+| [image]<br/>[text]/[links]             | [image]<br/>[text]/[links] | [image]<br/>[text]/[links] |
+
 ![columns-block.png](..%2Fassets%2Fcolumns-block.png)
-### Exalple
+
+### Example
+
 ![columns-example.png](..%2Fassets%2Fcolumns-example.png)
