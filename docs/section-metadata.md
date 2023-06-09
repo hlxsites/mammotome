@@ -5,13 +5,18 @@ based on visual differences between sections such as a different background colo
 
 # Usage
 
-Section Metadata allows the author to add two parameters to a section table with the following attributes (1st column):
+A Section is represented by a leading `---` and a trailing `---`. The Section Metadata Table is being added at the end of the section.
+Section Metadata allows the author to add two parameters to a section table with the following attributes (1st column)
 
+`---`
 
 | Section Metadata |                             |
 | ---------------- | --------------------------- |
 | Style            | [see style options below]   |
 | Divider          | [see divider options below] |
+
+`---`
+
 
 ## Style
 
@@ -115,9 +120,9 @@ Example:
 
 ![logo-primary-background-example.png](assets%2Flogo-primary-background-example.png)
 
-#### callout
+#### Callout
 
-#### narrow
+#### Narrow
 
 * **narrow**: Some Paragraphs are fixed at a certain width to make them easier to read. The **narrow** style is used for this purpose.
 
