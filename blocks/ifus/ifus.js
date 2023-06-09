@@ -5,7 +5,7 @@ async function handleSearch(selectors, allSelectors) {
 
   result.innerHTML = '';
   createDomStructure([{
-    type: 'h4',
+    type: 'h2',
     textContent: await translate('ifuSearchTitle', 'Search results'),
   }], result);
 
@@ -42,7 +42,7 @@ async function handleSearch(selectors, allSelectors) {
       {
         type: 'div',
         children: [
-          { type: 'h5', textContent: key },
+          { type: 'h3', textContent: key },
           {
             type: 'div',
             children: [
@@ -53,7 +53,7 @@ async function handleSearch(selectors, allSelectors) {
                     type: 'div',
                     textContent: selectors.productCodes(code.value),
                     children: [{
-                      type: 'h6',
+                      type: 'h4',
                       position: 'prepend',
                       textContent: await translate('ifuSearchProductCodes', 'Product Code(s)'),
                     }],
@@ -64,7 +64,7 @@ async function handleSearch(selectors, allSelectors) {
                 type: 'div',
                 textContent: country.value,
                 children: [{
-                  type: 'h6',
+                  type: 'h4',
                   position: 'prepend',
                   textContent: await translate('ifuSearchCountrySelected', 'Country Selected'),
                 }],
@@ -186,7 +186,7 @@ export default async function decorate(block) {
     {
       type: 'div',
       classes: ['ifu-result', 'no-result'],
-      children: [{ type: 'h4', textContent: await translate('ifuSearchTitle', 'Search results') }],
+      children: [{ type: 'h2', textContent: await translate('ifuSearchTitle', 'Search results') }],
     },
     {
       type: 'div',
@@ -197,7 +197,7 @@ export default async function decorate(block) {
           classes: ['ifu-selection'],
           children: [
             {
-              type: 'h5',
+              type: 'h3',
               classes: ['ifu-title'],
               textContent: await translate(`ifuSearchBy${entry[0]}`, `Search by ${entry[1]}`),
             },
