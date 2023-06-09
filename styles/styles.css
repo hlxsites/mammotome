@@ -607,17 +607,28 @@ main .section[data-section-status='initialized'] {
 }
 
 /* callout block */
+.section.logo-primary-background.callout,
 .section.callout {
-  padding: 0 0 10%;
+  padding: 0 0 8%;
 }
 
 .section.callout h1,
 .section.callout h2 {
   padding: 3% 5%;
+  margin-bottom: 20px;
+}
+
+.section.callout h1,
+.section.callout h2,
+.section.callout h3 {
+  font-size: var(--mt-heading-font-size-xxl);
+  line-height: 2.5rem;
 }
 
 .section.callout .button-container {
     text-align: center;
+    padding: 0;
+    margin: 0;
 }
 
 /* about-us/our-history */
