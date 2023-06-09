@@ -367,6 +367,21 @@ p {
   padding: 0 5%;;
 }
 
+/* section style  inverted text  */
+.section.inverted-text,
+.section.inverted-text h1,
+.section.inverted-text h2,
+.section.inverted-text h3,
+.section.inverted-text h4,
+.section.inverted-text h5,
+.section.inverted-text h6,
+.section.inverted-text p
+{
+  color: var(--mt-heading-color-inverted);
+}
+
+
+
 @media screen and (min-width: 767px) {
   .logo-primary-background h1,
   .logo-secondary-background h1,
