@@ -1,39 +1,39 @@
 sitemaps:
-  example:
+  mammotome:
     origin: https://www.mammotome.com
     languages:
       de:
-        source: /de/query-index.json
+        source: /de/de/query-index.json
         destination: /sitemap.xml
         hreflang: de
-        alternate: /de/{path}
+        alternate: /de/de/{path}
       en:
-        source: /en/query-index.json
+        source: /us/en/query-index.json
         destination: /sitemap.xml
         hreflang: en
-        alternate: /en/{path}
-      en-gb:
-        source: /en-gb/query-index.json
+        alternate: /us/en/{path}
+      uk-en:
+        source: /uk/en/query-index.json
         destination: /sitemap.xml
-        hreflang: en-gb
-        alternate: /en-gb/{path}
+        hreflang: uk-en
+        alternate: /uk/en/{path}
       es:
-        source: /es/query-index.json
+        source: /es/es/query-index.json
         destination: /sitemap.xml
         hreflang: es
-        alternate: /es/{path}
+        alternate: /es/es/{path}
       fr:
-        source: /fr/query-index.json
+        source: /fr/fr/query-index.json
         destination: /sitemap.xml
         hreflang: fr
-        alternate: /fr/{path}
+        alternate: /fr/fr/{path}
       it:
-        source: /it/query-index.json
+        source: /it/it/query-index.json
         destination: /sitemap.xml
         hreflang: it
-        alternate: /it/{path}
+        alternate: /it/it/{path}
       pl:
-        source: /pl/query-index.json
+        source: /pl/pl/query-index.json
         destination: /sitemap.xml
         hreflang: pl
-        alternate: /pl/{path}
+        alternate: /pl/pl/{path}
