@@ -124,7 +124,7 @@ Example:
 
 #### Narrow
 
-* **narrow**: Some Paragraphs are fixed at a certain width to make them easier to read. The **narrow** style is used for this purpose.
+Some Paragraphs are fixed at a certain width to make them easier to read. The **narrow** style is used for this purpose.
 
 Narrow style puts the content in a section that is fixed to **610px**.
 
@@ -147,6 +147,5 @@ Adds a divider before or after the section.
 | ---------------- | ----- |
 | divider          | after |
 
-....produce →
 
 ![line-example.png](assets%2Fline-example.png)
