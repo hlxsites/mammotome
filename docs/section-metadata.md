@@ -167,6 +167,16 @@ Example:
 
 #### Callout
 
+Puts the content of the section in the center and sets the the fonts size for h1, h2 and h3 to the same value. Can be used in combination with `arc top`.
+
+Example:
+
+| Section Metadata |         |
+|------------------|---------|
+| Style            | Logo primary background, arc top, callout  |
+
+![callout-example.png](assets%2Fcallout-example.png)
+
 #### Narrow
 
 Some Paragraphs are fixed at a certain width to make them easier to read. The **narrow** style is used for this purpose.
