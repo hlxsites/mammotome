@@ -54,6 +54,7 @@ export default async function decorate(block) {
   createDomStructure([
     {
       type: 'div',
+      classes: ['header-wide'],
       children: [
         {
           type: 'h4',

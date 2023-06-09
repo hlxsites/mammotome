@@ -30,7 +30,6 @@
 }
 
 .product-support > div > h4 > strong {
-  letter-spacing: 4px;
   color: var(--mt-heading-color-primary);
   text-transform: uppercase;
 }
