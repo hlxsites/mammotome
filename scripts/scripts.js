@@ -234,6 +234,15 @@ export function addFavIcon(
   }
 }
 
+function integrateMartech(parent, id) {
+  // Google Tag Manager
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
+  script.async = true;
+  parent.appendChild(script);
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
@@ -280,7 +289,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => import(`${window.hlx.codeBasePath}/scripts/third-party.js`).then((thirdParty) => thirdParty.default(document.body, 'GTM-KNBZTHP')), 100);
+  integrateMartech(document.body, 'GTM-KNBZTHP');
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
