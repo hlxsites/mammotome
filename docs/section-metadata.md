@@ -71,7 +71,7 @@ Example:
 |------------------|---------------------------|
 | Style            | logo secondary background |
 
-![logo-secondary-background-example.png](assets%2Flogo-secondary-background-example.png)
+![logo-secondary-background-example.png](assets/logo-secondary-background-example.png)
 
 #### Accent Primary solid background
 
@@ -83,7 +83,7 @@ Example:
 |------------------|---------------------------------|
 | Style            | Accent primary solid background |
 
-![accent-primary-solid-background-example.png](assets%2Faccent-primary-solid-background-example.png)
+![accent-primary-solid-background-example.png](assets/accent-primary-solid-background-example.png)
 
 
 #### Accent quinary solid background xxx
@@ -99,7 +99,7 @@ Example:
 | Style            | base primary blur overlay |
 
 
-![base-primary-blur-overlay-example.png](assets%2Fbase-primary-blur-overlay-example.png)
+![base-primary-blur-overlay-example.png](assets/base-primary-blur-overlay-example.png)
 
 #### Base secondary blur overlay
 
@@ -113,7 +113,7 @@ Example:
 |------------------|---------------------------|
 | Style            | accent secondary blur overlay |
 
-![accent-secondary-blur-overlay-example.png](assets%2Faccent-secondary-blur-overlay-example.png)
+![accent-secondary-blur-overlay-example.png](assets/accent-secondary-blur-overlay-example.png)
 
 #### Gradient primary blur overlay
 
@@ -125,7 +125,7 @@ Example:
 |------------------|-------------------------------|
 | Style            | gradient primary blur overlay |
 
-![gradient-primary-blur-overlay-example.png](assets%2Fgradient-primary-blur-overlay-example.png)
+![gradient-primary-blur-overlay-example.png](assets/gradient-primary-blur-overlay-example.png)
 
 
 
@@ -150,7 +150,7 @@ Example:
 |------------------|-------|
 | background-image | image |
 
-![image-example.png](assets%2Fimage-example.png)
+![image-example.png](assets/image-example.png)
 
 #### Arc top
 
@@ -163,7 +163,7 @@ Example:
 |------------------|---------|
 | Style            | arc top |
 
-![logo-primary-background-example.png](assets%2Flogo-primary-background-example.png)
+![logo-primary-background-example.png](assets/logo-primary-background-example.png)
 
 #### Callout
 
@@ -175,7 +175,7 @@ Example:
 |------------------|---------|
 | Style            | Logo primary background, arc top, callout  |
 
-![callout-example.png](assets%2Fcallout-example.png)
+![callout-example.png](assets/callout-example.png)
 
 #### Narrow
 
@@ -183,7 +183,7 @@ Some Paragraphs are fixed at a certain width to make them easier to read. The **
 
 Narrow style puts the content in a section that is fixed to **610px**.
 
-![narrow-example.png](assets%2Fnarrow-example.png)
+![narrow-example.png](assets/narrow-example.png)
 
 ## Divider
 
@@ -203,4 +203,4 @@ Adds a divider before or after the section.
 | divider          | after |
 
 
-![line-example.png](assets%2Fline-example.png)
+![line-example.png](assets/line-example.png)
