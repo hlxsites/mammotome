@@ -83,7 +83,7 @@
 
 
   /* fonts families */
-  --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-body-font-family: roboto, "Arial", sans-serif;
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
 
   /* font weights */
@@ -96,7 +96,7 @@
 
   /* feature font weights */
   --mt-body-font-weight: var(--mt-font-weight-regular);
-  --mt-button-font-weight: var(--mt-font-weight-bolder);
+  --mt-button-font-weight: var(--mt-font-weight-boldest);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
   --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
