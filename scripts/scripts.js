@@ -193,7 +193,6 @@ export async function decorateMain(main) {
  * @param {Element|Document} doc The container element
  */
 async function loadEager(doc) {
-  loadCSS('https://use.typekit.net/tni6afe.css', null);
   setLanguage();
   decorateTemplateAndTheme();
 
@@ -205,10 +204,15 @@ async function loadEager(doc) {
     await runExperiment(experiment, instantExperiment, EXPERIMENTATION_CONFIG);
   }
 
+  const test = new Promise((resolve) => {
+    loadCSS('https://use.typekit.net/tni6afe.css', resolve);
+  });
+
   const main = doc.querySelector('main');
   if (main) {
     await decorateMain(main);
     await waitForLCP(LCP_BLOCKS);
+    await test;
   }
 }
 
