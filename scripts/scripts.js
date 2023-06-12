@@ -249,9 +249,7 @@ function integrateMartech(parent, id) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-  await new Promise((resolved) => {
-    loadCSS('https://use.typekit.net/tni6afe.css', resolved);
-  });
+  loadCSS('https://use.typekit.net/tni6afe.css', null);
   await loadBlocks(main);
 
   const { hash } = window.location;

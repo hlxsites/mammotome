@@ -69,9 +69,18 @@
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
   --mt-global-horizontal-line-color: #EBE4E7;
 
+ @font-face {
+  font-family: roboto-fallback;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 500;
+  letter-spacing: 0.05px;
+  word-spacing: -0.3px;
+  src: url("Arial");
+ }
 
   /* fonts families */
-  --mt-body-font-family: roboto, "Arial", sans-serif;
+  --mt-body-font-family: roboto, roboto-fallback, sans-serif;
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
 
   /* font weights */
