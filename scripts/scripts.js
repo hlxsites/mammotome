@@ -258,7 +258,7 @@ async function loadLazy(doc) {
   await loadHeader(doc.querySelector('header'));
   await loadFooter(doc.querySelector('footer'));
 
-  // loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
+  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');
