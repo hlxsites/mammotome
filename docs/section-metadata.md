@@ -37,12 +37,12 @@ Section Metadata allows the author to add two parameters to a section table with
 ### Text
 
 
-| Attribute      | Feature                  | Default                                        | Style                                     |
-| -------------- | ------------------------ | ---------------------------------------------- | ----------------------------------------- |
-| **text-small** | text                     | font-size: 16px;font-weight: 400;line-height:0 | 12px, font-weight: 400, line-height: 24px |
-| **align-left** | alignment                | center                                         |                                           |
-| **text-wide**  | letter spacing           | 0                                              | 4px spacing between letters               |
-| **attached**   | spacing between sections | 5%                                             | attach text to the previous section       |
+| Attribute      | Feature                  | Default                                             | Style                                     |
+|----------------|--------------------------|-----------------------------------------------------|-------------------------------------------|
+| **text-small** | text                     | font-size: 16px;font-weight: 400;line-height:1.5rem | 12px, font-weight: 400, line-height: 24px |
+| **align-left** | alignment                | center                                              |                                           |
+| **text-wide**  | letter spacing           | 0                                                   | 4px spacing between letters               |
+| **attached**   | spacing between sections | 5%                                                  | attach text to the previous section       |
 
 ### Background styles
 
