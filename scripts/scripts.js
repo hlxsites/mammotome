@@ -249,6 +249,9 @@ function integrateMartech(parent, id) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+  await new Promise((resolve) => {
+    loadCSS('https://use.typekit.net/tni6afe.css', resolve);
+  });
   await loadBlocks(main);
 
   const { hash } = window.location;
@@ -258,7 +261,6 @@ async function loadLazy(doc) {
   await loadHeader(doc.querySelector('header'));
   await loadFooter(doc.querySelector('footer'));
 
-  loadCSS('https://use.typekit.net/tni6afe.css', null);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
