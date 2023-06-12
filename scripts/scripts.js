@@ -289,7 +289,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => integrateMartech(document.body, 'GTM-KNBZTHP'), 100);
+  window.setTimeout(() => integrateMartech(document.body, 'GTM-KNBZTHP'), 1000);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
