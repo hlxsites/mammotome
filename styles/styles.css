@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-@font-face {
+/* @font-face {
   font-family: "robotoflex-regular-normal-400-fallback";
   size-adjust: 98%;
   src: local("Arial");
@@ -20,7 +20,7 @@
   src: url("/styles/fonts/RobotoFlex.woff2");
   font-display: block;
   font-weight: 100 1000;
-}
+}*/
 
 :root {
   /* global colors */
