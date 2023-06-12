@@ -58,7 +58,7 @@ Example:
 |------------------|-------------------------|
 | Style            | logo primary background |
 
-![logo-primary-background-example.png](assets%2Flogo-primary-background-example.png)
+![logo-primary-background-example.png](assets/logo-primary-background-example.png)
 
 
 #### Logo secondary background
