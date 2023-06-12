@@ -249,7 +249,7 @@ async function loadLazy(doc) {
   await loadHeader(doc.querySelector('header'));
   await loadFooter(doc.querySelector('footer'));
 
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
+  // loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');
@@ -280,7 +280,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  import(`${window.hlx.codeBasePath}/scripts/third-party.js`).then((thirdParty) => thirdParty.default(document.body, 'GTM-KNBZTHP'));
+  window.setTimeout(() => import(`${window.hlx.codeBasePath}/scripts/third-party.js`).then((thirdParty) => thirdParty.default(document.body, 'GTM-KNBZTHP')), 100);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
