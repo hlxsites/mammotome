@@ -204,15 +204,10 @@ async function loadEager(doc) {
     await runExperiment(experiment, instantExperiment, EXPERIMENTATION_CONFIG);
   }
 
-  const test = new Promise((resolve) => {
-    loadCSS('https://use.typekit.net/tni6afe.css', resolve);
-  });
-
   const main = doc.querySelector('main');
   if (main) {
     await decorateMain(main);
     await waitForLCP(LCP_BLOCKS);
-    await test;
   }
 }
 
@@ -263,6 +258,7 @@ async function loadLazy(doc) {
   await loadHeader(doc.querySelector('header'));
   await loadFooter(doc.querySelector('footer'));
 
+  loadCSS('https://use.typekit.net/tni6afe.css', null);
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
