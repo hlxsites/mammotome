@@ -164,6 +164,11 @@
   box-sizing: border-box;
 }
 
+html, body, main {
+  position: relative;
+  z-index: -1000;
+}
+
 body {
   margin: 0;
   font-size: var(--mt-body-font-size-m);
