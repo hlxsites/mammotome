@@ -19,7 +19,7 @@
   font-family: robotoflex-regular;
   src: url("/styles/fonts/RobotoFlex.woff2");
   font-display: block;
-  font-weight: 100 1000;
+  font-weight: 400;
 }
 
 :root {
