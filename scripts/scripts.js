@@ -259,8 +259,6 @@ async function loadLazy(doc) {
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
 
-  import(`${window.hlx.codeBasePath}/scripts/third-party.js`).then((thirdParty) => thirdParty.default(document.body, 'GTM-KNBZTHP'));
-
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
     const preview = await import(`${window.hlx.codeBasePath}/tools/preview/preview.js`);
@@ -282,6 +280,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  import(`${window.hlx.codeBasePath}/scripts/third-party.js`).then((thirdParty) => thirdParty.default(document.body, 'GTM-KNBZTHP'));
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
