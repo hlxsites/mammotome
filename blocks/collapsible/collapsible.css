@@ -26,6 +26,11 @@
     font-size: var(--mt-body-font-size-s);
 }
 
+.collapsible .question a {
+    display: flex;
+    align-items: baseline;
+}
+
 .collapsible .question a:hover {
     font-weight: var(--mt-collapsible-question-hover-font-weight);
     color: unset;
