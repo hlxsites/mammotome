@@ -26,7 +26,7 @@
     font-size: var(--mt-body-font-size-s);
 }
 
-div.question:not(.expanded) a {
+.collapsible .question a {
     display: flex;
     align-items: baseline;
 }
