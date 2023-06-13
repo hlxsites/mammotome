@@ -932,8 +932,14 @@ main .schedule-demo .default-content-wrapper h2 {
   background-color: transparent;
 }
 
+/* Position preceding content */
 .section.arc-after-section {
   margin-top: -20%;
+}
+
+/* Smaller space for hero light */
+.section.arc-after-hero-light {
+  margin-top: -7%;
 }
 
 .section.arc-top {
