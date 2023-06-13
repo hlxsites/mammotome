@@ -14,6 +14,7 @@ Section Metadata allows the author to add two parameters to a section table with
 | ---------------- | --------------------------- |
 | Style            | [see style options below]   |
 | Divider          | [see divider options below] |
+| background-image | [image]                     |
 
 `---`
 
@@ -52,7 +53,7 @@ Adds a magenta background to the section with small Mammotome logos.
 
 **Note:** the arc at the top will be generated with `arc top` style. see below... 
 
-Example:
+**_Example:_**
 
 | Section Metadata |                         |
 |------------------|-------------------------|
@@ -65,7 +66,7 @@ Example:
 
 Adds a light background to the section with small Mammotome logos.
 
-Example:
+**_Example:_**
 
 | Section Metadata |                           |
 |------------------|---------------------------|
@@ -77,7 +78,7 @@ Example:
 
 Adds a solid background to the section. The background color is the primary color.
 
-Example:
+**_Example:_**
 
 | Section Metadata |                                 |
 |------------------|---------------------------------|
@@ -85,33 +86,51 @@ Example:
 
 ![accent-primary-solid-background-example.png](assets/accent-primary-solid-background-example.png)
 
+#### Accent quinary solid background 
 
-#### Accent quinary solid background xxx
+[TBD]
+
+#### Background Image
+
+Adds an image to the section. The image is being scaled to fit the section. The background image will ususllay be used with text and/or blurry filters. 
+
+**_Example:_**
+
+| Section Metadata |               |
+| ---------------- | ------------- |
+| Style            | inverted text |
+| background-image | [image]       |
+
+![image-example.png](assets/image-example.png)
 
 #### Base primary blur overlay
 
 Adds a blur overlay over a section.
 
-Example:
+**_Example:_**
 
-| Section Metadata |                           |
-|------------------|---------------------------|
-| Style            | base primary blur overlay |
+| Section Metadata |                                                      |
+|------------------|------------------------------------------------------|
+| Style            | base primary blur overlay, inverted text             |
+| Background-Image | ![bg-image-example.jpg](assets/bg-image-example.jpg) |
 
 
 ![base-primary-blur-overlay-example.png](assets/base-primary-blur-overlay-example.png)
 
 #### Base secondary blur overlay
 
+[TBD]
+
 #### Accent secondary blur overlay
 
 Adds an accent overlay over the section. 
 
-Example:
+**_Example:_**
 
-| Section Metadata |                           |
-|------------------|---------------------------|
-| Style            | accent secondary blur overlay |
+| Section Metadata |                                                      |
+|------------------|------------------------------------------------------|
+| Style            | accent secondary blur overlay, inverted text         |
+| Background-Image | ![bg-image-example.jpg](assets/bg-image-example.jpg) |
 
 ![accent-secondary-blur-overlay-example.png](assets/accent-secondary-blur-overlay-example.png)
 
@@ -119,11 +138,12 @@ Example:
 
 Adds a gradient overlay over the section. 
 
-Example:
+**_Example:_**
 
-| Section Metadata |                               |
-|------------------|-------------------------------|
-| Style            | gradient primary blur overlay |
+| Section Metadata |                                                      |
+|------------------|------------------------------------------------------|
+| Style            | gradient primary blur overlay, inverted text         |
+| Background-Image | ![bg-image-example.jpg](assets/bg-image-example.jpg) |
 
 ![gradient-primary-blur-overlay-example.png](assets/gradient-primary-blur-overlay-example.png)
 
@@ -133,31 +153,21 @@ Example:
 
 Adds a gradient overlay over the section.
 
-Example:
+**_Example:_**
 
-| Section Metadata |                                 |
-|------------------|---------------------------------|
-| Style            | gradient secondary blur overlay |
+| Section Metadata |                                                      |
+|------------------|------------------------------------------------------|
+| Style            | gradient secondary blur overlay                      |
+| Background-Image | ![bg-image-example.jpg](assets/bg-image-example.jpg) |
 
-
-#### Image
-
-Adds an image to the section. The image is being scaled to fit the section.
-
-Example:
-
-| Section Metadata |       | 
-|------------------|-------|
-| background-image | image |
-
-![image-example.png](assets/image-example.png)
+![gradient-secondary-blur-overlay-example.png](assets/gradient-secondary-blur-overlay-example.png)
 
 #### Arc top
 
 Adds an arc at the top of the section. The arc top is being used in combindation with a background style. See above
 
 
-Example:
+**_Example:_**
 
 | Section Metadata |         |
 |------------------|---------|
@@ -169,7 +179,7 @@ Example:
 
 Puts the content of the section in the center and sets the the fonts size for h1, h2 and h3 to the same value. Can be used in combination with `arc top`.
 
-Example:
+**_Example:_**
 
 | Section Metadata |         |
 |------------------|---------|
@@ -195,7 +205,7 @@ Adds a divider before or after the section.
 | before  | add divider before the section |
 | after   | add divider after the section  |
 
-### Example
+**_Example_**
 
 
 | Section Metadata |       |
