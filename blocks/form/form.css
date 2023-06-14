@@ -2,27 +2,28 @@
     --form-font-size-m: 22px;
     --form-font-size-s: 18px;
     --form-font-size-xs: 16px;
-    --form-container-padding: 10px;
-    --form-default-wrapper-padding: 2% 5% 0;
-    --form-wrapper-padding: 0 5% 2%;
-    --form-wrapper-max-width: 100%;
+    --form-container-padding: 5% 0 10%;
+    --form-default-wrapper-line-height: 1.5;
+    --form-wrapper-padding: 0 calc(5% + 8px);
+    --form-wrapper-max-width: 740px;
     --form-wrapper-background-color: var(--mt-global-color-white);
     --form-columns: 1;
-    --form-padding: 16px 0 0;
+    --form-padding: 16px 0 10%;
     --form-grid-gap: 26px 32px;
     --form-max-width: 100%;
     --form-fieldset-columns:1;
     --form-fieldset-border: 0;
     --form-fieldset-marign: 0;
     --form-fieldset-padding: 0;
-    --form-fieldset-grid-gap: 0;
-    --form-fieldset-legend-padding: 0.3rem 0 1rem 0;
-    --form-fieldset-legend-font-size: 16px;
+    --form-fieldset-grid-gap: var(--form-grid-gap);
+    --form-fieldset-legend-padding: 0.5rem 0 1rem 0;
+    --form-fieldset-legend-color: var(--mt-global-color-base-primary);
+    --form-fieldset-legend-font-size: 28px;
     --form-fieldset-legend-font-weight: var(--mt-font-weight-boldest);
     --form-label-padding: 0.3rem 0 0;
     --form-label-color: var(--mt-global-color-charcoal);
     --form-label-font-size: var(--form-font-size-xs);
-    --form-label-line-height: 1.2rem;
+    --form-label-line-height: 1.2;
     --form-label-font-weight: bold;
     --form-input-margin: 1rem 0 0;
     --form-input-padding: 10px;
@@ -45,13 +46,44 @@
 main .section.form-container {
     padding: var(--form-container-padding);
     font-family: var(--mt-form-font-family);
+    background-image: url('../../styles/icons/Mammotome-BG_Pattern-1.svg');
+    background-position: top center;
+    background-repeat: repeat;
+    background-size: 60px auto;
 }
 
 main .form-container .default-content-wrapper {
     margin: auto;
-    padding: var(--form-default-wrapper-padding);
+    padding: var(--form-wrapper-padding);
     background-color: var(--form-wrapper-background-color);
     max-width: var(--form-wrapper-max-width);
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    text-align: center;
+}
+
+main .form-container .default-content-wrapper h2 {
+    font-size: var(--mt-heading-font-size-l);
+    color: var(--mt-global-color-base-primary);
+    line-height: var(--form-default-wrapper-line-height);
+    padding-top: 5%;
+    padding-bottom: 58px;
+    margin: auto;
+}
+
+main .form-container .default-content-wrapper p {
+    line-height: var(--form-default-wrapper-line-height);
+    font-size: var(--mt-font-size-125);
+    padding-bottom: 46px;
+    margin: auto;
+}
+
+main .form-container .default-content-wrapper h2:only-child {
+    font-size: var(--mt-font-size-162);
+    font-weight: var(--mt-font-weight-regular);
+    color: var(--mt-global-color-base-secondary);
+    padding-top: calc(5% + 48px);
+    padding-bottom: 10px;
 }
 
 main .form-container .form-wrapper {
@@ -59,6 +91,14 @@ main .form-container .form-wrapper {
     padding: var(--form-wrapper-padding);
     background-color: var(--form-wrapper-background-color);
     max-width: var(--form-wrapper-max-width);
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+main .form-container .form-wrapper:only-child {
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    padding-top: 36px;
 }
 
 main .form form {
@@ -80,17 +120,30 @@ main .form fieldset {
     padding: var(--form-fieldset-padding);
 }
 
+main .form form > fieldset {
+    grid-column: 1/-1;
+}
+
 main .form fieldset > legend {
     padding: var(--form-fieldset-legend-padding);
     font-weight: var(--form-fieldset-legend-font-weight);
-    color: var(--form-label-color);
     font-size: var(--form-fieldset-legend-font-size);
     line-height: 1;
     width: 100%;
 }
 
-main .form form > fieldset {
-    grid-column: 1/-1;
+main .form form > fieldset > legend {
+    --form-fieldset-legend-font-weight: normal;
+
+    color: var(--form-fieldset-legend-color);
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
+    margin-bottom: 20px;
+}
+
+main .form fieldset > fieldset > legend {
+    font-size: var(--mt-font-size-100);
+    margin-bottom: 8px;
+    padding: 0;
 }
 
 main .form label {
@@ -121,7 +174,7 @@ main .form textarea {
 }
 
 main .form .field-description {
-    font-size: 15px;
+    font-size: 14px;
     padding-top: 5px;
     line-height: normal;
 }
@@ -135,6 +188,8 @@ main .form .form-checkbox-wrapper {
 
 main .form .form-radio-wrapper label,
 main .form .form-checkbox-wrapper label {
+    --form-label-line-height: 1.5;
+
     font-weight: var(--mt-font-weight-regular);
     padding: 0 0 0 0.5rem;
 }
@@ -167,71 +222,68 @@ main .form-submit-wrapper button {
     border-radius: 3px;
 }
 
-main .form fieldset > fieldset > legend {
-    margin-bottom: 8px;
-    padding: 0;
+main .form-file-wrapper .field-dropregion {
+    background: rgb(0 0 0 / 2%);
+    border: 1px dashed var(--mt-global-color-silver);
+    border-radius: 4px;
+    margin: 11px 0 8px;
+    padding: 32px;
+    text-align: center;
+}
+
+main .form-file-wrapper .field-dropregion button {
+    color: var(--mt-global-color-red);
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid var(--mt-global-color-red);
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    width: unset;
+    line-height: 1.5;
+}
+
+main .form-file-wrapper input[type="file"] {
+    display: none;
+}
+
+main .form-file-wrapper ul {
+    padding-left: 0;
+    margin: 8px 0;
+}
+
+main .form-file-wrapper ul li {
+    color: var(--mt-global-color-red);
+    padding: 12px 24px;
+    border: 1px solid #c02b0a;
+    background: #fff9f9;
+}
+
+main .form-file-wrapper .field-attached-file-wrapper {
+    margin: 16px 0;
     font-size: var(--mt-font-size-100);
 }
 
-main .connectus {
-    --form-default-wrapper-padding: calc(5% + 48px) calc(5% + 8px) 0;
-    --form-wrapper-padding: 0 calc(5% + 8px) calc(10% + 48px);
-    --form-container-padding: 5% 0 10%;
-    --form-wrapper-max-width: 740px;
+main .form-file-wrapper .field-attached-file-wrapper button {
+    --form-button-padding: 15px;
+
+    background: none;
+    background-image: url("../../styles/icons/trash.svg");
+    background-repeat: no-repeat;
+    width: unset;
+    border: unset;
+    text-align: center;
 }
 
-main .schedule-demo {
-    --form-default-wrapper-padding: 5% calc(5% + 8px) 46px;
+main .connectus form > fieldset,
+main .innovate fieldset > fieldset {
+    --form-fieldset-grid-gap: 0;
+    --form-fieldset-legend-font-size: 16px;
+    --form-fieldset-legend-color: var(--mt-global-color-charcoal);
 }
 
-main .form-container.connectus {
-    background-image: url('../../styles/icons/Mammotome-BG_Pattern-1.svg');
-    background-position: top center;
-    background-repeat: repeat;
-    background-size: 60px auto;
-}
-
-main .section.connectus .default-content-wrapper {
-    border-top-right-radius: 3px;
-    border-top-left-radius: 3px;
-}
-
-main .connectus .default-content-wrapper h2 {
-  text-align: center;
-  font-size: var(--mt-font-size-162);
-  font-weight: var(--mt-font-weight-regular);
-  color: var(--mt-global-color-base-secondary);
-  text-transform: none;
-  margin: 0 auto;
-  padding-bottom: 10px;
-  line-height: 37px;
-}
-
-main .schedule-demo .default-content-wrapper h2 {
-  font-size: var(--mt-heading-font-size-l);
-  line-height: 24px;
-  color: var(--mt-global-color-base-primary);
-  width: 100%;
-  margin: 0 0 58px;
-}
-
-main .schedule-demo .default-content-wrapper p {
-  font-size: 20px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-main .section.connectus .form-wrapper {
-    border-bottom-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-}
-
-main .connectus :is(.form-contact-type-fs, .form-company, .form-message) {
-    grid-column: 1/-1;
-}
-
-main .connectus :is(.form-product-fs, .form-solution-fs, .form-service-fs) label {
-    line-height: 26px;
+main .connectus form > fieldset > legend {
+    border-bottom: unset;
+    margin-bottom: unset;
 }
 
 main .connectus .form-description {
@@ -240,7 +292,6 @@ main .connectus .form-description {
     border-bottom: solid 2px var(--mt-global-color-gallery);
     line-height: 1.5;
     padding: 0 0 4%;
-    grid-column: 1/-1;
 }
 
 main .connectus .form-consent {
@@ -248,51 +299,10 @@ main .connectus .form-consent {
     padding: 0.375rem 0 4%;
     border-bottom: solid 2px var(--mt-global-color-gallery);   
     margin: 0;
+}
+
+main .connectus :is(.form-company, .form-message, .form-description, .form-consent) {
     grid-column: 1/-1;
-}
-
-main .technical-inquiry {
-    --form-padding: 10px;
-    --form-wrapper-padding: 35px 5% 2%;
-    --form-fieldset-legend-padding: 8px 0 16px;
-    --form-fieldset-legend-font-size: 28px;
-    --form-fieldset-grid-gap: 10px 14px;
-    --form-input-margin: 0;
-    --form-input-padding: 8px 16px;
-    --form-label-font-weight: normal;
-    --form-input-background-color: var(--mt-background-color-primary);
-    --form-input-border-color: #69727d;
-    --form-submit-wrapper-margin: 0px;
-}
-
-main .section.technical-inquiry .default-content-wrapper {
-    width: 90%;
-    margin: unset;
-}
-
-main .technical-inquiry .default-content-wrapper p {
-    text-align: left;
-    position: relative;
-}
-
-main .technical-inquiry form > fieldset > legend {
-    border-bottom: 1px solid rgb(0 0 0 / 10%);
-    margin-bottom: 20px;
-    color: var(--mt-global-color-base-primary);
-}
-
-main .technical-inquiry input[type="file"] {
-    --form-input-padding: 0px;
-
-    border: unset;
-}
-
-main .technical-inquiry input[type="file"]::file-selector-button {
-    height: 100%;
-    background-color: var(--mt-global-color-base-primary);
-    border: 1px solid var(--mt-global-color-base-primary);
-    border-radius: 3px;
-    color: var(--mt-global-color-white);
 }
 
 main .technical-inquiry :is(.form-authorize-msg, .form-ack-msg) {
@@ -301,46 +311,16 @@ main .technical-inquiry :is(.form-authorize-msg, .form-ack-msg) {
     font-style: italic;
 }
 
-main .technical-inquiry :is(.form-country, .form-serial-no, .form-inquiry, .form-product) {
+main .technical-inquiry :is(.form-country, .form-serial-no, .form-inquiry, .form-product, .form-attachment) {
     grid-column: 1/-1;
-}
-
-main .innovate {
-    --form-default-wrapper-padding: 0;
-    --form-wrapper-padding: 2%;
-    --form-wrapper-max-width: 1060px;
-    --form-wrapper-background-color: var(--mt-global-color-base-primary);
-    --form-padding: 0 0 36px;
-    --form-grid-gap: 36px 0;
-    --form-max-width: 860px;
-    --form-fieldset-grid-gap: 36px;
-    --form-fieldset-legend-font-size: 34px;
-    --form-fieldset-legend-font-weight: bold;
-    --form-fieldset-legend-padding: 0.3rem 0 1.25rem 0;
-    --form-label-color: var(--mt-global-color-white);
-    --form-input-height: 40px;
-    --form-input-margin: 7px 0 0;
-    --form-submit-wrapper-margin: 0;
-}
-
-main .innovate form > fieldset > legend {
-    text-align: center;
-    border-bottom: 1px solid;
-    border-image-source: linear-gradient(to right, rgb(0 0 0 / 0%), rgb(255 255 255 / 75%), rgb(0 0 0 / 0%));
-    border-image-slice: 1;
-    margin-bottom: 50px;
 }
 
 main .innovate .form-email {
     grid-column: 1/-1;
 }
 
-main .innovate :is(.form-intended-fs, .form-department-fs, .form-category-fs) {
-    --form-fieldset-grid-gap: 0;
-}
-
 main .innovate .form-ack-fs {
-    --form-fieldset-padding: 40px 15% 32px;
+    --form-fieldset-padding: 40px 12% 32px;
     --form-fieldset-grid-gap: 0;
     --form-label-line-height: 24px;
 
@@ -352,66 +332,40 @@ main .innovate .form-ack-fs > legend {
 }
 
 main .study-request {
-    --form-default-wrapper-padding: 0;
-    --form-wrapper-padding: 2%;
-    --form-wrapper-max-width: 1060px;
-    --form-max-width: 800px;
-    --form-label-color: var(--mt-global-color-white);
-    --form-fieldset-grid-gap: 24px 0;
-    --form-label-padding: 0;
-    --form-input-margin: 7px 0 0;
-    --form-fieldset-legend-padding: 22px 0 15px 0;
-    --form-fieldset-legend-font-size: 24px;
-    --form-fieldset-legend-font-weight: 400;
-    --form-padding: 16px 0;
-    --form-wrapper-background-color: var(--mt-global-color-base-primary);
+    --form-default-wrapper-line-height: normal;
 }
 
 main .study-request .default-content-wrapper p {
-    margin: 0;
     text-align: left;
+    font-size: 16px;
+    padding-bottom: 23px;
 }
 
 main .study-request .default-content-wrapper strong {
     color: var(--mt-global-color-red);
 }
 
-main .study-request form {
-    color: var(--form-label-color);
-}
-
 main .study-request textarea {
     padding: 15px;
-    height: 288px;
+    min-height: 288px;
 }
 
-main .study-request .form-pi-and-contact-fs {
+main .study-request :is(.form-pi-and-contact-fs, .form-study-fs) {
     align-items: end;
 }
 
 main .study-request .form-information {
-    color: var(--mt-global-color-white);
     padding: 20px;
     max-width: 500px;
     text-align: center;
     margin: 15px auto;
     border-top: 1px solid;
     border-bottom: 1px solid;
-    border-image-source: linear-gradient(to right, rgb(0 0 0 / 0%), rgb(255 255 255 / 75%), rgb(0 0 0 / 0%));
+    border-image-source: linear-gradient(to right, rgb(0 0 0 / 0%), rgb(0 0 0 / 75%), rgb(0 0 0 / 0%));
     border-image-slice: 1;
 }
 
-main .study-request :is(.form-pi-and-contact-fs, .form-study-fs, .form-statistical-fs, .form-budget-fs) > legend {
-    border-bottom: 2px dashed var(--mt-global-color-white);
-    margin-bottom: 24px;
-}
-
-main .study-request :is(.form-milestones-fs, .form-publication-fs, .form-document-fs) > .field-description {
-    border-bottom: 2px dashed var(--mt-global-color-white);
-    padding-bottom: 25px;
-    grid-column: 1/-1;
-} 
-
+main .study-request :is(.form-milestones-fs, .form-publication-fs, .form-document-fs) > .field-description,
 main .study-request :is(.form-institutionaddress, .form-studytitle, .form-product, .form-background, .form-statistical, .form-publication) {
     grid-column: 1/-1;
 }
@@ -423,63 +377,10 @@ main .study-request .form-milestones-fs > fieldset {
     grid-template-columns: repeat(var(--form-fieldset-columns), 84px);
 }
 
-main .study-request .form-browse .field-dropregion {
-    background: rgb(0 0 0 / 2%);
-    border: 1px dashed var(--mt-global-color-silver);
-    border-radius: 4px;
-    margin: 11px 0 8px;
-    padding: 32px;
-    text-align: center;
-}
-
-main .study-request .form-browse .field-dropregion button {
-    color: var(--mt-global-color-red);
-    text-align: center;
-    background-color: transparent;
-    border: 1px solid var(--mt-global-color-red);
-    padding: 0.5rem 1rem;
-    border-radius: 3px;
-    width: unset;
-    line-height: 1.5;
-}
-
-main .study-request .form-browse input[type="file"] {
-    display: none;
-}
-
-main .study-request .form-browse .field-description {
-    margin-top: 20px;
-    line-height: 22.5px;
-}
-
-main .study-request .form-browse .field-attachment-wrapper {
-    margin: 16px 0;
-    font-size: var(--mt-font-size-100);
-}
-
-main .study-request .form-browse .field-attachment-wrapper button {
-    --form-button-padding: 15px;
-
-    background: none;
-    background-image: url("../../styles/icons/trash.svg");
-    background-repeat: no-repeat;
-    width: unset;
-    border: unset;
-    text-align: center;
-}
-
 main .study-request .form-submission-type-fs {
     --form-fieldset-columns: 1;
-    --form-fieldset-grid-gap: 10px 0;
+    --form-fieldset-grid-gap: 0;
     --form-fieldset-legend-font-weight: bold;
-}
-
-main .study-request .form-submission-type-fs input {
-    margin-left: 0;
-}
-
-main .study-request .form-authorize {
-    padding-top: 20px;
 }
 
 main .study-request :is(.form-authorize, .form-terms, .form-submit-wrapper) {
@@ -492,85 +393,47 @@ main .study-request :is(.form-authorize, .form-terms, .form-submit-wrapper) {
 @media (min-width: 640px) {
     main .connectus {
         --form-columns: 6;
-        --form-wrapper-padding: 0 calc(5% + 10vw) calc(10% + 48px);
-        --form-default-wrapper-padding: calc(5% + 48px) calc(5% + 8px) 0;
-    }
-
-    main .schedule-demo {
-        --form-default-wrapper-padding: 5% calc(5% + 10vw) 46px;
-    }
-    
-    main .schedule-demo .default-content-wrapper h2 {
-        width: calc(100% + 20vw);
-        margin-left: -10vw;
     }
 
     main .connectus :is(.form-postalcode, .form-country, .form-phone, .form-email, .form-firstname, .form-lastname) {
         grid-column: span calc(var(--form-columns)/2);
     }
 
-    main .connectus :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs) {
-        grid-column: span calc(var(--form-columns)/3);
-        width: calc(100% + 21px);
-    }
-
+    main .connectus :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs),
     main .contact :is(.form-product-fs, .form-solution-fs, .form-service-fs) {
         grid-column: span calc(var(--form-columns)/3);
-        width: calc(100% + 21px);
+        width: calc(100% + 10px);
     }
 
     main .schedule-demo :is(.form-product-fs, .form-solution-fs, .form-preferred-day-fs, .form-preferred-time-fs) {
         grid-column: span calc(var(--form-columns)/2);
     }
 
-    main .study-request fieldset {
-        --form-fieldset-columns: 2;
-        --form-fieldset-grid-gap: 24px 2%;
-    }
-}
-
-@media (min-width: 740px) {
-    main .connectus {
-        --form-wrapper-padding: 0 77px 122px;
-        --form-default-wrapper-padding: 85px 77px 0;
-    }
-
-    main .schedule-demo {
-        --form-default-wrapper-padding: 37px 77px 46px;
-    }
-
-    main .contact .default-content-wrapper h2 {
-        width: 80%;
-    }
-    
-    main .schedule-demo .default-content-wrapper h2 {
-        width: 100%;
-        margin: 0 0 58px;
-    }
-}
-
-@media (min-width: 768px) {
     main .technical-inquiry {
         --form-fieldset-columns: 2;
-    }
-
-    main .innovate {
-        --form-padding: 16px 0 72px;
-        --form-fieldset-grid-gap: 36px 14px;
     }
 
     main .innovate .form-personal-info {
         --form-fieldset-columns: 2;
     }
-}
 
-@media (min-width: 1024px) {
-    main .innovate {
-        --form-wrapper-padding: 50px 100px 36px;
-        --form-padding: 0 0 36px;
+    main .study-request fieldset {
+        --form-fieldset-columns: 2;
     }
 
-    main .study-request {
-        --form-wrapper-padding: 0;
+}
+
+@media (min-width: 740px) {
+    :root {
+        --form-wrapper-padding: 0 77px;
+        --form-padding: 16px 0 122px;
+    }
+
+    main .form-container .default-content-wrapper h2 {
+        padding-top: 37px;
+    }
+
+    main .form-container .default-content-wrapper h2:only-child {
+        padding-top: 85px;
     }
 }

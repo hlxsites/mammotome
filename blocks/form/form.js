@@ -17,20 +17,22 @@ function loadScript(url) {
   return script;
 }
 
+function generateUniqueId() {
+  return (Date.now().toString(36) + Math.random().toString(36).slice(2, 7)).toUpperCase();
+}
+
 function constructPayload(form) {
-  const payload = {};
+  const payload = { __id__: generateUniqueId() };
   const attachments = {};
-  [...form.elements].forEach((fe) => {
-    if (fe.name) {
-      if (fe.type === 'radio') {
-        if (fe.checked) payload[fe.name] = fe.value;
-      } else if (fe.type === 'checkbox') {
-        if (fe.checked) payload[fe.name] = payload[fe.name] ? `${payload[fe.name]}, ${fe.value}` : fe.value;
-      } else if (fe.type === 'file' && fe.files?.length > 0) {
-        attachments[fe.name] = fe.files;
-      } else {
-        payload[fe.name] = fe.value;
-      }
+  [...form.elements].filter((fe) => fe.name).forEach((fe) => {
+    if (fe.type === 'radio') {
+      if (fe.checked) payload[fe.name] = fe.value;
+    } else if (fe.type === 'checkbox') {
+      if (fe.checked) payload[fe.name] = payload[fe.name] ? `${payload[fe.name]}, ${fe.value}` : fe.value;
+    } else if (fe.type === 'file' && fe.files?.length > 0) {
+      attachments[fe.name] = fe.files;
+    } else {
+      payload[fe.name] = fe.value;
     }
   });
   return { payload, attachments };
@@ -232,6 +234,9 @@ const createOutput = withFieldWrapper((fd) => {
 const createFile = withFieldWrapper((fd) => {
   const input = createInput(fd);
   input.accept = fd.Accept || '';
+  if (fd.Multiple && fd.Multiple.toLowerCase() === 'true') {
+    input.setAttribute('multiple', '');
+  }
   return input;
 });
 
