@@ -81,6 +81,7 @@
 
 .cards.fullimage > ul > li img {
   object-fit: contain;
+  height: 120px;
 }
 
 .cards.wideimage.block > ul > li {
@@ -127,8 +128,8 @@
 }
 
 .cards.fullimage .cards-card-image {
-  display: block;
   width: auto;
+  aspect-ratio: auto;
 }
 
 .cards-card-image > picture {
@@ -234,7 +235,7 @@
     grid-template-columns: repeat(2,1fr);
     width: 100%;
   }
-  
+
   .cards.block > ul > li {
     padding: 0 0 10%;
   }
@@ -274,5 +275,5 @@
 
   .cards.block > ul > li {
     padding: 10px;
-  }  
+  }
 }
