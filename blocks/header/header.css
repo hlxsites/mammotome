@@ -208,6 +208,10 @@ header nav:not(.nav-mobile) .nav-sections > ul > li:nth-last-child(2) {
   display: none;
 }
 
+header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul {
+  overflow-x: hidden;
+}
+
 header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li {
   text-transform: uppercase;
   text-align: center;
