@@ -59,6 +59,7 @@ function buildHeroBlock(main) {
   const h2 = main.querySelector(':scope > div:first-child > h2');
   const button = main.querySelector(':scope > div:first-child > p > a');
   const picture = main.querySelector(':scope > div:first-child picture');
+  const overlayPicture = main.querySelector(':scope > div:first-of-type > p:nth-child(2) > picture');
   const metaData = main.querySelector(':scope > div:first-child .section-metadata');
 
   const setHeroType = (heroType) => {
@@ -92,7 +93,13 @@ function buildHeroBlock(main) {
   // eslint-disable-next-line no-bitwise,max-len
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    const elems = [picture, h1];
+    const elems = [picture];
+
+    if (overlayPicture) {
+      elems.push(overlayPicture);
+    }
+
+    elems.push(h1);
 
     if (h2 && h1.nextElementSibling === h2) {
       elems.push(h2);
@@ -124,7 +131,14 @@ function buildHeroBlock(main) {
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    const elems = [picture, h2];
+
+    const elems = [picture];
+
+    if (overlayPicture) {
+      elems.push(overlayPicture);
+    }
+
+    elems.push(h2);
 
     appendArcAndBuildBlock(section, elems);
     setHeroType('big');
