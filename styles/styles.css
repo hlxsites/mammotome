@@ -895,6 +895,7 @@ main .schedule-demo .default-content-wrapper h2 {
 
 .section.accent-quinary-solid-background {
   background-color: var(--mt-global-color-accent-quinary);
+  z-index: 0;
 }
 
 .section.logo-secondary-background {
