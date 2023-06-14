@@ -78,6 +78,10 @@ function topLevel(section) {
   return true;
 }
 
+function getProductReference(section) {
+  return Array.from(section.querySelectorAll('a')).filter((a) => a.href.match(/.*\/product-support\/.*/));
+}
+
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -127,6 +131,26 @@ export default {
           img.remove();
         });
         sections = sections.slice(1);
+      } else if (getProductReference(sections[0]).length > 0) {
+        const as = getProductReference(sections[0]);
+        let outer = as[0].parentElement;
+        while (!Array.from(outer.classList).includes('elementor-row')) {
+          outer = outer.parentElement;
+        }
+        const table = document.createElement('table');
+        const tr1 = document.createElement('tr');
+        const h1 = document.createElement('th');
+        const tr2 = document.createElement('tr');
+        const h2 = document.createElement('th');
+
+        h1.textContent = 'Product Reference';
+        h2.textContent = as.find((a) => a.href.match(/\/product-support\/(.+)/)).href.match(/\/product-support\/([^\/]*)(\/)?/)[1];
+
+        tr1.append(h1);
+        table.append(tr1);
+        tr2.append(h2);
+        table.append(tr2);
+        outer.replaceWith(table);
       }
       let middles = []
       let boxed = []
@@ -134,7 +158,7 @@ export default {
         if (section.classList.contains('elementor-section-content-middle')) {
           middles.push(section);
         } else {
-          if (middles.length > 0) {
+          if (middles.length > 1) {
             const parent = document.createElement('section');
             middles[0].replaceWith(parent);
             createDomStructure([{
@@ -160,8 +184,8 @@ export default {
               });
               parent.querySelector('table').append(tr);
             });
-            middles = [];
           }
+          middles = [];
           if (!section.querySelector('section') && (section.querySelector('.elementor-widget-image-box'))) {
             boxed.push(section);
           } else if (!section.querySelector('section') && section.querySelector('article')){
