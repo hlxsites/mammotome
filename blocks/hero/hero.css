@@ -138,6 +138,10 @@ main .hero-big picture:nth-child(2) {
   object-fit: unset;
 }
 
+main .hero.hero-big.block:has(div > div > picture:nth-child(2)) {
+  padding: 5% 0 0;
+}
+
 main .hero-big img {
   object-fit: cover;
   width: 100%;
