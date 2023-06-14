@@ -248,7 +248,7 @@ function integrateMartech(parent, id) {
  * @param {Element|Document} doc The container element
  */
 async function loadLazy(doc) {
-  //loadCSS('https://use.typekit.net/tni6afe.css', null);
+  loadCSS('/styles/fonts.css', null);
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
