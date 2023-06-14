@@ -345,8 +345,9 @@ async function createForm(formURL) {
       input.id = fd.Id;
       input.name = fd.Name;
       input.value = fd.Value;
-      input[fd.Mandatory && fd.Mandatory.toLowerCase() === 'true'
-        ? 'setAttribute' : 'removeAttribute']('required', '');
+      if (fd.Mandatory && fd.Mandatory.toLowerCase() === 'true') {
+        input.setAttribute('required', '');
+      }
       if (fd.Description) {
         input.setAttribute('aria-describedby', `${fd.Id}-description`);
       }

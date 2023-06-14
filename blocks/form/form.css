@@ -282,6 +282,7 @@ main .innovate fieldset > fieldset {
 }
 
 main .connectus form > fieldset > legend {
+    --form-fieldset-legend-font-weight: bold;
     border-bottom: unset;
     margin-bottom: unset;
 }
