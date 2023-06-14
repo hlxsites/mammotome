@@ -25,9 +25,18 @@
     }
 }
 
+.ifus h2, h3, h4 {
+    font-weight: var(--mt-font-weight-bold);
+    text-align: left;
+}
+
 .ifu > div {
     padding: 15px 20px;
     width: 100%;
+}
+
+.ifu-result > div {
+    padding: 1rem 2rem;
 }
 
 .ifu-result > div > div {
@@ -71,5 +80,4 @@
 .ifu > .ifu-selection > button {
     background-color: var(--mt-button-background-color-primary);
     color: var(--mt-background-color-primary);
-    width: auto;
 }

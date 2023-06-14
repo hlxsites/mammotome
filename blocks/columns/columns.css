@@ -72,6 +72,17 @@ main .columns > div {
   align-items: center;
 }
 
+/* Adds additional margins to avoid overflow of text into hero arc */
+main .columns .hero-arc-margin {
+  margin-top: 20%;
+}
+
+@media (min-width: 1024px) {
+  main .columns .hero-arc-margin {
+    margin-top: 10%;
+  }
+}
+
 main .columns > div > div {
   order: 0;
 }

@@ -124,6 +124,9 @@ function buildHeroBlock(main) {
     const newPictureDiv = document.createElement('div');
     newPictureDiv.appendChild(picture);
     newPictureParent.appendChild(newPictureDiv);
+    // change spacer after arc
+    const arcAfterSection = main.querySelector('.arc-after-section');
+    arcAfterSection.classList.replace('arc-after-section', 'arc-after-hero-light');
   } else if (h2 && picture
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
@@ -231,8 +234,6 @@ async function loadEager(doc) {
  * Adds a favicon.
  * @param {string} href The favicon URL
  * @param {string} rel The icon rel
- * @param {string} type The icon content type
- * @param {string} size The dimensions of the icon, e.g. 80x80
  */
 export function addFavIcon(
   href,
