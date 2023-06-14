@@ -26,6 +26,12 @@ export default function decorate(block) {
         div.className = children.length ? 'cards-card-body' : 'cards-card-body empty';
         const action = div.querySelector('p a');
 
+        const containsHeading = Array.from(div.querySelectorAll('h1, h2, h3')).length > 0;
+
+        if (!containsHeading) {
+          div.classList.add('no-heading');
+        }
+
         if (action) {
           const actionBlock = div.querySelector('.button-container') || action.parentElement;
           actionBlock.className = isValidUrl(action.text) ? 'callout hidden' : 'callout';

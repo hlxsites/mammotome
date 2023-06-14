@@ -191,7 +191,9 @@
 .cards-card-body > h2,
 .cards-card-body > h2 > strong,
 .cards-card-body > h3,
-.cards-card-body > h3 > strong {
+.cards-card-body > h3 > strong,
+.cards-card-body.no-heading > p:first-of-type,
+.cards-card-body.no-heading > p:first-of-type > strong{
   font-weight: var(--mt-font-weight-bold);
   font-size: var(--mt-cards-title-font-size);
   font-family: var(--mt-cards-font-family);
