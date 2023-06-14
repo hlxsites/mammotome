@@ -81,7 +81,6 @@ main .form-container .default-content-wrapper p {
 main .form-container .default-content-wrapper h2:only-child {
     font-size: var(--mt-font-size-162);
     font-weight: var(--mt-font-weight-regular);
-    color: var(--mt-global-color-base-secondary);
     padding-top: calc(5% + 48px);
     padding-bottom: 10px;
 }
