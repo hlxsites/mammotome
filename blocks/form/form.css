@@ -211,6 +211,18 @@ main .form button {
     border-radius: unset;
 }
 
+main .form .field-wrapper ul {
+    padding-left: 0;
+    margin: 8px 0;
+}
+
+main .form .field-wrapper ul li {
+    color: var(--mt-global-color-red);
+    padding: 12px 24px;
+    border: 1px solid #c02b0a;
+    background: #fff9f9;
+}
+
 main .form-submit-wrapper {
     margin: var(--form-submit-wrapper-margin); 
     grid-column: 1/-1;
@@ -245,28 +257,15 @@ main .form-file-wrapper input[type="file"] {
     display: none;
 }
 
-main .form-file-wrapper ul {
-    padding-left: 0;
-    margin: 8px 0;
-}
-
-main .form-file-wrapper ul li {
-    color: var(--mt-global-color-red);
-    padding: 12px 24px;
-    border: 1px solid #c02b0a;
-    background: #fff9f9;
-}
-
-main .form-file-wrapper .field-attached-file-wrapper {
-    margin: 16px 0;
+main .form-file-wrapper .file-description {
     font-size: var(--mt-font-size-100);
 }
 
-main .form-file-wrapper .field-attached-file-wrapper button {
+main .form-file-wrapper .file-description button {
     --form-button-padding: 15px;
 
     background: none;
-    background-image: url("../../styles/icons/trash.svg");
+    background-image: url("/icons/trash.svg");
     background-repeat: no-repeat;
     width: unset;
     border: unset;
@@ -282,7 +281,7 @@ main .innovate fieldset > fieldset {
 
 main .connectus form > fieldset > legend {
     --form-fieldset-legend-font-weight: bold;
-    
+
     border-bottom: unset;
     margin-bottom: unset;
 }

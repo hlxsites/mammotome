@@ -310,7 +310,7 @@ blockquote {
   top: 0.5rem;
   width: 10px;
   height: 10px;
-  background-image: url('/styles/icons/circle.svg');
+  background-image: url('/icons/circle.svg');
   background-repeat: no-repeat;
   background-size: 10px 10px;
 }

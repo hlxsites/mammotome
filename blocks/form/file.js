@@ -14,6 +14,21 @@ function getFileList(files) {
   return dataTransfer.files;
 }
 
+function getFileDesription(file) {
+  const description = document.createElement('div');
+  description.className = 'field-description file-description';
+  const span = document.createElement('span');
+  span.innerText = `${file.name} ${(file.size / (1024 * 1024)).toFixed(2)}mb`;
+  description.append(span);
+  return description;
+}
+
+function updateIndex(elements = []) {
+  elements.forEach((element, index) => {
+    element.dataset.index = index;
+  });
+}
+
 function updateMessage(messages, message) {
   const li = document.createElement('li');
   li.innerText = message;
@@ -61,8 +76,10 @@ export default async function decorate(element) {
     const attachedFiles = [];
     const input = wrapper.querySelector('input');
     const max = (parseInt(input.max, 10) || -1);
+    const template = input.cloneNode(true);
     const multiple = input.hasAttribute('multiple');
     const messages = document.createElement('ul');
+    const fileDescriptions = wrapper.getElementsByClassName('file-description');
     const validate = (files = []) => {
       clearMessages(messages);
       const { allowedFiles, disallowedFiles } = validateType(files);
@@ -79,23 +96,22 @@ export default async function decorate(element) {
     const attachFiles = (files = []) => {
       const filesToAttach = validate(files);
       filesToAttach.forEach((file) => {
-        const index = attachedFiles.length;
-        const div = document.createElement('div');
-        div.className = 'field-attached-file-wrapper';
-        const span = document.createElement('span');
-        span.innerText = `${file.name} ${(file.size / (1024 * 1024)).toFixed(2)}mb`;
+        const description = getFileDesription(file);
         const button = document.createElement('button');
         button.type = 'button';
         button.onclick = () => {
-          div.remove();
+          const index = parseInt(description.dataset.index, 10);
+          description.remove();
           attachedFiles.splice(index, 1);
           input.files = getFileList(attachedFiles);
+          updateIndex([...fileDescriptions]);
           clearMessages(messages);
         };
-        div.append(span, button);
-        wrapper.append(div);
+        description.append(button);
+        wrapper.append(description);
         attachedFiles.push(file);
       });
+      updateIndex([...fileDescriptions]);
       input.files = getFileList(attachedFiles);
     };
     const dropArea = document.createElement('div');
@@ -110,7 +126,7 @@ export default async function decorate(element) {
     button.type = 'button';
     button.innerText = 'Select files';
     button.onclick = () => {
-      const fileInput = input.cloneNode(true);
+      const fileInput = template.cloneNode(true);
       fileInput.onchange = () => attachFiles([...fileInput.files]);
       fileInput.click();
     };
