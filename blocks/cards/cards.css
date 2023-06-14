@@ -92,7 +92,7 @@
 }
 
 .section.cards-container {
-  padding: 0 5% 10%;
+  padding: 0 5% 5%;
 }
 
 .section.cards-container .cards-wrapper {
@@ -186,8 +186,14 @@
   text-align: center;
 }
 
-.cards-card-body > p:first-of-type,
-.cards-card-body strong {
+.cards-card-body > h1,
+.cards-card-body > h1 > strong,
+.cards-card-body > h2,
+.cards-card-body > h2 > strong,
+.cards-card-body > h3,
+.cards-card-body > h3 > strong,
+.cards-card-body.no-heading > p:first-of-type,
+.cards-card-body.no-heading > p:first-of-type > strong{
   font-weight: var(--mt-font-weight-bold);
   font-size: var(--mt-cards-title-font-size);
   font-family: var(--mt-cards-font-family);
@@ -218,7 +224,7 @@
   .section.cards-container {
     margin-top: 0;
     margin-bottom: 0;
-    padding: 0 3% 10%;
+    padding: 0 3% 5%;
   }
 
   .section.cards-container .cards-wrapper {
@@ -244,7 +250,7 @@
   .section.cards-container {
     margin-top: 3%;
     margin-bottom: 0;
-    padding: 0 5% 10%;
+    padding: 0 5% 5%;
   }
 
   .section.cards-container .cards-wrapper {
