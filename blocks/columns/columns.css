@@ -20,6 +20,7 @@ main .columns h5,
 main .columns h6,
 main .columns p {
  text-align: left;
+  position: relative;
 }
 
 main .columns h4 {
@@ -69,6 +70,17 @@ main .columns > div {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Adds additional margins to avoid overflow of text into hero arc */
+main .columns .hero-arc-margin {
+  margin-top: 20%;
+}
+
+@media (min-width: 1024px) {
+  main .columns .hero-arc-margin {
+    margin-top: 10%;
+  }
 }
 
 main .columns > div > div {

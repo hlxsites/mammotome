@@ -1,27 +1,26 @@
 import {
-  createDomStructure, decorateBlockImgs, getProduct, translate, decorateSupScript,
+  createDomStructure,
+  decorateBlockImgs,
+  getProduct,
+  translate,
+  decorateSupScript,
+  getInfo,
+  decorateButtons,
 } from '../../scripts/lib-franklin.js';
 
-function getInfo() {
+function getProductSupportInfo() {
+  const info = getInfo();
   const url = new URL(window.location);
   const idx = url.pathname.indexOf('/product-support/');
   if (idx > 0) {
-    const slug = url.pathname.substring(url.pathname.indexOf('/product-support/') + '/product-support/'.length);
-    if (slug) {
-      const [, country, language] = url.pathname.split('/');
-      return {
-        country,
-        page: slug,
-        productSupport: url.pathname.substring(0, url.pathname.indexOf(`${slug}`) - 1),
-        language,
-      };
-    }
+    const page = url.pathname.substring(url.pathname.indexOf('/product-support/') + '/product-support/'.length);
+    return { page, ...info };
   }
-  return { productSupport: url.pathname.substring(0, url.pathname.length - 1) };
+  return info;
 }
 
 function getTypes(product) {
-  return Array.from(new Set(product.assets.map((asset) => asset.Type)));
+  return Array.from(new Set(product.assets.map((asset) => asset.Type).filter((type) => type)));
 }
 
 function getAssets(product, type, allType) {
@@ -31,7 +30,7 @@ function getAssets(product, type, allType) {
 export default async function decorate(block) {
   const {
     country, page, productSupport, language,
-  } = getInfo();
+  } = getProductSupportInfo();
 
   const product = await getProduct(page, country, language);
 
@@ -51,13 +50,20 @@ export default async function decorate(block) {
     createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image } }] }], block);
     decorateBlockImgs(block);
   }
+  const types = getTypes(product);
   createDomStructure([
     {
       type: 'div',
+      classes: ['header-wide'],
       children: [
         {
-          type: 'h2',
-          textContent: heading,
+          type: 'h4',
+          children: [
+            {
+              type: 'strong',
+              textContent: heading,
+            },
+          ],
         },
         {
           type: 'div',
@@ -69,7 +75,7 @@ export default async function decorate(block) {
                   type: 'option',
                   textContent: allDocuments,
                 },
-                ...getTypes(product)
+                ...types
                   .map((type) => (
                     {
                       type: 'option',
@@ -89,6 +95,9 @@ export default async function decorate(block) {
   ], block);
 
   const select = block.querySelector('select');
+  if (types.length === 0) {
+    select.style.display = 'none';
+  }
   const container = block.querySelector('.link-container');
 
   const handler = () => {
@@ -109,6 +118,7 @@ export default async function decorate(block) {
           ],
         }
       )), container);
+      decorateButtons(container);
     } else {
       createDomStructure([{
         type: 'div',

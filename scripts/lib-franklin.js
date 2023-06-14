@@ -366,13 +366,47 @@ export function decorateSupScript(string, result = []) {
   return result;
 }
 
+export function getInfo() {
+  const [, country, language] = window.location.pathname.split('/');
+  const getUrlPath = (path) => new URL(path, origin).pathname;
+
+  return {
+    country,
+    language,
+    productDB: getUrlPath('/products.json'),
+    productSupport: getUrlPath(`/${country}/${language}/product-support`),
+    queryIndex: getUrlPath(`/${country}/${language}/query-index.json`),
+  };
+}
+
+export function adjustAssetURL(asset) {
+  if (asset?.URL) {
+    const url = new URL(asset.URL, window.location);
+    const isLocalOrHlx = ['localhost', '-mammotome--hlxsites.hlx.page', '-mammotome--hlxsites.hlx.live']
+      .some((domain) => url.hostname.endsWith(domain));
+
+    if (isLocalOrHlx) {
+      asset.URL = url.pathname;
+    }
+  }
+  return asset;
+}
+
 export async function getProductDB() {
   if (!window.productDB) {
-    const resp = await fetch('/products.json?limit=10000');
+    const { productDB } = getInfo();
+    const resp = await fetch(`${productDB}?limit=10000`);
     if (!resp.ok) {
       throw new Error(`${resp.status}: ${resp.statusText}`);
     }
     window.productDB = await resp.json();
+    const adjustData = (f) => (field) => {
+      if (window.productDB[field]?.data) {
+        window.productDB[field].data = window.productDB[field].data.map(f);
+      }
+    };
+
+    ['ProductAsset', 'eIFU'].forEach(adjustData(adjustAssetURL));
   }
   return window.productDB;
 }
@@ -535,17 +569,15 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 /**
  * Add a divider into section from Section Metadata block
  * @param section section element
- * @param pos position of divider (before or after)
+ * @param pos position of divider (before or after) default is after
  */
 export function addDivider(section, pos) {
-  const dividerContainerDiv = document.createElement('div');
-  const dividerDiv = document.createElement('div');
-  dividerDiv.classList.add('divider');
-  dividerContainerDiv.appendChild(dividerDiv);
-  if (pos === 'after') {
-    section.appendChild(dividerContainerDiv);
+  const divider = document.createElement('hr');
+  divider.classList.add('divider');
+  if (pos === 'before') {
+    section.insertBefore(divider, section.firstChild);
   } else {
-    section.insertBefore(dividerContainerDiv, section.firstChild);
+    section.appendChild(divider);
   }
 }
 
@@ -820,7 +852,7 @@ export function decorateButtons(element) {
 export function decorateBlockImgs(block) {
   block.querySelectorAll('img')
     .forEach((img) => {
-      const { hostname } = new URL(img.src);
+      const { hostname } = new URL(img.src, window.location.href);
       if (hostname === window.location.hostname
         || hostname.endsWith('-mammotome--hlxsites.hlx.page')
         || hostname.endsWith('-mammotome--hlxsites.hlx.live')

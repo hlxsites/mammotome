@@ -1,11 +1,6 @@
 import {
-  createDomStructure, decorateBlockImgs, getProduct, translate,
+  createDomStructure, decorateBlockImgs, getInfo, getProduct, translate,
 } from '../../scripts/lib-franklin.js';
-
-function getInfo() {
-  const [, country, language] = window.location.pathname.split('/');
-  return { country, language };
-}
 
 async function createButtons(productCode) {
   return [
