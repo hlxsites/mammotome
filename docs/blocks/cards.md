@@ -20,6 +20,8 @@ The card text is defined in the right column's cell, consisting of three section
 
 If an image you want that it occupies the whole width of the card, use the selector `wideimage`.
 
+If you want an image to be displayed fully, use the selector `fullimage`. In this case, the image won't be cropped, but the height will be restricted to 120 pixels.
+
 ### Card link
 
 As mentioned before, the card link is defined as the third section in the right cell. When you insert a link in the SharePoint document, you can specify a text that will be displayed on the card (a callout message that appears at the bottom of the card) and a link itself. 
