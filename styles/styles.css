@@ -13,6 +13,7 @@
   font-family: "robotoflex-regular-normal-400-fallback";
   size-adjust: 98%;
   src: local("Arial");
+  font-display: swap;
 }
 
 :root {
