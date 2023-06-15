@@ -22,8 +22,6 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
-import integrateMartech from './third-party.js';
-
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
@@ -251,6 +249,15 @@ export function addFavIcon(
   }
 }
 
+function integrateMartech(parent, id) {
+  // Google Tag Manager
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
+  script.async = true;
+  parent.appendChild(script);
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
@@ -276,8 +283,6 @@ async function loadLazy(doc) {
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
 
-  integrateMartech(document.body, 'GTM-KNBZTHP');
-
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
     const preview = await import(`${window.hlx.codeBasePath}/tools/preview/preview.js`);
@@ -299,6 +304,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  window.setTimeout(() => integrateMartech(document.body, 'GTM-KNBZTHP'), 500);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
