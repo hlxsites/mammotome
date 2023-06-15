@@ -262,10 +262,10 @@ export default {
                 meta.append(tr2);
                 section.append(meta);
                 const br = document.createElement('div');
-                br.textContent = '--';
+                br.textContent = '---';
                 section.parentElement.insertBefore(br, section);
                 const br2 = document.createElement('div');
-                br2.textContent = '--';
+                br2.textContent = '---';
                 section.append(br2);
               
             }
@@ -308,10 +308,10 @@ export default {
             meta.append(tr2);
             section.append(meta);
             const br = document.createElement('div');
-            br.textContent = '--';
+            br.textContent = '---';
             section.parentElement.insertBefore(br, section);
             const br2 = document.createElement('div');
-            br2.textContent = '--';
+            br2.textContent = '---';
             section.append(br2);
           
         }
