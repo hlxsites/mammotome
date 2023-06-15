@@ -1,15 +1,6 @@
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
-  // Adds bigger margins if hero arc is being used
-  const heroElements = document.querySelectorAll('.hero-big .hero-arc');
-  if (heroElements && heroElements.length > 0) {
-    const flexContainer = block.firstElementChild;
-    if (flexContainer) {
-      // hero-arc-margin set in columns.css
-      flexContainer.classList.add('hero-arc-margin');
-    }
-  }
 
   // setup image columns
   [...block.children].forEach((row) => {
