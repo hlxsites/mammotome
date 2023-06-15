@@ -92,9 +92,8 @@ const HEAD_RESOURCE_TYPES = {
 };
 
 const loadHeadResource = (href, type, callback) => {
-  let element = document.querySelector(`head > ${type.tagName}[${type.sourceAttribute}="${href}"]`);
-  if (!element) {
-    element = document.createElement(type.tagName);
+  if (!document.querySelector(`head > ${type.tagName}[${type.sourceAttribute}="${href}"]`)) {
+    const element = document.createElement(type.tagName);
     element.setAttribute(type.sourceAttribute, href);
     type.attributes.forEach((attribute) => {
       element.setAttribute(attribute[0], attribute[1]);
@@ -106,14 +105,7 @@ const loadHeadResource = (href, type, callback) => {
     }
     document.head.appendChild(element);
   } else if (typeof callback === 'function') {
-    type.attributes.forEach((attribute) => {
-      element.setAttribute(attribute[0], attribute[1]);
-    });
     callback('noop');
-  } else {
-    type.attributes.forEach((attribute) => {
-      element.setAttribute(attribute[0], attribute[1]);
-    });
   }
 };
 
