@@ -259,7 +259,7 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
-  loadCSS('https://use.typekit.net/tni6afe.css', null);
+  loadCSS('/styles/fonts.css', null);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
