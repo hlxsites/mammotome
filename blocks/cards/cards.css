@@ -52,7 +52,7 @@
 }
 
 .cards.block > ul > li {
-  padding: 0 0 13%;
+  padding: 10px;
   box-shadow: 2px 12px 28px 0 var(--mt-cards-box-shadow-color);
   display: flex;
   flex-direction: column;
@@ -241,10 +241,6 @@
     grid-template-columns: repeat(2,1fr);
     width: 100%;
   }
-
-  .cards.block > ul > li {
-    padding: 0 0 10%;
-  }
 }
 
 @media (min-width: 1025px) {
@@ -277,9 +273,5 @@
   .cards.four-columns > ul {
     grid-template-columns: repeat(4,1fr);
     width: 100%;
-  }
-
-  .cards.block > ul > li {
-    padding: 10px;
   }
 }
