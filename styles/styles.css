@@ -633,6 +633,7 @@ main .section .default-content-wrapper {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
 }
 
 /* Narrow content section metadata */
@@ -649,20 +650,17 @@ main .section[data-section-status='initialized'] {
 /* callout block */
 .section.logo-primary-background.callout,
 .section.callout {
-  padding: 0 0 8%;
-}
-
-.section.callout h1,
-.section.callout h2 {
-  padding: 3% 5%;
-  margin-bottom: 20px;
+  padding: 0 0 10%;
 }
 
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
   font-size: var(--mt-heading-font-size-xxl);
-  line-height: 2.5rem;
+  line-height: 1.5em;
+  padding: 5% 15% 3%;
+  margin: 0;
+  width: 100%;
 }
 
 .section.callout .button-container {
@@ -670,6 +668,10 @@ main .section[data-section-status='initialized'] {
     padding: 0;
     margin: 0;
 }
+
+.section.callout .button-container a {
+  overflow: inherit;
+} 
 
 /* about-us/our-history */
 
