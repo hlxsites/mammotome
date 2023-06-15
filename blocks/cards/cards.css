@@ -204,6 +204,15 @@
   margin-bottom: 25px;
 }
 
+.cards li:has(> div.cards-card-body.no-heading > strong > a:not(.button)) {
+  padding: 25px 50px;
+  justify-content: center;
+}
+
+.cards-card-body.no-heading > strong > a:not(.button) {
+  font-size: var(--mt-cards-title-font-size);
+}
+
 .cards-card-body > p.callout {
   text-transform: uppercase;
   color: var(--mt-cards-callout-text-color);
