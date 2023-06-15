@@ -649,6 +649,7 @@ main .section[data-section-status='initialized'] {
 
 /* callout block */
 .section.logo-primary-background.callout,
+.section.logo-secondary-background.callout,
 .section.callout {
   padding: 0 0 10%;
 }
