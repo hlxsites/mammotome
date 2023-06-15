@@ -144,7 +144,7 @@ export default {
         const h2 = document.createElement('th');
 
         h1.textContent = 'Product Reference';
-        h2.textContent = as.find((a) => a.href.match(/\/product-support\/(.+)/)).href.match(/\/product-support\/([^\/]*)(\/)?/)[1];
+        h2.textContent = as.find((a) => a.href.match(/\/product-support\/(.+)/))?.href.match(/\/product-support\/([^\/]*)(\/)?/)[1];
 
         tr1.append(h1);
         table.append(tr1);
