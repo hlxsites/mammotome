@@ -654,14 +654,48 @@ main .section[data-section-status='initialized'] {
   padding: 0 0 10%;
 }
 
-.section.callout h1,
-.section.callout h2,
+.section.callout:not(.arc-top) {
+  padding: 10% 0;
+}
+
+.section.callout h1, 
+.section.callout h2, 
 .section.callout h3 {
   font-size: var(--mt-heading-font-size-xxl);
   line-height: 1.5em;
   padding: 5% 15% 3%;
   margin: 0;
   width: 100%;
+}
+
+main .section.our-history h2 {
+  text-align: center;
+  color: var(--mt-our-history-color-primary);
+  font-size: var(--mt-body-font-size-m);
+  font-weight: var(--mt-font-weight-heavy);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 100px;
+}
+
+main .contact .default-content-wrapper h2,
+main .schedule-demo .default-content-wrapper h2 {
+  text-align: center;
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  text-transform: none;
+  margin: 0 5px;
+  padding-bottom: 40px;
+}
+
+main .schedule-demo .default-content-wrapper h2 {
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.section.callout:not(.arc-top) h1, 
+.section.callout:not(.arc-top) h2, 
+.section.callout:not(.arc-top) h3 {
+  padding: 3% 5%;
 }
 
 .section.callout .button-container {
@@ -673,18 +707,6 @@ main .section[data-section-status='initialized'] {
 .section.callout .button-container a {
   overflow: inherit;
 } 
-
-/* about-us/our-history */
-
-main .section.our-history h2 {
-  text-align: center;
-  color: var(--mt-our-history-color-primary);
-  font-size: var(--mt-body-font-size-m);
-  font-weight: var(--mt-font-weight-heavy);
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  margin-bottom: 100px;
-}
 
 main .section.our-history .year {
   position: relative;
@@ -788,20 +810,6 @@ main .innovate .form,
 main .study-request .form {
   background-color: var(--mt-global-color-base-primary);
   padding: 2rem 0;
-}
-
-main .contact .default-content-wrapper h2,
-main .schedule-demo .default-content-wrapper h2 {
-  text-align: center;
-  font-size: var(--mt-heading-font-size-xl);
-  font-weight: var(--mt-font-weight-regular);
-  text-transform: none;
-  margin: 0 5px;
-  padding-bottom: 40px;
-}
-
-main .schedule-demo .default-content-wrapper h2 {
-  font-size: var(--mt-heading-font-size-l);
 }
 
 @media screen and (max-width: 530px) {
