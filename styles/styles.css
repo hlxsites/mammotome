@@ -198,12 +198,13 @@ h6 {
 }
 
 /* Section styles for heading */
+
 h1 {
-  font-size: var(--mt-heading-font-size-xxl);
+  font-size: var(--mt-heading-font-size-l);
 }
 
 h2 {
-  font-size: var(--mt-heading-font-size-xl);
+  font-size: var(--mt-font-size-130);
 }
 
 h3 {
@@ -216,6 +217,16 @@ h4 {
 
 h5 {
   font-size: var(--mt-heading-font-size-xs);
+}
+
+@media (min-width: 767px) {
+  h1 {
+    font-size: var(--mt-heading-font-size-xxl);
+  }
+
+  h2 {
+    font-size: var(--mt-heading-font-size-xl);
+  }
 }
 
 
@@ -326,8 +337,15 @@ p {
 
 /* Section style for P */
 .text-large p {
-  font-size: var(--mt-body-font-size-l);
-  line-height: 2.5rem;
+  font-size: var(--mt-body-font-size-m);
+  line-height: 1.95rem;
+}
+
+@media  (min-width: 767px) {
+  p {
+    font-size: var(--mt-body-font-size-l);
+    line-height: 2.5rem;
+  }
 }
 
 .text-small p {
@@ -401,7 +419,7 @@ p {
 .logo-secondary-background h4,
 .logo-primary-background p ,
 .logo-secondary-background p {
-  line-height: 2.7rem;
+  line-height: 1.9rem;
   font-size: var(--mt-heading-font-size-l);
   font-weight: var(--mt-font-weight-thin);
   padding: 0 5%;;
@@ -435,6 +453,7 @@ p {
   .logo-secondary-background p {
     font-size: var(--mt-heading-font-size-xl);
     font-weight: var(--mt-font-weight-regular);
+    line-height: 2.7rem;
   }
 }
 
@@ -661,8 +680,16 @@ main .section[data-section-status='initialized'] {
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
-  font-size: var(--mt-heading-font-size-xxl);
+  font-size: var(--mt-heading-font-size-xl);
   line-height: 2.5rem;
+}
+
+@media screen and (min-width: 767px) {
+  .section.callout h1,
+  .section.callout h2,
+  .section.callout h3 {
+    font-size: var(--mt-heading-font-size-xxl);
+  }
 }
 
 .section.callout .button-container {
