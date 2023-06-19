@@ -38,48 +38,35 @@ const createMetadata = (main, document) => {
   return meta;
 };
 
-function createDomStructure(structure, parentElement, document) {
-  structure.forEach((element) => {
-    const domElement = document.createElement(element.type);
-    if (element.attributes) {
-      Object.keys(element.attributes).forEach((attr) => {
-        domElement.setAttribute(attr, element.attributes[attr]);
-      });
-    }
+const createSectionMetadata = (text, document) => {
+  const table = [['Section Metadata']];
+  const style = ['Style'];
+  style.push(text);
+  table.push(style);
+  return WebImporter.DOMUtils.createTable(table, document);
+};
 
-    if (element.textContent) {
-      domElement.textContent = element.textContent;
-    }
-
-    if (element.children) {
-      createDomStructure(element.children, domElement, document);
-    }
-
-    if (element.classes) {
-      element.classes.forEach((c) => domElement.classList.add(c));
-    }
-
-    if (element.position === 'prepend') {
-      parentElement.prepend(domElement);
-    } else {
-      parentElement.appendChild(domElement);
-    }
-  });
-}
+const addSectionDividers = (section, document) => {
+  const br = document.createElement('div');
+  br.textContent = '---';
+  section.parentElement.insertBefore(br, section);
+  const br2 = document.createElement('div');
+  br2.textContent = '---';
+  section.append(br2);
+};
 
 function topLevel(section) {
-  if (section.parentElement){
+  if (section.parentElement) {
     if (section.parentElement.tagName.toLowerCase() !== 'section') {
-    return topLevel(section.parentElement);
-    } else {
-      return false;
+      return topLevel(section.parentElement);
     }
+    return false;
   }
   return true;
 }
 
 function getProductReference(section) {
-  return Array.from(section.querySelectorAll('a')).filter((a) => a.href.match(/.*\/product-support\/.*/));
+  return Array.from(section.querySelectorAll('a')).filter((a) => a.href.match(/\/product-support\/(.+)/));
 }
 
 export default {
@@ -108,27 +95,23 @@ export default {
       'noscript',
       'defs',
       'svg',
-      '#onetrust-consent-sdk'
+      '#onetrust-consent-sdk',
     ]);
 
     // create the metadata block and append it to the main element
-    // createMetadata(main, document);
+    createMetadata(main, document);
 
     const sectionElements = main.querySelectorAll('.elementor-section');
 
     if (sectionElements?.length > 0) {
       let sections = Array.from(sectionElements.values());
       if (sections[0].classList.contains('elementor-section-full_width')) {
-        if (sections[0].style['background-image']) {
-          const img = document.createElement('img');
-          const src = sections[0].style['background-image'].match(/url\((.*)\)/);
-          if (src && src[1]) {
-            img.src = src[1];
-            sections[0].prepend(img);
-          }
+        const img = WebImporter.DOMUtils.getImgFromBackground(sections[0], document);
+        if (img) {
+          sections[0].prepend(img);
         }
-        Array.from(sections[0].querySelectorAll('img')).filter((img) => img.src.match(/.*\/Hero-curve.svg/)).forEach((img) => {
-          img.remove();
+        Array.from(sections[0].querySelectorAll('img')).filter((i) => i.src.match(/.*\/Hero-curve.svg/)).forEach((i) => {
+          i.remove();
         });
         sections = sections.slice(1);
       } else if (getProductReference(sections[0]).length > 0) {
@@ -137,23 +120,13 @@ export default {
         while (!Array.from(outer.classList).includes('elementor-row')) {
           outer = outer.parentElement;
         }
-        const table = document.createElement('table');
-        const tr1 = document.createElement('tr');
-        const h1 = document.createElement('th');
-        const tr2 = document.createElement('tr');
-        const h2 = document.createElement('th');
-
-        h1.textContent = 'Product Reference';
-        h2.textContent = as.find((a) => a.href.match(/\/product-support\/(.+)/))?.href.match(/\/product-support\/([^\/]*)(\/)?/)[1];
-
-        tr1.append(h1);
-        table.append(tr1);
-        tr2.append(h2);
-        table.append(tr2);
-        outer.replaceWith(table);
+        const table = [];
+        table[0] = ['Product Reference'];
+        table[1] = [as.find((a) => a.href.match(/\/product-support\/(.+)/))?.href.match(/\/product-support\/([^/]*)(\/)?/)[1]];
+        outer.replaceWith(WebImporter.DOMUtils.createTable(table, document));
       }
-      let middles = []
-      let boxed = []
+      let middles = [];
+      let boxed = [];
       sections.forEach((section) => {
         if (section.classList.contains('elementor-section-content-middle')) {
           middles.push(section);
@@ -161,113 +134,61 @@ export default {
           if (middles.length > 1) {
             const parent = document.createElement('section');
             middles[0].replaceWith(parent);
-            createDomStructure([{
-                type: 'table',
-                children: [
-                  {
-                    type: 'tr',
-                    children: [{
-                      type: 'th',
-                      attributes: {colspan: 2},
-                      textContent: 'Columns (image color light blue)'
-                    }]
-                  }
-                ]
-            }], parent, document);
-            middles.forEach((m)=>{
+            const table = [['Columns (image color light blue)']];
+            let tr = 1;
+            middles.forEach((m) => {
               m.remove();
-              const tr = document.createElement('tr');
-              Array.from(m.querySelectorAll('.elementor-column').values()).forEach((c)=>{
-              const th = document.createElement('th');
-              th.append(c);
-              tr.append(th);
+              const cc = [];
+              Array.from(m.querySelectorAll('.elementor-column').values()).forEach((c) => {
+                cc.push(c);
               });
-              parent.querySelector('table').append(tr);
+              table[tr] = cc;
+              tr += 1;
             });
+            parent.append(WebImporter.DOMUtils.createTable(table, document));
           }
           middles = [];
           if (!section.querySelector('section') && (section.querySelector('.elementor-widget-image-box'))) {
             boxed.push(section);
-          } else if (!section.querySelector('section') && section.querySelector('article')){
+          } else if (!section.querySelector('section') && section.querySelector('article')) {
             Array.from(section.querySelectorAll('article')).forEach((a) => boxed.push(a));
           } else {
             if (boxed.length > 0) {
               const parent = document.createElement('section');
               let parentSection = boxed[0];
-              while (parentSection.tagName.toLowerCase() !== 'section' ||  !topLevel(parentSection)) {
+              while (parentSection.tagName.toLowerCase() !== 'section' || !topLevel(parentSection)) {
                 parentSection = parentSection.parentElement;
               }
               parentSection.parentElement.insertBefore(parent, parentSection.nextSibling);
-              createDomStructure([{
-                  type: 'table',
-                  children: [
-                    {
-                      type: 'tr',
-                      children: [{
-                        type: 'th',
-                        attributes: {colspan: 2},
-                        textContent: 'Cards'
-                      }]
-                    }
-                  ]
-              }], parent, document);
-              boxed.forEach((m)=>{
+              const table = [['Cards']];
+
+              boxed.forEach((m) => {
                 m.remove();
-                const tr = document.createElement('tr');
+                const tr = [];
                 if (m.tagName.toLowerCase() === 'article') {
-                    const img = m.querySelector('.elementor-post__thumbnail img');
-                    img.parentElement.parentElement.remove();
-                    const th = document.createElement('th');
-                    th.append(img);
-                    tr.append(th);
-                    const th2 = document.createElement('th');
-                    th2.append(m);
-                    tr.append(th2);
+                  const img = m.querySelector('.elementor-post__thumbnail img');
+                  img.parentElement.parentElement.remove();
+                  tr.push(img);
+                  tr.push(m);
                 } else {
                   const img = m.querySelector('.elementor-image-box-img  img');
                   img.parentElement.parentElement.remove();
-                  const th = document.createElement('th');
-                  th.append(img);
-                  tr.append(th);
-                  const th2 = document.createElement('th');
-                  th2.append(m);
-                  tr.append(th2);
+                  tr.push(img);
+                  tr.push(m);
                 }
-                parent.querySelector('table').append(tr);
+                table.push(tr);
               });
-              boxed = []
-              
+              parent.append(WebImporter.DOMUtils.createTable(table, document));
+              boxed = [];
             }
             if (section.style['background-image'] && section.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-1.svg\)/)) {
-                const meta = document.createElement('table');
-                const tr = document.createElement('tr');
-                const th = document.createElement('th');
-                th.setAttribute("colspan", "2");
-                th.textContent = 'Section Metadata';
-                tr.append(th);
-                meta.append(tr);
-                const tr2 = document.createElement('tr');
-                const th21 = document.createElement('th');
-                const th22 = document.createElement('th');
-                th21.textContent = 'Style';
-                tr2.append(th21);
-  
-                let text = 'Logo primary background, inverted text';
-                if (Array.from(section.querySelectorAll('img')).some((img) => img.src.match(/.*\/Hero-curve-flipped.svg/))) {
-                  text += ', arc top';
-                }
-  
-                th22.textContent = text;
-                tr2.append(th22);
-                meta.append(tr2);
-                section.append(meta);
-                const br = document.createElement('div');
-                br.textContent = '---';
-                section.parentElement.insertBefore(br, section);
-                const br2 = document.createElement('div');
-                br2.textContent = '---';
-                section.append(br2);
-              
+              let text = 'Logo primary background, inverted text';
+              if (Array.from(section.querySelectorAll('img')).some((img) => img.src.match(/.*\/Hero-curve-flipped.svg/))) {
+                text += ', arc top';
+              }
+              const table = createSectionMetadata(text, document);
+              section.append(table);
+              addSectionDividers(section, document);
             }
           }
         }
@@ -275,9 +196,7 @@ export default {
           img.remove();
         });
       });
-      
     }
-    console.log("test");
     const sectionsE = main.querySelectorAll('section');
 
     if (sectionsE?.length > 0) {
@@ -287,33 +206,10 @@ export default {
       }
       sections.forEach((section) => {
         if (!section.querySelector('table') && section.querySelector('h2.elementor-heading-title')) {
-          
-            const meta = document.createElement('table');
-            const tr = document.createElement('tr');
-            const th = document.createElement('th');
-            th.setAttribute("colspan", "2");
-            th.textContent = 'Section Metadata';
-            tr.append(th);
-            meta.append(tr);
-            const tr2 = document.createElement('tr');
-            const th21 = document.createElement('th');
-            const th22 = document.createElement('th');
-            th21.textContent = 'Style';
-            tr2.append(th21);
-
-            let text = 'Header-wide,header-uppercase, header-colored';
-          
-            th22.textContent = text;
-            tr2.append(th22);
-            meta.append(tr2);
-            section.append(meta);
-            const br = document.createElement('div');
-            br.textContent = '---';
-            section.parentElement.insertBefore(br, section);
-            const br2 = document.createElement('div');
-            br2.textContent = '---';
-            section.append(br2);
-          
+          const text = 'Header-wide, header-uppercase, header-colored';
+          const table = createSectionMetadata(text, document);
+          section.append(table);
+          addSectionDividers(section, document);
         }
       });
     }
