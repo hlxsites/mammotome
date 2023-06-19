@@ -17,12 +17,8 @@ function loadScript(url) {
   return script;
 }
 
-function generateUniqueId() {
-  return (Date.now().toString(36) + Math.random().toString(36).slice(2, 7)).toUpperCase();
-}
-
 function constructPayload(form) {
-  const payload = { __id__: generateUniqueId() };
+  const payload = {};
   const attachments = {};
   [...form.elements].filter((fe) => fe.name).forEach((fe) => {
     if (fe.type === 'radio') {

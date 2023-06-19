@@ -81,6 +81,7 @@
   /* fonts families */
   --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
+  --mt-form-font-family: var(--mt-body-font-family);
 
   /* font weights */
   --mt-font-weight-thin: 300;
@@ -717,6 +718,10 @@ main .section.our-history .year h3 {
   color: var(--mt-background-color-primary);
 }
 
+.section.arc-after-section p { 
+  text-align: left;
+}
+
 main .section.our-history .year .description p {
   order: 3;
 }
@@ -943,11 +948,6 @@ main .section.our-history .year.highlight .icon-calendar {
 .section.arc-after-section {
   margin-top: -13%;
   position: relative;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-.section.arc-after-section p { 
-  text-align: left;
 }
 
 /* Smaller space for hero light */
