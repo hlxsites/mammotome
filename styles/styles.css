@@ -990,3 +990,8 @@ main .schedule-demo .default-content-wrapper h2 {
   width: 50%;
   margin: calc(26px + 10px + 3%) auto auto;
 }
+
+.section.spacer {
+  margin: 0;
+  padding: 0;
+}
