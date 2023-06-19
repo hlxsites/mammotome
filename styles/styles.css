@@ -341,9 +341,8 @@ p {
   line-height: 1.95rem;
 }
 
-@media  (min-width: 767px) {
+@media (min-width: 767px) {
   p {
-    font-size: var(--mt-body-font-size-l);
     line-height: 2.5rem;
   }
 }
