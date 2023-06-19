@@ -11,9 +11,10 @@ Section Metadata allows the author to add two parameters to a section table with
 `---`
 
 | Section Metadata |                             |
-| ---------------- | --------------------------- |
+|------------------| --------------------------- |
 | Style            | [see style options below]   |
 | Divider          | [see divider options below] |
+| Spacer           | [see divider options below] |
 | background-image | [image]                     |
 
 `---`
@@ -214,3 +215,15 @@ Adds a divider before or after the section.
 
 
 ![line-example.png](assets/line-example.png)
+
+
+## Spacer
+
+Adds a custom spacer in pixels at the end of a section or standalone
+
+**_Example_**
+
+| Section Metadata |                               |
+|------------------|-------------------------------|
+| spacer           | 100                           |
+
