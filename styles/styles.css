@@ -270,9 +270,6 @@ blockquote {
 
 /* UL decoration */
 .section ul {
-  list-style-type: none;
-  padding-left: 15px;
-  line-height: 30px;
   font-size: var(--mt-list-font-size);
 }
 
@@ -288,27 +285,11 @@ blockquote {
   line-height: 24px;
 }
 
-.section li {
-  padding-left: 17px;
-  position: relative;
-}
 
 .section .columns li::before {
   top: 0.8rem;
 }
 
-.section .columns li::before,
-.section .default-content-wrapper li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.5rem;
-  width: 10px;
-  height: 10px;
-  background-image: url('/styles/icons/circle.svg');
-  background-repeat: no-repeat;
-  background-size: 10px 10px;
-}
 
 sup {
   font-size: var(--mt-font-size-80);
