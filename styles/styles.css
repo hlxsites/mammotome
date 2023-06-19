@@ -79,9 +79,8 @@
 
 
   /* fonts families */
-  --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
-  --mt-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
-  --mt-form-font-family: helvetica, arial, sans-serif;
+  --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
 
   /* font weights */
   --mt-font-weight-thin: 300;
@@ -92,8 +91,8 @@
   --mt-font-weight-heavy: 900;
 
   /* feature font weights */
-  --mt-body-font-weight: var(--mt-font-weight-regular);
-  --mt-button-font-weight: var(--mt-font-weight-bolder);
+  --mt-body-font-weight: var(--mt-font-weight-thin);
+  --mt-button-font-weight: var(--mt-font-weight-boldest);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
   --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
@@ -344,20 +343,55 @@ p {
 }
 
 /* H and P with background logo gets higher line height */
-.logo-primary-background h1,
-.logo-primary-background h2,
-.logo-primary-background h3,
-.logo-primary-background h4,
-.logo-primary-background h5,
-.logo-primary-background h6,
-.logo-primary-background p,
+.accent-primary-solid-background h1,
+.accent-primary-solid-background h2,
+.accent-primary-solid-background h3,
+.accent-primary-solid-background h4,
+.accent-primary-solid-background h5,
+.accent-primary-solid-background h6,
+.accent-primary-solid-background p,
+.accent-quinary-solid-background h1,
+.accent-quinary-solid-background h2,
+.accent-quinary-solid-background h3,
+.accent-quinary-solid-background h4,
+.accent-quinary-solid-background h5,
+.accent-quinary-solid-background h6,
+.accent-quinary-solid-background p,
+.accent-secondary-blur-overlay h1,
+.accent-secondary-blur-overlay h2,
+.accent-secondary-blur-overlay h3,
+.accent-secondary-blur-overlay h4,
+.accent-secondary-blur-overlay h5,
+.accent-secondary-blur-overlay h6,
+.accent-secondary-blur-overlay p,
 .base-primary-blur-overlay h1,
 .base-primary-blur-overlay h2,
 .base-primary-blur-overlay h3,
 .base-primary-blur-overlay h4,
 .base-primary-blur-overlay h5,
 .base-primary-blur-overlay h6,
-.base-primary-blur-overlay p {
+.base-primary-blur-overlay p,
+.gradient-primary-blur-overlay h1,
+.gradient-primary-blur-overlay h2,
+.gradient-primary-blur-overlay h3,
+.gradient-primary-blur-overlay h4,
+.gradient-primary-blur-overlay h5,
+.gradient-primary-blur-overlay h6,
+.gradient-primary-blur-overlay p,
+.gradient-secondary-blur-overlay h1,
+.gradient-secondary-blur-overlay h2,
+.gradient-secondary-blur-overlay h3,
+.gradient-secondary-blur-overlay h4,
+.gradient-secondary-blur-overlay h5,
+.gradient-secondary-blur-overlay h6,
+.gradient-secondary-blur-overlay p,
+.logo-primary-background h1,
+.logo-primary-background h2,
+.logo-primary-background h3,
+.logo-primary-background h4,
+.logo-primary-background h5,
+.logo-primary-background h6,
+.logo-primary-background p {
   color: var(--mt-heading-color-inverted);
 }
 
@@ -867,6 +901,7 @@ main .section.our-history .year.highlight .icon-calendar {
 
 .section.accent-quinary-solid-background {
   background-color: var(--mt-global-color-accent-quinary);
+  z-index: 0;
 }
 
 .section.logo-secondary-background {

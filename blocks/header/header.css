@@ -342,6 +342,10 @@ header nav .nav-sections > ul > li[aria-expanded="true"] > ul {
   z-index: 200;
 }
 
+header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul {
+  overflow-x: hidden;
+}
+
 header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
   display: flex;
   flex-direction: column;

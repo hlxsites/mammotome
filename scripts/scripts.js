@@ -22,9 +22,7 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
-import integrateMartech from './third-party.js';
-
-const LCP_BLOCKS = []; // add your LCP blocks to the list
+const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
 // ARC decorations icons
@@ -59,6 +57,7 @@ function buildHeroBlock(main) {
   const h2 = main.querySelector(':scope > div:first-child > h2');
   const button = main.querySelector(':scope > div:first-child > p > a');
   const picture = main.querySelector(':scope > div:first-child picture');
+  const overlayPicture = main.querySelector(':scope > div:first-of-type > p:nth-child(2) > picture');
   const metaData = main.querySelector(':scope > div:first-child .section-metadata');
 
   const setHeroType = (heroType) => {
@@ -92,7 +91,13 @@ function buildHeroBlock(main) {
   // eslint-disable-next-line no-bitwise,max-len
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    const elems = [picture, h1];
+    const elems = [picture];
+
+    if (overlayPicture) {
+      elems.push(overlayPicture);
+    }
+
+    elems.push(h1);
 
     if (h2 && h1.nextElementSibling === h2) {
       elems.push(h2);
@@ -124,7 +129,14 @@ function buildHeroBlock(main) {
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    const elems = [picture, h2];
+
+    const elems = [picture];
+
+    if (overlayPicture) {
+      elems.push(overlayPicture);
+    }
+
+    elems.push(h2);
 
     appendArcAndBuildBlock(section, elems);
     setHeroType('big');
@@ -237,6 +249,15 @@ export function addFavIcon(
   }
 }
 
+function integrateMartech(parent, id) {
+  // Google Tag Manager
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
+  script.async = true;
+  parent.appendChild(script);
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
@@ -244,6 +265,8 @@ export function addFavIcon(
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
+
+  loadCSS('/styles/fonts.css', null);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
@@ -261,8 +284,6 @@ async function loadLazy(doc) {
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
-
-  integrateMartech(document.body, 'GTM-KNBZTHP');
 
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
@@ -285,6 +306,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  window.setTimeout(() => integrateMartech(document.body, 'GTM-KNBZTHP'), 500);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
