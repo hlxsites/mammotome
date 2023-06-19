@@ -648,14 +648,14 @@ main .section[data-section-status='initialized'] {
 }
 
 /* callout block */
-.section.logo-primary-background.callout,
-.section.logo-secondary-background.callout,
 .section.callout {
-  padding: 0 0 10%;
+  padding: 10% 0;
 }
 
-.section.callout:not(.arc-top) {
-  padding: 10% 0;
+.section.logo-primary-background.callout.arc-top,
+.section.logo-secondary-background.callout.arc-top,
+.section.callout.arc-top {
+  padding: 0 0 10%;
 }
 
 .section.callout h1, 
@@ -663,7 +663,7 @@ main .section[data-section-status='initialized'] {
 .section.callout h3 {
   font-size: var(--mt-heading-font-size-xxl);
   line-height: 1.5em;
-  padding: 5% 15% 3%;
+  padding: 3% 5%;
   margin: 0;
   width: 100%;
 }
@@ -692,10 +692,10 @@ main .schedule-demo .default-content-wrapper h2 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-.section.callout:not(.arc-top) h1, 
-.section.callout:not(.arc-top) h2, 
-.section.callout:not(.arc-top) h3 {
-  padding: 3% 5%;
+.section.callout.arc-top h1, 
+.section.callout.arc-top h2, 
+.section.callout.arc-top h3 {
+  padding: 5% 15% 3%;
 }
 
 .section.callout .button-container {
