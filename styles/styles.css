@@ -633,6 +633,7 @@ main .section .default-content-wrapper {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
 }
 
 /* Narrow content section metadata */
@@ -647,31 +648,25 @@ main .section[data-section-status='initialized'] {
 }
 
 /* callout block */
-.section.logo-primary-background.callout,
 .section.callout {
-  padding: 0 0 8%;
+  padding: 10% 0;
 }
 
-.section.callout h1,
-.section.callout h2 {
-  padding: 3% 5%;
-  margin-bottom: 20px;
+.section.logo-primary-background.callout.arc-top,
+.section.logo-secondary-background.callout.arc-top,
+.section.callout.arc-top {
+  padding: 0 0 10%;
 }
 
-.section.callout h1,
-.section.callout h2,
+.section.callout h1, 
+.section.callout h2, 
 .section.callout h3 {
   font-size: var(--mt-heading-font-size-xxl);
-  line-height: 2.5rem;
+  line-height: 1.5em;
+  padding: 3% 5%;
+  margin: 0;
+  width: 100%;
 }
-
-.section.callout .button-container {
-    text-align: center;
-    padding: 0;
-    margin: 0;
-}
-
-/* about-us/our-history */
 
 main .section.our-history h2 {
   text-align: center;
@@ -682,6 +677,36 @@ main .section.our-history h2 {
   letter-spacing: 4px;
   margin-bottom: 100px;
 }
+
+main .contact .default-content-wrapper h2,
+main .schedule-demo .default-content-wrapper h2 {
+  text-align: center;
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  text-transform: none;
+  margin: 0 5px;
+  padding-bottom: 40px;
+}
+
+main .schedule-demo .default-content-wrapper h2 {
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.section.callout.arc-top h1, 
+.section.callout.arc-top h2, 
+.section.callout.arc-top h3 {
+  padding: 5% 15% 3%;
+}
+
+.section.callout .button-container {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.section.callout .button-container a {
+  overflow: inherit;
+} 
 
 main .section.our-history .year {
   position: relative;
@@ -785,20 +810,6 @@ main .innovate .form,
 main .study-request .form {
   background-color: var(--mt-global-color-base-primary);
   padding: 2rem 0;
-}
-
-main .contact .default-content-wrapper h2,
-main .schedule-demo .default-content-wrapper h2 {
-  text-align: center;
-  font-size: var(--mt-heading-font-size-xl);
-  font-weight: var(--mt-font-weight-regular);
-  text-transform: none;
-  margin: 0 5px;
-  padding-bottom: 40px;
-}
-
-main .schedule-demo .default-content-wrapper h2 {
-  font-size: var(--mt-heading-font-size-l);
 }
 
 @media screen and (max-width: 530px) {
