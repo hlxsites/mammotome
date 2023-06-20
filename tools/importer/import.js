@@ -118,27 +118,21 @@ export default {
           ];
           outer.replaceWith(WebImporter.DOMUtils.createTable(table, document));
         }
-      } else if (top.classList.contains('elementor-section-content-middle')) {
+      }
+
+      const boxed = Array.from(top.querySelectorAll('.elementor-widget-image-box').values()).map((el) => (el.parentElement.classList.contains('elementor-widget-wrap') ? el.parentElement : el));
+      boxed.push(...Array.from(top.querySelectorAll('article').values()));
+
+      if (sectionCount > 0 && boxed.length === 0) {
+        let isColum = false;
         let header = 'Columns';
         if (Array.from(top.querySelectorAll('.elementor-column-wrap').values()).some((wrap) => wrap.style.backgroundImage.match(/url\(.*\/Rectangle-BG-2.svg\)/))) {
           header += ' (image color light blue)';
+          isColum = true;
         }
         const table = [[header]];
-        table.push(Array.from(top.querySelectorAll('.elementor-inner-column').values()));
-        if (table.length > 1) {
-          top.innerHTML = '';
-          top.append(WebImporter.DOMUtils.createTable(table, document));
-        }
-      } else if (top.classList.contains('elementor-section-boxed')) {
-        let header = 'Columns';
-        if (Array.from(top.querySelectorAll('.elementor-column-wrap').values()).some((wrap) => wrap.style.backgroundImage.match(/url\(.*\/Rectangle-BG-2.svg\)/))) {
-          header += ' (image color light blue)';
-        } else {
-          header += '(centered, images small, text small)';
-        }
-        const table = [[header]];
-        table.push(Array.from(top.querySelectorAll('.elementor-inner-column').values()));
-        if (table.length > 1 && table[1].length > 0) {
+        table.push(Array.from(top.querySelectorAll('.elementor-column').values()).filter((c) => isColum || !c.querySelector('.elementor-heading-title')));
+        if (table.length > 1 && table[1].length > 1) {
           const div = document.createElement('div');
           table[1][0].replaceWith(div);
           table[1].forEach((column) => column.remove());
@@ -146,8 +140,6 @@ export default {
         }
       }
 
-      const boxed = Array.from(top.querySelectorAll('.elementor-widget-image-box').values());
-      boxed.push(...Array.from(top.querySelectorAll('article').values()));
 
       if (boxed.length > 0) {
         const div = document.createElement('div');
