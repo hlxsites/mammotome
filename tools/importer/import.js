@@ -157,7 +157,7 @@ export default {
             tr.push(m);
           } else {
             const img = m.querySelector('.elementor-image-box-img  img');
-            img.parentElement.parentElement.remove();
+            img?.parentElement.parentElement.remove();
             tr.push(img);
             tr.push(m);
           }
