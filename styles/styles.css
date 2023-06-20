@@ -129,15 +129,20 @@
 
   /* feature font sizes */
   --mt-body-font-size-l: var(--mt-font-size-180);
+  --mt-body-font-size-mobile-l: var(--mt-font-size-130);
   --mt-body-font-size-m: var(--mt-font-size-130);
   --mt-body-font-size-s: var(--mt-font-size-100);
   --mt-body-font-size-xs: var(--mt-font-size-75);
   --mt-list-font-size: var(--mt-font-size-100);
   --mt-button-font-size: var(--mt-font-size-90);
   --mt-heading-font-size-xxl: var(--mt-font-size-250);
+  --mt-heading-font-size-mobile-xxl: var(--mt-font-size-200);
   --mt-heading-font-size-xl: var(--mt-font-size-180);
+  --mt-heading-font-size-mobile-xl: var(--mt-font-size-130);
   --mt-heading-font-size-l: var(--mt-font-size-130);
+  --mt-heading-font-size-mobile-l: var(--mt-font-size-100);
   --mt-heading-font-size-m: var(--mt-font-size-100);
+  --mt-heading-font-size-mobile-m: var(--mt-font-size-80);
   --mt-heading-font-size-s: var(--mt-font-size-80);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
@@ -199,12 +204,13 @@ h6 {
 }
 
 /* Section styles for heading */
+
 h1 {
-  font-size: var(--mt-heading-font-size-xxl);
+  font-size: var(--mt-heading-font-size-mobile-xxl);
 }
 
 h2 {
-  font-size: var(--mt-heading-font-size-xl);
+  font-size: var(--mt-heading-font-size-mobile-xl);
 }
 
 h3 {
@@ -212,13 +218,26 @@ h3 {
 }
 
 h4 {
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-mobile-m);
 }
 
 h5 {
   font-size: var(--mt-heading-font-size-xs);
 }
 
+@media (min-width: 767px) {
+  h1 {
+    font-size: var(--mt-heading-font-size-xxl);
+  }
+
+  h2 {
+    font-size: var(--mt-heading-font-size-xl);
+  }
+
+  h4 {
+    font-size: var(--mt-heading-font-size-m);
+  }
+}
 
 .header-colored h1,
 .header-colored h2,
@@ -308,8 +327,27 @@ p {
 
 /* Section style for P */
 .text-large p {
-  font-size: var(--mt-body-font-size-l);
-  line-height: 2.5rem;
+  font-size: var(--mt-body-font-size-mobile-l);
+  line-height: 1.95rem;
+  font-weight: 300;
+}
+
+@media (min-width: 767px) {
+  .text-large p {
+    font-size: var(--mt-body-font-size-l);
+    line-height: 2.7rem;
+  }
+}
+
+.text-medium p {
+  font-size: var(--mt-body-font-size-m);
+  line-height: 1.95rem;
+}
+
+@media (min-width: 767px) {
+  p {
+    line-height: 2.5rem;
+  }
 }
 
 .text-small p {
@@ -383,7 +421,7 @@ p {
 .logo-secondary-background h4,
 .logo-primary-background p ,
 .logo-secondary-background p {
-  line-height: 2.7rem;
+  line-height: 1.9rem;
   font-size: var(--mt-heading-font-size-l);
   font-weight: var(--mt-font-weight-thin);
   padding: 0 5%;;
@@ -417,6 +455,7 @@ p {
   .logo-secondary-background p {
     font-size: var(--mt-heading-font-size-xl);
     font-weight: var(--mt-font-weight-regular);
+    line-height: 2.7rem;
   }
 }
 
@@ -679,12 +718,6 @@ main .schedule-demo .default-content-wrapper h2 {
 .section.callout.arc-top h2,
 .section.callout.arc-top h3 {
   padding: 5% 15% 3%;
-}
-
-.section.callout .button-container {
-    text-align: center;
-    padding: 0;
-    margin: 0;
 }
 
 .section.callout .button-container a {
