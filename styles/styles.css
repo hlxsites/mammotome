@@ -142,6 +142,7 @@
   --mt-heading-font-size-l: var(--mt-font-size-130);
   --mt-heading-font-size-mobile-l: var(--mt-font-size-100);
   --mt-heading-font-size-m: var(--mt-font-size-100);
+  --mt-heading-font-size-mobile-m: var(--mt-font-size-80);
   --mt-heading-font-size-s: var(--mt-font-size-80);
   --mt-heading-font-size-xs: var(--mt-font-size-75);
   --mt-hero-font-size-s: var(--mt-font-size-130);
@@ -216,7 +217,7 @@ h3 {
 }
 
 h4 {
-  font-size: var(--mt-heading-font-size-m);
+  font-size: var(--mt-heading-font-size-mobile-m);
 }
 
 h5 {
@@ -230,6 +231,10 @@ h5 {
 
   h2 {
     font-size: var(--mt-heading-font-size-xl);
+  }
+
+  h4 {
+    font-size: var(--mt-heading-font-size-m);
   }
 }
 
