@@ -221,7 +221,7 @@ Adds a divider before or after the section.
 
 ## Spacer
 
-Adds a custom spacer in pixels at the end of a section or standalone
+Adds a custom height-spacer in pixels at the end of a section or standalone
 
 **_Example_**
 
