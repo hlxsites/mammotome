@@ -156,7 +156,8 @@
   --mt-footer-font-size-footer-l: var(--mt-font-size-100);
   --mt-prev-next-button-font-size: var(--mt-font-size-80);
   --mt-tab-navigation-font-size: var(--mt-font-size-90);
-
+  --mt-callout-font-size-desktop: var(--mt-font-size-250);
+  --mt-callout-font-size-mobile: var(--mt-font-size-200);
 
   /* history */
   --mt-our-history-color-primary: var(--mt-global-color-base-primary);
@@ -289,9 +290,6 @@ blockquote {
 
 /* UL decoration */
 .section ul {
-  list-style-type: none;
-  padding-left: 15px;
-  line-height: 30px;
   font-size: var(--mt-list-font-size);
 }
 
@@ -307,27 +305,11 @@ blockquote {
   line-height: 24px;
 }
 
-.section li {
-  padding-left: 17px;
-  position: relative;
-}
 
 .section .columns li::before {
   top: 0.8rem;
 }
 
-.section .columns li::before,
-.section .default-content-wrapper li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.5rem;
-  width: 10px;
-  height: 10px;
-  background-image: url('/styles/icons/circle.svg');
-  background-repeat: no-repeat;
-  background-size: 10px 10px;
-}
 
 sup {
   font-size: var(--mt-font-size-80);
@@ -700,25 +682,12 @@ main .section[data-section-status='initialized'] {
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
-  font-size: var(--mt-heading-font-size-xl);
-  line-height: 2.5rem;
-}
-
-@media screen and (min-width: 767px) {
-  .section.callout h1,
-  .section.callout h2,
-  .section.callout h3 {
-    font-size: var(--mt-heading-font-size-xxl);
-  }
-}
-
-.section.callout .button-container {
-    text-align: center;
-    font-size: var(--mt-heading-font-size-xxl);
-    line-height: 1.5em;
-    padding: 3% 5%;
-    margin: 0;
-    width: 100%;
+  font-size: var(--mt-callout-font-size-mobile);
+  font-weight: var(--mt-font-weight-regular);
+  line-height: 1.5em;
+  padding: 3% 5%;
+  margin: 0;
+  width: 100%;
 }
 
 main .section.our-history h2 {
@@ -873,6 +842,12 @@ main .study-request .form {
 }
 
 @media screen and (min-width: 767px) {
+  .section.callout h1,
+  .section.callout h2,
+  .section.callout h3 {
+    font-size: var(--mt-callout-font-size-desktop);
+  }
+
   main .section.our-history .year .description {
     width: 43%;
   }

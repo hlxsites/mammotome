@@ -139,6 +139,8 @@ main .columns.image-cards p:has(picture) {
   font-size: var(--mt-font-size-130);
   font-weight: 500;
   padding: 0 0 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 div[class^="columns image-color-"] > div > div:first-child.columns-img-col {
