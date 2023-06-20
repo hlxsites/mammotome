@@ -266,6 +266,8 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
+  loadCSS('/styles/fonts.css', null);
+
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();

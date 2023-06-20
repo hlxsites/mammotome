@@ -30,6 +30,11 @@ export default function decorate(block) {
 
         if (!containsHeading) {
           div.classList.add('no-heading');
+        } else {
+          // remove download icons for headings
+          div.querySelectorAll('h1, h2, h3 i.link-icon')
+            .forEach((heading) => heading.querySelectorAll('i.link-icon')
+              .forEach((icon) => icon.remove()));
         }
 
         if (action) {

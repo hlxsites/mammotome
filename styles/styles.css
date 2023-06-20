@@ -76,8 +76,8 @@
 
 
   /* fonts families */
-  --mt-body-font-family: robotoflex-regular, "robotoflex-regular-normal-400-fallback", sans-serif;
-  --mt-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
+  --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
 
   /* font weights */
   --mt-font-weight-thin: 300;
@@ -88,8 +88,8 @@
   --mt-font-weight-heavy: 900;
 
   /* feature font weights */
-  --mt-body-font-weight: var(--mt-font-weight-regular);
-  --mt-button-font-weight: var(--mt-font-weight-bolder);
+  --mt-body-font-weight: var(--mt-font-weight-thin);
+  --mt-button-font-weight: var(--mt-font-weight-boldest);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
   --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
@@ -668,6 +668,7 @@ main .section .default-content-wrapper {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
 }
 
 /* Narrow content section metadata */
@@ -682,15 +683,14 @@ main .section[data-section-status='initialized'] {
 }
 
 /* callout block */
-.section.logo-primary-background.callout,
 .section.callout {
-  padding: 0 0 8%;
+  padding: 10% 0;
 }
 
-.section.callout h1,
-.section.callout h2 {
-  padding: 3% 5%;
-  margin-bottom: 20px;
+.section.logo-primary-background.callout.arc-top,
+.section.logo-secondary-background.callout.arc-top,
+.section.callout.arc-top {
+  padding: 0 0 10%;
 }
 
 .section.callout h1,
@@ -712,9 +712,12 @@ main .section[data-section-status='initialized'] {
     text-align: center;
     padding: 0;
     margin: 0;
+  font-size: var(--mt-heading-font-size-xxl);
+  line-height: 1.5em;
+  padding: 3% 5%;
+  margin: 0;
+  width: 100%;
 }
-
-/* about-us/our-history */
 
 main .section.our-history h2 {
   text-align: center;
@@ -724,6 +727,36 @@ main .section.our-history h2 {
   text-transform: uppercase;
   letter-spacing: 4px;
   margin-bottom: 100px;
+}
+
+main .contact .default-content-wrapper h2,
+main .schedule-demo .default-content-wrapper h2 {
+  text-align: center;
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  text-transform: none;
+  margin: 0 5px;
+  padding-bottom: 40px;
+}
+
+main .schedule-demo .default-content-wrapper h2 {
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.section.callout.arc-top h1,
+.section.callout.arc-top h2,
+.section.callout.arc-top h3 {
+  padding: 5% 15% 3%;
+}
+
+.section.callout .button-container {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.section.callout .button-container a {
+  overflow: inherit;
 }
 
 main .section.our-history .year {
@@ -828,20 +861,6 @@ main .innovate .form,
 main .study-request .form {
   background-color: var(--mt-global-color-base-primary);
   padding: 2rem 0;
-}
-
-main .contact .default-content-wrapper h2,
-main .schedule-demo .default-content-wrapper h2 {
-  text-align: center;
-  font-size: var(--mt-heading-font-size-xl);
-  font-weight: var(--mt-font-weight-regular);
-  text-transform: none;
-  margin: 0 5px;
-  padding-bottom: 40px;
-}
-
-main .schedule-demo .default-content-wrapper h2 {
-  font-size: var(--mt-heading-font-size-l);
 }
 
 @media screen and (max-width: 530px) {
@@ -1032,4 +1051,11 @@ main .schedule-demo .default-content-wrapper h2 {
   background-color: var(--mt-global-horizontal-line-color);
   width: 50%;
   margin: calc(26px + 10px + 3%) auto auto;
+}
+
+.section.spacer {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
