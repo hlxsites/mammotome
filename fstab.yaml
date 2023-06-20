@@ -3,3 +3,9 @@ mountpoints:
 
 folders:
   /us/en/product-support/: /us/en/product-support-template
+  /it/it/product-support/: /it/it/product-support-template
+  /es/es/product-support/: /es/es/product-support-template
+  /de/de/product-support/: /de/de/product-support-template
+  /fr/fr/product-support/: /fr/fr/product-support-template
+  /pl/pl/product-support/: /pl/pl/product-support-template
+  /uk/en/product-support/: /uk/en/product-support-template
