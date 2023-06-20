@@ -112,7 +112,10 @@ export default {
           }
           const table = [];
           table[0] = ['Product Reference'];
-          table[1] = [as.find((a) => a.href.match(/\/product-support\/(.+)/))?.href.match(/\/product-support\/([^/]*)(\/)?/)[1]];
+          table[1] = [
+            as.find((a) => a.href.match(/\/product-support\/(.+)/))?.href.match(/\/product-support\/([^/]*)(\/)?/)[1]
+            || as.find((a) => a.href.match(/\/documentazione-sui-prodotti\/(.+)/))?.href.match(/\/documentazione-sui-prodotti\/([^/]*)(\/)?/)[1],
+          ];
           outer.replaceWith(WebImporter.DOMUtils.createTable(table, document));
         }
       } else if (top.classList.contains('elementor-section-content-middle')) {
@@ -121,10 +124,25 @@ export default {
           header += ' (image color light blue)';
         }
         const table = [[header]];
-        table.push(Array.from(top.querySelectorAll('.elementor-column').values()));
+        table.push(Array.from(top.querySelectorAll('.elementor-inner-column').values()));
         if (table.length > 1) {
           top.innerHTML = '';
           top.append(WebImporter.DOMUtils.createTable(table, document));
+        }
+      } else if (top.classList.contains('elementor-section-boxed')) {
+        let header = 'Columns';
+        if (Array.from(top.querySelectorAll('.elementor-column-wrap').values()).some((wrap) => wrap.style.backgroundImage.match(/url\(.*\/Rectangle-BG-2.svg\)/))) {
+          header += ' (image color light blue)';
+        } else {
+          header += '(centered, images small, text small)';
+        }
+        const table = [[header]];
+        table.push(Array.from(top.querySelectorAll('.elementor-inner-column').values()));
+        if (table.length > 1 && table[1].length > 0) {
+          const div = document.createElement('div');
+          table[1][0].replaceWith(div);
+          table[1].forEach((column) => column.remove());
+          div.replaceWith(WebImporter.DOMUtils.createTable(table, document));
         }
       }
 
@@ -163,6 +181,9 @@ export default {
       if (top.style['background-image'] && top.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-1.svg\)/)) {
         sectionStyle += sectionStyleDivider + 'Logo primary background';
         sectionStyleDivider = ', ';
+      } else if (top.style['background-image'] && top.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-2.svg\)/)) {
+        sectionStyle += sectionStyleDivider + 'Logo secondary background';
+        sectionStyleDivider = ', ';
       }
       if (Array.from(top.querySelectorAll('img')).some((img) => img.src.match(/.*\/Hero-curve-flipped.svg/))) {
         Array.from(top.querySelectorAll('img')).forEach((img) => img.remove());
@@ -188,11 +209,7 @@ export default {
         if (!skipBackground) {
           const img = WebImporter.DOMUtils.replaceBackgroundByImg(el, document);
           if (img !== el) {
-            if (img.src.match(/.*\/Mammotome-M_Icon-Black.svg/)) {
-              img.remove();
-            } else {
-              backgroundImage = img;
-            }
+            backgroundImage = img;
           }
         }
         if (el.style.backgroundImage === 'rgb(72, 126, 217)') {
