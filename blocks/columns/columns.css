@@ -138,7 +138,7 @@ main .columns.image-cards p:has(picture) {
   line-height: 2;
   font-size: var(--mt-font-size-130);
   font-weight: 500;
-  padding-bottom: 15px;
+  padding: 0 0 15px;
 }
 
 div[class^="columns image-color-"] > div > div:first-child.columns-img-col {

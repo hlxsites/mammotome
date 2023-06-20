@@ -581,6 +581,18 @@ export function addDivider(section, pos) {
   }
 }
 
+/** Add a spacer into section from Section Metadata block
+ * @param section section element
+ * @param heightValue height of spacer in px
+ */
+export function addSpacer(section, heightValue) {
+  const spacerHeight = parseInt(heightValue, 10) || 0;
+  const spacerDiv = document.createElement('div');
+  section.classList.add('spacer');
+  spacerDiv.setAttribute('style', `height: ${spacerHeight}px;`);
+  section.appendChild(spacerDiv);
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} main The container element
@@ -621,6 +633,10 @@ export function decorateSections(main) {
           const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
           const dividerPos = dividerMeta[0] || 'after';
           addDivider(section, dividerPos);
+        } else if (key === 'spacer') {
+          const spacerMeta = meta.spacer.split(',').map((spacer) => toClassName(spacer.trim()));
+          const spacerValue = parseInt(spacerMeta[0], 10) || '0';
+          addSpacer(section, spacerValue);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }

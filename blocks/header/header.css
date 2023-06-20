@@ -444,11 +444,11 @@ header nav input[type='search'].nav-search-input  {
   position: absolute;
   right: 60px;
   padding: 0 24px;
-  min-height: 48px;
-  height: auto;
+  min-height: 30px;
+  height: 30px;
   border-radius: 0;
   font-family: var(--mt-body-font-family);
-  font-size: var(--mt-body-font-size-m);
+  font-size: var(--mt-body-font-size-s);
   border: 2px solid var(--mt-header-search-input-color);
   outline: none;appearance: textfield;
   outline-offset: -2px;
@@ -458,6 +458,13 @@ header nav input[type='search'].nav-search-input  {
   max-width: 70%;
   text-align: left;
   z-index: 1000;
+}
+
+@media screen and (min-width: 1024px) {
+  header nav input[type='search'].nav-search-input  {
+    height: 48px;
+    min-height: 48px;
+  }
 }
 
 header nav .nav-search-result-title {

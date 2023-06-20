@@ -275,9 +275,6 @@ blockquote {
 
 /* UL decoration */
 .section ul {
-  list-style-type: none;
-  padding-left: 15px;
-  line-height: 30px;
   font-size: var(--mt-list-font-size);
 }
 
@@ -293,26 +290,9 @@ blockquote {
   line-height: 24px;
 }
 
-.section li {
-  padding-left: 17px;
-  position: relative;
-}
 
 .section .columns li::before {
   top: 0.8rem;
-}
-
-.section .columns li::before,
-.section .default-content-wrapper li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.5rem;
-  width: 10px;
-  height: 10px;
-  background-image: url('/icons/circle.svg');
-  background-repeat: no-repeat;
-  background-size: 10px 10px;
 }
 
 sup {
@@ -639,6 +619,7 @@ main .section .default-content-wrapper {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
 }
 
 /* Narrow content section metadata */
@@ -653,31 +634,25 @@ main .section[data-section-status='initialized'] {
 }
 
 /* callout block */
-.section.logo-primary-background.callout,
 .section.callout {
-  padding: 0 0 8%;
+  padding: 10% 0;
 }
 
-.section.callout h1,
-.section.callout h2 {
-  padding: 3% 5%;
-  margin-bottom: 20px;
+.section.logo-primary-background.callout.arc-top,
+.section.logo-secondary-background.callout.arc-top,
+.section.callout.arc-top {
+  padding: 0 0 10%;
 }
 
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
   font-size: var(--mt-heading-font-size-xxl);
-  line-height: 2.5rem;
+  line-height: 1.5em;
+  padding: 3% 5%;
+  margin: 0;
+  width: 100%;
 }
-
-.section.callout .button-container {
-    text-align: center;
-    padding: 0;
-    margin: 0;
-}
-
-/* about-us/our-history */
 
 main .section.our-history h2 {
   text-align: center;
@@ -687,6 +662,36 @@ main .section.our-history h2 {
   text-transform: uppercase;
   letter-spacing: 4px;
   margin-bottom: 100px;
+}
+
+main .contact .default-content-wrapper h2,
+main .schedule-demo .default-content-wrapper h2 {
+  text-align: center;
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-regular);
+  text-transform: none;
+  margin: 0 5px;
+  padding-bottom: 40px;
+}
+
+main .schedule-demo .default-content-wrapper h2 {
+  font-size: var(--mt-heading-font-size-l);
+}
+
+.section.callout.arc-top h1,
+.section.callout.arc-top h2,
+.section.callout.arc-top h3 {
+  padding: 5% 15% 3%;
+}
+
+.section.callout .button-container {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.section.callout .button-container a {
+  overflow: inherit;
 }
 
 main .section.our-history .year {
@@ -966,4 +971,11 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(--mt-global-horizontal-line-color);
   width: 50%;
   margin: calc(26px + 10px + 3%) auto auto;
+}
+
+.section.spacer {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
