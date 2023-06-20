@@ -151,7 +151,8 @@
   --mt-footer-font-size-footer-l: var(--mt-font-size-100);
   --mt-prev-next-button-font-size: var(--mt-font-size-80);
   --mt-tab-navigation-font-size: var(--mt-font-size-90);
-
+  --mt-callout-font-size-desktop: var(--mt-font-size-250);
+  --mt-callout-font-size-mobile: var(--mt-font-size-200);
 
   /* history */
   --mt-our-history-color-primary: var(--mt-global-color-base-primary);
@@ -642,7 +643,8 @@ main .section[data-section-status='initialized'] {
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
-  font-size: var(--mt-heading-font-size-xxl);
+  font-size: var(--mt-callout-font-size-mobile);
+  font-weight: var(--mt-font-weight-regular);
   line-height: 1.5em;
   padding: 3% 5%;
   margin: 0;
@@ -807,6 +809,12 @@ main .study-request .form {
 }
 
 @media screen and (min-width: 767px) {
+  .section.callout h1,
+  .section.callout h2,
+  .section.callout h3 {
+    font-size: var(--mt-callout-font-size-desktop);
+  }
+
   main .section.our-history .year .description {
     width: 43%;
   }
