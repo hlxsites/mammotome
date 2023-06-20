@@ -152,12 +152,12 @@ export default {
           const tr = [];
           if (m.tagName.toLowerCase() === 'article') {
             const img = m.querySelector('.elementor-post__thumbnail img');
-            img.parentElement.parentElement.remove();
+            img?.parentElement?.parentElement.remove();
             tr.push(img);
             tr.push(m);
           } else {
             const img = m.querySelector('.elementor-image-box-img  img');
-            img?.parentElement.parentElement.remove();
+            img?.parentElement?.parentElement.remove();
             tr.push(img);
             tr.push(m);
           }
