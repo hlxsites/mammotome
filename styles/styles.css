@@ -233,7 +233,6 @@ h5 {
   }
 }
 
-
 .header-colored h1,
 .header-colored h2,
 .header-colored h3,
@@ -710,13 +709,11 @@ main .section[data-section-status='initialized'] {
 
 .section.callout .button-container {
     text-align: center;
-    padding: 0;
+    font-size: var(--mt-heading-font-size-xxl);
+    line-height: 1.5em;
+    padding: 3% 5%;
     margin: 0;
-  font-size: var(--mt-heading-font-size-xxl);
-  line-height: 1.5em;
-  padding: 3% 5%;
-  margin: 0;
-  width: 100%;
+    width: 100%;
 }
 
 main .section.our-history h2 {
@@ -747,12 +744,6 @@ main .schedule-demo .default-content-wrapper h2 {
 .section.callout.arc-top h2,
 .section.callout.arc-top h3 {
   padding: 5% 15% 3%;
-}
-
-.section.callout .button-container {
-    text-align: center;
-    padding: 0;
-    margin: 0;
 }
 
 .section.callout .button-container a {
