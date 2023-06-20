@@ -221,11 +221,23 @@ Adds a divider before or after the section.
 
 ## Spacer
 
-Adds a custom height-spacer in pixels at the end of a section or standalone
+Adds a custom height-spacer in pixels at the end of a section or standalone.
+
+**Pro-Tip:** The Spacer can be used to overwrite the default spacing between sections. E.g.:
 
 **_Example_**
 
 | Section Metadata |                               |
 |------------------|-------------------------------|
 | spacer           | 100                           |
+
+### Section without Spacer: 
+
+![spacer-example-1.png](assets/spacer-example-1.png)
+
+### Section with additional spacer attribute. Spacer is set to 0:
+
+![spacer-example-2.png](assets/spacer-example-2.png)
+
+
 
