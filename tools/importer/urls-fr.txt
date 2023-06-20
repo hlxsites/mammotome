@@ -10,19 +10,12 @@ https://fr.mammotome.com/mentions-legales-conditions-dutilisation-en-ligne/
 https://fr.mammotome.com/mentions-legales-droit-dauteur-marque-deposee/
 https://fr.mammotome.com/mentions-legales-politique-de-confidentialite/
 https://fr.mammotome.com/panorama-solutions/
-https://fr.mammotome.com/portfolios/
 https://fr.mammotome.com/portfolios/detection-des-rayons-gamma/
 https://fr.mammotome.com/portfolios/irm/
-https://fr.mammotome.com/portfolios/mri/
-https://fr.mammotome.com/portfolios/stereotactic/
 https://fr.mammotome.com/portfolios/stereotaxique/
 https://fr.mammotome.com/portfolios/ultrason/
-https://fr.mammotome.com/portfolios/ultrasound/
 https://fr.mammotome.com/presentation-produits/
 https://fr.mammotome.com/products/breast-biopsy-markers/
-https://fr.mammotome.com/products/breast-biopsy-markers/hydromark/
-https://fr.mammotome.com/products/hydromark/
-https://fr.mammotome.com/products/mammomark-cormark/
 https://fr.mammotome.com/products/mammotome-confirm/
 https://fr.mammotome.com/products/mammotome-elite/
 https://fr.mammotome.com/products/mammotome-revolve/
@@ -35,4 +28,3 @@ https://fr.mammotome.com/products/marqueurs-de-biopsie-mammaire/mammostar/
 https://fr.mammotome.com/products/neoprobe/
 https://fr.mammotome.com/products/tru-core-ii/
 https://fr.mammotome.com/products/xpert-40/
-https://fr.mammotome.com/produits/mammomark-cormark/
