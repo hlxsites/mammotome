@@ -658,8 +658,8 @@ main .section[data-section-status='initialized'] {
   padding: 0 0 10%;
 }
 
-.section.callout h1, 
-.section.callout h2, 
+.section.callout h1,
+.section.callout h2,
 .section.callout h3 {
   font-size: var(--mt-heading-font-size-xxl);
   line-height: 1.5em;
@@ -692,8 +692,8 @@ main .schedule-demo .default-content-wrapper h2 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-.section.callout.arc-top h1, 
-.section.callout.arc-top h2, 
+.section.callout.arc-top h1,
+.section.callout.arc-top h2,
 .section.callout.arc-top h3 {
   padding: 5% 15% 3%;
 }
@@ -706,7 +706,7 @@ main .schedule-demo .default-content-wrapper h2 {
 
 .section.callout .button-container a {
   overflow: inherit;
-} 
+}
 
 main .section.our-history .year {
   position: relative;
@@ -1003,6 +1003,8 @@ main .study-request .form {
 }
 
 .section.spacer {
-  margin: 0;
-  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
