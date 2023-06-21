@@ -5,6 +5,7 @@
   --columns-image-padding: 30px;
   --columns-gap: 65px;
   --columns-link-color: #c36;
+  --columns-font-weight: var(--mt-font-weight-regular);
 }
 
 main .columns {
@@ -47,7 +48,7 @@ main .columns h2 {
 }
 
 main .columns > div p {
-  font-weight: 400;
+  font-weight: var(--columns-font-weight);
   font-size: 1rem;
   line-height: 1.5;
 }
