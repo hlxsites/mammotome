@@ -214,6 +214,7 @@ main .form button {
 main .form .field-wrapper ul {
     padding-left: 0;
     margin: 8px 0;
+    list-style-type: none;
 }
 
 main .form .field-wrapper ul li {
@@ -221,6 +222,10 @@ main .form .field-wrapper ul li {
     padding: 12px 24px;
     border: 1px solid #c02b0a;
     background: #fff9f9;
+}
+
+main .form .field-wrapper ul li:not(:first-child) {
+    margin-top: 8px;
 }
 
 main .form-submit-wrapper {
@@ -299,6 +304,7 @@ main .connectus .form-consent {
     padding: 0.375rem 0 4%;
     border-bottom: solid 2px var(--mt-global-color-gallery);   
     margin: 0;
+    line-height: normal;
 }
 
 main .connectus :is(.form-company, .form-message, .form-description, .form-consent) {

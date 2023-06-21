@@ -34,8 +34,20 @@ function constructPayload(form) {
   return { payload, attachments };
 }
 
+function showError(form, error) {
+  const ul = form.querySelector('.form-submit-wrapper > ul');
+  const li = document.createElement('li');
+  li.textContent = error;
+  ul.appendChild(li);
+}
+
+function clearError(form) {
+  const ul = form.querySelector('.form-submit-wrapper > ul');
+  ul.innerHTML = '';
+}
+
 async function submissionFailure(error, form) {
-  alert(error); // TODO define error mechansim
+  showError(form, error);
   form.setAttribute('data-submitting', 'false');
   form.querySelector('button[type="submit"]').disabled = false;
 }
@@ -83,6 +95,7 @@ async function submitForm(form, token) {
 async function handleSubmit(form) {
   if (form.getAttribute('data-submitting') !== 'true') {
     form.setAttribute('data-submitting', 'true');
+    clearError(form);
     const { grecaptcha } = window;
     if (grecaptcha) {
       grecaptcha.ready(() => {
@@ -169,6 +182,7 @@ function createSubmit(fd) {
     });
     obs.observe(wrapper);
   }
+  wrapper.appendChild(document.createElement('ul')); // for error messages
   return wrapper;
 }
 
