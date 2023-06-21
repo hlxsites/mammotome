@@ -1,4 +1,5 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
+import decorateFile from './file.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
@@ -19,13 +20,15 @@ function loadScript(url) {
 function constructPayload(form) {
   const payload = {};
   const attachments = {};
-  [...form.elements].forEach((fe) => {
-    if (fe.type === 'checkbox') {
-      if (fe.checked) payload[fe.id] = fe.value;
+  [...form.elements].filter((fe) => fe.name).forEach((fe) => {
+    if (fe.type === 'radio') {
+      if (fe.checked) payload[fe.name] = fe.value;
+    } else if (fe.type === 'checkbox') {
+      if (fe.checked) payload[fe.name] = payload[fe.name] ? `${payload[fe.name]}, ${fe.value}` : fe.value;
     } else if (fe.type === 'file' && fe.files?.length > 0) {
       attachments[fe.name] = fe.files;
-    } else if (fe.id) {
-      payload[fe.id] = fe.value;
+    } else {
+      payload[fe.name] = fe.value;
     }
   });
   return { payload, attachments };
@@ -202,6 +205,9 @@ const createSelect = withFieldWrapper((fd) => {
     const option = document.createElement('option');
     option.textContent = o.trim();
     option.value = o.trim();
+    if (fd.Value === o.trim()) {
+      option.selected = true;
+    }
     select.append(option);
   });
   return select;
@@ -219,6 +225,15 @@ const createOutput = withFieldWrapper((fd) => {
   output.dataset.fieldset = fd.Fieldset ? fd.Fieldset : '';
   output.innerText = fd.Value;
   return output;
+});
+
+const createFile = withFieldWrapper((fd) => {
+  const input = createInput(fd);
+  input.accept = fd.Accept || '';
+  if (fd.Multiple && fd.Multiple.toLowerCase() === 'true') {
+    input.setAttribute('multiple', '');
+  }
+  return input;
 });
 
 function createHidden(fd) {
@@ -281,6 +296,7 @@ const fieldRenderers = {
   hidden: createHidden,
   fieldset: createFieldSet,
   plaintext: createPlainText,
+  file: createFile,
 };
 
 function renderField(fd) {
@@ -321,13 +337,13 @@ async function createForm(formURL) {
   data.forEach((fd) => {
     const el = renderField(fd);
     const input = el.querySelector('input,textarea,select');
-    if (fd.Mandatory && fd.Mandatory.toLowerCase() === 'true') {
-      input.setAttribute('required', 'required');
-    }
     if (input) {
       input.id = fd.Id;
       input.name = fd.Name;
       input.value = fd.Value;
+      if (fd.Mandatory && fd.Mandatory.toLowerCase() === 'true') {
+        input.setAttribute('required', '');
+      }
       if (fd.Description) {
         input.setAttribute('aria-describedby', `${fd.Id}-description`);
       }
@@ -335,6 +351,7 @@ async function createForm(formURL) {
     form.append(el);
   });
   groupFieldsByFieldSet(form);
+  decorateFile(form);
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {

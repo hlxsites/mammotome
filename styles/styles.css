@@ -13,6 +13,7 @@
   font-family: "robotoflex-regular-normal-400-fallback";
   size-adjust: 98%;
   src: local("Arial");
+  font-display: swap;
 }
 
 :root {
@@ -26,6 +27,7 @@
   --mt-global-color-accent-quinary: #84329b;
   --mt-global-color-accent-senary: #777;
   --mt-global-color-black: #000;
+  --mt-global-color-charcoal: #333;
   --mt-global-color-white: #fff;
   --mt-global-color-orange: #ff5f3f;
   --mt-global-color-oslo-gray: #818a91;
@@ -37,6 +39,7 @@
   --mt-global-color-gallery: #ECECEC;
   --mt-global-color-accent-grey: #BFBFBF;
   --mt-global-color-line-grey: #D5D8DC;
+  --mt-global-color-red: #c36;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
@@ -78,6 +81,7 @@
   /* fonts families */
   --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
+  --mt-form-font-family: var(--mt-body-font-family);
 
   /* font weights */
   --mt-font-weight-thin: 300;
@@ -106,6 +110,7 @@
   --mt-font-size-125: 1.25rem;
   --mt-font-size-130: 1.3rem;
   --mt-font-size-150: 1.5rem;
+  --mt-font-size-162: 1.625rem;
   --mt-font-size-175: 1.75rem;
   --mt-font-size-180: 1.80rem;
   --mt-font-size-185: 1.85rem;
@@ -310,7 +315,6 @@ blockquote {
   top: 0.8rem;
 }
 
-
 sup {
   font-size: var(--mt-font-size-80);
   vertical-align: top;
@@ -477,6 +481,7 @@ pre {
 
 main {
   overflow: hidden;
+
 }
 
 main pre {
@@ -753,9 +758,8 @@ main .section.our-history .year h3 {
   color: var(--mt-background-color-primary);
 }
 
-main .contact .default-content-wrapper p,
-main .schedule-demo .default-content-wrapper p {
-  font-size: var(--mt-heading-font-size-m);
+.section.arc-after-section p { 
+  text-align: left;
 }
 
 main .section.our-history .year .description p {
@@ -814,25 +818,10 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(--mt-our-history-color-primary);
 }
 
-main:has(.schedule-demo, .contact) {
-  padding: 05% 0 10%;
-  background-color: var(--mt-global-color-base-primary);
-  background-position: top center;
-  background-repeat: repeat;
-  background-size: 60px auto;
-}
-
-main .innovate .form,
-main .study-request .form {
-  background-color: var(--mt-global-color-base-primary);
-  padding: 2rem 0;
-}
-
 @media screen and (max-width: 530px) {
   main .section.our-history .year:first-of-type::after {
     top: -5%;
   }
-
 }
 
 @media screen and (max-width: 767px) {
@@ -1003,7 +992,8 @@ main .study-request .form {
 
 /* Position preceding content */
 .section.arc-after-section {
-  margin-top: -20%;
+  margin-top: -13%;
+  position: relative;
 }
 
 /* Smaller space for hero light */
