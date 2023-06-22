@@ -199,6 +199,7 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 
   main .columns > div {
     flex-direction: unset;
+    gap: var(--columns-gap);
   }
 
   main .columns > div > div {
