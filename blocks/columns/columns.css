@@ -73,6 +73,11 @@ main .columns > div {
   align-items: center;
 }
 
+main .columns-3-cols .button sup {
+  font-size: 75%;
+  top: -0.35rem;
+}
+
 /* Adds additional margins to avoid overflow of text into hero arc */
 main .columns .hero-arc-margin {
   margin-top: 20%;
