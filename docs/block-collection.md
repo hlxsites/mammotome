@@ -2,7 +2,7 @@
 
 This is a collection of blocks, specifically developed as part of the Mammotome Franklin project.
 
-- Hero Block
+- [Hero](blocks/hero.md)
 - [Columns](blocks/columns.md)
 - [Cards](blocks/cards.md)
 - [Carousel](blocks/carousel.md)
@@ -10,6 +10,7 @@ This is a collection of blocks, specifically developed as part of the Mammotome 
 - [Tab Navigation](blocks/tab-nav.md)
 - [Previous-Next Navigation](blocks/prevnext.md)
 - [SoundCloud](blocks/soundcloud.md)
+
 ### ProductDB related blocks:
 
 - [IFUS](blocks/ifus.md)
