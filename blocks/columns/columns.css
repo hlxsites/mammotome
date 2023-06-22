@@ -5,7 +5,6 @@
   --columns-image-padding: 30px;
   --columns-gap: 65px;
   --columns-link-color: #c36;
-  --columns-font-weight: var(--mt-font-weight-regular);
 }
 
 main .columns {
@@ -23,10 +22,6 @@ main .columns h6,
 main .columns p {
  text-align: left;
   position: relative;
-}
-
-main .section.columns-container {
-  padding: 10% 5%;
 }
 
 main .columns h4 {
@@ -48,8 +43,8 @@ main .columns h2 {
 }
 
 main .columns > div p {
-  font-weight: var(--columns-font-weight);
-  font-size: 1rem;
+  font-weight: 300;
+  font-size: 1.3rem;
   line-height: 1.5;
 }
 
@@ -61,6 +56,11 @@ main .columns.centered h5,
 main .columns.centered h6,
 main .columns.centered p {
   text-align: center;
+}
+
+main .columns a:not(.button) {
+    color: var(--columns-link-color);
+    font-size: 1rem;
 }
 
 main .columns sup {
@@ -131,6 +131,8 @@ main .columns.simple > div {
 main .columns > div > .columns-img-col {
   order: 1;
   position: relative;
+  margin-bottom: 10%;
+  padding: 7% 0;
 }
 
 main .columns.image-cards p:has(picture) {
@@ -183,20 +185,6 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
   background-color: var(--mt-global-color-light-blue);
 }
 
-.columns .columns-img {
-  padding: 5% 0 10%;
-}
-
-@media (min-width: 768px) {
-  main .section.columns-container {
-    padding: 5%;
-  }
-
-  .columns .columns-img {
-    padding: 5% 15%;
-  }
-}
-
 @media (min-width: 900px) {
   main .columns h2 {
     font-size: 1rem;
@@ -204,6 +192,11 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 
   main .columns > div {
     flex-direction: unset;
+    gap: var(--columns-gap);
+  }
+
+  main .columns > div p {
+    font-size: 1.8rem;
   }
 
   main .columns > div > div {
