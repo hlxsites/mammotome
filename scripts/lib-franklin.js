@@ -837,7 +837,7 @@ export function decorateButtons(element) {
       if (a.href !== a.textContent && !a.querySelector('img')) {
         const parent = a.parentElement;
         const grandparent = parent.parentElement;
-        if (a.href.includes('.pdf') && parent.tagName === 'div' && parent.classList.contains('button-container')) {
+        if (a.href.includes('.pdf') && parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
           const icon = document.createElement('i');
           icon.classList.add('link-icon');
           icon.innerHTML = PDF_ICON;

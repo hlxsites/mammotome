@@ -108,7 +108,7 @@ export default async function decorate(block) {
       createDomStructure(assets.map((asset) => (
         {
           type: 'div',
-          classes: ['link'],
+          classes: ['link', 'button-container'],
           children: [
             {
               type: 'a',
