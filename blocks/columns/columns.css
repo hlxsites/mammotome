@@ -5,6 +5,7 @@
   --columns-image-padding: 30px;
   --columns-gap: 65px;
   --columns-link-color: #c36;
+  --mt-ordered-list-font-size: var(--mt-font-size-80);
   --columns-font-weight: var(--mt-font-weight-regular);
 }
 
@@ -12,6 +13,20 @@ main .columns {
   max-width: var(--columns-max-width);
   margin: auto;
   padding: 5% 0;
+}
+
+main .columns ol {
+  font-size: var(--mt-ordered-list-font-size);
+  padding-left: 15px;
+}
+
+main .columns a:not(.button) {
+  color: var(--columns-link-color);
+  font-size: 1rem;
+}
+
+main .columns ol li a:not(.button) {
+  font-size: var(--mt-ordered-list-font-size);
 }
 
 main .columns h1,
@@ -48,8 +63,8 @@ main .columns h2 {
 }
 
 main .columns > div p {
-  font-weight: var(--columns-font-weight);
-  font-size: 1rem;
+  font-weight: 300;
+  font-size: 1.3rem;
   line-height: 1.5;
 }
 
@@ -63,14 +78,15 @@ main .columns.centered p {
   text-align: center;
 }
 
-main .columns sup {
-  font-size: 1rem;
-}
-
 main .columns > div {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+main .columns-3-cols .button sup {
+  font-size: 75%;
+  top: -0.35rem;
 }
 
 /* Adds additional margins to avoid overflow of text into hero arc */
@@ -86,6 +102,7 @@ main .columns .hero-arc-margin {
 
 main .columns > div > div {
   order: 0;
+  width: 95%;
 }
 
 main .columns.centered > div {
@@ -200,6 +217,10 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
   main .columns > div {
     flex-direction: unset;
     gap: var(--columns-gap);
+  }
+
+  main .columns > div p {
+    font-size: 1.8rem;
   }
 
   main .columns > div > div {
