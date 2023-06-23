@@ -29,6 +29,16 @@ main .columns ol li a:not(.button) {
   font-size: var(--mt-ordered-list-font-size);
 }
 
+.accent-primary-solid-background .columns a:any-link,
+.accent-quinary-solid-background .columns a:any-link,
+.accent-secondary-blur-overlay .columns a:any-link,
+.base-primary-blur-overlay .columns a:any-link,
+.gradient-primary-blur-overlay .columns a:any-link,
+.gradient-secondary-blur-overlay .columns a:any-link,
+.logo-primary-background .columns a:any-link {
+  color: var(--mt-text-color-inverted);
+}
+
 main .columns h1,
 main .columns h2,
 main .columns h3,
