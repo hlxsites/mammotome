@@ -123,22 +123,43 @@ export default {
       const boxed = Array.from(top.querySelectorAll('.elementor-widget-image-box').values()).map((el) => (el.parentElement.classList.contains('elementor-widget-wrap') ? el.parentElement : el));
       // TODO move to separate file
       const box2 = top.querySelectorAll('.elementor-element article');
-
-      if (sectionCount > 0 && boxed.length === 0) {
-        let isColum = false;
+      const isCarousel = top.querySelector('.elementor-widget-media-carousel');
+      const isCards = (boxed.length > 0) || box2.length > 0 ;
+      if (isCarousel) {
+        const table = [['Carousel']];
+        const columns = top.querySelectorAll('.elementor-inner-section .elementor-row .elementor-column');
+        const col1 = document.createElement('div');
+        columns[1]?.querySelectorAll('.swiper-slide').forEach((slide) => {
+          if (slide.querySelector('a')){
+            // video
+          } else {
+            const img = slide.querySelector('.elementor-carousel-image');
+            const imgUrlWrapper = img.style.backgroundImage;
+            if (imgUrlWrapper){
+              const url = imgUrlWrapper.substring(4, imgUrlWrapper.length-1);
+              if (url) {
+                let imgElem = WebImporter.DOMUtils.replaceBackgroundByImg(img, document);
+                col1.append(imgElem);
+              }
+            }
+          }
+        })
+        const rowElem = [columns[0], col1];
+        table.push(rowElem);
+        top.querySelector('.elementor-inner-section')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+      } else if (sectionCount > 0 && !isCards) {
         let header = 'Columns';
         if (Array.from(top.querySelectorAll('.elementor-column-wrap').values()).some((wrap) => wrap.style.backgroundImage.match(/url\(.*\/Rectangle-BG-2.svg\)/))) {
           header += ' (image color light blue)';
-          isColum = true;
         }
         const table = [[header]];
         top.querySelectorAll('.elementor-inner-section .elementor-row').forEach((row) => {
           const rowElem = [];
-          row.querySelectorAll('.elementor-column').forEach( (col) => {
+          row.querySelectorAll('.elementor-column').forEach((col) => {
             if (!col.querySelector('.elementor-heading-title')) {
               rowElem.push(col);
             }
-          })
+          });
           table.push(rowElem);
         });
         top.querySelector('.elementor-inner-section')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
@@ -146,7 +167,7 @@ export default {
       const parentContainer = box2[0]?.closest('.elementor-element');
       if (parentContainer) {
         const gridClass = Array.from(parentContainer.classList).find((cls) => cls.startsWith('elementor-grid-'));
-        const numColumns = gridClass ? parseInt(gridClass.substring('elementor-grid-'.length)) : 2;
+        const numColumns = gridClass ? parseInt(gridClass.substring('elementor-grid-'.length), 10) : 2;
         let cardHeader = ['Cards'];
         switch (numColumns) {
           case 3:
@@ -168,7 +189,7 @@ export default {
             tr.push(img);
             tr.push(m);
           }
-        table.push(tr);
+          table.push(tr);
         });
         parentContainer.replaceWith(WebImporter.DOMUtils.createTable(table, document));
       }
