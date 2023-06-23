@@ -3,6 +3,35 @@
 Sections are a way to group default content and blocks by the author. Most of the time section breaks are introduced
 based on visual differences between sections such as a different background color for a part of a page.
 
+* [Section Metadata](#section-metadata)
+* [Usage](#usage)
+  * [Style](#style)
+    * [Header](#header)
+    * [Text](#text)
+    * [Background styles](#background-styles)
+      * [Logo Primary background](#logo-primary-background)
+      * [Logo secondary background](#logo-secondary-background)
+      * [Accent Primary solid background](#accent-primary-solid-background)
+      * [Accent quinary solid background](#accent-quinary-solid-background-)
+      * [Background Image](#background-image)
+      * [Base primary blur overlay](#base-primary-blur-overlay)
+      * [Base secondary blur overlay](#base-secondary-blur-overlay)
+      * [Accent secondary blur overlay](#accent-secondary-blur-overlay)
+      * [Gradient primary blur overlay](#gradient-primary-blur-overlay)
+      * [Gradient secondary blur overlay](#gradient-secondary-blur-overlay)
+      * [Arc top](#arc-top)
+      * [Callout](#callout)
+      * [Narrow](#narrow)
+  * [Divider](#divider)
+  * [Spacer](#spacer)
+    * [Example](#example)
+      * [After Section:](#after-section)
+      * [Before Section:](#before-section)
+      * [After AND before Section](#after-and-before-section)
+    * [Section without Spacer:](#section-without-spacer-)
+    * [Section with additional spacer attribute. Spacer is set to 0:](#section-with-additional-spacer-attribute-spacer-is-set-to-0)
+
+
 # Usage
 
 A Section is represented by a leading `---` and a trailing `---`. The Section Metadata Table is being added at the end of the section.
@@ -221,15 +250,36 @@ Adds a divider before or after the section.
 
 ## Spacer
 
-Adds a custom height-spacer in pixels at the end of a section or standalone.
+Adds a custom height-spacer in pixels at the beginning and/or end of a section or standalone.
 
 **Pro-Tip:** The Spacer can be used to overwrite the default spacing between sections. E.g.:
 
-**_Example_**
+### Example
+
+#### After Section:
 
 | Section Metadata |                               |
 |------------------|-------------------------------|
 | spacer           | 100                           |
+
+or
+
+| Section Metadata |           |
+|------------------|-----------|
+| spacer           | 100,after |
+
+#### Before Section:
+
+| Section Metadata |            |
+|------------------|------------|
+| spacer           | 100,before |
+
+#### After AND before Section
+
+| Section Metadata |                  |
+|------------------|------------------|
+| spacer           | 100,after,before |
+
 
 ### Section without Spacer: 
 
