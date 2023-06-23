@@ -124,26 +124,28 @@ export default {
       // TODO move to separate file
       const box2 = top.querySelectorAll('.elementor-element article');
       const isCarousel = top.querySelector('.elementor-widget-media-carousel');
-      const isCards = (boxed.length > 0) || box2.length > 0 ;
+      const isCards = (boxed.length > 0) || box2.length > 0;
       if (isCarousel) {
         const table = [['Carousel']];
         const columns = top.querySelectorAll('.elementor-inner-section .elementor-row .elementor-column');
         const col1 = document.createElement('div');
+        const imgUrls = [];
         columns[1]?.querySelectorAll('.swiper-slide').forEach((slide) => {
-          if (slide.querySelector('a')){
+          if (slide.querySelector('a')) {
             // video
           } else {
             const img = slide.querySelector('.elementor-carousel-image');
             const imgUrlWrapper = img.style.backgroundImage;
-            if (imgUrlWrapper){
-              const url = imgUrlWrapper.substring(4, imgUrlWrapper.length-1);
-              if (url) {
-                let imgElem = WebImporter.DOMUtils.replaceBackgroundByImg(img, document);
+            if (imgUrlWrapper) {
+              const url1 = imgUrlWrapper.substring(4, imgUrlWrapper.length - 1);
+              if (url1 && !imgUrls.includes(url1)) {
+                imgUrls.push(url1);
+                const imgElem = WebImporter.DOMUtils.replaceBackgroundByImg(img, document);
                 col1.append(imgElem);
               }
             }
           }
-        })
+        });
         const rowElem = [columns[0], col1];
         table.push(rowElem);
         top.querySelector('.elementor-inner-section')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
@@ -215,27 +217,27 @@ export default {
       let backgroundImage;
 
       if (top.style['background-image'] && top.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-1.svg\)/)) {
-        sectionStyle += sectionStyleDivider + 'Logo primary background';
+        sectionStyle += `${sectionStyleDivider}Logo primary background`;
         sectionStyleDivider = ', ';
       } else if (top.style['background-image'] && top.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-2.svg\)/)) {
-        sectionStyle += sectionStyleDivider + 'Logo secondary background';
+        sectionStyle += `${sectionStyleDivider}Logo primary background`;
         sectionStyleDivider = ', ';
       }
       if (Array.from(top.querySelectorAll('img')).some((img) => img.src.match(/.*\/Hero-curve-flipped.svg/))) {
         Array.from(top.querySelectorAll('img')).forEach((img) => img.remove());
-        sectionStyle += sectionStyleDivider + 'arc top';
+        sectionStyle += `${sectionStyleDivider}arc top`;
         sectionStyleDivider = ', ';
       }
       let skipBackground = false;
       if (top.querySelector('.elementor-background-overlay')) {
         const el = top.querySelector('.elementor-background-overlay');
         if (el.style.backgroundColor === 'rgb(72, 126, 217)') {
-          sectionStyle += sectionStyleDivider + 'accent secondary blur overlay';
+          sectionStyle += `${sectionStyleDivider}accent secondary blur overlay`;
           sectionStyleDivider = ', ';
         } else if (el.style.backgroundColor === 'rgb(255, 255, 255)') {
           skipBackground = true;
         } else if (el.style.backgroundColor === 'rgba(0, 0, 0, 0)') {
-          sectionStyle += sectionStyleDivider + 'gradient secondary blur overlay';
+          sectionStyle += `${sectionStyleDivider}gradient secondary blur overlay`;
           sectionStyleDivider = ', ';
         }
       }
@@ -249,41 +251,41 @@ export default {
           }
         }
         if (el.style.backgroundImage === 'rgb(72, 126, 217)') {
-          sectionStyle += sectionStyleDivider + 'Base secondary blur overlay';
+          sectionStyle += `${sectionStyleDivider}Base secondary blur overlay`;
           sectionStyleDivider = ', ';
         }
       }
 
       if (top.style.backgroundColor === 'rgb(95, 141, 218)') {
-        sectionStyle += sectionStyleDivider + 'Base secondary solid background';
+        sectionStyle += `${sectionStyleDivider}Base secondary solid background`;
         sectionStyleDivider = ', ';
       }
 
       if (top.querySelector('.elementor-heading-title')) {
         const el = top.querySelector('.elementor-heading-title');
         if (el.style.textTransform === 'uppercase') {
-          sectionStyle += sectionStyleDivider + 'header-uppercase';
+          sectionStyle += `${sectionStyleDivider}header-uppercase`;
           sectionStyleDivider = ', ';
         }
         if (el.style.letterSpacing === '4px') {
-          sectionStyle += sectionStyleDivider + 'text-wide';
+          sectionStyle += `${sectionStyleDivider}text-wide`;
           sectionStyleDivider = ', ';
         }
         if (el.style.fontSize === '28.799999px') {
-          sectionStyle += sectionStyleDivider + 'text-large';
+          sectionStyle += `${sectionStyleDivider}text-large`;
           sectionStyleDivider = ', ';
         }
         if (el.style.color === 'rgb(255, 255, 255)') {
-          sectionStyle += sectionStyleDivider + 'inverted text';
+          sectionStyle += `${sectionStyleDivider}inverted text`;
           sectionStyleDivider = ', ';
         }
         if (el.style.color === 'rgb(132, 50, 155)') {
-          sectionStyle += sectionStyleDivider + 'header-colored';
+          sectionStyle += `${sectionStyleDivider}header-colored`;
           sectionStyleDivider = ', ';
         }
       } else if (top.querySelector('p')) {
         if (top.querySelector('p').style.color === 'rgb(255, 255, 255)') {
-          sectionStyle += sectionStyleDivider + 'inverted text';
+          sectionStyle += `${sectionStyleDivider}inverted text`;
           sectionStyleDivider = ', ';
         }
       }
