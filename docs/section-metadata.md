@@ -3,6 +3,7 @@
 Sections are a way to group default content and blocks by the author. Most of the time section breaks are introduced
 based on visual differences between sections such as a different background color for a part of a page.
 
+<!-- TOC -->
 * [Section Metadata](#section-metadata)
 * [Usage](#usage)
   * [Style](#style)
@@ -24,12 +25,12 @@ based on visual differences between sections such as a different background colo
       * [Narrow](#narrow)
   * [Divider](#divider)
   * [Spacer](#spacer)
-    * [Example](#example)
-      * [After Section:](#after-section)
-      * [Before Section:](#before-section)
-      * [After AND before Section](#after-and-before-section)
-    * [Section without Spacer:](#section-without-spacer-)
+    * [After Section](#after-section)
+    * [Before Section](#before-section)
+    * [After AND before Section](#after-and-before-section)
+    * [Section without Spacer](#section-without-spacer-)
     * [Section with additional spacer attribute. Spacer is set to 0:](#section-with-additional-spacer-attribute-spacer-is-set-to-0)
+<!-- TOC -->
 
 
 # Usage
@@ -252,11 +253,9 @@ Adds a divider before or after the section.
 
 Adds a custom height-spacer in pixels at the beginning and/or end of a section or standalone.
 
-**Pro-Tip:** The Spacer can be used to overwrite the default spacing between sections. E.g.:
+**Pro-Tip:** The Spacer can be used to overwrite the default spacing between sections.
 
-### Example
-
-#### After Section:
+### After Section
 
 | Section Metadata |                               |
 |------------------|-------------------------------|
@@ -268,20 +267,20 @@ or
 |------------------|-----------|
 | spacer           | 100,after |
 
-#### Before Section:
+### Before Section
 
 | Section Metadata |            |
 |------------------|------------|
 | spacer           | 100,before |
 
-#### After AND before Section
+### After AND before Section
 
 | Section Metadata |                  |
 |------------------|------------------|
 | spacer           | 100,after,before |
 
 
-### Section without Spacer: 
+### Section without Spacer 
 
 ![spacer-example-1.png](assets/spacer-example-1.png)
 
