@@ -584,13 +584,18 @@ export function addDivider(section, pos) {
 /** Add a spacer into section from Section Metadata block
  * @param section section element
  * @param heightValue height of spacer in px
+ * @param position after or before
  */
-export function addSpacer(section, heightValue) {
+export function addSpacer(section, heightValue, position) {
   const spacerHeight = parseInt(heightValue, 10) || 0;
   const spacerDiv = document.createElement('div');
   section.classList.add('spacer');
   spacerDiv.setAttribute('style', `height: ${spacerHeight}px;`);
-  section.appendChild(spacerDiv);
+  if (position === 'before') {
+    section.insertBefore(spacerDiv, section.firstChild);
+  } else if (position === 'after') {
+    section.appendChild(spacerDiv);
+  }
 }
 
 /**
@@ -636,7 +641,16 @@ export function decorateSections(main) {
         } else if (key === 'spacer') {
           const spacerMeta = meta.spacer.split(',').map((spacer) => toClassName(spacer.trim()));
           const spacerValue = parseInt(spacerMeta[0], 10) || '0';
-          addSpacer(section, spacerValue);
+          if (spacerMeta.length > 1) {
+            const spacerPositions = spacerMeta.slice(1, spacerMeta.length);
+            spacerPositions.forEach((position) => {
+              addSpacer(section, spacerValue, position.trim());
+            });
+          } else {
+            addSpacer(section, spacerValue, 'after');
+          }
+
+          // addSpacer(section, spacerValue);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
