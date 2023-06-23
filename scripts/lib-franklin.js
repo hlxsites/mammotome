@@ -336,22 +336,23 @@ export async function translate(key, defaultText) {
   return defaultText;
 }
 
-export function decorateSupScript(string, result = []) {
+export function decorateSupScript(string, result = [], inside = false) {
   if (!string) {
     return result;
   }
 
-  const idx = string.search(/®|™/);
+  const idx = string.search(/®|™|©/);
 
   if (idx !== -1) {
+    const sup = string.substr(idx, 1);
     result.push(
       {
         type: 'span',
         textContent: string.substr(0, idx),
       },
       {
-        type: 'sup',
-        textContent: string.substr(idx, 1),
+        type: inside ? 'span' : 'sup',
+        textContent: sup === '™' ? 'TM' : sup,
       },
     );
 
@@ -364,6 +365,44 @@ export function decorateSupScript(string, result = []) {
   });
 
   return result;
+}
+
+function walkNodeTree(root, { inspect, collect, callback } = {}) {
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ALL,
+    {
+      acceptNode(node) {
+        if (inspect && !inspect(node)) { return NodeFilter.FILTER_REJECT; }
+        if (collect && !collect(node)) { return NodeFilter.FILTER_SKIP; }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    },
+  );
+
+  let n = walker.nextNode();
+  while (n) {
+    const next = walker.nextNode();
+    callback?.(n);
+    n = next;
+  }
+}
+
+export function decorateSupScriptInTextBelow(el) {
+  return walkNodeTree(el, {
+    inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
+    collect: (n) => (n.nodeType === Node.TEXT_NODE),
+    callback: (n) => {
+      const result = decorateSupScript(n.textContent, [], n.parentElement.tagName === 'SUP');
+      if (result.length > 1) {
+        const replacementNode = document.createElement('span');
+        const newHtml = result.filter((p) => p.textContent !== '').map((p) => `<${p.type}>${p.textContent}</${p.type}>`).join('');
+        n.parentNode.insertBefore(replacementNode, n);
+        n.parentNode.removeChild(n);
+        replacementNode.outerHTML = newHtml;
+      }
+    },
+  });
 }
 
 export function getInfo() {

@@ -15,6 +15,7 @@ import {
   createMetadata,
   getMetadata,
   toClassName,
+  decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
 import {
@@ -198,6 +199,7 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
+  decorateSupScriptInTextBelow(main);
 
   if (main.querySelector('.section.our-history')) {
     decorateHistorySection(main);
