@@ -323,6 +323,18 @@ sup {
   top: -0.65em;
 }
 
+sup.tm {
+  letter-spacing: 0;
+  font-size: 8px;
+  top: -0.4rem;
+}
+
+sup > span.tm {
+  letter-spacing: 0;
+  font-size: 8px;
+  top: 0.25rem;
+}
+
 p {
   font-size: var(--mt-body-font-size-s);
   line-height: var(--mt-body-line-height);
