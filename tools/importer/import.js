@@ -132,20 +132,20 @@ export default {
           isColum = true;
         }
         const table = [[header]];
-        top.querySelectorAll('.elementor-inner-section .elementor-row').forEach( (row) => {
-            const rowElem = [];
-            row.querySelectorAll('.elementor-column').forEach( col => {
-              if (!col.querySelector('.elementor-heading-title')) {
-               rowElem.push(col);
-              }
-            })
-            table.push(rowElem);
+        top.querySelectorAll('.elementor-inner-section .elementor-row').forEach((row) => {
+          const rowElem = [];
+          row.querySelectorAll('.elementor-column').forEach( (col) => {
+            if (!col.querySelector('.elementor-heading-title')) {
+              rowElem.push(col);
+            }
+          })
+          table.push(rowElem);
         });
         top.querySelector('.elementor-inner-section')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
       }
       const parentContainer = box2[0]?.closest('.elementor-element');
       if (parentContainer) {
-        const gridClass = Array.from(parentContainer.classList).find(cls => cls.startsWith('elementor-grid-'));
+        const gridClass = Array.from(parentContainer.classList).find((cls) => cls.startsWith('elementor-grid-'));
         const numColumns = gridClass ? parseInt(gridClass.substring('elementor-grid-'.length)) : 2;
         let cardHeader = ['Cards'];
         switch (numColumns) {
@@ -169,7 +169,7 @@ export default {
             tr.push(m);
           }
         table.push(tr);
-      });
+        });
         parentContainer.replaceWith(WebImporter.DOMUtils.createTable(table, document));
       }
 
