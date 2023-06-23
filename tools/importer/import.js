@@ -132,13 +132,16 @@ export default {
           isColum = true;
         }
         const table = [[header]];
-        table.push(Array.from(top.querySelectorAll('.elementor-column').values()).filter((c) => isColum || !c.querySelector('.elementor-heading-title')));
-        if (table.length > 1 && table[1].length > 1) {
-          const div = document.createElement('div');
-          table[1][0].replaceWith(div);
-          table[1].forEach((column) => column.remove());
-          div.replaceWith(WebImporter.DOMUtils.createTable(table, document));
-        }
+        top.querySelectorAll('.elementor-inner-section .elementor-row').forEach( (row) => {
+            const rowElem = [];
+            row.querySelectorAll('.elementor-column').forEach( col => {
+              if (!col.querySelector('.elementor-heading-title')) {
+               rowElem.push(col);
+              }
+            })
+            table.push(rowElem);
+        });
+        top.querySelector('.elementor-inner-section')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
       }
       const parentContainer = box2[0]?.closest('.elementor-element');
       if (parentContainer) {
