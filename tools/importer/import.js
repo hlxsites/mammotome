@@ -125,7 +125,15 @@ export default {
       const box2 = top.querySelectorAll('.elementor-element article');
       const isCarousel = top.querySelector('.elementor-widget-media-carousel');
       const isCards = (boxed.length > 0) || box2.length > 0;
-      if (isCarousel) {
+      const videoElem = top.querySelector('.elementor-custom-embed-image-overlay');
+      if (videoElem) {
+        const table = [['Video']];
+        const videoThumb = videoElem.querySelector('img');
+        const videoUrl = JSON.parse(videoElem.dataset.elementorLightbox).url;
+        const rowElem = [top.querySelector('.elementor-text-editor'), videoUrl, videoThumb];
+        table.push(rowElem);
+        top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+      } else if (isCarousel) {
         const table = [['Carousel']];
         const columns = top.querySelectorAll('.elementor-inner-section .elementor-row .elementor-column');
         const col1 = document.createElement('div');
