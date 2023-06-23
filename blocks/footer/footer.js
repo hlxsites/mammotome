@@ -1,4 +1,4 @@
-import { decorateIcons, getMetadata } from '../../scripts/lib-franklin.js';
+import { decorateIcons, decorateSupScriptInTextBelow, getMetadata } from '../../scripts/lib-franklin.js';
 
 /**
  * loads and decorates the footer
@@ -17,6 +17,7 @@ export default async function decorate(block) {
     footer.innerHTML = html;
 
     await decorateIcons(footer);
+    decorateSupScriptInTextBelow(footer);
     block.append(footer);
   }
 }

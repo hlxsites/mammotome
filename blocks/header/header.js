@@ -7,6 +7,7 @@ import {
   createDomStructure,
   decorateSupScript,
   getInfo,
+  decorateSupScriptInTextBelow,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -450,6 +451,7 @@ export default async function decorate(block) {
 
     await decorateIcons(nav);
     await decorateSearch(nav);
+    decorateSupScriptInTextBelow(nav);
     // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
 

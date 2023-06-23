@@ -41,10 +41,6 @@
   overflow: hidden;
 }
 
-.product-list sup {
-  top: 0;
-}
-
 @media (min-width: 1025px) {
   .product-list {
     flex-direction: row;
