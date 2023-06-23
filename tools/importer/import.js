@@ -121,7 +121,8 @@ export default {
       }
 
       const boxed = Array.from(top.querySelectorAll('.elementor-widget-image-box').values()).map((el) => (el.parentElement.classList.contains('elementor-widget-wrap') ? el.parentElement : el));
-      boxed.push(...Array.from(top.querySelectorAll('article').values()));
+      // TODO move to separate file
+      const box2 = top.querySelectorAll('.elementor-element article');
 
       if (sectionCount > 0 && boxed.length === 0) {
         let isColum = false;
@@ -139,15 +140,23 @@ export default {
           div.replaceWith(WebImporter.DOMUtils.createTable(table, document));
         }
       }
-
-
-      if (boxed.length > 0) {
-        const div = document.createElement('div');
-        boxed[0].replaceWith(div);
-
-        const table = [['Cards']];
-
-        boxed.forEach((m) => {
+      const parentContainer = box2[0]?.closest('.elementor-element');
+      if (parentContainer) {
+        const gridClass = Array.from(parentContainer.classList).find(cls => cls.startsWith('elementor-grid-'));
+        const numColumns = gridClass ? parseInt(gridClass.substring('elementor-grid-'.length)) : 2;
+        let cardHeader = ['Cards'];
+        switch (numColumns) {
+          case 3:
+            cardHeader = ['Cards (three-columns)'];
+            break;
+          case 4:
+            cardHeader = ['Cards (four-columns)'];
+            break;
+          default:
+            cardHeader = ['Cards (two-columns)'];
+        }
+        const table = [cardHeader];
+        box2.forEach((m) => {
           m.remove();
           const tr = [];
           if (m.tagName.toLowerCase() === 'article') {
@@ -155,12 +164,23 @@ export default {
             img?.parentElement?.parentElement.remove();
             tr.push(img);
             tr.push(m);
-          } else {
-            const img = m.querySelector('.elementor-image-box-img  img');
-            img?.parentElement?.parentElement.remove();
-            tr.push(img);
-            tr.push(m);
           }
+        table.push(tr);
+      });
+        parentContainer.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+      }
+
+      const table = [['Cards']];
+      if (boxed.length > 0) {
+        const div = document.createElement('div');
+        boxed[0].replaceWith(div);
+        boxed.forEach((m) => {
+          m.remove();
+          const tr = [];
+          const img = m.querySelector('.elementor-image-box-img  img');
+          img?.parentElement?.parentElement.remove();
+          tr.push(img);
+          tr.push(m);
           table.push(tr);
         });
         div.replaceWith(WebImporter.DOMUtils.createTable(table, document));
