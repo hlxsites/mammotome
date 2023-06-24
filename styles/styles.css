@@ -120,6 +120,8 @@
 
   /* line heights */
   --mt-body-line-height: 1.5rem;
+  --mt-body-text-large-line-height: 2.7rem;
+  --mt-body-text-medium-line-height: 1.95rem;
   --mt-button-line-height: 1rem;
   --mt-footer-line-height-xs: 0.8rem;
   --mt-footer-line-height-s: 0.9rem;
@@ -183,7 +185,7 @@ html, body, main {
 
 body {
   margin: 0;
-  font-size: var(--mt-body-font-size-m);
+  font-size: var(--mt-body-font-size-s);
   font-family: var(--mt-body-font-family);
   font-weight: var(--mt-body-font-weight);
   line-height: var(--mt-body-line-height);
@@ -352,19 +354,13 @@ p {
 @media (min-width: 767px) {
   .text-large p {
     font-size: var(--mt-body-font-size-l);
-    line-height: 2.7rem;
+    line-height: var(--mt-body-text-large-line-height);
   }
 }
 
 .text-medium p {
   font-size: var(--mt-body-font-size-m);
-  line-height: 1.95rem;
-}
-
-@media (min-width: 767px) {
-  p {
-    line-height: 2.5rem;
-  }
+  line-height: var(--mt-body-text-medium-line-height);
 }
 
 .text-small p {
