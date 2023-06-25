@@ -126,10 +126,32 @@ export default {
       const isCarousel = top.querySelector('.elementor-widget-media-carousel');
       const isCards = (boxed.length > 0) || box2.length > 0;
       const videoElem = top.querySelector('.elementor-widget-video .elementor-custom-embed-image-overlay');
-      if (videoElem) {
+      const soundCloudElem = top.querySelector('.elementor-shortcode');
+      if (soundCloudElem) {
+        const table = [['SoundCloud']];
+        top.querySelectorAll('.elementor-widget-wrap').forEach((sound) => {
+          if (sound.querySelector('.elementor-shortcode')) {
+            let { innerHTML } = sound.querySelector('.elementor-shortcode');
+            innerHTML = innerHTML.substring(0, innerHTML.indexOf('</iframe>') + '</iframe>'.length);
+            const rowElem = [sound.querySelector('.elementor-image img'), innerHTML];
+            if (!sound.closest('.elementor-inner-section')) {
+              // construct stand alone sound cloud block
+              const standAloneSound = [['SoundCloud'], rowElem];
+              top.prepend(document.createElement('hr'));
+              top.prepend(WebImporter.DOMUtils.createTable(standAloneSound, document));
+            } else {
+              // add to existing table
+              table.push(rowElem);
+            }
+          }
+        });
+        if (table.length > 1) {
+          top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+        }
+      } else if (videoElem) {
         const table = videoElem.closest('.elementor-column')?.classList?.contains('elementor-col-50')
           ? [['Video (two columns)']] : [['Video']];
-        top?.querySelectorAll('.elementor-widget-video .elementor-custom-embed-image-overlay').forEach((video) => {
+        top.querySelectorAll('.elementor-widget-video .elementor-custom-embed-image-overlay').forEach((video) => {
           const videoThumb = video.querySelector('img');
           const videoUrl = JSON.parse(video.dataset.elementorLightbox).url;
           const rowElem = [video.closest('.elementor-column')?.querySelector('.elementor-text-editor'), videoUrl, videoThumb];
