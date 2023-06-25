@@ -125,13 +125,16 @@ export default {
       const box2 = top.querySelectorAll('.elementor-element article');
       const isCarousel = top.querySelector('.elementor-widget-media-carousel');
       const isCards = (boxed.length > 0) || box2.length > 0;
-      const videoElem = top.querySelector('.elementor-custom-embed-image-overlay');
+      const videoElem = top.querySelector('.elementor-widget-video .elementor-custom-embed-image-overlay');
       if (videoElem) {
-        const table = [['Video']];
-        const videoThumb = videoElem.querySelector('img');
-        const videoUrl = JSON.parse(videoElem.dataset.elementorLightbox).url;
-        const rowElem = [top.querySelector('.elementor-text-editor'), videoUrl, videoThumb];
-        table.push(rowElem);
+        const table = videoElem.closest('.elementor-column')?.classList?.contains('elementor-col-50')
+          ? [['Video (two columns)']] : [['Video']];
+        top?.querySelectorAll('.elementor-widget-video .elementor-custom-embed-image-overlay').forEach((video) => {
+          const videoThumb = video.querySelector('img');
+          const videoUrl = JSON.parse(video.dataset.elementorLightbox).url;
+          const rowElem = [video.closest('.elementor-column')?.querySelector('.elementor-text-editor'), videoUrl, videoThumb];
+          table.push(rowElem);
+        });
         top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
       } else if (isCarousel) {
         const table = [['Carousel']];
@@ -228,7 +231,7 @@ export default {
         sectionStyle += `${sectionStyleDivider}Logo primary background`;
         sectionStyleDivider = ', ';
       } else if (top.style['background-image'] && top.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-2.svg\)/)) {
-        sectionStyle += `${sectionStyleDivider}Logo primary background`;
+        sectionStyle += `${sectionStyleDivider}Logo secondary background`;
         sectionStyleDivider = ', ';
       }
       if (Array.from(top.querySelectorAll('img')).some((img) => img.src.match(/.*\/Hero-curve-flipped.svg/))) {
@@ -265,7 +268,7 @@ export default {
       }
 
       if (top.style.backgroundColor === 'rgb(95, 141, 218)') {
-        sectionStyle += `${sectionStyleDivider}Base secondary solid background`;
+        sectionStyle += `${sectionStyleDivider}accent primary solid background`;
         sectionStyleDivider = ', ';
       }
 
