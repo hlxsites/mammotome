@@ -125,7 +125,40 @@ export default {
       const box2 = top.querySelectorAll('.elementor-element article');
       const isCarousel = top.querySelector('.elementor-widget-media-carousel');
       const isCards = (boxed.length > 0) || box2.length > 0;
-      if (isCarousel) {
+      const videoElem = top.querySelector('.elementor-widget-video .elementor-custom-embed-image-overlay');
+      const soundCloudElem = top.querySelector('.elementor-shortcode');
+      if (soundCloudElem) {
+        const table = [['SoundCloud']];
+        top.querySelectorAll('.elementor-widget-wrap').forEach((sound) => {
+          if (sound.querySelector('.elementor-shortcode')) {
+            let { innerHTML } = sound.querySelector('.elementor-shortcode');
+            innerHTML = innerHTML.substring(0, innerHTML.indexOf('</iframe>') + '</iframe>'.length);
+            const rowElem = [sound.querySelector('.elementor-image img'), innerHTML];
+            if (!sound.closest('.elementor-inner-section')) {
+              // construct stand alone sound cloud block
+              const standAloneSound = [['SoundCloud'], rowElem];
+              top.prepend(document.createElement('hr'));
+              top.prepend(WebImporter.DOMUtils.createTable(standAloneSound, document));
+            } else {
+              // add to existing table
+              table.push(rowElem);
+            }
+          }
+        });
+        if (table.length > 1) {
+          top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+        }
+      } else if (videoElem) {
+        const table = videoElem.closest('.elementor-column')?.classList?.contains('elementor-col-50')
+          ? [['Video (two columns)']] : [['Video']];
+        top.querySelectorAll('.elementor-widget-video .elementor-custom-embed-image-overlay').forEach((video) => {
+          const videoThumb = video.querySelector('img');
+          const videoUrl = JSON.parse(video.dataset.elementorLightbox).url;
+          const rowElem = [video.closest('.elementor-column')?.querySelector('.elementor-text-editor'), videoUrl, videoThumb];
+          table.push(rowElem);
+        });
+        top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+      } else if (isCarousel) {
         const table = [['Carousel']];
         const columns = top.querySelectorAll('.elementor-inner-section .elementor-row .elementor-column');
         const col1 = document.createElement('div');
@@ -220,7 +253,7 @@ export default {
         sectionStyle += `${sectionStyleDivider}Logo primary background`;
         sectionStyleDivider = ', ';
       } else if (top.style['background-image'] && top.style['background-image'].match(/url\(.*\/Mammotome-BG_Pattern-2.svg\)/)) {
-        sectionStyle += `${sectionStyleDivider}Logo primary background`;
+        sectionStyle += `${sectionStyleDivider}Logo secondary background`;
         sectionStyleDivider = ', ';
       }
       if (Array.from(top.querySelectorAll('img')).some((img) => img.src.match(/.*\/Hero-curve-flipped.svg/))) {
@@ -257,7 +290,7 @@ export default {
       }
 
       if (top.style.backgroundColor === 'rgb(95, 141, 218)') {
-        sectionStyle += `${sectionStyleDivider}Base secondary solid background`;
+        sectionStyle += `${sectionStyleDivider}accent primary solid background`;
         sectionStyleDivider = ', ';
       }
 
