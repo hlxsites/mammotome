@@ -91,9 +91,21 @@ header nav .nav-hamburger button {
   white-space: initial;
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   line-height: 1.1;
+}
+
+@media screen and (min-width: 542px) {
+  header nav .nav-hamburger button {
+    justify-content: center;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  header nav .nav-hamburger button {
+    justify-content: flex-end;
+  }
 }
 
 /* brand */
