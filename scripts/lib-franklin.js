@@ -905,16 +905,6 @@ export function decorateButtons(element) {
       if (a.href !== a.textContent && !a.querySelector('img')) {
         const parent = a.parentElement;
         const grandparent = parent.parentElement;
-        if (a.href.includes('.pdf') && parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
-          const icon = document.createElement('i');
-          icon.classList.add('link-icon');
-          icon.innerHTML = PDF_ICON;
-          const spanText = document.createElement('span');
-          spanText.innerHTML = a.innerHTML;
-          a.innerHTML = '';
-          a.appendChild(icon);
-          a.appendChild(spanText);
-        }
         const isSingleChild = (el, tagName) => el.childNodes.length === 1 && el.tagName === tagName;
         const addClassAndContainer = (el, className, containerClass) => {
           a.className = className;
@@ -927,6 +917,16 @@ export function decorateButtons(element) {
           addClassAndContainer(grandparent, 'button primary', 'button-container');
         } else if (isSingleChild(parent, 'EM') && isSingleChild(grandparent, 'P')) {
           addClassAndContainer(grandparent, 'button secondary', 'button-container');
+        }
+        if (a.href.includes('.pdf') && parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
+          const icon = document.createElement('i');
+          icon.classList.add('link-icon');
+          icon.innerHTML = PDF_ICON;
+          const spanText = document.createElement('span');
+          spanText.innerHTML = a.innerHTML;
+          a.innerHTML = '';
+          a.appendChild(icon);
+          a.appendChild(spanText);
         }
       }
     }
