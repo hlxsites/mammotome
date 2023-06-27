@@ -4,7 +4,7 @@ import {
 
 function decorateProduct(product) {
   const children = [
-    { type: 'h3', children: decorateSupScript(product.Name) },
+    { type: 'h4', children: decorateSupScript(product.Name) },
   ];
 
   if (product.Image) {

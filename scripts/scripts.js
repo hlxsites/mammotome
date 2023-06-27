@@ -15,6 +15,7 @@ import {
   createMetadata,
   getMetadata,
   toClassName,
+  decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
 import {
@@ -198,6 +199,7 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
+  decorateSupScriptInTextBelow(main);
 
   if (main.querySelector('.section.our-history')) {
     decorateHistorySection(main);
@@ -265,6 +267,8 @@ function integrateMartech(parent, id) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
+
+  loadCSS('/styles/fonts.css', null);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

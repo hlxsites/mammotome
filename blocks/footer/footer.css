@@ -134,6 +134,7 @@ right align for larger screen */
   footer .columns > div > div:nth-child(5) > h5,
   footer .columns > div > div:nth-child(5) > p {
     text-align: right;
+    line-height: unset;
   }
 }
 

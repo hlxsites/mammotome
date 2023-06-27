@@ -7,6 +7,7 @@ main .hero-container > .hero-wrapper {
 main .hero-container {
   padding: 0;
   z-index: -1;
+  margin: 0;
 }
 
 main .hero-big {
@@ -92,6 +93,11 @@ main .hero a:hover {
   background-color: rgb(132 50 155 / 27%);
 }
 
+main .hero-arc {
+  position: relative;
+  bottom: -1px;
+}
+
 main .hero-big .hero-arc {
   margin: 8% 0 0;
 }
@@ -99,7 +105,6 @@ main .hero-big .hero-arc {
 main .hero-light .hero-arc {
   margin: 15% 0 0;
 }
-
 
 main .hero .hero-arc svg {
   display: block;

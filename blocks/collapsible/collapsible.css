@@ -84,6 +84,7 @@
     display: block;
     margin-block-end: 1em;
     text-align: left;
+    line-height: unset;
 }
 
 .section.arc-after-section.collapsible-container {

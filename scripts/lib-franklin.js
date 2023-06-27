@@ -336,26 +336,39 @@ export async function translate(key, defaultText) {
   return defaultText;
 }
 
-export function decorateSupScript(string, result = []) {
+export function decorateSupScript(string, result = [], inside = false, first = true) {
   if (!string) {
     return result;
   }
+  if (inside && first && ['TM', 'tm'].includes(string)) {
+    result.push(
+      {
+        type: 'span',
+        textContent: string,
+        classes: ['tm'],
+      },
+    );
+    return result;
+  }
 
-  const idx = string.search(/®|™/);
+  const idx = string.search(/®|™|©/);
 
   if (idx !== -1) {
+    const sup = string.substr(idx, 1);
+    const tm = sup === '™';
     result.push(
       {
         type: 'span',
         textContent: string.substr(0, idx),
       },
       {
-        type: 'sup',
-        textContent: string.substr(idx, 1),
+        type: inside ? 'span' : 'sup',
+        textContent: tm ? 'TM' : sup,
+        classes: tm ? ['tm'] : undefined,
       },
     );
 
-    return decorateSupScript(string.substr(idx + 1), result);
+    return decorateSupScript(string.substr(idx + 1), result, inside, false);
   }
 
   result.push({
@@ -364,6 +377,47 @@ export function decorateSupScript(string, result = []) {
   });
 
   return result;
+}
+
+function walkNodeTree(root, { inspect, collect, callback } = {}) {
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ALL,
+    {
+      acceptNode(node) {
+        if (inspect && !inspect(node)) { return NodeFilter.FILTER_REJECT; }
+        if (collect && !collect(node)) { return NodeFilter.FILTER_SKIP; }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    },
+  );
+
+  let n = walker.nextNode();
+  while (n) {
+    const next = walker.nextNode();
+    callback?.(n);
+    n = next;
+  }
+}
+
+export function decorateSupScriptInTextBelow(el) {
+  return walkNodeTree(el, {
+    inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
+    collect: (n) => (n.nodeType === Node.TEXT_NODE),
+    callback: (n) => {
+      const inside = n.parentElement.tagName === 'SUP';
+      const result = decorateSupScript(n.textContent, [], inside);
+      if (result.length > 1) {
+        const replacementNode = document.createElement('span');
+        const newHtml = result.filter((p) => p.textContent !== '').map((p) => `<${p.type}${p.classes ? ` class=${p.classes.join()}` : ''}>${p.textContent}</${p.type}>`).join('');
+        n.parentNode.insertBefore(replacementNode, n);
+        n.parentNode.removeChild(n);
+        replacementNode.outerHTML = newHtml;
+      } else if (inside && result.length === 1 && result[0].classes?.includes('tm')) {
+        n.parentElement.classList.add('tm');
+      }
+    },
+  });
 }
 
 export function getInfo() {
@@ -581,6 +635,23 @@ export function addDivider(section, pos) {
   }
 }
 
+/** Add a spacer into section from Section Metadata block
+ * @param section section element
+ * @param heightValue height of spacer in px
+ * @param position after or before
+ */
+export function addSpacer(section, heightValue, position) {
+  const spacerHeight = parseInt(heightValue, 10) || 0;
+  const spacerDiv = document.createElement('div');
+  section.classList.add('spacer');
+  spacerDiv.setAttribute('style', `height: ${spacerHeight}px;`);
+  if (position === 'before') {
+    section.insertBefore(spacerDiv, section.firstChild);
+  } else if (position === 'after') {
+    section.appendChild(spacerDiv);
+  }
+}
+
 /**
  * Decorates all sections in a container element.
  * @param {Element} main The container element
@@ -621,6 +692,19 @@ export function decorateSections(main) {
           const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
           const dividerPos = dividerMeta[0] || 'after';
           addDivider(section, dividerPos);
+        } else if (key === 'spacer') {
+          const spacerMeta = meta.spacer.split(',').map((spacer) => toClassName(spacer.trim()));
+          const spacerValue = parseInt(spacerMeta[0], 10) || '0';
+          if (spacerMeta.length > 1) {
+            const spacerPositions = spacerMeta.slice(1, spacerMeta.length);
+            spacerPositions.forEach((position) => {
+              addSpacer(section, spacerValue, position.trim());
+            });
+          } else {
+            addSpacer(section, spacerValue, 'after');
+          }
+
+          // addSpacer(section, spacerValue);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
@@ -821,7 +905,7 @@ export function decorateButtons(element) {
       if (a.href !== a.textContent && !a.querySelector('img')) {
         const parent = a.parentElement;
         const grandparent = parent.parentElement;
-        if (a.href.includes('.pdf')) {
+        if (a.href.includes('.pdf') && parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
           const icon = document.createElement('i');
           icon.classList.add('link-icon');
           icon.innerHTML = PDF_ICON;

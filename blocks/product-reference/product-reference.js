@@ -2,7 +2,7 @@ import {
   createDomStructure, decorateBlockImgs, getInfo, getProduct, translate,
 } from '../../scripts/lib-franklin.js';
 
-async function createButtons(productCode) {
+async function createButtons(country, language, productCode) {
   return [
     [
       await translate('productReferenceInformationURL', '../contact/'),
@@ -15,7 +15,7 @@ async function createButtons(productCode) {
       await translate('productReferenceSupport', 'Product Support'),
     ],
     [
-      `${await translate('productReferenceSupportURL', '../product-support')}/${productCode}`,
+      `/${country}/${language}/${await translate('productReferenceSupportURL', 'product-support')}/${productCode}`,
       ['secondary'],
       await translate('productReferenceDocuments', 'Product Documents'),
     ],
@@ -39,7 +39,7 @@ export default async function decorate(block) {
     return;
   }
 
-  const buttons = await createButtons(product.Page);
+  const buttons = await createButtons(country, language, product.Page);
 
   const imgStructure = [
     {

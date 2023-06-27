@@ -1,19 +1,28 @@
+/**
+ * Sometimes in columns containing only text,
+ * the text is not wrapped by a paragraph.
+ * This breaks the styling and makes it difficult to identify
+ * text only columns. This methods fixes it by forcing wrapping
+ * the text in a paragraph.
+ * @param {HTMLElement} col
+ */
+function decorateOnlyTextColumn(col) {
+  if (col.firstChild && col.firstChild.nodeType === Node.TEXT_NODE
+     && !col.firstElementChild) {
+    const paragraph = document.createElement('p');
+    paragraph.appendChild(col.firstChild);
+    col.appendChild(paragraph);
+  }
+}
+
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
-  // Adds bigger margins if hero arc is being used
-  const heroElements = document.querySelectorAll('.hero-big .hero-arc');
-  if (heroElements && heroElements.length > 0) {
-    const flexContainer = block.firstElementChild;
-    if (flexContainer) {
-      // hero-arc-margin set in columns.css
-      flexContainer.classList.add('hero-arc-margin');
-    }
-  }
 
   // setup image columns
   [...block.children].forEach((row) => {
     [...row.children].forEach((col, index) => {
+      decorateOnlyTextColumn(col);
       const pic = col.querySelector('picture');
       const text = col.querySelector('p');
 
