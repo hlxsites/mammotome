@@ -52,7 +52,7 @@
 }
 
 .cards.block > ul > li {
-  padding: 10px;
+  padding: 20px;
   box-shadow: 2px 12px 28px 0 var(--mt-cards-box-shadow-color);
   display: flex;
   flex-direction: column;
@@ -205,7 +205,7 @@
 }
 
 .cards > ul > li > a >.cards-card-body.callout-hidden h1 {
-  margin: 15px 0;
+  margin: 5px 0;
 }
 
 .cards li:has(> div.cards-card-body.no-heading > strong > a:not(.button)) {
