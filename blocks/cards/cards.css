@@ -146,11 +146,11 @@
   padding: 0 30px 50px;
 }
 
-.cards-card-body.callout-hidden {
+.cards > ul > li > a >.cards-card-body.callout-hidden {
   padding: 0 30px;
 }
 
-.cards-card-body.empty {
+.cards > ul > li > a >.cards-card-body.empty {
   padding: 0 30px;
 }
 
@@ -163,6 +163,10 @@
 .cards-card-body p {
   padding: 0;
   text-align: left;
+}
+
+.cards-card-body h1 {
+  margin: 15px 0;
 }
 
 .cards-card-body a.button {
