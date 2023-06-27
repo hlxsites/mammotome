@@ -6,6 +6,7 @@
   --columns-gap: 65px;
   --columns-link-color: #c36;
   --mt-ordered-list-font-size: var(--mt-font-size-80);
+  --columns-font-weight: var(--mt-font-weight-regular);
 }
 
 main .columns {
@@ -30,6 +31,16 @@ main .columns ol li a:not(.button) {
   font-size: var(--mt-ordered-list-font-size);
 }
 
+.accent-primary-solid-background .columns a:any-link,
+.accent-quinary-solid-background .columns a:any-link,
+.accent-secondary-blur-overlay .columns a:any-link,
+.base-primary-blur-overlay .columns a:any-link,
+.gradient-primary-blur-overlay .columns a:any-link,
+.gradient-secondary-blur-overlay .columns a:any-link,
+.logo-primary-background .columns a:any-link {
+  color: var(--mt-text-color-inverted);
+}
+
 main .columns h1,
 main .columns h2,
 main .columns h3,
@@ -39,6 +50,10 @@ main .columns h6,
 main .columns p {
  text-align: left;
   position: relative;
+}
+
+main .section.columns-container {
+  padding: 10% 5%;
 }
 
 main .columns h4 {
@@ -140,8 +155,6 @@ main .columns.simple > div {
 main .columns > div > .columns-img-col {
   order: 1;
   position: relative;
-  margin-bottom: 10%;
-  padding: 7% 0;
 }
 
 main .columns.image-cards p:has(picture) {
@@ -192,6 +205,20 @@ main .columns.image-color-primary-blue > div > .columns-img-col::before {
 
 main .columns.image-color-light-blue > div > .columns-img-col::before {
   background-color: var(--mt-global-color-light-blue);
+}
+
+.columns .columns-img {
+  padding: 5% 0 10%;
+}
+
+@media (min-width: 768px) {
+  main .section.columns-container {
+    padding: 5%;
+  }
+
+  .columns .columns-img {
+    padding: 5% 15%;
+  }
 }
 
 @media (min-width: 900px) {
