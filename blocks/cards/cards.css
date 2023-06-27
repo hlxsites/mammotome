@@ -165,10 +165,6 @@
   text-align: left;
 }
 
-.cards-card-body h1 {
-  margin: 15px 0;
-}
-
 .cards-card-body a.button {
   background: none;
   border: none;
@@ -206,6 +202,10 @@
   line-height: 1.2;
   text-align: center;
   margin-bottom: 25px;
+}
+
+.cards > ul > li > a >.cards-card-body.callout-hidden h1 {
+  margin: 15px 0;
 }
 
 .cards li:has(> div.cards-card-body.no-heading > strong > a:not(.button)) {
