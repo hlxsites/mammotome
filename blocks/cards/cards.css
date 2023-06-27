@@ -38,8 +38,12 @@
   box-sizing: border-box;
   padding: 10px;
   display: grid;
-  gap: var(--mt-cards-grid-row-gap) var(--mt-cards-grid-column-gap);
+  gap: var(--mt-cards-grid-row-wide-gap) var(--mt-cards-grid-column-wide-gap);
   grid-template-columns: repeat(1,1fr);
+}
+
+.cards.three-columns > ul {
+  gap: var(--mt-cards-grid-row-gap) var(--mt-cards-grid-column-gap);
 }
 
 .cards.wideimage > ul {
