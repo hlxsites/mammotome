@@ -127,7 +127,15 @@ export default {
       const isCards = (boxed.length > 0) || box2.length > 0;
       const videoElem = top.querySelector('.elementor-widget-video .elementor-custom-embed-image-overlay');
       const soundCloudElem = top.querySelector('.elementor-shortcode');
-      if (soundCloudElem) {
+      const collapsibleBlock = top.querySelector('.elementor-toggle');
+      if (collapsibleBlock) {
+        const table = [['Collapsible (narrow)']];
+        collapsibleBlock.querySelectorAll('.elementor-toggle-item').forEach((question) => {
+          const rowElem = [question.querySelector('.elementor-toggle-title')?.innerHTML, question.querySelector('.elementor-tab-content').innerHTML];
+          table.push(rowElem);
+        });
+        top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
+      } else if (soundCloudElem) {
         const table = [['SoundCloud']];
         top.querySelectorAll('.elementor-widget-wrap').forEach((sound) => {
           if (sound.querySelector('.elementor-shortcode')) {
