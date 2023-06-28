@@ -2,7 +2,7 @@ import { sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
-const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
+const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.neerajadobe93.workers.dev';
 
 function loadScript(url) {
   const head = document.querySelector('head');
