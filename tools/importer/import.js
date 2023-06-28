@@ -57,6 +57,16 @@ function getProductReference(section) {
   return Array.from(section.querySelectorAll('a')).filter((a) => a.href.match(/\/product-support\/(.+)/) || a.href.match(/\/documentazione-sui-prodotti\/(.+)/));
 }
 
+function createLink(href, text, prefix, document) {
+  if (href) {
+    const link = document.createElement('a');
+    link.href = new URL(prefix).origin + href;
+    link.innerHTML = text.innerHTML;
+    return link;
+  }
+  return '';
+}
+
 export default {
   REQUIRED_STYLES: ['display', 'background-image', 'background-color', 'color', 'font-size', 'font-weight', 'text-transform', 'letter-spacing', 'opacity'],
   /**
@@ -128,7 +138,18 @@ export default {
       const videoElem = top.querySelector('.elementor-widget-video .elementor-custom-embed-image-overlay');
       const soundCloudElem = top.querySelector('.elementor-shortcode');
       const collapsibleBlock = top.querySelector('.elementor-toggle');
-      if (collapsibleBlock) {
+      const prevNextBlock = top.querySelector('.elementor-post-navigation');
+      if (prevNextBlock) {
+        const prevEl = prevNextBlock.querySelector('.elementor-post-navigation__prev a');
+        const prevLink = prevEl?.href;
+        const prevTitle = prevEl?.querySelector('.post-navigation__prev--title');
+        const nextEl = prevNextBlock.querySelector('.elementor-post-navigation__next a');
+        const nextLink = nextEl?.href;
+        const nextTitle = nextEl?.querySelector('.post-navigation__next--title');
+        const prevNextTable = [['Prev-next'], [createLink(prevLink, prevTitle, params.originalURL, document),
+          createLink(nextLink, nextTitle, params.originalURL, document)]];
+        top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(prevNextTable, document));
+      } else if (collapsibleBlock) {
         const table = [['Collapsible (narrow)']];
         collapsibleBlock.querySelectorAll('.elementor-toggle-item').forEach((question) => {
           const rowElem = [question.querySelector('.elementor-toggle-title')?.innerHTML, question.querySelector('.elementor-tab-content').innerHTML];
