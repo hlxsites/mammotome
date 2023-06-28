@@ -11,11 +11,9 @@
 
 main .columns {
   max-width: var(--columns-max-width);
-  margin: 3% 5%;
+  margin: 3% auto;
   padding: 0;
 }
-
-
 
 main .columns ol {
   font-size: var(--mt-ordered-list-font-size);
@@ -50,10 +48,6 @@ main .columns h6,
 main .columns p {
  text-align: left;
   position: relative;
-}
-
-main .section.columns-container {
-  padding: 10% 5%;
 }
 
 main .columns h4 {
@@ -167,7 +161,13 @@ main .columns.image-cards p:has(picture) {
   font-weight: 500;
   padding: 0 0 15px;
   display: flex;
+  margin: 5% 15%;
   flex-direction: column;
+}
+
+main .columns.image-cards p:has(picture) img {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 div[class^="columns image-color-"] > div > div:first-child.columns-img-col {
@@ -212,10 +212,6 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 }
 
 @media (min-width: 768px) {
-  main .section.columns-container {
-    padding: 5%;
-  }
-
   .columns .columns-img {
     padding: 5% 15%;
   }
@@ -238,6 +234,20 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
   main .columns > div > div {
     flex: 1;
     order: unset;
+  }
+
+  main .columns.image-color-primary-blue > div,
+  main .columns.image-color-light-blue > div,
+  main .columns.image-cards > div{
+    gap: 0;
+  }
+
+  main .columns > div:not(:first-child) {
+    margin-top: 8%;
+  }
+
+  main .columns.simple > div:not(:first-child) {
+    margin-top: 0;
   }
 
   main .columns > div > .columns-img-col {
