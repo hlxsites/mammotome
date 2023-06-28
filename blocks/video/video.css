@@ -2,6 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 6% 0;
 }
 
 .video.block > div {
@@ -46,7 +47,6 @@
 .video.block > div > div:last-child span.icon-playvideo svg {
   fill: var(--mt-background-color-primary);
   filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
-  transform: scale(6.2);
 }
 
 .video.block img {

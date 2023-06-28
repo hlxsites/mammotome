@@ -5,11 +5,40 @@
   --columns-image-padding: 30px;
   --columns-gap: 65px;
   --columns-link-color: #c36;
+  --mt-ordered-list-font-size: var(--mt-font-size-80);
+  --columns-font-weight: var(--mt-font-weight-regular);
 }
 
 main .columns {
   max-width: var(--columns-max-width);
-  margin: auto;
+  margin: 3% 5%;
+  padding: 0;
+}
+
+
+
+main .columns ol {
+  font-size: var(--mt-ordered-list-font-size);
+  padding-left: 15px;
+}
+
+main .columns a:not(.button) {
+  color: var(--columns-link-color);
+  font-size: 1rem;
+}
+
+main .columns ol li a:not(.button) {
+  font-size: var(--mt-ordered-list-font-size);
+}
+
+.accent-primary-solid-background .columns a:any-link,
+.accent-quinary-solid-background .columns a:any-link,
+.accent-secondary-blur-overlay .columns a:any-link,
+.base-primary-blur-overlay .columns a:any-link,
+.gradient-primary-blur-overlay .columns a:any-link,
+.gradient-secondary-blur-overlay .columns a:any-link,
+.logo-primary-background .columns a:any-link {
+  color: var(--mt-text-color-inverted);
 }
 
 main .columns h1,
@@ -20,6 +49,11 @@ main .columns h5,
 main .columns h6,
 main .columns p {
  text-align: left;
+  position: relative;
+}
+
+main .section.columns-container {
+  padding: 10% 5%;
 }
 
 main .columns h4 {
@@ -56,23 +90,31 @@ main .columns.centered p {
   text-align: center;
 }
 
-main .columns a:not(.button) {
-    color: var(--columns-link-color);
-    font-size: 1rem;
-}
-
-main .columns sup {
-  font-size: 1rem;
-}
-
 main .columns > div {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+main .columns-3-cols .button sup {
+  font-size: 75%;
+  top: -0.35rem;
+}
+
+/* Adds additional margins to avoid overflow of text into hero arc */
+main .columns .hero-arc-margin {
+  margin-top: 20%;
+}
+
+@media (min-width: 1024px) {
+  main .columns .hero-arc-margin {
+    margin-top: 10%;
+  }
+}
+
 main .columns > div > div {
   order: 0;
+  width: 95%;
 }
 
 main .columns.centered > div {
@@ -113,8 +155,6 @@ main .columns.simple > div {
 main .columns > div > .columns-img-col {
   order: 1;
   position: relative;
-  margin-bottom: 10%;
-  padding: 7% 0;
 }
 
 main .columns.image-cards p:has(picture) {
@@ -125,7 +165,9 @@ main .columns.image-cards p:has(picture) {
   line-height: 2;
   font-size: var(--mt-font-size-130);
   font-weight: 500;
-  padding-bottom: 15px;
+  padding: 0 0 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 div[class^="columns image-color-"] > div > div:first-child.columns-img-col {
@@ -163,6 +205,20 @@ main .columns.image-color-primary-blue > div > .columns-img-col::before {
 
 main .columns.image-color-light-blue > div > .columns-img-col::before {
   background-color: var(--mt-global-color-light-blue);
+}
+
+.columns .columns-img {
+  padding: 5% 0 10%;
+}
+
+@media (min-width: 768px) {
+  main .section.columns-container {
+    padding: 5%;
+  }
+
+  .columns .columns-img {
+    padding: 5% 15%;
+  }
 }
 
 @media (min-width: 900px) {

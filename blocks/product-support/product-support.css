@@ -4,7 +4,7 @@
 }
 
 .product-support > h1 {
-  text-align: center;
+  font-weight: var(--mt-font-weight-bold);
 }
 
 .product-support > .container {
@@ -29,9 +29,9 @@
   height: 100%;
 }
 
-.product-support > div > h2 {
-  text-align: center;
-  margin-bottom: 3rem;
+.product-support > div > h4 > strong {
+  color: var(--mt-heading-color-primary);
+  text-transform: uppercase;
 }
 
 .product-support > div > div > select {
@@ -88,10 +88,6 @@
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 1rem;
-}
-
-.product-support sup {
-  top: 0;
 }
 
 @media (min-width: 1025px) {

@@ -26,6 +26,11 @@
     font-size: var(--mt-body-font-size-s);
 }
 
+.collapsible .question a {
+    display: flex;
+    align-items: baseline;
+}
+
 .collapsible .question a:hover {
     font-weight: var(--mt-collapsible-question-hover-font-weight);
     color: unset;
@@ -79,6 +84,7 @@
     display: block;
     margin-block-end: 1em;
     text-align: left;
+    line-height: unset;
 }
 
 .section.arc-after-section.collapsible-container {

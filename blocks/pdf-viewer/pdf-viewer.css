@@ -1,4 +1,4 @@
-.pdf-viewer.block > div > div.button-container > a {
+.pdf-viewer.block > div > div > a {
     display: none;
 }
 

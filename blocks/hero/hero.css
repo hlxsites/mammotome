@@ -6,6 +6,8 @@ main .hero-container > .hero-wrapper {
 
 main .hero-container {
   padding: 0;
+  z-index: -1;
+  margin: 0;
 }
 
 main .hero-big {
@@ -91,6 +93,11 @@ main .hero a:hover {
   background-color: rgb(132 50 155 / 27%);
 }
 
+main .hero-arc {
+  position: relative;
+  bottom: -1px;
+}
+
 main .hero-big .hero-arc {
   margin: 8% 0 0;
 }
@@ -98,7 +105,6 @@ main .hero-big .hero-arc {
 main .hero-light .hero-arc {
   margin: 15% 0 0;
 }
-
 
 main .hero .hero-arc svg {
   display: block;
@@ -132,6 +138,14 @@ main .hero-light picture {
   padding: 0 12px;
 }
 
+main .hero-big picture:nth-child(2) {
+  position: initial;
+  object-fit: unset;
+}
+
+main .hero.hero-big.block:has(div > div > picture:nth-child(2)) {
+  padding: 5% 0 0;
+}
 
 main .hero-big img {
   object-fit: cover;
@@ -144,6 +158,11 @@ main .hero-light img {
   border-radius: 5px;
   box-shadow: rgb(28 28 73 / 37%) 8px 22px 50px 0;
   z-index: 3;
+}
+
+main .hero-big picture:nth-child(2) img {
+  width: 271px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 500px) {

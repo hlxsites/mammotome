@@ -24,10 +24,21 @@ export default function decorate(block) {
         div.className = 'cards-card-image';
       } else {
         div.className = children.length ? 'cards-card-body' : 'cards-card-body empty';
-        const action = div.querySelector('p > a');
+        const action = div.querySelector('p a');
+
+        const containsHeading = Array.from(div.querySelectorAll('h1, h2, h3')).length > 0;
+
+        if (!containsHeading) {
+          div.classList.add('no-heading');
+        } else {
+          // remove download icons for headings
+          div.querySelectorAll('h1, h2, h3 i.link-icon')
+            .forEach((heading) => heading.querySelectorAll('i.link-icon')
+              .forEach((icon) => icon.remove()));
+        }
 
         if (action) {
-          const actionBlock = action.parentElement;
+          const actionBlock = div.querySelector('.button-container') || action.parentElement;
           actionBlock.className = isValidUrl(action.text) ? 'callout hidden' : 'callout';
           div.classList.toggle('callout-hidden', actionBlock.classList.contains('hidden'));
 

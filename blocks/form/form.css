@@ -2,168 +2,203 @@
     --form-font-size-m: 22px;
     --form-font-size-s: 18px;
     --form-font-size-xs: 16px;
-    --form-background-color: var(--mt-background-color-primary);
-    --form-padding: 3%;
+    --form-container-padding: 5% 0 10%;
+    --form-default-wrapper-line-height: 1.5;
+    --form-wrapper-padding: 0 calc(5% + 8px);
+    --form-wrapper-max-width: 740px;
+    --form-wrapper-background-color: var(--mt-global-color-white);
     --form-columns: 1;
-    --form-field-gap: 20px 0 0 0;
-    --form-invalid-border-color: var(--mt-global-color-orange);
-    --form-input-padding: 0.75rem 0.6rem;
+    --form-padding: 16px 0 10%;
+    --form-grid-gap: 26px 32px;
+    --form-max-width: 100%;
+    --form-fieldset-columns:1;
+    --form-fieldset-border: 0;
+    --form-fieldset-marign: 0;
+    --form-fieldset-padding: 0;
+    --form-fieldset-grid-gap: var(--form-grid-gap);
+    --form-fieldset-legend-padding: 0.5rem 0 1rem 0;
+    --form-fieldset-legend-color: var(--mt-global-color-base-primary);
+    --form-fieldset-legend-font-size: 28px;
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-boldest);
+    --form-label-padding: 0.3rem 0 0;
+    --form-label-color: var(--mt-global-color-charcoal);
+    --form-label-font-size: var(--form-font-size-xs);
+    --form-label-line-height: 1.2;
+    --form-label-font-weight: bold;
+    --form-input-margin: 1rem 0 0;
+    --form-input-padding: 10px;
+    --form-input-height: 46px;
     --form-input-font-size: var(--mt-font-size-100);
     --form-input-disable-color: var(--mt-global-color-silver);
     --form-input-border-size: 1px;
-    --form-input-border-color: var(--mt-global-color-oslo-gray);
-    --form-input-background-color: var(--mt-background-color-primary);
-    --form-paragraph-color: var(--mt-global-color-dove-gray);
-    --form-paragraph-margin: 0 0 0.9rem;
-    --form-paragraph-font-style: none;
-    --form-paragraph-font-size: var(--form-font-size-xs);
-    --form-label-color: var(--mt-global-color-dove-gray);
-    --form-label-font-size: var(--form-font-size-xs);
-    --form-label-font-weight: bold;
-    --form-fieldset-border: 0;
-    --form-fieldset-marign: 0;
-    --form-fieldset-legend-color: var(--form-label-color);
-    --form-fieldset-legend-font-size: var(--form-label-font-size);
-    --form-fieldset-legend-font-weight: var(--form-label-font-weight);
-    --form-fieldset-legend-border: none;
-    --form-fieldset-legend-padding: 0;
+    --form-input-border-color: var(--mt-global-color-gallery);
+    --form-input-background-color: var(--mt-global-color-alabaste);
     --form-button-color: var(--mt-background-color-primary);
     --form-button-font-size: var(--form-font-size-s);
     --form-button-background-color: var(--mt-global-color-accent-primary);
     --form-button-background-hover-color: var(--mt-global-color-blue-ribbon);
     --form-button-border: 2px solid transparent;
     --form-button-padding:15px 50px;
-    --form-upload-color: var(--mt-background-color-primary);
-    --form-upload-font-size: var(--form-font-size-xs);
-    --form-upload-background-color: var(--mt-global-color-base-primary);
-    --form-submit-width: 100%;
+    --form-submit-wrapper-margin: 36px 0 0 0;
+    --form-submit-width: 100%
 }
 
-main .form-container {
-    background-color: var(--mt-background-color-primary);
-    padding: var(--form-padding);
+main .section.form-container {
+    padding: var(--form-container-padding);
+    font-family: var(--mt-form-font-family);
+    background-image: url('../../styles/icons/Mammotome-BG_Pattern-1.svg');
+    background-position: top center;
+    background-repeat: repeat;
+    background-size: 60px auto;
 }
 
-main .form {
-    background-color: var(--form-background-color);
-}
-
-main .form form {
-    display: grid;
-    grid-template-columns: repeat(var(--form-columns), 1fr);
-}
-
-main .form form fieldset {
-    border: var(--form-fieldset-border);
-    margin: var(--form-fieldset-marign);
-    width: 100%;
-}
-
-main .form form fieldset fieldset {
-    padding: 0;
-}
-
-main .form .field-description {
-    color: var(--form-label-color);
-    font-size: var(--form-font-size-xs);
-}
-
-main .form :is(input, textarea, select) {
-    background-color: var(--form-input-background-color);
-    border: var(--form-input-border-size) solid var(--form-input-border-color);
-    width: calc(100% - 16px);
-    height: 42px;
-    color: var(--form-label-color);
-    padding: var(--form-input-padding);
-    margin: 10px 0 0;
-    font-size: var(--form-input-font-size);
-    max-width: unset;
-}
-
-main .form input[type='file'] {
-    border: none;
-}
-
-main .form input[type='checkbox'],
-main .form input[type='radio'] {
-    width: 16px;
-    height: 16px;
-    margin: 0 0 0 8px;
-    flex: none;
-}
-
-main .form textarea {
-    min-height: 100px;
-}
-
-main .form :is(input:hover, select:hover) {
-    border-color: rgb(90 92 96);
-}
-
-main .form fieldset legend {
-    font-weight: var(--form-fieldset-legend-font-weight);
-    font-size: var(--form-fieldset-legend-font-size);
-    color: var(--form-fieldset-legend-color);
-    border-bottom: var(--form-fieldset-legend-border);
-    width: 100%;
-    padding: var(--form-fieldset-legend-padding);
-}
-
-main .innovate form > fieldset > legend {
+main .form-container .default-content-wrapper {
+    margin: auto;
+    padding: var(--form-wrapper-padding);
+    background-color: var(--form-wrapper-background-color);
+    max-width: var(--form-wrapper-max-width);
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
     text-align: center;
 }
 
-main .form fieldset legend:has(div.form-radio-wrapper) {
-    border-bottom: 0;
+main .form-container .default-content-wrapper h2 {
+    font-size: var(--mt-heading-font-size-l);
+    color: var(--mt-global-color-base-primary);
+    line-height: var(--form-default-wrapper-line-height);
+    padding-top: 5%;
+    padding-bottom: 58px;
+    margin: auto;
+}
+
+main .form-container .default-content-wrapper p {
+    line-height: var(--form-default-wrapper-line-height);
+    font-size: var(--mt-font-size-125);
+    padding-bottom: 46px;
+    margin: auto;
+}
+
+main .form-container .default-content-wrapper h2:only-child {
+    font-size: var(--mt-font-size-162);
+    font-weight: var(--mt-font-weight-regular);
+    padding-top: calc(5% + 48px);
+    padding-bottom: 10px;
+}
+
+main .form-container .form-wrapper {
+    margin: auto;
+    padding: var(--form-wrapper-padding);
+    background-color: var(--form-wrapper-background-color);
+    max-width: var(--form-wrapper-max-width);
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+main .form-container .form-wrapper:only-child {
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    padding-top: 36px;
+}
+
+main .form form {
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(var(--form-columns), minmax(0, 1fr));
+    gap: var(--form-grid-gap);
+    padding: var(--form-padding);
+    max-width: var(--form-max-width);
+}
+
+main .form fieldset {
+    display: grid;
+    align-content: flex-start;
+    gap: var(--form-fieldset-grid-gap);
+    grid-template-columns: repeat(var(--form-fieldset-columns), minmax(0, 1fr));
+    border: var(--form-fieldset-border);
+    margin: var(--form-fieldset-marign);
+    padding: var(--form-fieldset-padding);
+}
+
+main .form form > fieldset {
+    grid-column: 1/-1;
+}
+
+main .form fieldset > legend {
+    padding: var(--form-fieldset-legend-padding);
+    font-weight: var(--form-fieldset-legend-font-weight);
+    font-size: var(--form-fieldset-legend-font-size);
+    line-height: 1;
+    width: 100%;
+}
+
+main .form form > fieldset > legend {
+    --form-fieldset-legend-font-weight: normal;
+
+    color: var(--form-fieldset-legend-color);
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
+    margin-bottom: 20px;
+}
+
+main .form fieldset > fieldset > legend {
+    font-size: var(--mt-font-size-100);
+    margin-bottom: 8px;
+    padding: 0;
 }
 
 main .form label {
     font-weight: var(--form-label-font-weight);
     font-size: var(--form-label-font-size);
     color: var(--form-label-color);
-    margin: 1rem 0;
+    padding: var(--form-label-padding);
+    line-height: var(--form-label-line-height);
+    font-family: var(--mt-form-font-family);
 }
 
-main .form label.required::after {
-    content: "*";
-    color: var(--form-label-color);
-    padding-left: 5px;
+main .form :is(input, textarea, select) {
+    background-color: var(--form-input-background-color);
+    border: var(--form-input-border-size) solid var(--form-input-border-color);
+    width: 100%;
+    height: var(--form-input-height);
+    padding: var(--form-input-padding);
+    margin: var(--form-input-margin);
+    font-size: var(--form-input-font-size);
+    font-family: var(--mt-form-font-family);
+    border-radius: 4px;
+    max-width: unset;
 }
 
-main .form form p,
-main .form form .field-wrapper {
-    margin: var(--form-field-gap);
-    color: var(--form-label-color);
+main .form textarea {
+    resize: none;
+    min-height: 17vh;
 }
 
-main .form form p {
-    font-size: var(--form-paragraph-font-size);
-    font-style: var(--form-paragraph-font-style);
-    color: var(--form-paragraph-color);
-    margin: var(--form-paragraph-margin);
+main .form .field-description {
+    font-size: 14px;
+    padding-top: 5px;
+    line-height: normal;
 }
 
-main .form form fieldset > :is(.form-radio-wrapper:first-of-type, .form-checkbox-wrapper:first-of-type) {
-    margin: var(--form-field-gap);
+main .form .form-radio-wrapper,
+main .form .form-checkbox-wrapper {
+    display: flex;
+    align-items: baseline;
+    margin: 0.1rem 0 0.3rem;
 }
 
-main .form form :is(.form-checkbox-wrapper, .form-radio-wrapper){
-  display: flex;
-  align-items: baseline;
-  margin: 0;
-}
-
-main .form .form-radio-wrapper  label,
+main .form .form-radio-wrapper label,
 main .form .form-checkbox-wrapper label {
+    --form-label-line-height: 1.5;
+
     font-weight: var(--mt-font-weight-regular);
-    margin: 0 0 0.3em 0.3em;
+    padding: 0 0 0 0.5rem;
 }
 
-input::file-selector-button {
-    color: var(--form-upload-color);
-    background: var(--form-upload-background-color);
-    font-size: var(--form-upload-font-size);
-    text-align: center;
+main .form input[type='checkbox'], 
+main .form input[type='radio'] {
+    width: 16px;
+    height: 13px;
+    margin: 0 0 0 0.3rem;
+    display: inline-block;
 }
 
 main .form button {
@@ -176,283 +211,229 @@ main .form button {
     border-radius: unset;
 }
 
-main .form button:hover {
-    background: var(--form-button-background-hover-color);
+main .form .field-wrapper ul {
+    padding-left: 0;
+    margin: 8px 0;
 }
 
-main .form-submit-wrapper{
+main .form .field-wrapper ul li {
+    color: var(--mt-global-color-red);
+    padding: 12px 24px;
+    border: 1px solid #c02b0a;
+    background: #fff9f9;
+}
+
+main .form-submit-wrapper {
+    margin: var(--form-submit-wrapper-margin); 
+    grid-column: 1/-1;
+}
+
+main .form-submit-wrapper button {
     width: var(--form-submit-width);
+    border-radius: 3px;
 }
 
-main .form :is(input:disabled, textarea:disabled, select:disabled, button:disabled) {
-    background-color: var(--form-input-disable-color);
-}
-
-.technical-inquiry  {
-    --form-fieldset-legend-font-size: var(--mt-font-size-175);
-    --form-fieldset-legend-font-weight: var(--mt-font-weight-regular);
-    --form-fieldset-legend-border: 1px solid rgb(0 0 0 / 10%);
-    --form-fieldset-legend-color: var(--mt-global-color-base-primary);
-    --form-fieldset-legend-padding: 0px 0px 20px 0px
-}
-
-.innovate,
-.study-request  {
-    --form-fieldset-legend-font-size: var(--mt-font-size-150);
-    --form-fieldset-legend-font-weight: var(--mt-font-weight-bold);
-    --form-fieldset-legend-border: 2px dashed var(--mt-background-color-primary);
-    --form-background-color: var(--mt-global-color-base-primary);
-    --form-label-color: var(--mt-background-color-primary);
-    --form-paragraph-color: var(--mt-background-color-primary);
-    --form-fieldset-legend-color: var(--mt-background-color-primary);
-    --form-fieldset-legend-padding: 1em 0;
-}
-
-.innovate {
-    --form-fieldset-legend-border: 1px solid gray;
-    --form-fieldset-legend-font-size: var(--mt-font-size-215);
-    --form-fieldset-legend-font-weight: var(--mt-font-weight-boldest);
-}
-
-main .innovate form fieldset fieldset,
-main .study-request form fieldset fieldset {
-    --form-fieldset-legend-color: var(--form-label-color);
-    --form-fieldset-legend-font-size: var(--form-label-font-size);
-    --form-fieldset-legend-font-weight: var(--form-label-font-weight);
-    --form-fieldset-legend-border: none;
-    --form-fieldset-legend-padding: 0;
-}
-
-.form-contacttitle {
-    font-weight: var(--mt-font-weight-bold);
-}
-
-.study-request .form-firstname,
-.study-request .form-lastname {
-    --form-field-gap: 0
-}
-
-.study-request :is(.form-information,
-    .form-authorize,
-    .form-terms) {
-    padding: 20px;
-    max-width: 500px;
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
-main .study-request input[type='file'] {
-    background: rgb(var(--mt-global-color-black) / 2%);
+main .form-file-wrapper .field-dropregion {
+    background: rgb(0 0 0 / 2%);
     border: 1px dashed var(--mt-global-color-silver);
     border-radius: 4px;
-    margin-bottom: 8px;
+    margin: 11px 0 8px;
     padding: 32px;
-    text-align: center
+    text-align: center;
 }
 
-main .innovate form,
-main .study-request form,
-main .technical-inquiry form {
-    display: flex;
-    flex-direction: column;
+main .form-file-wrapper .field-dropregion button {
+    color: var(--mt-global-color-red);
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid var(--mt-global-color-red);
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    width: unset;
+    line-height: 1.5;
 }
 
-.contact,
-.schedule-demo {
-    --form-paragraph-color: var(--mt-global-color-black);
-    --form-label-color: var(--mt-global-color-black);
-    --form-input-background-color: var(--mt-global-color-alabaste);
-    --form-input-border-size: 1px;
-    --form-input-border-color: var(--mt-global-color-gallery);
+main .form-file-wrapper input[type="file"] {
+    display: none;
 }
 
-main .form form .form-message,
-.form-consent {
-    font-size:  var(--mt-font-size-90);
+main .form-file-wrapper .file-description {
+    font-size: var(--mt-font-size-100);
+}
+
+main .form-file-wrapper .file-description button {
+    --form-button-padding: 15px;
+
+    background: none;
+    background-image: url("/icons/trash.svg");
+    background-repeat: no-repeat;
+    width: unset;
+    border: unset;
+    text-align: center;
+}
+
+main .connectus form > fieldset,
+main .innovate fieldset > fieldset {
+    --form-fieldset-grid-gap: 0;
+    --form-fieldset-legend-font-size: 16px;
+    --form-fieldset-legend-color: var(--mt-global-color-charcoal);
+}
+
+main .connectus form > fieldset > legend {
+    --form-fieldset-legend-font-weight: bold;
+
+    border-bottom: unset;
+    margin-bottom: unset;
+}
+
+main .connectus .form-description {
+    font-size: var(--mt-font-size-130);
+    font-weight: var(--mt-font-weight-bolder);
     border-bottom: solid 2px var(--mt-global-color-gallery);
+    line-height: 1.5;
+    padding: 0 0 4%;
 }
 
-main .form form .form-message {
-    font-size:  var(--mt-font-size-130);
-    font-weight: var(--mt-font-weight-bold);
-    padding: 4%;
-}
-
-.study-request .form-textarea-wrapper textarea {
-    height: 288px;
-}
-
-.form-submission-fs,
-.form-enrollment-fs,
-.form-enrollment-end-fs,
-.form-final-data-fs {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.form-submissionmonth,
-.form-submissionday,
-.form-submissionyear,
-.form-enrollmentmonth,
-.form-enrollmentday,
-.form-enrollmentyear,
-.form-enrollmentendmonth,
-.form-enrollmentendday,
-.form-enrollmentendyear,
-.form-finaldatamonth,
-.form-finaldataday,
-.form-finaldatayear {
-    --form-field-gap: 0;
-
-    width: min-content;
-}
-
-#submissionmonth,
-#submissionday,
-#submissionyear,
-#enrollmentmonth,
-#enrollmentday,
-#enrollmentyear,
-#enrollmentendmonth,
-#enrollmentendday,
-#enrollmentendyear,
-#finaldatamonth,
-#finaldataday,
-#finaldatayear {
-    min-width: 84px;
-    width: 100%;
+main .connectus .form-consent {
+    font-size: var(--mt-font-size-90);
+    padding: 0.375rem 0 4%;
+    border-bottom: solid 2px var(--mt-global-color-gallery);   
     margin: 0;
 }
 
-.innovate .form-submit-wrapper .button,
-.study-request .form-submit-wrapper .button,
-.contact .form-submit-wrapper .button,
-.schedule-demo .form-submit-wrapper .button,
-.technical-inquiry .form-submit-wrapper .button {
-   width: calc(100% - 16px);
+main .connectus :is(.form-company, .form-message, .form-description, .form-consent) {
+    grid-column: 1/-1;
 }
 
-@media (min-width: 576px) {
-    .form-container {
-        max-width: 540px;
-    }
+main .technical-inquiry :is(.form-authorize-msg, .form-ack-msg) {
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
 }
-  
-@media (min-width: 768px) {
-    .form-container {
-        max-width: 740px;
-        margin: 0 auto 10px;
+
+main .technical-inquiry :is(.form-country, .form-serial-no, .form-inquiry, .form-product, .form-attachment) {
+    grid-column: 1/-1;
+}
+
+main .innovate .form-email {
+    grid-column: 1/-1;
+}
+
+main .innovate .form-ack-fs {
+    --form-fieldset-padding: 40px 12% 32px;
+    --form-fieldset-grid-gap: 0;
+    --form-label-line-height: 24px;
+
+    background-color: rgb(0 0 0 / 10%);
+}
+
+main .innovate .form-ack-fs > legend {
+    float: left;
+}
+
+main .study-request {
+    --form-default-wrapper-line-height: normal;
+}
+
+main .study-request .default-content-wrapper p {
+    text-align: left;
+    font-size: 16px;
+    padding-bottom: 23px;
+}
+
+main .study-request .default-content-wrapper strong {
+    color: var(--mt-global-color-red);
+}
+
+main .study-request textarea {
+    padding: 15px;
+    min-height: 288px;
+}
+
+main .study-request :is(.form-pi-and-contact-fs, .form-study-fs) {
+    align-items: end;
+}
+
+main .study-request .form-information {
+    padding: 20px;
+    max-width: 500px;
+    text-align: center;
+    margin: 15px auto;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-image-source: linear-gradient(to right, rgb(0 0 0 / 0%), rgb(0 0 0 / 75%), rgb(0 0 0 / 0%));
+    border-image-slice: 1;
+}
+
+main .study-request :is(.form-milestones-fs, .form-publication-fs, .form-document-fs) > .field-description,
+main .study-request :is(.form-institutionaddress, .form-studytitle, .form-product, .form-background, .form-statistical, .form-publication) {
+    grid-column: 1/-1;
+}
+
+main .study-request .form-milestones-fs > fieldset {
+    --form-fieldset-columns: 3;
+    --form-fieldset-grid-gap: 24px 2%;
+
+    grid-template-columns: repeat(var(--form-fieldset-columns), 84px);
+}
+
+main .study-request .form-submission-type-fs {
+    --form-fieldset-columns: 1;
+    --form-fieldset-grid-gap: 0;
+    --form-fieldset-legend-font-weight: bold;
+}
+
+main .study-request :is(.form-authorize, .form-terms, .form-submit-wrapper) {
+    width: 500px;
+    margin: auto;
+    text-align: center;
+    font-style: oblique;
+}
+
+@media (min-width: 640px) {
+    main .connectus {
+        --form-columns: 6;
     }
 
-        form {
-        width: unset;
-        flex-flow: wrap row;
-    }
-}
-  
-@media (min-width: 1200px), (min-width: 992px) {
-    :root {
-        --form-columns: 2;
-    }
-
-    .form-firstname,
-    .form-lastname,
-    .form-country,
-    .form-postalcode,
-    .form-phone,
-    .form-email,
-    .form-preferred-day-fs,
-    .form-preferred-time-fs,
-    .form-product-fs,
-    .form-solution-fs{
+    main .connectus :is(.form-postalcode, .form-country, .form-phone, .form-email, .form-firstname, .form-lastname) {
         grid-column: span calc(var(--form-columns)/2);
     }
 
-    .form-contact-type-fs,
-    .form-company,
-    .form-description,
-    .form-message,
-    .form-consent,
-    .form-submit-wrapper  {
-        grid-column: span 4;
+    main .connectus :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs),
+    main .contact :is(.form-product-fs, .form-solution-fs, .form-service-fs) {
+        grid-column: span calc(var(--form-columns)/3);
+        width: calc(100% + 10px);
     }
 
-    .form-email-opt-fs  {
-        grid-column-start: 1;
+    main .schedule-demo :is(.form-product-fs, .form-solution-fs, .form-preferred-day-fs, .form-preferred-time-fs) {
+        grid-column: span calc(var(--form-columns)/2);
     }
 
-    main .innovate,
-    main .study-request  {
-        max-width: 1060px;
-        padding: 0;
+    main .technical-inquiry {
+        --form-fieldset-columns: 2;
     }
 
-    main .innovate form,
-    main .study-request form {
-        max-width: 800px;
-        margin: 0 auto;
+    main .innovate .form-personal-info {
+        --form-fieldset-columns: 2;
     }
 
-    .innovate .form-personal-info  {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+    main .study-request fieldset {
+        --form-fieldset-columns: 2;
     }
 
-    .innovate .form-email {
-        grid-column: span 2;
+}
+
+@media (min-width: 740px) {
+    :root {
+        --form-wrapper-padding: 0 77px;
+        --form-padding: 16px 0 122px;
     }
 
-    .innovate  .form-company {
-        grid-column: span 1;
-    }
-    
-    .technical-inquiry .form-contact-details-fs {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+    main .form-container .default-content-wrapper h2 {
+        padding-top: 37px;
     }
 
-    .technical-inquiry .form-country {
-        grid-column: span 2;
-    }
-
-    .contact,
-    .schedule-demo {
-        --form-columns: 4;
-    }
-
-    .contact .form-product-fs {
-        grid-column: span 1;
-    }
-
-    .study-request .form-pi-and-contact-fs,
-    .study-request .form-study-fs,
-    .form-statistical-fs,
-    .form-budget-fs,
-    .form-milestones-fs,
-    .form-document-fs   {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .study-request .form-pi-and-contact-fs,
-    .study-request .form-institutionaddress,
-    .form-contacttitle,
-    .form-studytitle,
-    .form-product,
-    .form-background,
-    .form-statistical,
-    #milestones-fs-description,
-    #document-fs-description   {
-        grid-column: span 2;
-    }
-
-    main .innovate form .form-ack-fs {
-        padding: 0 15% 5px;
-        border-radius: 3px;
-        margin-top: 36px 0;
+    main .form-container .default-content-wrapper h2:only-child {
+        padding-top: 85px;
     }
 }

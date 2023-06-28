@@ -91,9 +91,21 @@ header nav .nav-hamburger button {
   white-space: initial;
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   line-height: 1.1;
+}
+
+@media screen and (min-width: 542px) {
+  header nav .nav-hamburger button {
+    justify-content: center;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  header nav .nav-hamburger button {
+    justify-content: flex-end;
+  }
 }
 
 /* brand */
@@ -342,6 +354,10 @@ header nav .nav-sections > ul > li[aria-expanded="true"] > ul {
   z-index: 200;
 }
 
+header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul {
+  overflow-x: hidden;
+}
+
 header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul {
   display: flex;
   flex-direction: column;
@@ -440,11 +456,11 @@ header nav input[type='search'].nav-search-input  {
   position: absolute;
   right: 60px;
   padding: 0 24px;
-  min-height: 48px;
-  height: auto;
+  min-height: 30px;
+  height: 30px;
   border-radius: 0;
   font-family: var(--mt-body-font-family);
-  font-size: var(--mt-body-font-size-m);
+  font-size: var(--mt-body-font-size-s);
   border: 2px solid var(--mt-header-search-input-color);
   outline: none;appearance: textfield;
   outline-offset: -2px;
@@ -454,6 +470,13 @@ header nav input[type='search'].nav-search-input  {
   max-width: 70%;
   text-align: left;
   z-index: 1000;
+}
+
+@media screen and (min-width: 1024px) {
+  header nav input[type='search'].nav-search-input  {
+    height: 48px;
+    min-height: 48px;
+  }
 }
 
 header nav .nav-search-result-title {

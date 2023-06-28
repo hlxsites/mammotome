@@ -53,9 +53,4 @@ export default async function decorate(block) {
     nextBox.insertAdjacentElement('afterbegin', await buildNavButtons('navNextText', 'Next'));
     nextBox.insertAdjacentElement('afterbegin', createArrow('right'));
   }
-
-  // Add Bottom Spacer
-  const spacer = document.createElement('div');
-  spacer.classList.add('bottom-spacer');
-  block.appendChild(spacer);
 }

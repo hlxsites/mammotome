@@ -15,6 +15,7 @@ import {
   createMetadata,
   getMetadata,
   toClassName,
+  decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
 import {
@@ -22,9 +23,7 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
-import integrateMartech from './third-party.js';
-
-const LCP_BLOCKS = []; // add your LCP blocks to the list
+const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
 // ARC decorations icons
@@ -59,6 +58,7 @@ function buildHeroBlock(main) {
   const h2 = main.querySelector(':scope > div:first-child > h2');
   const button = main.querySelector(':scope > div:first-child > p > a');
   const picture = main.querySelector(':scope > div:first-child picture');
+  const overlayPicture = main.querySelector(':scope > div:first-of-type > p:nth-child(2) > picture');
   const metaData = main.querySelector(':scope > div:first-child .section-metadata');
 
   const setHeroType = (heroType) => {
@@ -92,7 +92,13 @@ function buildHeroBlock(main) {
   // eslint-disable-next-line no-bitwise,max-len
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    const elems = [picture, h1];
+    const elems = [picture];
+
+    if (overlayPicture) {
+      elems.push(overlayPicture);
+    }
+
+    elems.push(h1);
 
     if (h2 && h1.nextElementSibling === h2) {
       elems.push(h2);
@@ -117,11 +123,21 @@ function buildHeroBlock(main) {
     const newPictureDiv = document.createElement('div');
     newPictureDiv.appendChild(picture);
     newPictureParent.appendChild(newPictureDiv);
+    // change spacer after arc
+    const arcAfterSection = main.querySelector('.arc-after-section');
+    arcAfterSection.classList.replace('arc-after-section', 'arc-after-hero-light');
   } else if (h2 && picture
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = document.createElement('div');
-    const elems = [picture, h2];
+
+    const elems = [picture];
+
+    if (overlayPicture) {
+      elems.push(overlayPicture);
+    }
+
+    elems.push(h2);
 
     appendArcAndBuildBlock(section, elems);
     setHeroType('big');
@@ -183,6 +199,7 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
+  decorateSupScriptInTextBelow(main);
 
   if (main.querySelector('.section.our-history')) {
     decorateHistorySection(main);
@@ -217,8 +234,6 @@ async function loadEager(doc) {
  * Adds a favicon.
  * @param {string} href The favicon URL
  * @param {string} rel The icon rel
- * @param {string} type The icon content type
- * @param {string} size The dimensions of the icon, e.g. 80x80
  */
 export function addFavIcon(
   href,
@@ -236,6 +251,15 @@ export function addFavIcon(
   }
 }
 
+function integrateMartech(parent, id) {
+  // Google Tag Manager
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
+  script.async = true;
+  parent.appendChild(script);
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
@@ -243,6 +267,8 @@ export function addFavIcon(
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
+
+  loadCSS('/styles/fonts.css', null);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
@@ -260,8 +286,6 @@ async function loadLazy(doc) {
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
-
-  integrateMartech(document.body, 'GTM-KNBZTHP');
 
   // Load experimentation preview overlay
   if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
@@ -284,6 +308,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  window.setTimeout(() => integrateMartech(document.body, 'GTM-KNBZTHP'), 500);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here

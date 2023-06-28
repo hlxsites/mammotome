@@ -1,12 +1,12 @@
 indices:
   de:
     include:
-      - /de/**
+      - /de/de/**
     exclude:
-      - /de/nav
-      - /de/footer
-      - /de/experimentation/**
-    target: /de/query-index.json
+      - /de/de/nav
+      - /de/de/footer
+      - /de/de/experimentation/**
+    target: /de/de/query-index.json
     properties:
       lastModified:
         select: none
@@ -22,12 +22,12 @@ indices:
         value: attribute(el, "content")
   en:
     include:
-      - /en/**
+      - /en/en/**
     exclude:
-      - /en/nav
-      - /en/footer
-      - /en/experimentation/**
-    target: /en/query-index.json
+      - /en/en/nav
+      - /en/en/footer
+      - /en/en/experimentation/**
+    target: /en/en/query-index.json
     properties:
       lastModified:
         select: none
@@ -41,14 +41,14 @@ indices:
       description:
         select: head > meta[name="description"]
         value: attribute(el, "content")
-  en-gb:
+  uk-en:
     include:
-      - /en-gb/**
+      - /uk/en/**
     exclude:
-      - /en-gb/nav
-      - /en-gb/footer
-      - /en-gb/experimentation/**
-    target: /en-gb/query-index.json
+      - /uk/en/nav
+      - /uk/en/footer
+      - /uk/en/experimentation/**
+    target: /uk/en/query-index.json
     properties:
       lastModified:
         select: none
@@ -64,12 +64,12 @@ indices:
         value: attribute(el, "content")
   es:
     include:
-      - /es/**
+      - /es/es/**
     exclude:
-      - /es/nav
-      - /es/footer
-      - /es/experimentation/**
-    target: /es/query-index.json
+      - /es/es/nav
+      - /es/es/footer
+      - /es/es/experimentation/**
+    target: /es/es/query-index.json
     properties:
       lastModified:
         select: none
@@ -85,12 +85,12 @@ indices:
         value: attribute(el, "content")
   fr:
     include:
-      - /fr/**
+      - /fr/fr/**
     exclude:
-      - /fr/nav
-      - /fr/footer
-      - /fr/experimentation/**
-    target: /fr/query-index.json
+      - /fr/fr/nav
+      - /fr/fr/footer
+      - /fr/fr/experimentation/**
+    target: /fr/fr/query-index.json
     properties:
       lastModified:
         select: none
@@ -106,12 +106,12 @@ indices:
         value: attribute(el, "content")
   it:
     include:
-      - /it/**
+      - /it/it/**
     exclude:
-      - /it/nav
-      - /it/footer
-      - /it/experimentation/**
-    target: /it/query-index.json
+      - /it/it/nav
+      - /it/it/footer
+      - /it/it/experimentation/**
+    target: /it/it/query-index.json
     properties:
       lastModified:
         select: none
@@ -127,12 +127,12 @@ indices:
         value: attribute(el, "content")
   pl:
     include:
-      - /pl/**
+      - /pl/pl/**
     exclude:
-      - /pl/nav
-      - /pl/footer
-      - /pl/experimentation/**
-    target: /pl/query-index.json
+      - /pl/pl/nav
+      - /pl/pl/footer
+      - /pl/pl/experimentation/**
+    target: /pl/pl/query-index.json
     properties:
       lastModified:
         select: none

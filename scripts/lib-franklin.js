@@ -336,26 +336,39 @@ export async function translate(key, defaultText) {
   return defaultText;
 }
 
-export function decorateSupScript(string, result = []) {
+export function decorateSupScript(string, result = [], inside = false, first = true) {
   if (!string) {
     return result;
   }
+  if (inside && first && ['TM', 'tm'].includes(string)) {
+    result.push(
+      {
+        type: 'span',
+        textContent: string,
+        classes: ['tm'],
+      },
+    );
+    return result;
+  }
 
-  const idx = string.search(/®|™/);
+  const idx = string.search(/®|™|©/);
 
   if (idx !== -1) {
+    const sup = string.substr(idx, 1);
+    const tm = sup === '™';
     result.push(
       {
         type: 'span',
         textContent: string.substr(0, idx),
       },
       {
-        type: 'sup',
-        textContent: string.substr(idx, 1),
+        type: inside ? 'span' : 'sup',
+        textContent: tm ? 'TM' : sup,
+        classes: tm ? ['tm'] : undefined,
       },
     );
 
-    return decorateSupScript(string.substr(idx + 1), result);
+    return decorateSupScript(string.substr(idx + 1), result, inside, false);
   }
 
   result.push({
@@ -366,13 +379,88 @@ export function decorateSupScript(string, result = []) {
   return result;
 }
 
+function walkNodeTree(root, { inspect, collect, callback } = {}) {
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ALL,
+    {
+      acceptNode(node) {
+        if (inspect && !inspect(node)) { return NodeFilter.FILTER_REJECT; }
+        if (collect && !collect(node)) { return NodeFilter.FILTER_SKIP; }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    },
+  );
+
+  let n = walker.nextNode();
+  while (n) {
+    const next = walker.nextNode();
+    callback?.(n);
+    n = next;
+  }
+}
+
+export function decorateSupScriptInTextBelow(el) {
+  return walkNodeTree(el, {
+    inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
+    collect: (n) => (n.nodeType === Node.TEXT_NODE),
+    callback: (n) => {
+      const inside = n.parentElement.tagName === 'SUP';
+      const result = decorateSupScript(n.textContent, [], inside);
+      if (result.length > 1) {
+        const replacementNode = document.createElement('span');
+        const newHtml = result.filter((p) => p.textContent !== '').map((p) => `<${p.type}${p.classes ? ` class=${p.classes.join()}` : ''}>${p.textContent}</${p.type}>`).join('');
+        n.parentNode.insertBefore(replacementNode, n);
+        n.parentNode.removeChild(n);
+        replacementNode.outerHTML = newHtml;
+      } else if (inside && result.length === 1 && result[0].classes?.includes('tm')) {
+        n.parentElement.classList.add('tm');
+      }
+    },
+  });
+}
+
+export function getInfo() {
+  const [, country, language] = window.location.pathname.split('/');
+  const getUrlPath = (path) => new URL(path, origin).pathname;
+
+  return {
+    country,
+    language,
+    productDB: getUrlPath('/products.json'),
+    productSupport: getUrlPath(`/${country}/${language}/product-support`),
+    queryIndex: getUrlPath(`/${country}/${language}/query-index.json`),
+  };
+}
+
+export function adjustAssetURL(asset) {
+  if (asset?.URL) {
+    const url = new URL(asset.URL, window.location);
+    const isLocalOrHlx = ['localhost', '-mammotome--hlxsites.hlx.page', '-mammotome--hlxsites.hlx.live']
+      .some((domain) => url.hostname.endsWith(domain));
+
+    if (isLocalOrHlx) {
+      asset.URL = url.pathname;
+    }
+  }
+  return asset;
+}
+
 export async function getProductDB() {
   if (!window.productDB) {
-    const resp = await fetch('/products.json?limit=10000');
+    const { productDB } = getInfo();
+    const resp = await fetch(`${productDB}?limit=10000`);
     if (!resp.ok) {
       throw new Error(`${resp.status}: ${resp.statusText}`);
     }
     window.productDB = await resp.json();
+    const adjustData = (f) => (field) => {
+      if (window.productDB[field]?.data) {
+        window.productDB[field].data = window.productDB[field].data.map(f);
+      }
+    };
+
+    ['ProductAsset', 'eIFU'].forEach(adjustData(adjustAssetURL));
   }
   return window.productDB;
 }
@@ -535,17 +623,32 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 /**
  * Add a divider into section from Section Metadata block
  * @param section section element
- * @param pos position of divider (before or after)
+ * @param pos position of divider (before or after) default is after
  */
 export function addDivider(section, pos) {
-  const dividerContainerDiv = document.createElement('div');
-  const dividerDiv = document.createElement('div');
-  dividerDiv.classList.add('divider');
-  dividerContainerDiv.appendChild(dividerDiv);
-  if (pos === 'after') {
-    section.appendChild(dividerContainerDiv);
+  const divider = document.createElement('hr');
+  divider.classList.add('divider');
+  if (pos === 'before') {
+    section.insertBefore(divider, section.firstChild);
   } else {
-    section.insertBefore(dividerContainerDiv, section.firstChild);
+    section.appendChild(divider);
+  }
+}
+
+/** Add a spacer into section from Section Metadata block
+ * @param section section element
+ * @param heightValue height of spacer in px
+ * @param position after or before
+ */
+export function addSpacer(section, heightValue, position) {
+  const spacerHeight = parseInt(heightValue, 10) || 0;
+  const spacerDiv = document.createElement('div');
+  section.classList.add('spacer');
+  spacerDiv.setAttribute('style', `height: ${spacerHeight}px;`);
+  if (position === 'before') {
+    section.insertBefore(spacerDiv, section.firstChild);
+  } else if (position === 'after') {
+    section.appendChild(spacerDiv);
   }
 }
 
@@ -589,6 +692,19 @@ export function decorateSections(main) {
           const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
           const dividerPos = dividerMeta[0] || 'after';
           addDivider(section, dividerPos);
+        } else if (key === 'spacer') {
+          const spacerMeta = meta.spacer.split(',').map((spacer) => toClassName(spacer.trim()));
+          const spacerValue = parseInt(spacerMeta[0], 10) || '0';
+          if (spacerMeta.length > 1) {
+            const spacerPositions = spacerMeta.slice(1, spacerMeta.length);
+            spacerPositions.forEach((position) => {
+              addSpacer(section, spacerValue, position.trim());
+            });
+          } else {
+            addSpacer(section, spacerValue, 'after');
+          }
+
+          // addSpacer(section, spacerValue);
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
@@ -789,16 +905,6 @@ export function decorateButtons(element) {
       if (a.href !== a.textContent && !a.querySelector('img')) {
         const parent = a.parentElement;
         const grandparent = parent.parentElement;
-        if (a.href.includes('.pdf')) {
-          const icon = document.createElement('i');
-          icon.classList.add('link-icon');
-          icon.innerHTML = PDF_ICON;
-          const spanText = document.createElement('span');
-          spanText.innerHTML = a.innerHTML;
-          a.innerHTML = '';
-          a.appendChild(icon);
-          a.appendChild(spanText);
-        }
         const isSingleChild = (el, tagName) => el.childNodes.length === 1 && el.tagName === tagName;
         const addClassAndContainer = (el, className, containerClass) => {
           a.className = className;
@@ -812,6 +918,16 @@ export function decorateButtons(element) {
         } else if (isSingleChild(parent, 'EM') && isSingleChild(grandparent, 'P')) {
           addClassAndContainer(grandparent, 'button secondary', 'button-container');
         }
+        if (a.href.includes('.pdf') && parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
+          const icon = document.createElement('i');
+          icon.classList.add('link-icon');
+          icon.innerHTML = PDF_ICON;
+          const spanText = document.createElement('span');
+          spanText.innerHTML = a.innerHTML;
+          a.innerHTML = '';
+          a.appendChild(icon);
+          a.appendChild(spanText);
+        }
       }
     }
   });
@@ -820,7 +936,7 @@ export function decorateButtons(element) {
 export function decorateBlockImgs(block) {
   block.querySelectorAll('img')
     .forEach((img) => {
-      const { hostname } = new URL(img.src);
+      const { hostname } = new URL(img.src, window.location.href);
       if (hostname === window.location.hostname
         || hostname.endsWith('-mammotome--hlxsites.hlx.page')
         || hostname.endsWith('-mammotome--hlxsites.hlx.live')

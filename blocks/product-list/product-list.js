@@ -1,15 +1,10 @@
 import {
-  createDomStructure, decorateBlockImgs, decorateSupScript, getProducts,
+  createDomStructure, decorateBlockImgs, decorateSupScript, getInfo, getProducts,
 } from '../../scripts/lib-franklin.js';
-
-function getInfo() {
-  const [, country, language] = window.location.pathname.split('/');
-  return { country, language };
-}
 
 function decorateProduct(product) {
   const children = [
-    { type: 'h3', children: decorateSupScript(product.Name) },
+    { type: 'h4', children: decorateSupScript(product.Name) },
   ];
 
   if (product.Image) {
