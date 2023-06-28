@@ -312,6 +312,7 @@ main .connectus .form-consent {
     line-height: normal;
 }
 
+/* stylelint-disable-next-line  selector-class-pattern */
 main .connectus :is(.form-company, .form-Pardot_Form_Message__c, .form-description, .form-consent) {
     grid-column: 1/-1;
 }
