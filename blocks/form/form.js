@@ -35,16 +35,16 @@ function constructPayload(form) {
 }
 
 function showError(form, error) {
-  const errorMessages = document.createElement('div');
-  errorMessages.className = 'form-submission-error';
-  errorMessages.textContent = error;
-  form.append(errorMessages);
+  const errorMessage = document.createElement('div');
+  errorMessage.className = 'form-submission-error';
+  errorMessage.textContent = error;
+  form.append(errorMessage);
 }
 
 function clearError(form) {
-  const errorMessages = form.querySelector('.form-submission-error');
-  if (errorMessages) {
-    errorMessages.remove();
+  const errorMessage = form.querySelector('.form-submission-error');
+  if (errorMessage) {
+    errorMessage.remove();
   }
 }
 
