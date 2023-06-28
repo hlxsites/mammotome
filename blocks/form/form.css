@@ -217,11 +217,16 @@ main .form .field-wrapper ul {
     list-style-type: none;
 }
 
-main .form .field-wrapper ul li {
+main .form .field-wrapper ul li,
+main .form .form-submission-error {
     color: var(--mt-global-color-red);
     padding: 12px 24px;
     border: 1px solid #c02b0a;
     background: #fff9f9;
+}
+
+main .form .form-submission-error {
+    grid-column: 1/-1;
 }
 
 main .form .field-wrapper ul li:not(:first-child) {

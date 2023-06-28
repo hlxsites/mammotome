@@ -35,15 +35,17 @@ function constructPayload(form) {
 }
 
 function showError(form, error) {
-  const ul = form.querySelector('.form-submit-wrapper > ul');
-  const li = document.createElement('li');
-  li.textContent = error;
-  ul.appendChild(li);
+  const errorMessages = document.createElement('div');
+  errorMessages.className = 'form-submission-error';
+  errorMessages.textContent = error;
+  form.append(errorMessages);
 }
 
 function clearError(form) {
-  const ul = form.querySelector('.form-submit-wrapper > ul');
-  ul.innerHTML = '';
+  const errorMessages = form.querySelector('.form-submission-error');
+  if (errorMessages) {
+    errorMessages.remove();
+  }
 }
 
 async function submissionFailure(error, form) {
@@ -182,7 +184,6 @@ function createSubmit(fd) {
     });
     obs.observe(wrapper);
   }
-  wrapper.appendChild(document.createElement('ul')); // for error messages
   return wrapper;
 }
 
