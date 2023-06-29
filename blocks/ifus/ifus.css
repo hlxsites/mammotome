@@ -73,6 +73,7 @@
     display: block;
     white-space: nowrap;
     text-align: center;
+    text-transform: uppercase;
     width: 100%;
 }
 
