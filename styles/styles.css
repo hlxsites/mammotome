@@ -480,7 +480,6 @@ a:hover {
   .logo-secondary-background h4,
   .logo-primary-background p ,
   .logo-secondary-background p {
-    font-weight: var(--mt-font-weight-regular);
     line-height: 2.7rem;
   }
 }
