@@ -84,7 +84,7 @@ async function submitForm(form, token) {
     });
     if (response.ok) {
       sampleRUM('form:submit');
-      window.location.href = form.dataset?.redirect || 'thankyou';
+      window.location.href = form.dataset?.redirect || '/us/en/thankyou';
     } else {
       const error = await response.text();
       throw new Error(error);
