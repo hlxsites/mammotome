@@ -452,7 +452,6 @@ a:hover {
 .logo-primary-background p ,
 .logo-secondary-background p {
   line-height: 1.9rem;
-  font-size: var(--mt-heading-font-size-l);
   font-weight: var(--mt-font-weight-thin);
   padding: 0 5%;;
 }
@@ -483,7 +482,6 @@ a:hover {
   .logo-secondary-background h4,
   .logo-primary-background p ,
   .logo-secondary-background p {
-    font-size: var(--mt-heading-font-size-xl);
     font-weight: var(--mt-font-weight-regular);
     line-height: 2.7rem;
   }
@@ -981,6 +979,7 @@ main .section.our-history .year.highlight .icon-calendar {
   background-size: 60px auto;
   background-color: #F4F4F4;
   padding: 3% 0;
+  margin: 0;
   position: relative;
   z-index: -1;
 }
@@ -992,6 +991,7 @@ main .section.our-history .year.highlight .icon-calendar {
   background-repeat: repeat;
   background-size: 60px auto;
   padding: 3% 0;
+  margin: 0;
   position: relative;
   z-index: -1;
 }
