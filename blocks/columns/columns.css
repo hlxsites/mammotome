@@ -39,6 +39,10 @@ main .columns ol li a:not(.button) {
   color: var(--mt-text-color-inverted);
 }
 
+main .columns.linked-images a:not(.button) {
+  font-size: inherit;
+}
+
 main .columns h1,
 main .columns h2,
 main .columns h3,
