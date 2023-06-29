@@ -312,10 +312,12 @@ main .connectus .form-consent {
     line-height: normal;
 }
 
-main .connectus :is(.form-company, .form-message, .form-description, .form-consent) {
+/* stylelint-disable-next-line  selector-class-pattern */
+main .connectus :is(.form-company, .form-Pardot_Form_Message__c, .form-description, .form-consent) {
     grid-column: 1/-1;
 }
 
+main .study-request :is(.form-authorize, .form-terms),
 main .technical-inquiry :is(.form-authorize-msg, .form-ack-msg) {
     margin: 0;
     font-size: 14px;
@@ -394,19 +396,13 @@ main .study-request .form-submission-type-fs {
     --form-fieldset-legend-font-weight: bold;
 }
 
-main .study-request :is(.form-authorize, .form-terms, .form-submit-wrapper) {
-    width: 500px;
-    margin: auto;
-    text-align: center;
-    font-style: oblique;
-}
-
 @media (min-width: 640px) {
     main .connectus {
         --form-columns: 6;
     }
 
-    main .connectus :is(.form-postalcode, .form-country, .form-phone, .form-email, .form-firstname, .form-lastname) {
+    /* stylelint-disable-next-line  selector-class-pattern */
+    main .connectus :is(.form-postalCode, .form-country, .form-phone, .form-email, .form-firstName, .form-lastName) {
         grid-column: span calc(var(--form-columns)/2);
     }
 
