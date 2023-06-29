@@ -48,7 +48,7 @@ function validateType(files, allowedTypes = '') {
   return { allowedFiles, disallowedFiles };
 }
 
-function validateSize(files, maxSize = 200) {
+function validateSize(files, maxSize = 2) {
   const withinSizeFiles = [];
   const exceedSizeFiles = [];
   files.forEach((file) => {
