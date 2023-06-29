@@ -15,14 +15,24 @@ main .columns {
   padding: 0;
 }
 
-main .columns ol {
-  font-size: var(--mt-ordered-list-font-size);
-  padding-left: 15px;
-}
-
 main .columns a:not(.button) {
   color: var(--columns-link-color);
   font-size: 1rem;
+}
+
+main .columns h1 a:any-link,
+main .columns h2 a:any-link,
+main .columns h3 a:any-link,
+main .columns h4 a:any-link,
+main .columns h5 a:any-link,
+main .columns h6 a:any-link {
+  color: inherit;
+  font-size: inherit;
+}
+
+main .columns ol {
+  font-size: var(--mt-ordered-list-font-size);
+  padding-left: 15px;
 }
 
 main .columns ol li a:not(.button) {
@@ -143,7 +153,10 @@ div[class^="columns image-color-"] > div > div:last-child img {
 
 main .columns.text-small > div p {
     font-size: 1rem;
-    padding: 0 15%;
+}
+
+main .section.narrow .columns-wrapper {
+  padding: 0 15%;
 }
 
 main .columns.simple > div {
