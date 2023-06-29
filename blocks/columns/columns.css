@@ -188,12 +188,10 @@ main .columns.image-cards p:has(picture) img {
 }
 
 div[class^="columns image-color-"] > div > div:first-child.columns-img-col {
-  padding-left: var(--columns-image-padding);
   max-width: calc((var(--columns-max-width)/2));
 }
 
 div[class^="columns image-color-"] > div > div:last-child.columns-img-col {
-  padding-right: var(--columns-image-padding);
   max-width: calc((var(--columns-max-width)/2));
 }
 
@@ -225,12 +223,12 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 }
 
 .columns .columns-img {
-  padding: 5% 0 10%;
+  padding: 5%;
 }
 
 @media (min-width: 768px) {
   .columns .columns-img {
-    padding: 5% 15%;
+    padding: 10%;
   }
 }
 
