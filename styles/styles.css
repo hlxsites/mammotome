@@ -997,6 +997,8 @@ main .section.our-history .year.highlight .icon-calendar {
   max-width: 110%;
   fill: var(--mt-background-color-primary);
   background-color: transparent;
+  position: relative;
+  top: -1px;
 }
 
 /* Position preceding content */
