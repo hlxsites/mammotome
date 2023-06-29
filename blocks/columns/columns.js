@@ -28,7 +28,7 @@ export default function decorate(block) {
 
       // Adds Href to image if linked-images class was set
       if (pic && text && block.classList.contains('linked-images')) {
-        const a = block.querySelector('a');
+        const a = col.querySelector('a');
         if (a) {
           const href = a.getAttribute('href');
           const p = pic.parentElement;
