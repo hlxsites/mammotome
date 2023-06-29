@@ -26,18 +26,6 @@ export default function decorate(block) {
       const pic = col.querySelector('picture');
       const text = col.querySelector('p');
 
-      // Adds Href to image if linked-images class was set
-      if (pic && text && block.classList.contains('linked-images')) {
-        const a = block.querySelector('a');
-        if (a) {
-          const href = a.getAttribute('href');
-          const p = pic.parentElement;
-          const newA = document.createElement('a');
-          newA.setAttribute('href', href);
-          newA.appendChild(pic);
-          p.appendChild(newA);
-        }
-      }
       if (pic && !text) {
         const oddeven = (index % 2 === 0) ? 'even' : 'odd';
         const picWrapper = pic.closest('div');
