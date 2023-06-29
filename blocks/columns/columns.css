@@ -139,7 +139,10 @@ div[class^="columns image-color-"] > div > div:last-child img {
 
 main .columns.text-small > div p {
     font-size: 1rem;
-    padding: 0 15%;
+}
+
+main .section.narrow .columns-wrapper {
+  padding: 0 15%;
 }
 
 main .columns.simple > div {
