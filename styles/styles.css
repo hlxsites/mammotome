@@ -642,6 +642,10 @@ main img {
   width: 24px;
 }
 
+.icon:has(+a) {
+  padding: 5px;
+}
+
 .icon svg {
   height: 100%;
   width: 100%;

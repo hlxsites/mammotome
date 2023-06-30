@@ -24,6 +24,8 @@ If an image you want that it occupies the whole width of the card, use the selec
 
 If you want an image to be displayed fully, use the selector `fullimage`. In this case, the image won't be cropped, but the height will be restricted to 120 pixels.
 
+To split a card into two columns within one card, use the selector `split`. To define 20% space on the left side and 80% on the right side use the selector  `split-20-80`.
+
 ### Card link
 
 As mentioned before, the card link is defined as the third section in the right cell. When you insert a link in the SharePoint document, you can specify a text that will be displayed on the card (a callout message that appears at the bottom of the card) and a link itself.

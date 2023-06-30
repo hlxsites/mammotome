@@ -42,6 +42,10 @@
   grid-template-columns: repeat(1,1fr);
 }
 
+.cards[class*='split'] > ul {
+  width: 100%;
+}
+
 .cards.three-columns > ul {
   gap: var(--mt-cards-grid-row-gap) var(--mt-cards-grid-column-gap);
 }
@@ -68,6 +72,11 @@
   transition-property: background,border,box-shadow;
   transition-duration: .25s;
   align-items: center;
+}
+
+.cards[class*='split'] > ul > li {
+  flex-direction: row;
+  align-items: normal;
 }
 
 /* Center last child if it is the 4th card */
@@ -213,6 +222,15 @@
   margin-bottom: 25px;
 }
 
+.cards[class*='split'] > ul > li .cards-card-body h1,
+.cards[class*='split'] > ul > li .cards-card-body h2,
+.cards[class*='split'] > ul > li .cards-card-body h3,
+.cards[class*='split'] > ul > li .cards-card-body h4,
+.cards[class*='split'] > ul > li .cards-card-body h5,
+.cards[class*='split'] > ul > li .cards-card-body p {
+  text-align: left;
+}
+
 .cards > ul > li > a >.cards-card-body.callout-hidden h1 {
   margin: 5px 0;
 }
@@ -241,6 +259,18 @@
 
 .cards-card-body > p.callout.hidden {
   display: none;
+}
+
+.cards[class*='split'] > ul > li .cards-card-image {
+  padding: 0.5rem 0 0;
+}
+
+.cards.block.split-20-80 > ul > li > div:first-child {
+  flex: 0 0 20%
+}
+
+.cards.block.split-25-75 > ul > li > div:first-child {
+  flex: 0 0 25%
 }
 
 @media (min-width: 768px) {
