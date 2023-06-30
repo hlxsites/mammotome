@@ -44,7 +44,7 @@ export default async function decorate(block) {
   const imgStructure = [
     {
       type: 'img',
-      attributes: { src: product.Image },
+      attributes: { src: product.Image, alt: product.Name },
     },
   ];
 
