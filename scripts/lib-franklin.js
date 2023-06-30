@@ -189,13 +189,7 @@ export async function decorateIcons(element) {
           return;
         }
         // Styled icons don't play nice with the sprite approach because of shadow dom isolation
-        let svg = await response.text();
-
-        // Add title tag if it doesn't exist
-        if (!svg.match(/<title>/)) {
-          svg = svg.replace(/(<svg|<symbol)/, `$1><title>${iconName}</title>`);
-        }
-
+        const svg = await response.text();
         if (svg.match(/(<style | class=)/)) {
           ICONS_CACHE[iconName] = { styled: true, html: svg };
         } else {
