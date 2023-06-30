@@ -651,6 +651,10 @@ main img {
   width: 100%;
 }
 
+main .section.arc-bottom svg {
+  position: static;
+}
+
 a.button i.link-icon svg {
   width: 1.25em;
   fill: var(--mt-global-color-accent-primary);;
@@ -992,6 +996,14 @@ main .section.our-history .year.highlight .icon-calendar {
 
 .section .arc {
   margin: -7% -15% 0;
+}
+
+main .section.arc-bottom {
+  padding: 3% 0 0;
+}
+
+main .section.arc-bottom .arc {
+  margin: 2% 0 0;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
