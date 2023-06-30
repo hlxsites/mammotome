@@ -150,11 +150,13 @@ const createArrowNav = () => {
 
   const arrowLeft = document.createElement('a');
   arrowLeft.setAttribute('id', 'slider-arrow-left');
+  arrowLeft.setAttribute('aria-label', 'Previous Slide');
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
   arrowNavContainer.appendChild(arrowLeft);
 
   const arrowRight = document.createElement('a');
   arrowRight.setAttribute('id', 'slider-arrow-right');
+  arrowRight.setAttribute('aria-label', 'Next Slide');
   arrowRight.innerHTML = HTML_ARROW_RIGHT;
   arrowNavContainer.appendChild(arrowRight);
   return arrowNavContainer;
@@ -169,6 +171,7 @@ const createBottomNav = (slides) => {
   slides.forEach((el) => {
     const bottomNavEl = document.createElement('a');
     bottomNavEl.setAttribute('id', el);
+    bottomNavEl.setAttribute('aria-label', `Go to Slide ${j}`);
     bottomNavEl.classList.add('bullet');
     bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
     bottomNavContainer.appendChild(bottomNavEl);
