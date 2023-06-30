@@ -66,7 +66,8 @@ function createOverflowDropdown(navSections) {
   const overflowDropdown = document.createElement('li');
   overflowDropdown.classList.add('nav-button', 'nav-overflow');
   const overflowButton = document.createElement('a');
-  overflowButton.innerHTML = '...';
+  overflowButton.href = '#';
+  overflowButton.textContent = '...';
   overflowDropdown.append(overflowButton);
 
   const overflowDropdownList = document.createElement('ul');
