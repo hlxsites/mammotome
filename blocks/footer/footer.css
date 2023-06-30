@@ -86,7 +86,7 @@ footer .columns ul li a[href] {
 
 
 /* footer nav headlines for mobile */
-footer .columns h5 {
+footer .columns h1 {
   font-size: var(--mt-footer-font-size-footer-s);
   font-weight: var(--mt-font-weight-bolder);
   color: var(--mt-global-color-accent-quaternary);
@@ -98,7 +98,7 @@ footer .columns h5 {
 
 /* footer nav headlines larger display */
 @media (min-width: 768px) {
-  footer .columns h5 {
+  footer .columns h1 {
     font-size: var(--mt-heading-font-size-m);
   }
 }
@@ -119,7 +119,7 @@ footer .columns > div > div:nth-child(4) .icon svg {
 
 /* flex item, Headquarter address
  left align for mobile */
-footer .columns > div > div:nth-child(5) > h5 {
+footer .columns > div > div:nth-child(5) > h1 {
   text-align: left;
   margin-bottom: 25px;
 }
@@ -131,7 +131,7 @@ footer .columns > div > div:nth-child(5) > p {
 /* flex item, Headquarter address
 right align for larger screen */
 @media (min-width: 768px) {
-  footer .columns > div > div:nth-child(5) > h5,
+  footer .columns > div > div:nth-child(5) > h1,
   footer .columns > div > div:nth-child(5) > p {
     text-align: right;
     line-height: unset;
