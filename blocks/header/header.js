@@ -66,7 +66,8 @@ function createOverflowDropdown(navSections) {
   const overflowDropdown = document.createElement('li');
   overflowDropdown.classList.add('nav-button', 'nav-overflow');
   const overflowButton = document.createElement('a');
-  overflowButton.innerHTML = '...';
+  overflowButton.href = '#';
+  overflowButton.textContent = '...';
   overflowDropdown.append(overflowButton);
 
   const overflowDropdownList = document.createElement('ul');
@@ -85,6 +86,8 @@ function createOverflowDropdown(navSections) {
 
 function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = nav.querySelector('.nav-brand > p > a');
+  homePageLink.setAttribute('aria-label', 'Navigate to homepage');
+
   const scrollingLogo = document.createElement('img');
   scrollingLogo.setAttribute('src', '/icons/logo-small.svg');
   scrollingLogo.setAttribute('class', 'scrolling-logo');

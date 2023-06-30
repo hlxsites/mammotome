@@ -215,6 +215,13 @@ export async function decorateIcons(element) {
   icons.forEach((span) => {
     const iconName = Array.from(span.classList).find((c) => c.startsWith('icon-')).split('-')[1];
     const parent = span.firstElementChild?.tagName === 'A' ? span.firstElementChild : span;
+
+    // Set aria-label if the parent is an anchor tag
+    const spanParent = span.parentElement;
+    if (spanParent.tagName === 'A' && !spanParent.hasAttribute('aria-label')) {
+      spanParent.setAttribute('aria-label', iconName);
+    }
+
     // Styled icons need to be inlined as-is, while unstyled ones can leverage the sprite
     if (ICONS_CACHE[iconName] && ICONS_CACHE[iconName].styled) {
       parent.innerHTML = ICONS_CACHE[iconName].html;
