@@ -16,6 +16,15 @@ export default async function decorate(block) {
     const footer = document.createElement('div');
     footer.innerHTML = html;
 
+    // decorate cookie settings (us/en/ & /uk/en/ only)
+    const cookieSettingsAnchor = footer.querySelector('#legal')?.nextElementSibling?.lastElementChild?.querySelector('a');
+    if (cookieSettingsAnchor) {
+      cookieSettingsAnchor.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (window.OneTrust) window.OneTrust.ToggleInfoDisplay();
+      });
+    }
+
     await decorateIcons(footer);
     decorateSupScriptInTextBelow(footer);
     block.append(footer);
