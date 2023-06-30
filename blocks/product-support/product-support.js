@@ -27,6 +27,12 @@ function getAssets(product, type, allType) {
   return product.assets.filter((asset) => (type === allType || asset.Type === type));
 }
 
+function parseYoutubeCode(url) {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[7].length === 11) ? match[7] : false;
+}
+
 export default async function decorate(block) {
   const {
     country, page, productSupport, language,
@@ -39,8 +45,9 @@ export default async function decorate(block) {
     return;
   }
 
-  const [heading, allDocuments, empty] = await Promise.all([
-    translate('productSupportHeading', 'Product and Technical documents'),
+  const [heading, headingVideos, allDocuments, empty] = await Promise.all([
+    translate('productSupportHeading', 'Product and Technical Documents'),
+    translate('productSupportHeadingVideos', 'Instructional Videos'),
     translate('productSupportAllDocuments', 'All Product Documents'),
     translate('productSupportNoResult', 'No data was found'),
   ]);
@@ -102,7 +109,8 @@ export default async function decorate(block) {
 
   const handler = () => {
     container.innerHTML = '';
-    const assets = getAssets(product, select.value, allDocuments);
+    const assets = getAssets(product, select.value, allDocuments)
+      .filter((asset) => !parseYoutubeCode(asset.URL));
 
     if (assets.length > 0) {
       createDomStructure(assets.map((asset) => (
@@ -126,6 +134,54 @@ export default async function decorate(block) {
       }], container);
     }
   };
+
+  const videoAssets = getAssets(product, allDocuments, allDocuments)
+    .filter((asset) => parseYoutubeCode(asset.URL));
+
+  if (videoAssets.length > 0) {
+    createDomStructure([
+      {
+        type: 'div',
+        classes: ['header-wide'],
+        children: [
+          {
+            type: 'h4',
+            children: [
+              {
+                type: 'strong',
+                textContent: headingVideos,
+              },
+            ],
+          },
+          {
+            type: 'div',
+            classes: ['link-container'],
+            children: videoAssets.map((asset) => (
+              {
+                type: 'div',
+                classes: ['video', 'link'],
+                children: [
+                  {
+                    type: 'h5',
+                    children: [
+                      {
+                        type: 'strong',
+                        children: decorateSupScript(asset.Name),
+                      },
+                    ],
+                  },
+                  {
+                    type: 'iframe',
+                    attributes: { allowfullscreen: '', src: `https://www.youtube.com/embed/${parseYoutubeCode(asset.URL)}` },
+                  },
+                ],
+              }
+            )),
+          },
+        ],
+      },
+    ], block);
+  }
 
   handler();
   select.addEventListener('change', handler);

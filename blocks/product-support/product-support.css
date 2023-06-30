@@ -29,7 +29,7 @@
   height: 100%;
 }
 
-.product-support > div > h4 > strong {
+.product-support > div strong {
   color: var(--mt-heading-color-primary);
   text-transform: uppercase;
 }
