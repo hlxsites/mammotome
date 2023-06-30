@@ -68,7 +68,20 @@ function createLink(href, text, prefix, document) {
 }
 
 export default {
-  REQUIRED_STYLES: ['display', 'background-image', 'background-color', 'color', 'font-size', 'font-weight', 'text-transform', 'letter-spacing', 'opacity'],
+  REQUIRED_STYLES: ['display', 'background-image', 'width', 'background-color', 'color', 'font-size', 'font-weight', 'text-transform', 'letter-spacing', 'opacity'],
+  preprocess: ({
+    // eslint-disable-next-line no-unused-vars
+    document, _, html, params,
+  }) => {
+    const toggleElem = document.querySelector('.elementor-toggle');
+    if (toggleElem) {
+      let { style: { width } } = toggleElem;
+      width = parseInt(width.substr(0, width.length - 2), 10);
+      if (width < 700) {
+        params.narrowCollapsible = true;
+      }
+    }
+  },
   /**
    * Apply DOM operations to the provided document and return
    * the root element to be then transformed to Markdown.
@@ -139,7 +152,10 @@ export default {
       const soundCloudElem = top.querySelector('.elementor-shortcode');
       const collapsibleBlock = top.querySelector('.elementor-toggle');
       const prevNextBlock = top.querySelector('.elementor-post-navigation');
-      if (prevNextBlock) {
+      const ifusBlock = top.querySelector('#ifu-index');
+      if (ifusBlock) {
+        ifusBlock.replaceWith(WebImporter.DOMUtils.createTable([['IFUS']], document));
+      } else if (prevNextBlock) {
         const prevEl = prevNextBlock.querySelector('.elementor-post-navigation__prev a');
         const prevLink = prevEl?.href;
         const prevTitle = prevEl?.querySelector('.post-navigation__prev--title');
@@ -150,13 +166,13 @@ export default {
           createLink(nextLink, nextTitle, params.originalURL, document)]];
         top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(prevNextTable, document));
       } else if (collapsibleBlock) {
-        const table = [['Collapsible (narrow)']];
+        const table = params.narrowCollapsible ? [['Collapsible (narrow)']] : [['Collapsible']];
         collapsibleBlock.querySelectorAll('.elementor-toggle-item').forEach((question) => {
           const rowElem = [question.querySelector('.elementor-toggle-title')?.innerHTML, question.querySelector('.elementor-tab-content').innerHTML];
           table.push(rowElem);
         });
         top.querySelector('.elementor-row')?.replaceWith(WebImporter.DOMUtils.createTable(table, document));
-      } else if (soundCloudElem) {
+      } else if (soundCloudElem && soundCloudElem.innerHTML) {
         const table = [['SoundCloud']];
         top.querySelectorAll('.elementor-widget-wrap').forEach((sound) => {
           if (sound.querySelector('.elementor-shortcode')) {
