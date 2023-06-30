@@ -85,6 +85,8 @@ function createOverflowDropdown(navSections) {
 
 function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = nav.querySelector('.nav-brand > p > a');
+  homePageLink.setAttribute('aria-label', 'Navigate to homepage');
+
   const scrollingLogo = document.createElement('img');
   scrollingLogo.setAttribute('src', '/icons/logo-small.svg');
   scrollingLogo.setAttribute('class', 'scrolling-logo');

@@ -189,7 +189,13 @@ export async function decorateIcons(element) {
           return;
         }
         // Styled icons don't play nice with the sprite approach because of shadow dom isolation
-        const svg = await response.text();
+        let svg = await response.text();
+
+        // Add title tag if it doesn't exist
+        if (!svg.match(/<title>/)) {
+          svg = svg.replace(/(<svg|<symbol)/, `$1><title>${iconName}</title>`);
+        }
+
         if (svg.match(/(<style | class=)/)) {
           ICONS_CACHE[iconName] = { styled: true, html: svg };
         } else {
@@ -215,6 +221,13 @@ export async function decorateIcons(element) {
   icons.forEach((span) => {
     const iconName = Array.from(span.classList).find((c) => c.startsWith('icon-')).split('-')[1];
     const parent = span.firstElementChild?.tagName === 'A' ? span.firstElementChild : span;
+
+    // Set aria-label if the parent is an anchor tag
+    const spanParent = span.parentElement;
+    if (spanParent.tagName === 'A' && !spanParent.hasAttribute('aria-label')) {
+      spanParent.setAttribute('aria-label', iconName);
+    }
+
     // Styled icons need to be inlined as-is, while unstyled ones can leverage the sprite
     if (ICONS_CACHE[iconName] && ICONS_CACHE[iconName].styled) {
       parent.innerHTML = ICONS_CACHE[iconName].html;
