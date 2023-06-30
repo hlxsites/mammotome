@@ -6,6 +6,8 @@ import {
   decorateSupScript,
   getInfo,
   decorateButtons,
+  loadBlock,
+  decorateBlock,
 } from '../../scripts/lib-franklin.js';
 
 function getProductSupportInfo() {
@@ -162,17 +164,41 @@ export default async function decorate(block) {
                 classes: ['video', 'link'],
                 children: [
                   {
-                    type: 'h5',
+                    type: 'div',
                     children: [
                       {
-                        type: 'strong',
-                        children: decorateSupScript(asset.Name),
+                        type: 'div',
+                        children: [
+                          {
+                            type: 'h5',
+                            children: [
+                              {
+                                type: 'strong',
+                                children: decorateSupScript(asset.Name),
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        type: 'div',
+                        children: [
+                          {
+                            type: 'a',
+                            attributes: { href: `https://www.youtu.be/${parseYoutubeCode(asset.URL)}` },
+                          },
+                        ],
+                      },
+                      {
+                        type: 'div',
+                        children: [
+                          {
+                            type: 'img',
+                            attributes: { src: `https://img.youtube.com/vi/${parseYoutubeCode(asset.URL)}/sddefault.jpg` },
+                          },
+                        ],
                       },
                     ],
-                  },
-                  {
-                    type: 'iframe',
-                    attributes: { allowfullscreen: '', src: `https://www.youtube.com/embed/${parseYoutubeCode(asset.URL)}` },
                   },
                 ],
               }
@@ -181,6 +207,10 @@ export default async function decorate(block) {
         ],
       },
     ], block);
+    await Promise.all(Array.from(block.querySelectorAll('.video')).map(async (video) => {
+      decorateBlock(video);
+      await loadBlock(video);
+    }));
   }
 
   handler();
