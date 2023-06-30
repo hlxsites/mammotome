@@ -24,7 +24,7 @@ export default function decorate(block) {
         div.className = 'cards-card-image';
       } else {
         div.className = children.length ? 'cards-card-body' : 'cards-card-body empty';
-        const action = div.querySelector('p a');
+        const action = div.querySelectorAll('p a');
 
         const containsHeading = Array.from(div.querySelectorAll('h1, h2, h3')).length > 0;
 
@@ -37,15 +37,15 @@ export default function decorate(block) {
               .forEach((icon) => icon.remove()));
         }
 
-        if (action) {
-          const actionBlock = div.querySelector('.button-container') || action.parentElement;
-          actionBlock.className = isValidUrl(action.text) ? 'callout hidden' : 'callout';
+        if (action.length === 1) {
+          const actionBlock = div.querySelector('.button-container') || action[0].parentElement;
+          actionBlock.className = isValidUrl(action[0].text) ? 'callout hidden' : 'callout';
           div.classList.toggle('callout-hidden', actionBlock.classList.contains('hidden'));
 
-          actionBlock.innerHTML = action.innerHTML;
+          actionBlock.innerHTML = action[0].innerHTML;
 
           cardLink = document.createElement('a');
-          cardLink.href = action.href;
+          cardLink.href = action[0].href;
           cardLink.innerHTML = row.innerHTML;
         }
       }
