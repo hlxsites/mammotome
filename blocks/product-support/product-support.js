@@ -81,7 +81,7 @@ export default async function decorate(block) {
   createDomStructure([
     {
       type: 'div',
-      classes: ['header-wide', 'header-colored'],
+      classes: ['header-colored'],
       children: [
         {
           type: 'h2',
@@ -158,7 +158,7 @@ export default async function decorate(block) {
     createDomStructure([
       {
         type: 'div',
-        classes: ['header-wide', 'header-colored'],
+        classes: ['header-colored'],
         children: [
           {
             type: 'h2',
