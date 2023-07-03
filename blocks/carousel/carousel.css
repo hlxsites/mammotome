@@ -146,10 +146,9 @@
 
 /* bottom nav container */
 .carousel .slider-wrapper .bottom-nav {
-    position: relative;
     display: flex;
+    justify-content: center;
     width: 100%;
-    left: 50%;
     z-index: 998;
     margin-top: 9px;
     margin-bottom: 9px;
