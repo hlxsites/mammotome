@@ -19,7 +19,8 @@ export default async function decorate(form) {
     }
     return map;
   }, new Map());
-  [...checkboxNameMap.values()]
+
+  Array.from(checkboxNameMap.values())
     .filter((checkboxgroup) => checkboxgroup.length > 1)
     .forEach((checkboxgroup) => {
       checkboxgroup.forEach((checkbox) => {
