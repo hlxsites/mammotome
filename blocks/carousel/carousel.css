@@ -21,6 +21,10 @@
         align-items: center;
         flex-grow: 1;
     }
+
+    .carousel > div > div {
+        width: 50%;
+    }
 }
 
 .carousel > div > div {
@@ -30,6 +34,7 @@
 @media (min-width: 768px) {
     .carousel > div > div {
         order: 1;
+        width: 100%;
     }
 }
 
