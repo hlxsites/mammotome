@@ -1,5 +1,6 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
+import decorateWizard from './wizard.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
@@ -38,7 +39,7 @@ function showError(form, error) {
   const errorMessage = document.createElement('div');
   errorMessage.className = 'form-submission-error';
   errorMessage.textContent = error;
-  form.append(errorMessage);
+  form.querySelector('.form-submit-wrapper').parentElement.append(errorMessage);
 }
 
 function clearError(form) {
@@ -381,6 +382,7 @@ export default async function decorate(block) {
   const formLink = block.querySelector('a[href$=".json"]');
   if (formLink) {
     const form = await createForm(formLink.href);
+    if (formLink.closest('.form.wizard')) { decorateWizard(form); }
     formLink.replaceWith(form);
   }
 }
