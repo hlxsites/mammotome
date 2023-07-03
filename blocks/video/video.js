@@ -118,7 +118,7 @@ const optimizeThumbnails = (video) => {
     .forEach((img) => {
       img
         .closest('picture')
-        .replaceWith(
+        ?.replaceWith(
           createOptimizedPicture(
             img.src,
             img.alt,
