@@ -1,10 +1,12 @@
-function update(checkboxgroup, isChecked) {
-  if (isChecked) { // remove required if any of them is checked
-    checkboxgroup.forEach((checkbox) => checkbox.removeAttribute('required'));
-  } else if (checkboxgroup.every((checkbox) => !checkbox.checked)) {
-    // set required if none of them is checked
-    checkboxgroup.forEach((checkbox) => checkbox.setAttribute('required', ''));
-  }
+function update(checkboxgroup) {
+  const allUnchecked = checkboxgroup.every((checkbox) => !checkbox.checked);
+  checkboxgroup.forEach((checkbox) => {
+    if (allUnchecked) {
+      checkbox.setAttribute('required', '');
+    } else {
+      checkbox.removeAttribute('required');
+    }
+  });
 }
 
 export default async function decorate(form) {
@@ -21,7 +23,7 @@ export default async function decorate(form) {
     .filter((checkboxgroup) => checkboxgroup.length > 1)
     .forEach((checkboxgroup) => {
       checkboxgroup.forEach((checkbox) => {
-        checkbox.onchange = (event) => update(checkboxgroup, event.target.checked);
+        checkbox.onchange = () => update(checkboxgroup);
       });
     });
 }
