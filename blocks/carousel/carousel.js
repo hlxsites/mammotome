@@ -50,9 +50,10 @@ const activateSlide = (targetPicture) => {
 
 // Navigate with Bottom Bullet navigation
 const bottomNavigation = (event) => {
-  const target = event.target.id;
-  activateSlide(target);
-  activateBullet(target);
+  const targetId = parseInt(event.target.id.split('-')[2], 10);
+  const sliderTarget = `slider-slide-${targetId}`;
+  activateSlide(sliderTarget);
+  activateBullet(event.target.id);
   incrementActiveSlide();
 };
 
@@ -182,7 +183,6 @@ const createBottomNav = (slides) => {
   slides.forEach(() => {
     const nextSlide = slides.length === j ? 1 : j + 1;
     const bottomNavEl = document.createElement('a');
-    bottomNavEl.href = '#';
     bottomNavEl.setAttribute('id', `slider-dot-${j}`);
     bottomNavEl.setAttribute('aria-label', `Go to Slide ${nextSlide}`);
     bottomNavEl.setAttribute('role', 'button');
