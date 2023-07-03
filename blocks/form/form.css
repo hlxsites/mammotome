@@ -229,7 +229,6 @@ main .form .form-submission-error {
 
 main .form .form-submission-error {
     grid-column: 1/-1;
-    text-align: left;
 }
 
 main .form-submit-wrapper {
@@ -399,7 +398,6 @@ main .study-request .form-submission-type-fs {
 
 main .wizard form .form-wizard-step-button-wrapper {
     grid-column: 1/-1;
-    text-align: end;
 }
 
 main .wizard form .form-submit-wrapper,
@@ -407,9 +405,8 @@ main .wizard form .form-wizard-step-button {
     --form-button-padding: 15px;
 
     width: 125px;
-    margin: 0;
+    margin: 0 10px 0 0;
     display: inline-block;
-    margin-left: 10px;
 }
 
 main .wizard form > :not(.current-wizard-step),
