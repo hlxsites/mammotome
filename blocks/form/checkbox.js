@@ -11,20 +11,13 @@ function update(checkboxgroup) {
 
 export default async function decorate(form) {
   const checkboxes = form.querySelectorAll('input[type=checkbox][required]');
-  const checkboxNameMap = [...checkboxes].reduce((map, checkbox) => {
-    if (map.has(checkbox.name)) {
-      map.get(checkbox.name).push(checkbox);
-    } else {
-      map.set(checkbox.name, [checkbox]);
-    }
-    return map;
-  }, new Map());
+  const checkboxNameMap = [...checkboxes].reduce((map, checkbox) => ({
+    ...map,
+    [checkbox.name]: [checkbox, ...(map[checkbox.name] || [])],
+  }), {});
 
-  Array.from(checkboxNameMap.values())
-    .filter((checkboxgroup) => checkboxgroup.length > 1)
+  Object.values(checkboxNameMap).filter((checkboxgroup) => checkboxgroup.length > 1)
     .forEach((checkboxgroup) => {
-      checkboxgroup.forEach((checkbox) => {
-        checkbox.onchange = () => update(checkboxgroup);
-      });
+      checkboxgroup.forEach((checkbox) => checkbox.addEventListener('change', () => update(checkboxgroup)));
     });
 }
