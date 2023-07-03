@@ -29,11 +29,6 @@
   height: 100%;
 }
 
-.product-support > div strong {
-  color: var(--mt-heading-color-primary);
-  text-transform: uppercase;
-}
-
 .product-support > div > div > select {
   color: var(--mt-global-color-base-primary);
   border-style: solid;

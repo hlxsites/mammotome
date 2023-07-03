@@ -29,10 +29,13 @@ function getAssets(product, type, allType) {
   return product.assets.filter((asset) => (type === allType || asset.Type === type));
 }
 
+const YOUTUBE_URL_REGEX = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+
 function parseYoutubeCode(url) {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[7].length === 11) ? match[7] : false;
+  const matchUrl = url.match(YOUTUBE_URL_REGEX);
+  const videoCode = matchUrl && matchUrl[7];
+
+  return (videoCode && videoCode.length === 11) ? videoCode : false;
 }
 
 export default async function decorate(block) {
@@ -56,23 +59,18 @@ export default async function decorate(block) {
 
   createDomStructure([{ type: 'h1', children: decorateSupScript(product.Name) }], block);
   if (product.Image) {
-    createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image } }] }], block);
+    createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image, alt: product.Name } }] }], block);
     decorateBlockImgs(block);
   }
   const types = getTypes(product);
   createDomStructure([
     {
       type: 'div',
-      classes: ['header-wide'],
+      classes: ['header-wide', 'header-colored'],
       children: [
         {
-          type: 'h4',
-          children: [
-            {
-              type: 'strong',
-              textContent: heading,
-            },
-          ],
+          type: 'h2',
+          textContent: heading,
         },
         {
           type: 'div',
@@ -138,22 +136,18 @@ export default async function decorate(block) {
   };
 
   const videoAssets = getAssets(product, allDocuments, allDocuments)
-    .filter((asset) => parseYoutubeCode(asset.URL));
+    .map((asset) => ({ ...asset, youtubeCode: parseYoutubeCode(asset.URL) }))
+    .filter((asset) => asset.youtubeCode);
 
   if (videoAssets.length > 0) {
     createDomStructure([
       {
         type: 'div',
-        classes: ['header-wide'],
+        classes: ['header-wide', 'header-colored'],
         children: [
           {
-            type: 'h4',
-            children: [
-              {
-                type: 'strong',
-                textContent: headingVideos,
-              },
-            ],
+            type: 'h2',
+            textContent: headingVideos,
           },
           {
             type: 'div',
@@ -170,11 +164,21 @@ export default async function decorate(block) {
                         type: 'div',
                         children: [
                           {
-                            type: 'h5',
+                            type: 'h3',
+                            children: decorateSupScript(asset.Name),
+                          },
+                        ],
+                      },
+                      {
+                        type: 'div',
+                        children: [
+                          {
+                            type: 'a',
+                            attributes: { href: `https://www.youtu.be/${asset.youtubeCode}` },
                             children: [
                               {
-                                type: 'strong',
-                                children: decorateSupScript(asset.Name),
+                                type: 'span',
+                                textContent: asset.Name,
                               },
                             ],
                           },
@@ -184,17 +188,12 @@ export default async function decorate(block) {
                         type: 'div',
                         children: [
                           {
-                            type: 'a',
-                            attributes: { href: `https://www.youtu.be/${parseYoutubeCode(asset.URL)}` },
-                          },
-                        ],
-                      },
-                      {
-                        type: 'div',
-                        children: [
-                          {
                             type: 'img',
-                            attributes: { src: `https://img.youtube.com/vi/${parseYoutubeCode(asset.URL)}/sddefault.jpg` },
+                            attributes:
+                              {
+                                src: `https://img.youtube.com/vi/${asset.youtubeCode}/sddefault.jpg`,
+                                alt: asset.Name,
+                              },
                           },
                         ],
                       },
