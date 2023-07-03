@@ -20,18 +20,31 @@ const incrementActiveSlide = (direction = 1) => {
   }
 };
 
+// function to add attributes stored in key-value object to an element
+const addAttributes = (el, attributes) => {
+  Object.keys(attributes).forEach((key) => {
+    el.setAttribute(key, attributes[key]);
+  });
+};
+
 // Activate/deactivate bottom bullets based
 const activateBullet = (bulletId) => {
   const btnNav = document.querySelector('.bottom-nav');
   [...btnNav.children].forEach((el) => {
     if (el.id === bulletId) {
       el.classList.replace('inactive', 'active');
-      el.setAttribute('aria-disabled', 'true');
-      el.setAttribute('aria-current', 'true');
+      const activeAttributes = {
+        'aria-disabled': 'true',
+        'aria-current': 'true',
+      };
+      addAttributes(el, activeAttributes);
     } else {
       el.classList.replace('active', 'inactive');
-      el.setAttribute('aria-disabled', 'false');
-      el.setAttribute('aria-current', 'false');
+      const inactiveAttributes = {
+        'aria-disabled': 'false',
+        'aria-current': 'false',
+      };
+      addAttributes(el, inactiveAttributes);
     }
   });
 };
@@ -69,7 +82,7 @@ const arrowNavigation = (event) => {
   activateBullet(`slider-dot-${activeSlide}`);
 };
 
-/// Add event listners for bottom bullet nav
+/// Add event listeners for bottom bullet nav
 const bottomNavOnClickEvents = () => {
   const btnNav = document.querySelector('.bottom-nav');
   [...btnNav.children].forEach((el) => {
@@ -132,9 +145,12 @@ const createPictures = (sliderWrapper) => {
   });
   sliderWrapper.innerHTML = '';
   sliderWrapper.appendChild(slider);
-  sliderWrapper.setAttribute('id', 'carousel');
-  sliderWrapper.setAttribute('role', 'group');
-  sliderWrapper.setAttribute('aria-label', 'Image Carousel');
+  const attributes = {
+    id: 'carousel',
+    role: 'group',
+    'aria-label': 'Image Carousel',
+  };
+  addAttributes(slider, attributes);
   return slider;
 };
 
@@ -157,16 +173,22 @@ const createArrowNav = () => {
   arrowNavContainer.classList.add('arrow-nav');
 
   const arrowLeft = document.createElement('a');
-  arrowLeft.setAttribute('id', 'slider-arrow-left');
-  arrowLeft.setAttribute('aria-label', 'Previous Slide');
-  arrowLeft.setAttribute('role', 'button');
+  const leftSliderAttributes = {
+    id: 'slider-arrow-left',
+    'aria-label': 'Previous Slide',
+    role: 'button',
+  };
+  addAttributes(arrowLeft, leftSliderAttributes);
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
   arrowNavContainer.appendChild(arrowLeft);
 
   const arrowRight = document.createElement('a');
-  arrowRight.setAttribute('id', 'slider-arrow-right');
-  arrowRight.setAttribute('aria-label', 'Next Slide');
-  arrowRight.setAttribute('role', 'button');
+  const rightSliderAttributes = {
+    id: 'slider-arrow-right',
+    'aria-label': 'Next Slide',
+    role: 'button',
+  };
+  addAttributes(arrowRight, rightSliderAttributes);
   arrowRight.innerHTML = HTML_ARROW_RIGHT;
   arrowNavContainer.appendChild(arrowRight);
   return arrowNavContainer;
@@ -183,13 +205,16 @@ const createBottomNav = (slides) => {
   slides.forEach(() => {
     const nextSlide = slides.length === j ? 1 : j + 1;
     const bottomNavEl = document.createElement('a');
-    bottomNavEl.setAttribute('id', `slider-dot-${j}`);
-    bottomNavEl.setAttribute('aria-label', `Go to Slide ${nextSlide}`);
-    bottomNavEl.setAttribute('role', 'button');
+    const attributes = {
+      id: `slider-dot-${j}`,
+      'aria-label': `Go to Slide ${nextSlide}`,
+      role: 'button',
+      'aria-current': j === 1 ? 'true' : 'false',
+      'aria-controls': 'carousel',
+    };
+    addAttributes(bottomNavEl, attributes);
     bottomNavEl.classList.add('bullet');
     bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
-    bottomNavEl.setAttribute('aria-current', j === 1 ? 'true' : 'false');
-    bottomNavEl.setAttribute('aria-controls', 'carousel');
     bottomNavContainer.appendChild(bottomNavEl);
     j += 1;
   });
