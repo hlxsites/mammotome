@@ -243,6 +243,10 @@ main .form-submit-wrapper button {
     border-radius: 3px;
 }
 
+main .form-submit-wrapper button:disabled {
+    background-color: var(--mt-global-color-dove-gray);
+}
+
 main .form-file-wrapper .field-dropregion {
     background: rgb(0 0 0 / 2%);
     border: 1px dashed var(--mt-global-color-silver);
@@ -313,7 +317,7 @@ main .connectus .form-consent {
 }
 
 /* stylelint-disable-next-line  selector-class-pattern */
-main .connectus :is(.form-company, .form-Pardot_Form_Message__c, .form-description, .form-consent) {
+main .connectus :is(.form-companyName, .form-Pardot_Form_Message__c, .form-description, .form-consent) {
     grid-column: 1/-1;
 }
 
