@@ -63,7 +63,9 @@ const activateSlide = (targetPicture) => {
 
 // Navigate with Bottom Bullet navigation
 const bottomNavigation = (event) => {
-  const targetId = parseInt(event.target.id.split('-')[2], 10);
+  const regex = /\d+/g;
+  const match = event.target.id.match(regex);
+  const targetId = match ? match[0] : 1;
   const sliderTarget = `slider-slide-${targetId}`;
   activateSlide(sliderTarget);
   activateBullet(event.target.id);
@@ -145,12 +147,12 @@ const createPictures = (sliderWrapper) => {
   });
   sliderWrapper.innerHTML = '';
   sliderWrapper.appendChild(slider);
-  const attributes = {
+  const sliderAttributes = {
     id: 'carousel',
     role: 'group',
     'aria-label': 'Image Carousel',
   };
-  addAttributes(slider, attributes);
+  addAttributes(slider, sliderAttributes);
   return slider;
 };
 
@@ -198,21 +200,24 @@ const createArrowNav = () => {
 const createBottomNav = (slides) => {
   const bottomNavContainer = document.createElement('div');
   bottomNavContainer.classList.add('bottom-nav');
-  bottomNavContainer.setAttribute('role', 'group');
-  bottomNavContainer.setAttribute('aria-label', 'Slide Controls');
+  const bottomNavAttributes = {
+    role: 'group',
+    'aria-label': 'Slide Controls',
+  };
+  addAttributes(bottomNavContainer, bottomNavAttributes);
 
   let j = 1;
   slides.forEach(() => {
     const nextSlide = slides.length === j ? 1 : j + 1;
     const bottomNavEl = document.createElement('a');
-    const attributes = {
+    const bottomNavElAttribute = {
       id: `slider-dot-${j}`,
       'aria-label': `Go to Slide ${nextSlide}`,
       role: 'button',
       'aria-current': j === 1 ? 'true' : 'false',
       'aria-controls': 'carousel',
     };
-    addAttributes(bottomNavEl, attributes);
+    addAttributes(bottomNavEl, bottomNavElAttribute);
     bottomNavEl.classList.add('bullet');
     bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
     bottomNavContainer.appendChild(bottomNavEl);
