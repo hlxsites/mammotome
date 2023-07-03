@@ -38,6 +38,16 @@ function parseYoutubeCode(url) {
   return (videoCode && videoCode.length === 11) ? videoCode : false;
 }
 
+function setMetaTag(type, name, value) {
+  let meta = document.querySelector(`meta[${type}='${name}']`);
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = name;
+    document.querySelector('head').append(meta);
+  }
+  meta.content = value;
+}
+
 export default async function decorate(block) {
   const {
     country, page, productSupport, language,
@@ -57,8 +67,13 @@ export default async function decorate(block) {
     translate('productSupportNoResult', 'No data was found'),
   ]);
 
+  setMetaTag('property', 'og:title', product.Name);
+  setMetaTag('name', 'description', `${product.Name} - ${heading}`);
+
   createDomStructure([{ type: 'h1', children: decorateSupScript(product.Name) }], block);
   if (product.Image) {
+    setMetaTag('property', 'og:image', product.Image);
+    setMetaTag('property', 'og:image:secure_url', product.Image);
     createDomStructure([{ type: 'div', classes: ['container'], children: [{ type: 'img', attributes: { src: product.Image, alt: product.Name } }] }], block);
     decorateBlockImgs(block);
   }
