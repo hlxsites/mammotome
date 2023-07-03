@@ -448,14 +448,6 @@ main .learn-more .form-country {
 }
 
 @media (min-width: 640px) {
-    main .connectus {
-        --form-columns: 6;
-    }
-
-    main .form-layout-wizard .form-other-info {
-        --form-fieldset-columns: 3;
-    }
-
     main .form form :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs) {
         grid-column: span calc(var(--form-columns)/3);
         width: calc(100% + 10px);
@@ -463,6 +455,10 @@ main .learn-more .form-country {
 
     main .form fieldset :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs) {
         grid-column: span calc(var(--form-fieldset-columns)/3);
+    }
+
+    main .connectus {
+        --form-columns: 6;
     }
 
     /* stylelint-disable-next-line  selector-class-pattern */
@@ -491,6 +487,9 @@ main .learn-more .form-country {
         --form-fieldset-columns: 2;
     }
 
+    main .learn-more .form-other-info {
+        --form-fieldset-columns: 3;
+    }
 }
 
 @media (min-width: 740px) {
