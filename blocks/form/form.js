@@ -1,4 +1,4 @@
-import { sampleRUM } from '../../scripts/lib-franklin.js';
+import { readBlockConfig, sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateWizard from './wizard.js';
 
@@ -346,7 +346,7 @@ async function fetchForm(pathname) {
   return jsonData;
 }
 
-async function createForm(formURL) {
+async function createForm(formURL, config) {
   const { pathname } = new URL(formURL);
   const data = await fetchForm(pathname);
   const form = document.createElement('form');
@@ -368,6 +368,7 @@ async function createForm(formURL) {
   });
   groupFieldsByFieldSet(form);
   decorateFile(form);
+  if (config.layout === 'wizard') { decorateWizard(form); }
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
@@ -379,10 +380,10 @@ async function createForm(formURL) {
 }
 
 export default async function decorate(block) {
+  const config = readBlockConfig(block);
   const formLink = block.querySelector('a[href$=".json"]');
   if (formLink) {
-    const form = await createForm(formLink.href);
-    if (formLink.closest('.form.wizard')) { decorateWizard(form); }
+    const form = await createForm(formLink.href, config);
     formLink.replaceWith(form);
   }
 }
