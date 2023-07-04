@@ -203,7 +203,6 @@ main .columns > div > .columns-img-col::before {
   height: 100%;
   border-radius: 5px;
   display: block;
-  z-index: -1;
 }
 
 main .columns div > div:first-child.columns-img-col::before {
@@ -224,6 +223,8 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 
 .columns .columns-img {
   padding: 5%;
+  position: relative;
+  z-index: 20;
 }
 
 @media (min-width: 768px) {
