@@ -13,7 +13,7 @@
     margin-top: 5%;
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
     .carousel > div {
         display: flex;
         flex-direction: row;
@@ -21,15 +21,20 @@
         align-items: center;
         flex-grow: 1;
     }
+
+    .carousel > div > div {
+        width: 50%;
+    }
 }
 
 .carousel > div > div {
     order: 2;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .carousel > div > div {
         order: 1;
+        width: 100%;
     }
 }
 
@@ -53,7 +58,7 @@
     order: 1;
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
     .carousel .slider-wrapper {
         order: 2;
     }
@@ -76,7 +81,7 @@
     object-fit: cover;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .carousel .slider-wrapper .slider picture img {
         object-fit: cover;
         width: 916px;
@@ -141,10 +146,9 @@
 
 /* bottom nav container */
 .carousel .slider-wrapper .bottom-nav {
-    position: relative;
     display: flex;
+    justify-content: center;
     width: 100%;
-    left: 50%;
     z-index: 998;
     margin-top: 9px;
     margin-bottom: 9px;
@@ -158,8 +162,14 @@
     height: 6px;
 }
 
-.carousel .bottom-nav a,
-.carousel .arrow-nav a {
+
+/* Bottom Nav Buttons */
+.carousel .bottom-nav button,
+.carousel .arrow-nav button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
     cursor: pointer;
 }
 
