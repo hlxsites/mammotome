@@ -41,8 +41,8 @@
 header .nav-wrapper {
   background-color: var(--mt-background-color-primary);
   width: 100%;
-  z-index: 2;
   position: fixed;
+  z-index: 50;
   box-shadow: 0 0 8px 0 #00000026;
 }
 

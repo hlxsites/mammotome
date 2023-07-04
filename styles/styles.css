@@ -176,11 +176,6 @@
   box-sizing: border-box;
 }
 
-html, body, main {
-  position: relative;
-  z-index: -1000;
-}
-
 body {
   margin: 0;
   font-size: var(--mt-body-font-size-s);
@@ -665,6 +660,7 @@ main .section{
   margin: 3% 0;
   padding: 0 10%;
   position: relative;
+  z-index: 20;
 }
 
 main .section.attached {
@@ -682,6 +678,13 @@ main .section .default-content-wrapper {
   align-items: center;
   justify-content: center;
   max-width: 100%;
+}
+
+.section.gradient-primary-blur-overlay > .default-content-wrapper,
+.section.gradient-secondary-blur-overlay > .default-content-wrapper,
+.section.accent-secondary-blur-overlay > .default-content-wrapper,
+.section.base-primary-blur-overlay > .default-content-wrapper {
+  position: relative;
 }
 
 /* Narrow content section metadata */
@@ -820,7 +823,6 @@ main .section.our-history .year::after {
   top: -45%;
   left: 50%;
   margin-left: -2px;
-  z-index: -1;
   height: 145%;
 }
 
@@ -897,19 +899,17 @@ main .section.our-history .year.highlight .icon-calendar {
 .section.accent-secondary-blur-overlay,
 .section.base-primary-blur-overlay {
   position: relative;
-  z-index: -1;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
 }
 
-
-.section.gradient-primary-blur-overlay::after {
+.section.gradient-primary-blur-overlay::before,
+.section.hero-container.gradient-primary-blur-overlay::after{
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
   height: 100%;
   width: 100%;
   content: '';
@@ -920,11 +920,11 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 
-.section.gradient-secondary-blur-overlay::after {
+.section.gradient-secondary-blur-overlay::before,
+.section.hero-container.gradient-secondary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
   height: 100%;
   width: 100%;
   content: '';
@@ -934,11 +934,11 @@ main .section.our-history .year.highlight .icon-calendar {
   transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
 }
 
-.section.base-primary-blur-overlay::after {
+.section.base-primary-blur-overlay::before,
+.section.hero-container.base-primary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
   height: 100%;
   width: 100%;
   content: '';
@@ -948,11 +948,11 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 
-.section.accent-secondary-blur-overlay::after {
+.section.accent-secondary-blur-overlay::before,
+.section.hero-container.accent-secondary-blur-overlay::after {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
   height: 100%;
   width: 100%;
   content: '';
@@ -979,7 +979,6 @@ main .section.our-history .year.highlight .icon-calendar {
   padding: 3% 0;
   margin: 0;
   position: relative;
-  z-index: -1;
 }
 
 .section.logo-primary-background {
@@ -991,7 +990,6 @@ main .section.our-history .year.highlight .icon-calendar {
   padding: 3% 0;
   margin: 0;
   position: relative;
-  z-index: -10;
 }
 
 .section .arc {
@@ -1031,6 +1029,7 @@ main .section.arc-bottom .arc {
 
 .section.arc-top {
   margin-top: -30px;
+  z-index: 10;
 }
 
 /* Divider as Section Metadata */
