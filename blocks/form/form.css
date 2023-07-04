@@ -424,12 +424,16 @@ main .study-request .form-submission-type-fs {
     --form-fieldset-legend-font-weight: bold;
 }
 
-main .form-layout-wizard .form-wizard-step-button-wrapper {
+main .form-layout-wizard .form-wizard-button-wrapper {
     grid-column: 1/-1;
 }
 
+main .form-layout-wizard > :not(.current-wizard-step, .form-wizard-button-wrapper) {
+    display: none;
+}
+
 main .form-layout-wizard .form-submit-wrapper,
-main .form-layout-wizard .form-wizard-step-button {
+main .form-layout-wizard .form-wizard-button {
     --form-button-padding: 15px;
 
     width: 125px;
@@ -437,10 +441,17 @@ main .form-layout-wizard .form-wizard-step-button {
     display: inline-block;
 }
 
-main .form-layout-wizard > :not(.current-wizard-step),
-main .form-layout-wizard > :first-child .form-wizard-step-button:first-of-type,
-main .form-layout-wizard > :last-child .form-wizard-step-button:last-of-type {
+main .form-layout-wizard .form-submit-wrapper {
     display: none;
+}
+
+main .form-layout-wizard .current-wizard-step:first-child ~ .form-wizard-button-wrapper > .form-wizard-button:first-of-type,
+main .form-layout-wizard .current-wizard-step:nth-last-child(2) ~ .form-wizard-button-wrapper> .form-wizard-button:last-of-type  {
+    display: none;
+}
+
+main .form-layout-wizard .current-wizard-step:nth-last-child(2) ~ .form-wizard-button-wrapper > .form-submit-wrapper {
+    display: inline-block;
 }
 
 main .learn-more .form-country {
