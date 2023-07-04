@@ -119,9 +119,14 @@ footer .columns > div > div:nth-child(4) .icon svg {
 
 /* flex item, Headquarter address
  left align for mobile */
-footer .columns > div > div:nth-child(5) > h1 {
+footer .columns > div > div:nth-child(5) > h1:first-of-type {
   text-align: left;
   margin-bottom: 25px;
+}
+
+footer .columns > div > div:nth-child(5) > h1:not(:first-of-type) {
+    text-align: left;
+    margin-top: 30px;
 }
 
 footer .columns > div > div:nth-child(5) > p {
@@ -131,10 +136,15 @@ footer .columns > div > div:nth-child(5) > p {
 /* flex item, Headquarter address
 right align for larger screen */
 @media (min-width: 768px) {
-  footer .columns > div > div:nth-child(5) > h1,
+  footer .columns > div > div:nth-child(5) > h1:first-of-type,
   footer .columns > div > div:nth-child(5) > p {
     text-align: right;
     line-height: unset;
+  }
+
+  footer .columns > div > div:nth-child(5) > h1:not(:first-of-type){
+    text-align: right;
+    margin-top: 30px;
   }
 }
 
