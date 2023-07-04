@@ -89,7 +89,7 @@ async function submitForm(form, token) {
     } else {
       let error;
       try {
-        error = (await response.json()).message;
+        error = (await response.json()).message || 'Error: Failed to submit form';
       } catch (err) { // error format not in json display simple text.
         error = await response.text();
       }
