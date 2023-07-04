@@ -343,6 +343,10 @@ p {
 }
 
 /* Section style for P */
+.text-uppercase p {
+  text-transform: uppercase;
+}
+
 .text-large p {
   font-size: var(--mt-body-font-size-mobile-l);
   line-height: 1.95rem;

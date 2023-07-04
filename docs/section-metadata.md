@@ -21,8 +21,9 @@ based on visual differences between sections such as a different background colo
       * [Gradient primary blur overlay](#gradient-primary-blur-overlay)
       * [Gradient secondary blur overlay](#gradient-secondary-blur-overlay)
       * [Arc top](#arc-top)
-      * [Callout](#callout)
-      * [Narrow](#narrow)
+      * [Arc bottom](#arc-bottom)
+  * [Callout](#callout)
+  * [Narrow](#narrow)
   * [Divider](#divider)
   * [Spacer](#spacer)
     * [After Section](#after-section)
@@ -69,14 +70,15 @@ Section Metadata allows the author to add two parameters to a section table with
 ### Text
 
 
-| Attribute       | Feature                  | Default                                             | Style                                                  |
-|-----------------|--------------------------|-----------------------------------------------------|--------------------------------------------------------|
-| **text-small**  | text                     | font-size: 16px;font-weight: 400;line-height:1.5rem | font-size: 12px, font-weight: 400, line-height: 24px   |
-| **text-medium** | text                     | -                                                   | font-size: 20.8px;font-weight: 300;line-height:1.95rem |
-| **text-large**  | text                     | -                                                   | font-size: 28.8px;font-weight: 300;line-height:2.7rem  |
-| **align-left**  | alignment                | center                                              |                                                        |
-| **text-wide**   | letter spacing           | 0                                                   | 4px spacing between letters                            |
-| **attached**    | spacing between sections | 5%                                                  | attach text to the previous section                    |
+| Attribute          | Feature                  | Default                                             | Style                                                  |
+|--------------------|--------------------------|-----------------------------------------------------|--------------------------------------------------------|
+| **text-small**     | text                     | font-size: 16px;font-weight: 400;line-height:1.5rem | font-size: 12px, font-weight: 400, line-height: 24px   |
+| **text-medium**    | text                     | -                                                   | font-size: 20.8px;font-weight: 300;line-height:1.95rem |
+| **text-large**     | text                     | -                                                   | font-size: 28.8px;font-weight: 300;line-height:2.7rem  |
+| **align-left**     | alignment                | center                                              |                                                        |
+| **text-wide**      | letter spacing           | 0                                                   | 4px spacing between letters                            |
+| **text-uppercase** | uppercase                | _as formatted in word document_                     | enforces uppercase                                     |
+| **attached**       | spacing between sections | 5%                                                  | attach text to the previous section                    |
 
 ### Background styles
 
@@ -218,7 +220,7 @@ Adds an arc at the bottom of the section. The arc bottom is being used in combin
 |------------------|------------|
 | Style            | arc bottom |
 
-#### Callout
+## Callout
 
 Puts the content of the section in the center and sets the the fonts size for h1, h2 and h3 to the same value. Can be used in combination with `arc top`.
 
@@ -230,7 +232,7 @@ Puts the content of the section in the center and sets the the fonts size for h1
 
 ![callout-example.png](assets/callout-example.png)
 
-#### Narrow
+## Narrow
 
 Some Paragraphs are fixed at a certain width to make them easier to read. The **narrow** style is used for this purpose.
 
