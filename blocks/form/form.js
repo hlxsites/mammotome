@@ -87,9 +87,9 @@ async function submitForm(form, token) {
       sampleRUM('form:submit');
       window.location.href = form.dataset?.redirect || '/us/en/thankyou';
     } else {
-      let error;
+      let error = 'Error: Failed to submit form';
       try {
-        error = (await response.json()).message || 'Error: Failed to submit form';
+        error = (await response.json()).message || error;
       } catch (err) { // error format not in json display simple text.
         error = await response.text();
       }
