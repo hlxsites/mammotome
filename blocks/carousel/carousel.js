@@ -1,5 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
+const sliderDurationMs = 3500;
 let activeSlide = 1;
 let slideCount = 0;
 let slideShow = false;
@@ -106,7 +107,7 @@ const toNextSlide = () => {
 // Start slide show
 const startSlideShow = () => {
   if (!slideShow) {
-    slideShow = window.setInterval(toNextSlide, 5000);
+    slideShow = window.setInterval(toNextSlide, sliderDurationMs);
   }
 };
 
@@ -170,7 +171,7 @@ const createArrowNav = () => {
   const arrowNavContainer = document.createElement('div');
   arrowNavContainer.classList.add('arrow-nav');
 
-  const arrowLeft = document.createElement('a');
+  const arrowLeft = document.createElement('button');
   const leftSliderAttributes = {
     id: 'slider-arrow-left',
     'aria-label': 'Previous Slide',
@@ -180,7 +181,7 @@ const createArrowNav = () => {
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
   arrowNavContainer.appendChild(arrowLeft);
 
-  const arrowRight = document.createElement('a');
+  const arrowRight = document.createElement('button');
   const rightSliderAttributes = {
     id: 'slider-arrow-right',
     'aria-label': 'Next Slide',
@@ -205,7 +206,7 @@ const createBottomNav = (slides) => {
   let j = 1;
   slides.forEach(() => {
     const nextSlide = slides.length === j ? 1 : j + 1;
-    const bottomNavEl = document.createElement('a');
+    const bottomNavEl = document.createElement('button');
     const bottomNavElAttribute = {
       id: `slider-dot-${j}`,
       'aria-label': `Go to Slide ${nextSlide}`,
