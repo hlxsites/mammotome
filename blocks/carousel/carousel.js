@@ -52,7 +52,7 @@ const activateBullet = (bulletId) => {
 // Slides picture switcher
 const activateSlide = (targetPicture) => {
   const slider = document.querySelector('.slider');
-  [...slider.children].forEach((el) => {
+  Array.from(slider.children).forEach((el) => {
     if (el.id === targetPicture) {
       el.classList.replace('hide', 'show');
     } else {
@@ -63,9 +63,7 @@ const activateSlide = (targetPicture) => {
 
 // Navigate with Bottom Bullet navigation
 const bottomNavigation = (event) => {
-  const regex = /\d+/g;
-  const match = event.target.id.match(regex);
-  const targetId = match ? match[0] : 1;
+  const targetId = event.target.id.match(/\d+/)?.[0] || 1;
   const sliderTarget = `slider-slide-${targetId}`;
   activateSlide(sliderTarget);
   activateBullet(event.target.id);
@@ -75,11 +73,9 @@ const bottomNavigation = (event) => {
 // Navigate with left and right for arrow navigation
 const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
-  if (navButton === 'slider-arrow-left') {
-    incrementActiveSlide(-1);
-  } else if (navButton === 'slider-arrow-right') {
-    incrementActiveSlide(1);
-  }
+  const increment = navButton === 'slider-arrow-left' ? -1 : 1;
+
+  incrementActiveSlide(increment);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
