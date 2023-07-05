@@ -191,7 +191,7 @@ export default async function decorate(block) {
     {
       type: 'div',
       classes: ['ifu'],
-      children: await Promise.all([['eIFU', 'eIFU'], ['product', 'Product Code']].map(async (entry) => (
+      children: await Promise.all([['eIFU', 'eIFU', 'Ifu'], ['product', 'Product Code', 'Product']].map(async (entry) => (
         {
           type: 'div',
           classes: ['ifu-selection'],
@@ -199,7 +199,7 @@ export default async function decorate(block) {
             {
               type: 'h3',
               classes: ['ifu-title'],
-              textContent: await translate(`ifuSearchBy${entry[0]}`, `Search by ${entry[1]}`),
+              textContent: await translate(`ifuSearchBy${entry[2]}`, `Search by ${entry[1]}`),
             },
             {
               type: 'select',
@@ -208,7 +208,7 @@ export default async function decorate(block) {
                 {
                   type: 'option',
                   attributes: { hidden: true, disabled: true, selected: true },
-                  textContent: await translate(`ifuSelect${entry[0]}`, `Select ${entry[1]}`),
+                  textContent: await translate(`ifuSelect${entry[2]}`, `Select ${entry[1]}`),
                 },
               ],
             },
