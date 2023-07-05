@@ -3,6 +3,11 @@
     margin: auto;
 }
 
+.carousel.narrow {
+    max-width: 800px;
+    margin: auto;
+}
+
 /* URL and Slider container */
 .carousel > div {
     display: flex;

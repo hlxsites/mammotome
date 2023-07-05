@@ -1,5 +1,9 @@
 ## Carousel
 
+### Variations
+
+- _Narrow_: Makes the carousel narrower (800px) 
+
 ### Content Structure
 
 The collapsible block is divided into two columns. 
@@ -12,7 +16,7 @@ In case of a single image, the carousel navigation will be hidden.
 | * Bullet list<br/>* item 1<br/>* item n | [image 1]<br/>[image 2]<br/>[image n] |
 
 
-![carousel-block.png](..%2Fassets%2Fcarousel-block.png)
+![carousel-block.png](../assets/carousel-block.png)
 
 ### Example
-![carousel-example.png](..%2Fassets%2Fcarousel-example.png)
+![carousel-example.png](../assets/carousel-example.png)
