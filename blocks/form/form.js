@@ -378,7 +378,7 @@ async function createForm(formURL) {
 }
 
 export default async function decorate(block) {
-  const formLink = block.querySelector('a[href$=".json"]');
+  const formLink = block.querySelector('a[href*=".json"]');
   if (formLink) {
     const form = await createForm(formLink.href);
     formLink.replaceWith(form);
