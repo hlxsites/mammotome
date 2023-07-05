@@ -39,7 +39,7 @@ function showError(form, error) {
   const errorMessage = document.createElement('div');
   errorMessage.className = 'form-submission-error';
   errorMessage.textContent = error;
-  form.append(errorMessage);
+  form.querySelector('.form-submit-wrapper').parentElement.append(errorMessage);
 }
 
 function clearError(form) {
@@ -385,9 +385,17 @@ async function createForm(formURL) {
 }
 
 export default async function decorate(block) {
-  const formLink = block.querySelector('a[href$=".json"]');
+  const formLink = block.querySelector('a[href*=".json"]');
   if (formLink) {
     const form = await createForm(formLink.href);
+    if (block.classList.contains('wizard')) {
+      try {
+        (await import('./wizard.js')).default(form);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to load wizard ${err}`);
+      }
+    }
     formLink.replaceWith(form);
   }
 }

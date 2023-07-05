@@ -41,10 +41,10 @@ const ensurePlayerCSSLoaded = () => {
   }
 };
 
-const createVideoOverlays = (video) => {
+const createVideoOverlays = (main) => {
   const overlay = document.createElement('div');
   overlay.classList.add('asset-viewer-overlay');
-  video.parentElement.parentElement.appendChild(overlay);
+  main.prepend(overlay);
 
   const toolbar = document.createElement('div');
   toolbar.classList.add('asset-viewer-toolbar');
@@ -52,7 +52,7 @@ const createVideoOverlays = (video) => {
   const toolbarClose = document.createElement('div');
   toolbarClose.classList.add('asset-viewer-close');
   toolbar.appendChild(toolbarClose);
-  video.parentElement.parentElement.appendChild(toolbar);
+  main.prepend(toolbar);
 
   return {
     overlay,
@@ -61,18 +61,18 @@ const createVideoOverlays = (video) => {
   };
 };
 
-const createRemoveVideoHandler = (video, overlays, videoIframe) => () => {
+const createRemoveVideoHandler = (main, overlays, videoIframe) => () => {
   overlays.overlay.removeEventListener('click', removeVideo);
   overlays.toolbarClose.removeEventListener('click', removeVideo);
   window.removeEventListener('keydown', escHandler);
 
-  video.parentElement.parentElement.removeChild(overlays.overlay);
-  video.parentElement.parentElement.removeChild(overlays.toolbar);
-  video.removeChild(videoIframe);
+  main.removeChild(overlays.overlay);
+  main.removeChild(overlays.toolbar);
+  main.removeChild(videoIframe);
 };
 
-const registerEventListeners = (video, overlays, videoIframe) => {
-  removeVideo = createRemoveVideoHandler(video, overlays, videoIframe);
+const registerEventListeners = (main, overlays, videoIframe) => {
+  removeVideo = createRemoveVideoHandler(main, overlays, videoIframe);
   escHandler = (event) => {
     if (event.key === 'Escape' || event.key === 'Esc') {
       removeVideo();
@@ -87,16 +87,18 @@ const registerEventListeners = (video, overlays, videoIframe) => {
 const loadVideo = (video, videoPath) => {
   ensurePlayerCSSLoaded();
 
-  const overlays = createVideoOverlays(video);
+  const main = document.querySelector('main');
+
+  const overlays = createVideoOverlays(main);
 
   const videoIframe = document.createElement('iframe');
   videoIframe.classList.add('video-player-iframe');
   videoIframe.setAttribute('allowfullscreen', '');
   videoIframe.src = `https://www.youtube.com/embed${videoPath}`;
 
-  video.appendChild(videoIframe);
+  main.prepend(videoIframe);
 
-  registerEventListeners(video, overlays, videoIframe);
+  registerEventListeners(main, overlays, videoIframe);
 };
 
 const addPlayButton = (video) => {
@@ -118,7 +120,7 @@ const optimizeThumbnails = (video) => {
     .forEach((img) => {
       img
         .closest('picture')
-        .replaceWith(
+        ?.replaceWith(
           createOptimizedPicture(
             img.src,
             img.alt,

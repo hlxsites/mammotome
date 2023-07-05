@@ -1,13 +1,14 @@
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
+const sliderDurationMs = 3500;
 let activeSlide = 1;
 let slideCount = 0;
 let slideShow = false;
 
-const HTML_ARROW_LEFT = '<svg fill="rgba(238, 238, 238, 0.9)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
+const HTML_ARROW_LEFT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
   + '<path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"/>\n'
   + '</svg>';
-const HTML_ARROW_RIGHT = '<svg fill="rgba(238, 238, 238, 0.9)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
+const HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
   + '<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"/>\n'
   + '</svg>\n';
 
@@ -20,14 +21,31 @@ const incrementActiveSlide = (direction = 1) => {
   }
 };
 
+// function to add attributes stored in key-value object to an element
+const addAttributes = (el, attributes) => {
+  Object.keys(attributes).forEach((key) => {
+    el.setAttribute(key, attributes[key]);
+  });
+};
+
 // Activate/deactivate bottom bullets based
 const activateBullet = (bulletId) => {
   const btnNav = document.querySelector('.bottom-nav');
   [...btnNav.children].forEach((el) => {
     if (el.id === bulletId) {
       el.classList.replace('inactive', 'active');
+      const activeAttributes = {
+        'aria-disabled': 'true',
+        'aria-current': 'true',
+      };
+      addAttributes(el, activeAttributes);
     } else {
       el.classList.replace('active', 'inactive');
+      const inactiveAttributes = {
+        'aria-disabled': 'false',
+        'aria-current': 'false',
+      };
+      addAttributes(el, inactiveAttributes);
     }
   });
 };
@@ -35,7 +53,7 @@ const activateBullet = (bulletId) => {
 // Slides picture switcher
 const activateSlide = (targetPicture) => {
   const slider = document.querySelector('.slider');
-  [...slider.children].forEach((el) => {
+  Array.from(slider.children).forEach((el) => {
     if (el.id === targetPicture) {
       el.classList.replace('hide', 'show');
     } else {
@@ -46,25 +64,24 @@ const activateSlide = (targetPicture) => {
 
 // Navigate with Bottom Bullet navigation
 const bottomNavigation = (event) => {
-  const target = event.target.id;
-  activateSlide(target);
-  activateBullet(target);
+  const targetId = event.target.id.match(/\d+/)?.[0] || 1;
+  const sliderTarget = `slider-slide-${targetId}`;
+  activateSlide(sliderTarget);
+  activateBullet(event.target.id);
   incrementActiveSlide();
 };
 
 // Navigate with left and right for arrow navigation
 const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
-  if (navButton === 'slider-arrow-left') {
-    incrementActiveSlide(-1);
-  } else if (navButton === 'slider-arrow-right') {
-    incrementActiveSlide(1);
-  }
+  const increment = navButton === 'slider-arrow-left' ? -1 : 1;
+
+  incrementActiveSlide(increment);
   activateSlide(`slider-slide-${activeSlide}`);
-  activateBullet(`slider-slide-${activeSlide}`);
+  activateBullet(`slider-dot-${activeSlide}`);
 };
 
-/// Add event listners for bottom bullet nav
+/// Add event listeners for bottom bullet nav
 const bottomNavOnClickEvents = () => {
   const btnNav = document.querySelector('.bottom-nav');
   [...btnNav.children].forEach((el) => {
@@ -84,13 +101,13 @@ const arrowNavOnClickEvents = () => {
 const toNextSlide = () => {
   incrementActiveSlide(1);
   activateSlide(`slider-slide-${activeSlide}`);
-  activateBullet(`slider-slide-${activeSlide}`);
+  activateBullet(`slider-dot-${activeSlide}`);
 };
 
 // Start slide show
 const startSlideShow = () => {
   if (!slideShow) {
-    slideShow = window.setInterval(toNextSlide, 5000);
+    slideShow = window.setInterval(toNextSlide, sliderDurationMs);
   }
 };
 
@@ -127,6 +144,12 @@ const createPictures = (sliderWrapper) => {
   });
   sliderWrapper.innerHTML = '';
   sliderWrapper.appendChild(slider);
+  const sliderAttributes = {
+    id: 'carousel',
+    role: 'group',
+    'aria-label': 'Image Carousel',
+  };
+  addAttributes(slider, sliderAttributes);
   return slider;
 };
 
@@ -148,13 +171,23 @@ const createArrowNav = () => {
   const arrowNavContainer = document.createElement('div');
   arrowNavContainer.classList.add('arrow-nav');
 
-  const arrowLeft = document.createElement('a');
-  arrowLeft.setAttribute('id', 'slider-arrow-left');
+  const arrowLeft = document.createElement('button');
+  const leftSliderAttributes = {
+    id: 'slider-arrow-left',
+    'aria-label': 'Previous Slide',
+    role: 'button',
+  };
+  addAttributes(arrowLeft, leftSliderAttributes);
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
   arrowNavContainer.appendChild(arrowLeft);
 
-  const arrowRight = document.createElement('a');
-  arrowRight.setAttribute('id', 'slider-arrow-right');
+  const arrowRight = document.createElement('button');
+  const rightSliderAttributes = {
+    id: 'slider-arrow-right',
+    'aria-label': 'Next Slide',
+    role: 'button',
+  };
+  addAttributes(arrowRight, rightSliderAttributes);
   arrowRight.innerHTML = HTML_ARROW_RIGHT;
   arrowNavContainer.appendChild(arrowRight);
   return arrowNavContainer;
@@ -164,11 +197,24 @@ const createArrowNav = () => {
 const createBottomNav = (slides) => {
   const bottomNavContainer = document.createElement('div');
   bottomNavContainer.classList.add('bottom-nav');
+  const bottomNavAttributes = {
+    role: 'group',
+    'aria-label': 'Slide Controls',
+  };
+  addAttributes(bottomNavContainer, bottomNavAttributes);
 
   let j = 1;
-  slides.forEach((el) => {
-    const bottomNavEl = document.createElement('a');
-    bottomNavEl.setAttribute('id', el);
+  slides.forEach(() => {
+    const nextSlide = slides.length === j ? 1 : j + 1;
+    const bottomNavEl = document.createElement('button');
+    const bottomNavElAttribute = {
+      id: `slider-dot-${j}`,
+      'aria-label': `Go to Slide ${nextSlide}`,
+      role: 'button',
+      'aria-current': j === 1 ? 'true' : 'false',
+      'aria-controls': 'carousel',
+    };
+    addAttributes(bottomNavEl, bottomNavElAttribute);
     bottomNavEl.classList.add('bullet');
     bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
     bottomNavContainer.appendChild(bottomNavEl);

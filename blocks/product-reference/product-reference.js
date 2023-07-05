@@ -5,17 +5,17 @@ import {
 async function createButtons(country, language, productCode) {
   return [
     [
-      await translate('productReferenceInformationURL', '../contact/'),
+      await translate('productReferenceInformationUrl', '../contact/'),
       ['primary'],
       await translate('productReferenceInformation', 'Request Information'),
     ],
     [
-      await translate('productReferenceSupportURL', '../product-support'),
+      await translate('productReferenceSupportUrl', '../product-support'),
       ['secondary'],
       await translate('productReferenceSupport', 'Product Support'),
     ],
     [
-      `/${country}/${language}/${await translate('productReferenceSupportURL', 'product-support')}/${productCode}`,
+      `/${country}/${language}/${await translate('productReferenceSupportUrl', 'product-support')}/${productCode}`,
       ['secondary'],
       await translate('productReferenceDocuments', 'Product Documents'),
     ],
@@ -44,7 +44,7 @@ export default async function decorate(block) {
   const imgStructure = [
     {
       type: 'img',
-      attributes: { src: product.Image },
+      attributes: { src: product.Image, alt: product.Name },
     },
   ];
 

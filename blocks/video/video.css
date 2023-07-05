@@ -1,3 +1,7 @@
+:root {
+  --video-aspect-ratio: 16 / 9;
+}
+
 .video.block {
   display: flex;
   flex-wrap: wrap;
@@ -11,6 +15,11 @@
   flex: 100%;
   max-width: 768px;
   margin-bottom: 25px;
+}
+
+.video.block.bottom-title > div {
+  flex-direction: column-reverse;
+  gap: 20px
 }
 
 .video.block.two-columns > div {
@@ -31,12 +40,17 @@
   display: none;
 }
 
-.video.block > div > div:last-child {
+.video.block > div > div:nth-child(3):has(img) {
   position: relative;
   cursor: pointer;
+  aspect-ratio: var(--video-aspect-ratio);
+  box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
+  border: 0 solid transparent;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.video.block > div > div:last-child span.icon-playvideo {
+.video.block > div > div:nth-child(3) span.icon-playvideo {
   position: absolute;
   display: block;
   top: 50%;
@@ -44,16 +58,13 @@
   transform: translate(-50%,-50%);
 }
 
-.video.block > div > div:last-child span.icon-playvideo svg {
+.video.block > div > div:nth-child(3) span.icon-playvideo svg {
   fill: var(--mt-background-color-primary);
   filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
 }
 
 .video.block img {
   width: 100%;
-  box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
-  border: 0 solid transparent;
-  border-radius: 5px;
 }
 
 .video-player-iframe {

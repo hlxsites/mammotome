@@ -100,6 +100,10 @@ main .form-container .form-wrapper:only-child {
     padding-top: 36px;
 }
 
+main .form > div:not(:first-child) {
+    display: none;
+}
+
 main .form form {
     margin: auto;
     display: grid;
@@ -209,6 +213,7 @@ main .form button {
     font-size: var(--form-button-font-size);
     font-weight: var(--mt-font-weight-bold);
     border-radius: unset;
+    border-radius: 3px;
 }
 
 main .form .field-wrapper ul {
@@ -223,14 +228,11 @@ main .form .form-submission-error {
     padding: 12px 24px;
     border: 1px solid #c02b0a;
     background: #fff9f9;
+    margin-top: 8px;
 }
 
 main .form .form-submission-error {
     grid-column: 1/-1;
-}
-
-main .form .field-wrapper ul li:not(:first-child) {
-    margin-top: 8px;
 }
 
 main .form-submit-wrapper {
@@ -240,7 +242,6 @@ main .form-submit-wrapper {
 
 main .form-submit-wrapper button {
     width: var(--form-submit-width);
-    border-radius: 3px;
 }
 
 main .form-submit-wrapper button:disabled {
@@ -286,11 +287,37 @@ main .form-file-wrapper .file-description button {
     text-align: center;
 }
 
+main .form form .field-tooltip {
+    background-color: var(--mt-global-color-red);
+    border: 1px solid #9f1300;
+    border-radius: 6px;
+    max-width: 16em;
+    padding: 0.4em 0.6em;
+    color: #f3f3f3;
+    font-size: var(--mt-font-size-80);
+    margin: 7px auto 0;
+    left: 45%;
+    position: absolute;
+}
+
+main .form form .field-tooltip::before {
+    content: '';
+    position: absolute; 
+    left: 10%;
+    top: 0;
+    border: 6px solid transparent;
+    border-top: 0;
+    border-bottom: 6px solid var(--mt-global-color-red);
+    transform: translate(-50%, calc(-100%));
+}
+
 main .connectus form > fieldset,
-main .innovate fieldset > fieldset {
+main .innovate fieldset > fieldset,
+main .learn-more fieldset > fieldset {
     --form-fieldset-grid-gap: 0;
     --form-fieldset-legend-font-size: 16px;
     --form-fieldset-legend-color: var(--mt-global-color-charcoal);
+    --form-fieldset-columns: 1;
 }
 
 main .connectus form > fieldset > legend {
@@ -308,16 +335,17 @@ main .connectus .form-description {
     padding: 0 0 4%;
 }
 
-main .connectus .form-consent {
+main :is(.contact, .schedule-demo, .learn-more) .form-consent {
     font-size: var(--mt-font-size-90);
     padding: 0.375rem 0 4%;
     border-bottom: solid 2px var(--mt-global-color-gallery);   
     margin: 0;
     line-height: normal;
+    grid-column: 1/-1;
 }
 
 /* stylelint-disable-next-line  selector-class-pattern */
-main .connectus :is(.form-companyName, .form-Pardot_Form_Message__c, .form-description, .form-consent) {
+main .connectus :is(.form-company, .form-Pardot_Form_Message__c, .form-description) {
     grid-column: 1/-1;
 }
 
@@ -400,7 +428,50 @@ main .study-request .form-submission-type-fs {
     --form-fieldset-legend-font-weight: bold;
 }
 
+main .wizard .form-wizard-button-wrapper {
+    grid-column: 1/-1;
+}
+
+main .wizard form > :not(.current-wizard-step, .form-wizard-button-wrapper) {
+    display: none;
+}
+
+main .wizard .form-submit-wrapper,
+main .wizard .form-wizard-button {
+    --form-button-padding: 15px;
+
+    width: 125px;
+    margin: 0 10px 0 0;
+    display: inline-block;
+}
+
+main .wizard .form-submit-wrapper {
+    display: none;
+}
+
+main .wizard .current-wizard-step:first-child ~ .form-wizard-button-wrapper > .form-wizard-button:first-of-type,
+main .wizard .current-wizard-step:nth-last-child(2) ~ .form-wizard-button-wrapper> .form-wizard-button:last-of-type  {
+    display: none;
+}
+
+main .wizard .current-wizard-step:nth-last-child(2) ~ .form-wizard-button-wrapper > .form-submit-wrapper {
+    display: inline-block;
+}
+
+main .learn-more .form-country {
+    grid-column: 1/-1;
+}
+
 @media (min-width: 640px) {
+    main .form form :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs) {
+        grid-column: span calc(var(--form-columns)/3);
+        width: calc(100% + 10px);
+    }
+
+    main .form fieldset :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs) {
+        grid-column: span calc(var(--form-fieldset-columns)/3);
+    }
+
     main .connectus {
         --form-columns: 6;
     }
@@ -410,7 +481,6 @@ main .study-request .form-submission-type-fs {
         grid-column: span calc(var(--form-columns)/2);
     }
 
-    main .connectus :is(.form-email-opt-fs, .form-phone-opt-fs, .form-text-opt-fs),
     main .contact :is(.form-product-fs, .form-solution-fs, .form-service-fs) {
         grid-column: span calc(var(--form-columns)/3);
         width: calc(100% + 10px);
@@ -432,6 +502,9 @@ main .study-request .form-submission-type-fs {
         --form-fieldset-columns: 2;
     }
 
+    main .learn-more .form-other-info {
+        --form-fieldset-columns: 3;
+    }
 }
 
 @media (min-width: 740px) {

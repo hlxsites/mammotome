@@ -7,6 +7,10 @@
   font-weight: var(--mt-font-weight-bold);
 }
 
+.product-support h2 {
+  text-transform: uppercase;
+}
+
 .product-support > .container {
   display: block;
   margin-left: auto;
@@ -27,11 +31,6 @@
   object-fit: contain;
   width: 100%;
   height: 100%;
-}
-
-.product-support > div > h4 > strong {
-  color: var(--mt-heading-color-primary);
-  text-transform: uppercase;
 }
 
 .product-support > div > div > select {
