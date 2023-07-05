@@ -1,4 +1,4 @@
-import { readBlockConfig, sampleRUM } from '../../scripts/lib-franklin.js';
+import { sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
@@ -345,7 +345,7 @@ async function fetchForm(pathname) {
   return jsonData;
 }
 
-async function createForm(formURL, config) {
+async function createForm(formURL) {
   const { pathname } = new URL(formURL);
   const data = await fetchForm(pathname);
   const form = document.createElement('form');
@@ -367,15 +367,6 @@ async function createForm(formURL, config) {
   });
   groupFieldsByFieldSet(form);
   decorateFile(form);
-  if (config.layout === 'wizard') {
-    try {
-      const decorateWizard = await import('./wizard.js');
-      decorateWizard.default(form);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(`Failed to load wizard ${err}`);
-    }
-  }
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
@@ -387,10 +378,17 @@ async function createForm(formURL, config) {
 }
 
 export default async function decorate(block) {
-  const config = readBlockConfig(block);
   const formLink = block.querySelector('a[href$=".json"]');
   if (formLink) {
-    const form = await createForm(formLink.href, config);
+    const form = await createForm(formLink.href);
+    if (block.classList.contains('wizard')) {
+      try {
+        (await import('./wizard.js')).default(form);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to load wizard ${err}`);
+      }
+    }
     formLink.replaceWith(form);
   }
 }

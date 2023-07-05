@@ -33,7 +33,6 @@ function moveToPrev(current) {
 }
 
 export default async function decorate(form) {
-  form.classList.add('form-layout-wizard');
   const wrapper = document.createElement('div');
   wrapper.className = 'form-wizard-button-wrapper';
   const current = form.getElementsByClassName('current-wizard-step');
