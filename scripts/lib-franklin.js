@@ -976,10 +976,10 @@ export async function waitForLCP(lcpBlocks) {
   });
 }
 
-export const SUPPORTED_LANGUAGES = ['de', 'en', 'en-gb', 'es', 'fr', 'it', 'pl'];
+export const SUPPORTED_LANGUAGES = ['de', 'en', 'es', 'fr', 'it', 'pl'];
 export const DEFAULT_LANGUAGE = 'en';
 
-export const SUPPORTED_COUNTRIES = ['de', 'es', 'fr', 'gb', 'it', 'pl', 'us'];
+export const SUPPORTED_COUNTRIES = ['de', 'es', 'fr', 'uk', 'it', 'pl', 'us'];
 export const DEFAULT_COUNTRY = 'us';
 
 export function getPreferredLanguage() {
