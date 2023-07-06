@@ -59,6 +59,14 @@ export default function decorate(block) {
         const textWrapper = text.closest('div');
         textWrapper.classList.add('columns-txt-wrapper');
       }
+      const imageCards = Array.from(col.querySelectorAll('main .columns.image-cards p:has(picture)'));
+      imageCards.forEach((imageCard) => {
+        const imageCardLink = imageCard.querySelector('a');
+        if (imageCardLink) {
+          const image = imageCard.querySelector('picture');
+          imageCardLink.appendChild(image);
+        }
+      });
     });
   });
 }

@@ -39,6 +39,13 @@ main .columns ol li a:not(.button) {
   font-size: var(--mt-ordered-list-font-size);
 }
 
+main .columns.image-cards p:has(picture) a {
+  display: flex;
+  flex-direction: column-reverse;
+  font-size: inherit;
+  color: inherit;
+}
+
 .accent-primary-solid-background .columns a:any-link,
 .accent-quinary-solid-background .columns a:any-link,
 .accent-secondary-blur-overlay .columns a:any-link,
