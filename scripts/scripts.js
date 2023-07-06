@@ -167,8 +167,10 @@ function buildAutoBlocks(main) {
  */
 function createOptimizedBackgroundImage(section, bgImage, breakpoints = [{ width: '450' }, { media: '(min-width: 450px)', width: '750' }, { media: '(min-width: 750px)', width: '2000' }]) {
   const url = new URL(bgImage, window.location.href);
-  const { pathname } = url;
-  section.style.backgroundImage = `image-set(${breakpoints.map((br, i) => `url(${pathname}?${br.width}&format=webply&optimize=medium) ${i + 1}x`)})`;
+  const pathname = encodeURI(url.pathname);
+
+  const images = breakpoints.map((br, i) => `url(${pathname}?width=${br.width}&format=webply&optimize=medium) ${i + 1}x`);
+  section.style.backgroundImage = `image-set(${images.join(', ')})`;
   section.style.backgroundSize = 'cover';
 }
 
