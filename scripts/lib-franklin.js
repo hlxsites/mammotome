@@ -928,15 +928,14 @@ export function decorateButtons(element) {
         const url = new URL(a.href);
         if (url.pathname.endsWith('.pdf')) {
           a.target = '_blank';
-          if (parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
+          if (parent.tagName.toLowerCase() === 'div' && parent.classList.contains('button-container')) {
             const icon = document.createElement('i');
             icon.classList.add('link-icon');
             icon.innerHTML = PDF_ICON;
             const spanText = document.createElement('span');
-            spanText.innerHTML = a.innerHTML;
+            spanText.textContent = a.textContent;
             a.innerHTML = '';
-            a.appendChild(icon);
-            a.appendChild(spanText);
+            a.append(icon, spanText);
           }
         }
       }
