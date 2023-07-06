@@ -925,15 +925,19 @@ export function decorateButtons(element) {
         } else if (isSingleChild(parent, 'EM') && isSingleChild(grandparent, 'P')) {
           addClassAndContainer(grandparent, 'button secondary', 'button-container');
         }
-        if (a.href.includes('.pdf') && parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
-          const icon = document.createElement('i');
-          icon.classList.add('link-icon');
-          icon.innerHTML = PDF_ICON;
-          const spanText = document.createElement('span');
-          spanText.innerHTML = a.innerHTML;
-          a.innerHTML = '';
-          a.appendChild(icon);
-          a.appendChild(spanText);
+        const url = new URL(a.href);
+        if (url.pathname.endsWith('.pdf')) {
+          a.target = '_blank';
+          if (parent.tagName.toLocaleLowerCase() === 'div' && parent.classList.contains('button-container')) {
+            const icon = document.createElement('i');
+            icon.classList.add('link-icon');
+            icon.innerHTML = PDF_ICON;
+            const spanText = document.createElement('span');
+            spanText.innerHTML = a.innerHTML;
+            a.innerHTML = '';
+            a.appendChild(icon);
+            a.appendChild(spanText);
+          }
         }
       }
     }
