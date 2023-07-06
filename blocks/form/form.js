@@ -353,8 +353,8 @@ async function fetchForm(pathname) {
 }
 
 async function createForm(formURL) {
-  const { pathname } = new URL(formURL);
-  const data = await fetchForm(pathname);
+  const { pathname, search } = new URL(formURL);
+  const data = await fetchForm(`${pathname}${search}`);
   const form = document.createElement('form');
   data.forEach((fd) => {
     const el = renderField(fd);
