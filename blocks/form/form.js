@@ -1,6 +1,7 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
+import decorateUTM from './utm.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
@@ -374,6 +375,7 @@ async function createForm(formURL) {
   groupFieldsByFieldSet(form);
   decorateFile(form);
   decorateCheckbox(form);
+  decorateUTM(form);
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
