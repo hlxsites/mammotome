@@ -244,6 +244,10 @@ main .form-submit-wrapper button {
     width: var(--form-submit-width);
 }
 
+main .form-submit-wrapper button:disabled {
+    background-color: var(--mt-global-color-dove-gray);
+}
+
 main .form-file-wrapper .field-dropregion {
     background: rgb(0 0 0 / 2%);
     border: 1px dashed var(--mt-global-color-silver);

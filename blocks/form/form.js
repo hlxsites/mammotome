@@ -1,5 +1,6 @@
 import { sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
+import decorateCheckbox from './checkbox.js';
 
 const SITE_KEY = '6LeMTDUlAAAAAMMlCNN-CT_qNsDhGU2xQMh5XnlO';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
@@ -86,7 +87,12 @@ async function submitForm(form, token) {
       sampleRUM('form:submit');
       window.location.href = form.dataset?.redirect || '/us/en/thankyou';
     } else {
-      const error = await response.text();
+      let error = 'Error: Failed to submit form';
+      try {
+        error = (await response.json()).message || error;
+      } catch (err) { // error format not in json display simple text.
+        error = await response.text();
+      }
       throw new Error(error);
     }
   } catch (error) {
@@ -296,7 +302,7 @@ const getId = (function getId() {
     ids[name] = ids[name] || 0;
     const idSuffix = ids[name] ? `-${ids[name]}` : '';
     ids[name] += 1;
-    return `${name}${idSuffix}`;
+    return `form-${name}${idSuffix}`;
   };
 }());
 
@@ -367,6 +373,7 @@ async function createForm(formURL) {
   });
   groupFieldsByFieldSet(form);
   decorateFile(form);
+  decorateCheckbox(form);
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
