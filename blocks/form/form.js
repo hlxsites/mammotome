@@ -302,7 +302,7 @@ const getId = (function getId() {
     ids[name] = ids[name] || 0;
     const idSuffix = ids[name] ? `-${ids[name]}` : '';
     ids[name] += 1;
-    return `${name}${idSuffix}`;
+    return `form-${name}${idSuffix}`;
   };
 }());
 
