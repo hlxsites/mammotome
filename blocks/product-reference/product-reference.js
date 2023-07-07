@@ -1,21 +1,27 @@
 import {
-  createDomStructure, decorateBlockImgs, getInfo, getProduct, translate,
+  createDomStructure,
+  decorateBlockImgs,
+  getConfigValue,
+  getInfo,
+  getProduct,
+  toCamelCase,
+  translate,
 } from '../../scripts/lib-franklin.js';
 
 async function createButtons(country, language, productCode) {
   return [
     [
-      await translate('productReferenceInformationUrl', '../contact/'),
+      `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Information Url ${country}/${language}`)}`, 'contact/')}`,
       ['primary'],
       await translate('productReferenceInformation', 'Request Information'),
     ],
     [
-      await translate('productReferenceSupportUrl', '../product-support'),
+      `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Support Url ${country}/${language}`)}`, 'product-support')}`,
       ['secondary'],
       await translate('productReferenceSupport', 'Product Support'),
     ],
     [
-      `/${country}/${language}/${await translate('productReferenceSupportUrl', 'product-support')}/${productCode}`,
+      `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Support Url ${country}/${language}`)}`, 'product-support')}/${productCode}`,
       ['secondary'],
       await translate('productReferenceDocuments', 'Product Documents'),
     ],

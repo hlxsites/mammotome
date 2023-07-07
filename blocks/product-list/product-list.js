@@ -1,8 +1,14 @@
 import {
-  createDomStructure, decorateBlockImgs, decorateSupScript, getInfo, getProducts,
+  createDomStructure,
+  decorateBlockImgs,
+  decorateSupScript,
+  getConfigValue,
+  getInfo,
+  getProducts,
+  toCamelCase,
 } from '../../scripts/lib-franklin.js';
 
-function decorateProduct(product) {
+function decorateProduct(base, product) {
   const children = [
     { type: 'h4', children: decorateSupScript(product.Name) },
   ];
@@ -18,7 +24,7 @@ function decorateProduct(product) {
   return {
     type: 'a',
     classes: ['product'],
-    attributes: { href: `product-support/${product.Page}` },
+    attributes: { href: `${base}/${product.Page}` },
     children,
   };
 }
@@ -26,12 +32,13 @@ function decorateProduct(product) {
 export default async function decorate(block) {
   const { country, language } = getInfo();
   const products = await getProducts(country, language);
+  const base = `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Support Url ${country}/${language}`)}`, 'product-support')}`;
 
   createDomStructure([
     {
       type: 'div',
       classes: ['product-list'],
-      children: products.map(decorateProduct),
+      children: products.map((product) => decorateProduct(base, product)),
     }], block);
 
   decorateBlockImgs(block);
