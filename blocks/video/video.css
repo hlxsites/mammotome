@@ -43,11 +43,6 @@
 .video.block > div > div:nth-child(3):has(img) {
   position: relative;
   cursor: pointer;
-  aspect-ratio: var(--video-aspect-ratio);
-  box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
-  border: 0 solid transparent;
-  border-radius: 5px;
-  overflow: hidden;
 }
 
 .video.block > div > div:nth-child(3) span.icon-playvideo {
@@ -65,6 +60,9 @@
 
 .video.block img {
   width: 100%;
+  box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
+  border: 0 solid transparent;
+  border-radius: 5px;
 }
 
 .video-player-iframe {
