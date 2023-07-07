@@ -594,6 +594,10 @@ a.button:has(i.link-icon):hover {
   background: none;
 }
 
+a.button:has(i.link-icon):focus {
+  background: none;
+}
+
 main input {
   font-size: var(--mt-input-font-size);
   width: 100%;
