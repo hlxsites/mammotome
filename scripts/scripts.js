@@ -156,6 +156,24 @@ function buildAutoBlocks(main) {
     console.error('Auto Blocking failed', error);
   }
 }
+
+/**
+ * Creates an optimized background image for the given section.
+ * The image is created for the given breakpoints.
+ * Default breakpoints are mobile, tablet and desktop.
+ * @param section The section to create the background image for
+ * @param bgImage The background image to optimize
+ * @param breakpoints The breakpoints to optimize the image for
+ */
+function createOptimizedBackgroundImage(section, bgImage, breakpoints = [{ width: '450' }, { media: '(min-width: 450px)', width: '750' }, { media: '(min-width: 750px)', width: '2000' }]) {
+  const url = new URL(bgImage, window.location.href);
+  const pathname = encodeURI(url.pathname);
+
+  const images = breakpoints.map((br, i) => `url(${pathname}?width=${br.width}&format=webply&optimize=medium) ${i + 1}x`);
+  section.style.backgroundImage = `image-set(${images.join(', ')})`;
+  section.style.backgroundSize = 'cover';
+}
+
 /**
  * Finds all sections in the main element of the document
  * that require additional decoration: adding
@@ -167,8 +185,7 @@ function decorateStyledSections(main) {
     .forEach((section) => {
       const bgImage = section.dataset.backgroundImage;
       if (bgImage) {
-        section.style.backgroundImage = `url(${bgImage})`;
-        section.style.backgroundSize = 'cover';
+        createOptimizedBackgroundImage(section, bgImage);
       }
     });
 
