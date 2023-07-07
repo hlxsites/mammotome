@@ -15,7 +15,7 @@ async function createButtons(country, language, productCode) {
       await translate('productReferenceSupport', 'Product Support'),
     ],
     [
-      `/${country}/${language}/${await translate('productReferenceSupportUrl', 'product-support')}/${productCode}`,
+      `${await translate('productReferenceSupportUrl', '../product-support')}/${productCode}`,
       ['secondary'],
       await translate('productReferenceDocuments', 'Product Documents'),
     ],
