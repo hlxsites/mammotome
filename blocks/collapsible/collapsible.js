@@ -8,7 +8,7 @@ export default function decorate(block) {
     const question = document.createElement('a');
 
     const answerBlock = document.createElement('p');
-    answerBlock.innerText = answerArea.innerText;
+    answerBlock.innerHTML = answerArea.innerHTML;
 
     answerArea.innerText = '';
     answerArea.appendChild(answerBlock);
