@@ -265,7 +265,7 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
     gap: 0;
   }
 
-  main .columns > div:not(:first-child) {
+  main .columns[class*="image-color-"] > div:not(:first-child) {
     margin-top: 8%;
   }
 
