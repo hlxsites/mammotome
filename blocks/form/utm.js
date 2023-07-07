@@ -11,9 +11,11 @@ export default async function decorate(form) {
   const queryParams = new URLSearchParams(window.location.search);
   Object.entries(fieldNameParamUTMMap).forEach(([fieldName, param]) => {
     const values = queryParams.getAll(param);
-    const input = form.querySelector(`input[type=hidden][name=${fieldName}]`);
-    if (values.length > 0 && input) {
-      input.value = values.join();
+    if (values.length) {
+      const input = form.querySelector(`input[type=hidden][name="${fieldName}"]`);
+      if (input) {
+        input.value = values.join();
+      }
     }
   });
 }
