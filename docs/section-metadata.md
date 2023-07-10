@@ -25,6 +25,7 @@ based on visual differences between sections such as a different background colo
   * [Callout](#callout)
   * [Narrow](#narrow)
   * [Divider](#divider)
+  * [Button-Width](#button-width)
   * [Spacer](#spacer)
     * [After Section](#after-section)
     * [Before Section](#before-section)
