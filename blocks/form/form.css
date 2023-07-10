@@ -449,12 +449,12 @@ main .wizard .form-submit-wrapper {
     display: none;
 }
 
-main .wizard .current-wizard-step:first-child ~ .form-wizard-button-wrapper > .form-wizard-button:first-of-type,
-main .wizard .current-wizard-step:nth-last-child(2) ~ .form-wizard-button-wrapper> .form-wizard-button:last-of-type  {
+main .wizard .current-wizard-step.field-wrapper:first-of-type ~ .form-wizard-button-wrapper > .form-wizard-button:first-of-type,
+main .wizard .current-wizard-step.field-wrapper:last-of-type ~ .form-wizard-button-wrapper > .form-wizard-button:last-of-type  {
     display: none;
 }
 
-main .wizard .current-wizard-step:nth-last-child(2) ~ .form-wizard-button-wrapper > .form-submit-wrapper {
+main .wizard .current-wizard-step.field-wrapper:last-of-type ~ .form-wizard-button-wrapper > .form-submit-wrapper {
     display: inline-block;
 }
 
