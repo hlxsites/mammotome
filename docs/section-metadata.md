@@ -260,6 +260,21 @@ Adds a divider before or after the section.
 
 ![line-example.png](assets/line-example.png)
 
+## Button-Width
+
+Sets the width of the button in a section to a fixed value for all buttons in the section.
+
+| Button-Width |                                              |
+|--------------|----------------------------------------------|
+| [width]      | button width is set to [width]. Default 100% |
+
+**_Example_**
+
+| Section Metadata |     |
+| ---------------- |-----|
+| divider          | 305 |
+
+![button-width-example.png](assets/button-width-example.png)
 
 ## Spacer
 

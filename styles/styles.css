@@ -538,6 +538,14 @@ button {
   transition: all .3s;
 }
 
+a.button.button-width:any-link {
+  white-space: unset;
+}
+
+.button-container:has(a.button.button-width) {
+  text-align: center;
+}
+
 a.button.primary,
 button.primary {
   color: var(--mt-button-color-primary);

@@ -710,8 +710,14 @@ export function decorateSections(main) {
           } else {
             addSpacer(section, spacerValue, 'after');
           }
-
-          // addSpacer(section, spacerValue);
+        } else if (key === 'button-width') { // set fixed button width from section metadata
+          const buttonWidthInt = parseInt(meta['button-width'], 10);
+          const buttonWidth = buttonWidthInt ? `${buttonWidthInt}px` : '100%';
+          const aButtons = section.querySelectorAll('p a');
+          aButtons.forEach((aButton) => {
+            aButton.setAttribute('style', `width: ${buttonWidth};`);
+            aButton.classList.add('button-width');
+          });
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }
