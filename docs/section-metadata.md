@@ -25,6 +25,7 @@ based on visual differences between sections such as a different background colo
   * [Callout](#callout)
   * [Narrow](#narrow)
   * [Divider](#divider)
+  * [Button-Width](#button-width)
   * [Spacer](#spacer)
     * [After Section](#after-section)
     * [Before Section](#before-section)
@@ -260,6 +261,21 @@ Adds a divider before or after the section.
 
 ![line-example.png](assets/line-example.png)
 
+## Button-Width
+
+Sets the width of the button in a section to a fixed value for all buttons in the section.
+
+| Button-Width |                                              |
+|--------------|----------------------------------------------|
+| [width]      | button width is set to [width]. Default 100% |
+
+**_Example_**
+
+| Section Metadata |     |
+| ---------------- |-----|
+| divider          | 305 |
+
+![button-width-example.png](assets/button-width-example.png)
 
 ## Spacer
 
