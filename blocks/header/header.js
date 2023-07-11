@@ -7,7 +7,7 @@ import {
   createDomStructure,
   decorateSupScript,
   getInfo,
-  decorateSupScriptInTextBelow,
+  decorateSupScriptInTextBelow, readBlockConfig,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -378,24 +378,43 @@ export default async function decorate(block) {
     nav.innerHTML = html;
 
     const classes = ['brand', 'sections', 'tools'];
-    classes.forEach((c, i) => {
-      const section = nav.children[i];
-      if (section) section.classList.add(`nav-${c}`);
+    Array.from(nav.children).forEach((section, i) => {
+      // first section is assigned to brand, last to tools
+      if (i === 0) {
+        section.classList.add(`nav-${classes[0]}`);
+      } else if (i === nav.children.length - 1) {
+        section.classList.add(`nav-${classes[classes.length - 1]}`);
+      } else {
+        const navSectionList = nav.querySelector('.nav-sections > ul');
+        if (navSectionList) {
+          const sectionMetaData = section.querySelector('div.section-metadata');
+          let config = {};
+          if (sectionMetaData) {
+            config = readBlockConfig(sectionMetaData);
+            sectionMetaData.remove();
+          }
+          Array.from(section.querySelectorAll('div > ul > li')).forEach((li, j) => {
+            navSectionList.appendChild(li);
+            if (config.style) {
+              li.classList.add(`${config.style}`);
+              if (config.style === 'nav-button' && j % 2) li.querySelector('a').classList.add('btn-invert');
+            }
+          });
+        } else {
+          section.classList.add(`nav-${classes[1]}`);
+        }
+      }
     });
 
     const navSections = nav.querySelector('.nav-sections');
 
     if (navSections) {
-      navSections.querySelectorAll(':scope > ul > li').forEach((navSection, i) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+      navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
+        if (navSection.classList.length === 0) navSection.classList.add('nav-drop');
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
 
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
-        else {
-          navSection.classList.add('nav-button');
-          if (i % 2) navSection.querySelector('a').classList.add('btn-invert');
-        }
 
         navSection.addEventListener('click', () => {
           if (!isDesktop.matches) {

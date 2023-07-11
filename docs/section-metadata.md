@@ -54,6 +54,16 @@ Section Metadata allows the author to add two parameters to a section table with
 
 ## Style
 
+### Nav
+
+Transforms links in the nav bar to buttons.
+
+**_Example:_**
+
+| Section Metadata |            |
+|------------------|------------|
+| Style            | nav-button |
+
 ### Header
 
 
