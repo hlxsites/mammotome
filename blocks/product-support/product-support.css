@@ -3,14 +3,6 @@
   margin: auto;
 }
 
-.product-support > h1 {
-  font-weight: var(--mt-font-weight-bold);
-}
-
-.product-support h2 {
-  text-transform: uppercase;
-}
-
 .product-support > .container {
   display: block;
   margin-left: auto;
