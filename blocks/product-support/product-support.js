@@ -70,7 +70,7 @@ export default async function decorate(block) {
   setMetaTag('property', 'og:title', product.Name);
   setMetaTag('name', 'description', `${product.Name} - ${heading}`);
 
-  createDomStructure([{ type: 'h1', children: decorateSupScript(product.Name) }], block);
+  createDomStructure([{ type: 'div', children: [{ type: 'h1', children: decorateSupScript(product.Name) }] }], block);
   if (product.Image) {
     setMetaTag('property', 'og:image', product.Image);
     setMetaTag('property', 'og:image:secure_url', product.Image);
@@ -81,11 +81,16 @@ export default async function decorate(block) {
   createDomStructure([
     {
       type: 'div',
-      classes: ['header-colored'],
       children: [
         {
-          type: 'h2',
-          textContent: heading,
+          type: 'div',
+          classes: ['header-colored', 'header-uppercase', 'header-wide'],
+          children: [
+            {
+              type: 'h2',
+              textContent: heading,
+            },
+          ],
         },
         {
           type: 'div',
@@ -158,11 +163,16 @@ export default async function decorate(block) {
     createDomStructure([
       {
         type: 'div',
-        classes: ['header-colored'],
         children: [
           {
-            type: 'h2',
-            textContent: headingVideos,
+            type: 'div',
+            classes: ['header-colored', 'header-uppercase', 'header-wide'],
+            children: [
+              {
+                type: 'h2',
+                textContent: headingVideos,
+              },
+            ],
           },
           {
             type: 'div',
