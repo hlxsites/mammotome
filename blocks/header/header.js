@@ -416,8 +416,8 @@ export default async function decorate(block) {
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
 
-        navSection.addEventListener('click', () => {
-          if (!isDesktop.matches) {
+        navSection.addEventListener('click', (e) => {
+          if (!isDesktop.matches && e.target.nextElementSibling) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
 
             toggleAllNavSections(navSections);
@@ -426,7 +426,7 @@ export default async function decorate(block) {
         });
       });
 
-      const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li > a');
+      const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li:has(ul) > a');
       firstLevelLinks.forEach((link) => {
         link.addEventListener('click', (event) => {
           if (!isDesktop.matches) {
