@@ -7,6 +7,7 @@ based on visual differences between sections such as a different background colo
 * [Section Metadata](#section-metadata)
 * [Usage](#usage)
   * [Style](#style)
+    * [Nav](#nav)
     * [Header](#header)
     * [Text](#text)
     * [Background styles](#background-styles)
@@ -68,13 +69,14 @@ Transforms links in the nav bar to buttons.
 
 
 | Attribute                       | Feature        | Default                                               | Style                       |
-| ------------------------------- | -------------- | ----------------------------------------------------- | --------------------------- |
+|---------------------------------| -------------- | ----------------------------------------------------- |-----------------------------|
 | _as formatted in word document_ | H1             | font-size: 40px; font-weight: 400; line-height: 1.2   | bold: font-weight: 900      |
 | _as formatted in word document_ | H2             | font-size: 28.8px; font-weight: 400; line-height: 1.2 | bold: font-weight: 900      |
 | _as formatted in word document_ | H3             | font-size: 20.8px; font-weight: 400; line-height: 1.2 | bold: font-weight: 900      |
 | _as formatted in word document_ | H4             | font-size: 16px; font-weight: 400; line-height: 1.2   | bold: font-weight: 900      |
 | **align-left**                  | alignment      | center                                                | left aligns  headline       |
 | **header-colored**              | color          | black                                                 | color: magenta              |
+| **header-colored-secondary**    | color          | black                                                 | color: blue                 |
 | **header-uppercase**            | uppercase      | _as formatted in word document_                       | enforces uppercase          |
 | **header-wide**                 | letter-spacing | 0                                                     | 4px spacing between letters |
 
