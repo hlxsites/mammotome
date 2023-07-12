@@ -895,7 +895,9 @@ export function decorateTemplateAndTheme() {
  */
 export function setActiveLink(links, className) {
   if (!links || links.length === 0) return;
-  const actualPage = getMetadata('og:url').split('/').slice(-1)[0].toLowerCase();
+  const ogUrl = getMetadata('og:url');
+  const slicer = ogUrl.endsWith('/') ? -2 : -1;
+  const actualPage = ogUrl.split('/').slice(slicer)[0].toLowerCase();
   links.forEach((a) => {
     const href = (a.getAttribute('href') || '').toLowerCase();
     if (href.includes(actualPage)) {
