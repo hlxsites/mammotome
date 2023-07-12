@@ -1,4 +1,4 @@
-import { sampleRUM } from '../../scripts/lib-franklin.js';
+import { decorateSupScriptInTextBelow, sampleRUM } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
 import decorateUTM from './utm.js';
@@ -376,6 +376,7 @@ async function createForm(formURL) {
   decorateFile(form);
   decorateCheckbox(form);
   decorateUTM(form);
+  decorateSupScriptInTextBelow(form);
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
