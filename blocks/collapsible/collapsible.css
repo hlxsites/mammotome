@@ -19,7 +19,7 @@
 }
 
 .collapsible .question {
-    text-decoration: underline;
+    text-decoration: none;
     line-height: var(--mt-collapsible-question-line-height);
     padding: 15px;
     cursor: pointer;
