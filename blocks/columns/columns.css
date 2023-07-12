@@ -130,6 +130,7 @@ main .columns .hero-arc-margin {
 main .columns > div > div {
   order: 0;
   width: 95%;
+  align-self: flex-start;
 }
 
 main .columns.centered > div {
