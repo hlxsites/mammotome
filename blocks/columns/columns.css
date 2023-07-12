@@ -136,10 +136,6 @@ main .columns.centered > div {
   text-align: center;
 }
 
-main .columns.centered > div > div {
-  align-self: flex-start;
-}
-
 div[class^="columns image-color-"] img {
   width: calc((var(--columns-max-width)/2) - var(--columns-image-padding));
   border-radius: 5px;
@@ -172,6 +168,10 @@ main .section.narrow .columns-wrapper {
 
 main .columns.simple > div {
   align-items: flex-start;
+}
+
+main .columns.centered > div > div {
+  align-self: flex-start;
 }
 
 main .columns > div > .columns-img-col {
