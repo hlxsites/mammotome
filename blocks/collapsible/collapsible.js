@@ -13,7 +13,7 @@ export default function decorate(block) {
     answerArea.innerText = '';
     answerArea.appendChild(answerBlock);
 
-    question.innerText = questionArea.innerText;
+    question.innerHTML = `<span>${questionArea.innerHTML}</span>`;
     questionArea.innerText = '';
     questionArea.appendChild(question);
 
