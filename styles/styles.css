@@ -62,6 +62,7 @@
   --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
   --mt-heading-color-inverted: var(--mt-global-color-white);
+  --mt-header-colored-secondary: var(--mt-global-color-accent-primary);
   --mt-input-color: var(--mt-text-color);
   --mt-input-hover-color: var(--mt-text-color);
   --mt-link-color: var(  --mt-global-color-base-primary);
@@ -247,6 +248,20 @@ h5 {
 .header-colored h5 {
   color: var(--mt-heading-color-primary);
 }
+
+.header-colored-secondary h1,
+.header-colored-secondary h2,
+.header-colored-secondary h3,
+.header-colored-secondary h4,
+.header-colored-secondary h5,
+.header-colored-secondary h1 a,
+.header-colored-secondary h2 a,
+.header-colored-secondary h3 a,
+.header-colored-secondary h4 a,
+.header-colored-secondary h5 a{
+  color: var(--mt-header-colored-secondary);
+}
+
 
 .align-left h1,
 .align-left h2,
