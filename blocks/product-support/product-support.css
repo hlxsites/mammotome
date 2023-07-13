@@ -5,6 +5,7 @@
 
 .product-support h2 {
   font-size: var(--mt-heading-font-size-mobile-m);
+  font-weight: bold;
 }
 
 @media (min-width: 767px) {
