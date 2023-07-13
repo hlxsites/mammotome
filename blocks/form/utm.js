@@ -1,17 +1,15 @@
-const fieldNameParamUTMMap = {
-  UTM_Campaign__c: 'utm_campaign',
-  UTM_Source__c: 'utm_source',
-  UTM_Medium__c: 'utm_medium',
-  UTM_Content__c: 'utm_content',
-  UTM_Term__c: 'utm_term',
-  GCLID__c: 'gclid',
+const allowedUTMs = ['utm_campaign', 'utm_source', 'utm_medium', 'utm_content', 'utm_term', 'gclid'];
+const paramFieldNameUTMMap = {
+  utm_content: 'uTMContent',
+  gclid: 'GCLID__c',
 };
 
 export default async function decorate(form) {
   const queryParams = new URLSearchParams(window.location.search);
-  Object.entries(fieldNameParamUTMMap).forEach(([fieldName, param]) => {
-    const values = queryParams.getAll(param);
+  allowedUTMs.forEach((allowedUTM) => {
+    const values = queryParams.getAll(allowedUTM);
     if (values.length) {
+      const fieldName = paramFieldNameUTMMap[allowedUTM] || allowedUTM;
       const input = form.querySelector(`input[type=hidden][name="${fieldName}"]`);
       if (input) {
         input.value = values.join();
