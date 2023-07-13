@@ -203,6 +203,7 @@ main .form input[type='radio'] {
     height: 13px;
     margin: 0 0 0 0.3rem;
     display: inline-block;
+    flex-shrink: 0;
 }
 
 main .form button {
@@ -245,7 +246,7 @@ main .form-submit-wrapper button {
 }
 
 main .form-submit-wrapper button:disabled {
-    background-color: var(--mt-global-color-dove-gray);
+    opacity: 0.5;
 }
 
 main .form-file-wrapper .field-dropregion {
@@ -440,7 +441,7 @@ main .wizard .form-submit-wrapper,
 main .wizard .form-wizard-button {
     --form-button-padding: 15px;
 
-    width: 125px;
+    width: 140px;
     margin: 0 10px 0 0;
     display: inline-block;
 }

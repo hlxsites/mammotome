@@ -1,4 +1,4 @@
-import { decorateSupScriptInTextBelow, sampleRUM } from '../../scripts/lib-franklin.js';
+import { decorateSupScriptInTextBelow, sampleRUM, readBlockConfig } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
 import decorateUTM from './utm.js';
@@ -20,7 +20,7 @@ function loadScript(url) {
 }
 
 function constructPayload(form) {
-  const payload = {};
+  const payload = { submissionDate: (new Date()).toUTCString() };
   const attachments = {};
   [...form.elements].filter((fe) => fe.name).forEach((fe) => {
     if (fe.type === 'radio') {
@@ -53,7 +53,9 @@ function clearError(form) {
 async function submissionFailure(error, form) {
   showError(form, error);
   form.setAttribute('data-submitting', 'false');
-  form.querySelector('button[type="submit"]').disabled = false;
+  const submitter = form.querySelector('button[type="submit"]');
+  submitter.disabled = false;
+  submitter.textContent = submitter.dataset.text || submitter.textContent;
 }
 
 function prepareRequest(form, token) {
@@ -86,7 +88,7 @@ async function submitForm(form, token) {
     });
     if (response.ok) {
       sampleRUM('form:submit');
-      window.location.href = form.dataset?.redirect || '/us/en/thankyou';
+      window.location.href = form.dataset?.redirect || '/us/en/thank-you/';
     } else {
       let error = 'Error: Failed to submit form';
       try {
@@ -180,6 +182,9 @@ function createButton(fd) {
 }
 function createSubmit(fd) {
   const wrapper = createButton(fd);
+  if (fd.Placeholder) {
+    wrapper.querySelector('button').dataset.submitText = fd.Placeholder;
+  }
   if (SITE_KEY) {
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -214,6 +219,10 @@ const createTextArea = withFieldWrapper((fd) => {
   return input;
 });
 
+function isDatasource(path) {
+  return path && path.trim().split('?')[0].endsWith('.json');
+}
+
 const createSelect = withFieldWrapper((fd) => {
   const select = document.createElement('select');
   if (fd.Placeholder) {
@@ -223,15 +232,32 @@ const createSelect = withFieldWrapper((fd) => {
     ph.setAttribute('disabled', '');
     select.append(ph);
   }
-  fd.Options.split(',').forEach((o) => {
+
+  const addOption = (optionText, optionValue) => {
     const option = document.createElement('option');
-    option.textContent = o.trim();
-    option.value = o.trim();
-    if (fd.Value === o.trim()) {
+    option.textContent = optionText.trim();
+    option.value = optionValue.trim();
+    if (fd.Value === optionValue.trim()) {
       option.selected = true;
     }
     select.append(option);
-  });
+  };
+
+  const options = fd.Options.split(',');
+  if (options.length === 1 && isDatasource(options[0])) {
+    try {
+      (async (path) => {
+        const { data } = await (await fetch(path)).json();
+        data.forEach((optionObj) => addOption(optionObj.Text || optionObj.Value, optionObj.Value));
+      })(options[0]);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(`Error: Failed to fetch options ${err}`);
+    }
+  } else {
+    const optionsName = fd['Options Name'] ? fd['Options Name'].split(',') : options;
+    options.forEach((optionValue, index) => addOption(optionsName[index], optionValue));
+  }
   return select;
 });
 
@@ -336,6 +362,24 @@ function renderField(fd) {
   return field;
 }
 
+function decorateFormFields(form) {
+  decorateFile(form);
+  decorateCheckbox(form);
+  decorateUTM(form);
+  decorateSupScriptInTextBelow(form);
+}
+
+async function decorateFormLayout(block, form) {
+  if (block.classList.contains('wizard')) {
+    try {
+      (await import('./wizard.js')).default(form);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(`Failed to load wizard ${err}`);
+    }
+  }
+}
+
 async function fetchData(url) {
   const resp = await fetch(url);
   const json = await resp.json();
@@ -346,15 +390,9 @@ async function fetchData(url) {
   }));
 }
 
-async function fetchForm(pathname) {
-  // get the main form
-  const jsonData = await fetchData(pathname);
-  return jsonData;
-}
-
 async function createForm(formURL) {
   const { pathname, search } = new URL(formURL);
-  const data = await fetchForm(`${pathname}${search}`);
+  const data = await fetchData(`${pathname}${search}`);
   const form = document.createElement('form');
   data.forEach((fd) => {
     const el = renderField(fd);
@@ -373,32 +411,27 @@ async function createForm(formURL) {
     form.append(el);
   });
   groupFieldsByFieldSet(form);
-  decorateFile(form);
-  decorateCheckbox(form);
-  decorateUTM(form);
-  decorateSupScriptInTextBelow(form);
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
+    const { submitter } = e;
+    submitter.setAttribute('disabled', '');
+    submitter.dataset.text = submitter.textContent;
+    submitter.textContent = submitter.dataset.submitText || submitter.textContent;
+    handleSubmit(form);
     e.preventDefault();
-    e.submitter.setAttribute('disabled', '');
-    handleSubmit(form, e.submitter.dataset?.redirect);
   });
+  decorateFormFields(form);
   return form;
 }
 
 export default async function decorate(block) {
   const formLink = block.querySelector('a[href*=".json"]');
   if (formLink) {
+    const config = readBlockConfig(block);
     const form = await createForm(formLink.href);
-    if (block.classList.contains('wizard')) {
-      try {
-        (await import('./wizard.js')).default(form);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(`Failed to load wizard ${err}`);
-      }
-    }
+    Object.entries(config).forEach(([key, value]) => { form.dataset[key] = value; });
+    await decorateFormLayout(block, form);
     formLink.replaceWith(form);
   }
 }
