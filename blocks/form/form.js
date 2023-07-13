@@ -182,6 +182,9 @@ function createButton(fd) {
 }
 function createSubmit(fd) {
   const wrapper = createButton(fd);
+  if (fd.Placeholder) {
+    wrapper.querySelector('button').dataset.submitText = fd.Placeholder;
+  }
   if (SITE_KEY) {
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -411,11 +414,12 @@ async function createForm(formURL) {
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    e.submitter.setAttribute('disabled', '');
-    e.submitter.dataset.text = e.submitter.textContent;
-    e.submitter.textContent = 'Please Wait.';
+    const { submitter } = e;
+    submitter.setAttribute('disabled', '');
+    submitter.dataset.text = submitter.textContent;
+    submitter.textContent = submitter.dataset.submitText || submitter.textContent;
     handleSubmit(form);
+    e.preventDefault();
   });
   decorateFormFields(form);
   return form;
