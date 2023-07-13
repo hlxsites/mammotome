@@ -66,7 +66,7 @@
   --mt-header-colored-secondary: var(--mt-global-color-accent-primary);
   --mt-input-color: var(--mt-text-color);
   --mt-input-hover-color: var(--mt-text-color);
-  --mt-link-color: var(  --mt-global-color-base-primary);
+  --mt-link-color: var(--mt-global-color-accent-primary);
   --mt-link-hover-color: var(--mt-global-color-dark-blue);
   --mt-text-color: var(--mt-global-color-base-secondary);
   --mt-text-color-inverted: var(--mt-global-color-white);
@@ -244,7 +244,7 @@ h5 {
 
 
 a:any-link {
-  color: var(--mt-global-color-accent-primary);
+  color: var(--mt-link-color);
   text-decoration: none;
 }
 
