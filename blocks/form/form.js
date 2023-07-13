@@ -20,7 +20,7 @@ function loadScript(url) {
 }
 
 function constructPayload(form) {
-  const payload = {};
+  const payload = { submissionDate: (new Date()).toUTCString() };
   const attachments = {};
   [...form.elements].filter((fe) => fe.name).forEach((fe) => {
     if (fe.type === 'radio') {
