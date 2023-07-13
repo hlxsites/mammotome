@@ -941,7 +941,7 @@ export function decorateButtons(element) {
             icon.classList.add('link-icon');
             icon.innerHTML = PDF_ICON;
             const spanText = document.createElement('span');
-            spanText.textContent = a.textContent;
+            spanText.innerHTML = a.innerHTML;
             a.innerHTML = '';
             a.append(icon, spanText);
           }
