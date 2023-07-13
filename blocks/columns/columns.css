@@ -4,7 +4,7 @@
   --columns-image-xs-height: 110px;
   --columns-image-padding: 30px;
   --columns-gap: 65px;
-  --columns-link-color: #c36;
+  --columns-link-color: var(--mt-link-color);
   --mt-ordered-list-font-size: var(--mt-font-size-80);
   --columns-font-weight: var(--mt-font-weight-regular);
 }
