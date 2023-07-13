@@ -216,6 +216,10 @@ const createTextArea = withFieldWrapper((fd) => {
   return input;
 });
 
+function isDatasource(path) {
+  return path && path.trim().split('?')[0].endsWith('.json');
+}
+
 const createSelect = withFieldWrapper((fd) => {
   const select = document.createElement('select');
   if (fd.Placeholder) {
@@ -225,17 +229,32 @@ const createSelect = withFieldWrapper((fd) => {
     ph.setAttribute('disabled', '');
     select.append(ph);
   }
-  const options = fd.Options.split(',');
-  const optionsName = fd['Options Name'] ? fd['Options Name'].split(',') : options;
-  options.forEach((o, index) => {
+
+  const addOption = (optionText, optionValue) => {
     const option = document.createElement('option');
-    option.textContent = optionsName[index].trim();
-    option.value = o.trim();
-    if (fd.Value === o.trim()) {
+    option.textContent = optionText.trim();
+    option.value = optionValue.trim();
+    if (fd.Value === optionValue.trim()) {
       option.selected = true;
     }
     select.append(option);
-  });
+  };
+
+  const options = fd.Options.split(',');
+  if (options.length === 1 && isDatasource(options[0])) {
+    try {
+      (async (path) => {
+        const { data } = await (await fetch(path)).json();
+        data.forEach((optionObj) => addOption(optionObj.Text || optionObj.Value, optionObj.Value));
+      })(options[0]);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(`Error: Failed to fetch options ${err}`);
+    }
+  } else {
+    const optionsName = fd['Options Name'] ? fd['Options Name'].split(',') : options;
+    options.forEach((optionValue, index) => addOption(optionsName[index], optionValue));
+  }
   return select;
 });
 
