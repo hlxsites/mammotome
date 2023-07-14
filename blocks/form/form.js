@@ -23,7 +23,7 @@ function loadScript(url) {
 
 function constructPayload(form) {
   const payload = {
-    'Last Form Date': (new Date()).toLocaleString('en-US', {
+    'Last_Form_Date__c': (new Date()).toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
