@@ -1,4 +1,6 @@
-import { decorateSupScriptInTextBelow, sampleRUM, readBlockConfig, getMetadata } from '../../scripts/lib-franklin.js';
+import {
+  decorateSupScriptInTextBelow, sampleRUM, readBlockConfig, getMetadata,
+} from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
 import decorateUTM from './utm.js';
