@@ -432,7 +432,7 @@ export default async function decorate(block) {
     const config = readBlockConfig(block);
     if (formURL.endsWith('contact.json')) {
       const locale = getMetadata('locale') || 'en';
-      formURL += (locale !== 'en' ? `?sheet=${locale}` : '');
+      formURL += (locale !== 'en' && locale !== 'es' ? `?sheet=${locale}` : '');
     }
     const form = await createForm(formURL);
     Object.entries(config).forEach(([key, value]) => { form.dataset[key] = value; });
