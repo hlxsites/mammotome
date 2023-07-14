@@ -1,4 +1,4 @@
-import { decorateSupScriptInTextBelow, sampleRUM, readBlockConfig } from '../../scripts/lib-franklin.js';
+import { decorateSupScriptInTextBelow, sampleRUM, readBlockConfig, getMetadata } from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
 import decorateUTM from './utm.js';
@@ -426,8 +426,13 @@ async function createForm(formURL) {
 export default async function decorate(block) {
   const formLink = block.querySelector('a[href*=".json"]');
   if (formLink) {
+    let formURL = formLink.href;
     const config = readBlockConfig(block);
-    const form = await createForm(formLink.href);
+    if (formURL.endsWith('contact.json')) {
+      const locale = getMetadata('locale') || 'en';
+      formURL += (locale !== 'en' ? `?sheet=${locale}` : '');
+    }
+    const form = await createForm(formURL);
     Object.entries(config).forEach(([key, value]) => { form.dataset[key] = value; });
     await decorateFormLayout(block, form);
     formLink.replaceWith(form);
