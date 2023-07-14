@@ -20,7 +20,7 @@ function loadScript(url) {
 }
 
 function constructPayload(form) {
-  const payload = { };
+  const payload = { 'Last Form Date': (new Date()).toLocaleString('en-US', { dateStyle: 'short', timeZone: 'EST' }) };
   const attachments = {};
   [...form.elements].filter((fe) => fe.name).forEach((fe) => {
     if (fe.type === 'radio') {
@@ -225,23 +225,21 @@ function isDatasource(path) {
 
 const createSelect = withFieldWrapper((fd) => {
   const select = document.createElement('select');
-  if (fd.Placeholder) {
-    const ph = document.createElement('option');
-    ph.textContent = fd.Placeholder;
-    ph.setAttribute('selected', '');
-    ph.setAttribute('disabled', '');
-    select.append(ph);
-  }
-
   const addOption = (optionText, optionValue) => {
     const option = document.createElement('option');
     option.textContent = optionText.trim();
     option.value = optionValue.trim();
-    if (fd.Value === optionValue.trim()) {
-      option.selected = true;
+    if (fd.Value === option.value) {
+      option.setAttribute('selected', '');
     }
     select.append(option);
+    return option;
   };
+
+  if (fd.Placeholder) {
+    const ph = addOption(fd.Placeholder, '');
+    ph.setAttribute('disabled', '');
+  }
 
   const options = fd.Options.split(',');
   if (options.length === 1 && isDatasource(options[0])) {
