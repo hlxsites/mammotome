@@ -1,4 +1,6 @@
-import { decorateSupScriptInTextBelow, sampleRUM, readBlockConfig } from '../../scripts/lib-franklin.js';
+import {
+  decorateSupScriptInTextBelow, sampleRUM, readBlockConfig, getMetadata,
+} from '../../scripts/lib-franklin.js';
 import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
 import decorateUTM from './utm.js';
@@ -20,7 +22,7 @@ function loadScript(url) {
 }
 
 function constructPayload(form) {
-  const payload = { };
+  const payload = { 'Last Form Date': (new Date()).toLocaleString('en-US', { dateStyle: 'short', timeZone: 'EST' }) };
   const attachments = {};
   [...form.elements].filter((fe) => fe.name).forEach((fe) => {
     if (fe.type === 'radio') {
@@ -225,23 +227,21 @@ function isDatasource(path) {
 
 const createSelect = withFieldWrapper((fd) => {
   const select = document.createElement('select');
-  if (fd.Placeholder) {
-    const ph = document.createElement('option');
-    ph.textContent = fd.Placeholder;
-    ph.setAttribute('selected', '');
-    ph.setAttribute('disabled', '');
-    select.append(ph);
-  }
-
   const addOption = (optionText, optionValue) => {
     const option = document.createElement('option');
     option.textContent = optionText.trim();
     option.value = optionValue.trim();
-    if (fd.Value === optionValue.trim()) {
-      option.selected = true;
+    if (fd.Value === option.value) {
+      option.setAttribute('selected', '');
     }
     select.append(option);
+    return option;
   };
+
+  if (fd.Placeholder) {
+    const ph = addOption(fd.Placeholder, '');
+    ph.setAttribute('disabled', '');
+  }
 
   const options = fd.Options.split(',');
   if (options.length === 1 && isDatasource(options[0])) {
@@ -428,8 +428,13 @@ async function createForm(formURL) {
 export default async function decorate(block) {
   const formLink = block.querySelector('a[href*=".json"]');
   if (formLink) {
+    let formURL = formLink.href;
     const config = readBlockConfig(block);
-    const form = await createForm(formLink.href);
+    if (formURL.endsWith('contact.json')) {
+      const locale = getMetadata('locale') || 'en';
+      formURL += (locale !== 'en' && locale !== 'es' ? `?sheet=${locale}` : '');
+    }
+    const form = await createForm(formURL);
     Object.entries(config).forEach(([key, value]) => { form.dataset[key] = value; });
     await decorateFormLayout(block, form);
     formLink.replaceWith(form);
