@@ -478,17 +478,14 @@ main .learn-more .form-country {
     }
 
     /* stylelint-disable-next-line  selector-class-pattern */
-    main .connectus :is(.form-postalCode, .form-country, .form-phone, .form-email, .form-firstName, .form-lastName) {
+    main .connectus :is(.form-postalCode, .form-country, .form-phone, .form-email, .form-firstName, .form-lastName),
+    main .connectus :is(.form-product-fs, .form-solution-fs, .form-preferred-day-fs, .form-preferred-time-fs) {
         grid-column: span calc(var(--form-columns)/2);
     }
 
-    main .contact :is(.form-product-fs, .form-solution-fs, .form-service-fs) {
+    main .contact .product-col-3 :is(.form-product-fs, .form-solution-fs, .form-service-fs) {
         grid-column: span calc(var(--form-columns)/3);
         width: calc(100% + 10px);
-    }
-
-    main .schedule-demo :is(.form-product-fs, .form-solution-fs, .form-preferred-day-fs, .form-preferred-time-fs) {
-        grid-column: span calc(var(--form-columns)/2);
     }
 
     main .technical-inquiry {
