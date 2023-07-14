@@ -5,7 +5,7 @@ import decorateFile from './file.js';
 import decorateCheckbox from './checkbox.js';
 import decorateUTM from './utm.js';
 
-const SITE_KEY = '6Ld_hbUaAAAAAArin-1gGJWrpjqSl_Mxm3EiT_Fy';
+const SITE_KEY = '6Lc0qYoiAAAAADNOimWbvoSdn2YawNsa6Wbxejpp';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
 
 function loadScript(url) {
