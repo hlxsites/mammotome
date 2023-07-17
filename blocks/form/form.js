@@ -438,8 +438,14 @@ export default async function decorate(block) {
     let formURL = formLink.href;
     const config = readBlockConfig(block);
     if (formURL.endsWith('contact.json')) {
-      const locale = getMetadata('locale') || 'en';
-      formURL += (locale !== 'en' ? `?sheet=${locale}` : '');
+      const localeStr = getMetadata('locale') || 'en';
+      const locale = localeStr.split('-')[0];
+      const region = localeStr.split('-')[1];
+      if (locale === 'en' && region && region.toLowerCase() === 'gb') {
+        formURL += '?sheet=uk';
+      } else if (locale !== 'en') {
+        formURL += `?sheet=${locale}`;
+      }
     }
     const form = await createForm(formURL);
     Object.entries(config).forEach(([key, value]) => { form.dataset[key] = value; });
