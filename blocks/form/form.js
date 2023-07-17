@@ -439,8 +439,7 @@ export default async function decorate(block) {
     const config = readBlockConfig(block);
     if (formURL.endsWith('contact.json')) {
       const localeStr = getMetadata('locale') || 'en';
-      const locale = localeStr.split('-')[0];
-      const region = localeStr.split('-')[1];
+      const [locale, region] = localeStr.split('-');
       if (locale === 'en' && region && region.toLowerCase() === 'gb') {
         formURL += '?sheet=uk';
       } else if (locale !== 'en') {
