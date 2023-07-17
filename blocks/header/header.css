@@ -514,10 +514,6 @@ header nav .nav-search-wrapper {
   padding: 0 30px;
 }
 
-header nav .nav-search-wrapper sup {
-  top: 0;
-}
-
 @media (min-width: 768px) {
   header nav .nav-search-wrapper {
     width: 60%;
@@ -540,6 +536,7 @@ header nav .nav-search-description {
   font-weight: var(--mt-search-result-font-weight);
   line-height: var(--mt-body-line-height);
   color: var(--mt-sarch-result-text-color);
+  text-align: left;
 }
 
 header nav.nav-mobile .nav-overflow {
