@@ -48,6 +48,7 @@
     font-size: var(--mt-body-font-size-m);
     font-weight: var(--mt-font-weight-thin);
     line-height: var(--mt-list-line-height);
+    padding-top: 5%;
 }
 
 .carousel > div > div ul li {
