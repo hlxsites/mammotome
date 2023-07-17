@@ -1,21 +1,22 @@
 sitemaps:
   mammotome:
     origin: https://www.mammotome.com
+    default: en
     languages:
       de:
         source: /de/de/query-index.json
         destination: /sitemap.xml
         hreflang: de
         alternate: /de/de/{path}
-      en:
+      en-US:
         source: /us/en/query-index.json
         destination: /sitemap.xml
-        hreflang: en
+        hreflang: en-US
         alternate: /us/en/{path}
-      uk-en:
+      en-GB:
         source: /uk/en/query-index.json
         destination: /sitemap.xml
-        hreflang: uk-en
+        hreflang: en-GB
         alternate: /uk/en/{path}
       es:
         source: /es/es/query-index.json
