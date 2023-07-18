@@ -23,6 +23,8 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
+const DEFAULT_TEMPLATE = 'legacy';
+
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
@@ -278,10 +280,59 @@ function integrateMartech(parent, id) {
 }
 
 /**
+ * Loads the CSS and JavaScript for a given template, and executes the template's default function.
+ * The CSS and JavaScript are loaded asynchronously, and any errors are logged to the console.
+ *
+ * @async
+ * @param {Document} doc - The Document in which the template will be loaded.
+ * @param {string} templateName - The name of the template to be loaded.
+ * @throws {Error} Will throw an error if the template loading fails.
+ */
+async function loadTemplate(doc, templateName) {
+  try {
+    // Create a new Promise that resolves once the CSS has loaded
+    const cssLoaded = new Promise((resolve) => {
+      loadCSS(`${window.hlx.codeBasePath}/templates/${templateName}/styles.css`, resolve);
+    });
+
+    // Create a new Promise that resolves once the template's default function has been executed
+    const decorationComplete = new Promise((resolve) => {
+      (async () => {
+        try {
+          // Import the JavaScript module for the template
+          const mod = await import(`../templates/${templateName}/script.js`);
+
+          // If the module has a default function, execute it
+          if (mod.default) {
+            await mod.default(doc);
+          }
+        } catch (error) {
+          // Log any errors that occur while loading or executing the module
+          console.error(`failed to load module for ${templateName}`, error);
+        }
+        // Resolve the Promise
+        resolve();
+      })();
+    });
+
+    // Wait for both the CSS and the module to load
+    await Promise.all([cssLoaded, decorationComplete]);
+  } catch (error) {
+    // Log any errors that occur while loading the template
+    console.error(`failed to load block ${templateName}`, error);
+  }
+}
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
  */
 async function loadLazy(doc) {
+  const templateName = getMetadata('template') || DEFAULT_TEMPLATE;
+  if (templateName) {
+    await loadTemplate(doc, templateName);
+  }
+
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
