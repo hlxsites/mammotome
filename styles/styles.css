@@ -847,6 +847,8 @@ main .section.our-history .year .icon-calendar {
 main .section.our-history .year .icon-calendar svg {
   width: 40%;
   height: 40%;
+  fill: currentcolor;
+  color: var(--mt-background-color-primary);
 }
 
 main .section.our-history .year::after {

@@ -6,6 +6,11 @@ footer {
   font-size: var(--mt-body-font-size-m);
 }
 
+footer svg {
+  fill: currentcolor;
+  color: var(--mt-link-color);
+}
+
 footer .footer {
   max-width: 1200px;
   margin: auto;
@@ -34,6 +39,10 @@ footer .columns > div div {
   display: block;
   width: 48%;
   padding-left: 10px;
+}
+
+footer a[aria-label="logo-small"] {
+  display: none; /* hide logo-small link in footer for non-refresh template */
 }
 
 /* flex container for footer nav larger displays */
@@ -170,12 +179,6 @@ footer > .footer > div > div:last-child > ul > li:first-child {
   margin-bottom: 10px;
 }
 
-/* Design by link  (mobile) */
-footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
-  text-decoration: none;
-  color: var(--mt-global-color-accent-quaternary);
-}
-
 /* logo item (mobile) */
 footer > .footer > div > div:last-child > ul > li:last-child {
   text-align: left;
@@ -193,25 +196,18 @@ footer > .footer > div > div:last-child span.icon-logo {
 @media (min-width: 768px){
   /* flex container */
   footer > .footer > div > div:last-child > ul {
-    flex-flow: wrap;
+    flex-direction: row;
   }
 
   footer > .footer > div > div:last-child > ul > li {
     margin: 0;
     padding: 0;
+    width: 100%;
   }
 
   /* copyright text */
   footer > .footer > div > div:last-child > ul > li:first-child {
-    flex-grow: 2;
-    flex-basis: 100%;
     font-size: var(--mt-footer-font-size-footer-l);
-  }
-
-  /* design by link */
-  footer > .footer > div > div:last-child > ul > li:nth-child(2) {
-    flex-basis: 50%;
-    flex-shrink: 0;
   }
 
   footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
@@ -220,9 +216,7 @@ footer > .footer > div > div:last-child span.icon-logo {
 
   /* corp logo */
   footer > .footer > div > div:last-child > ul > li:last-child {
-    flex-basis: 50%;
-    flex-shrink: 0;
-    margin: 0;
+    margin: 0;;
     text-align: right;
   }
 }
