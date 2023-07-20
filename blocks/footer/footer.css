@@ -202,10 +202,9 @@ footer > .footer > div > div:last-child span.icon-logo {
 }
 
 /* position big logo bottom right */
-
 footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
   position: absolute;
-  bottom: 5%;
+  bottom: 2%;
   right: 5%;
 }
 
@@ -217,9 +216,9 @@ footer > .footer > div > div:last-child span.icon-logo svg {
 }
 
 /* breakpoints for small and big logos */
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
-    bottom: 10%;
+    bottom: 8%;
   }
 }
 

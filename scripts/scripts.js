@@ -23,8 +23,6 @@ import {
   observeHistorySection,
 } from './lib-history-section.js';
 
-const DEFAULT_TEMPLATE = 'legacy';
-
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
