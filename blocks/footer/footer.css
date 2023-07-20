@@ -1,14 +1,15 @@
 footer {
-  padding: 0 5%;
-  margin-top: 5%;
-  margin-bottom: 0;
-  background-color: var(--mt-background-color-primary);
+  margin: 0;
+  padding: 7% 5% 5%;
+  position: relative; /* needed to absolutely position logos in lower right and top left corners */
+  background-color: var(--mt-global-color-base-primary);
+  color: var(--mt-background-color-primary);
   font-size: var(--mt-body-font-size-m);
 }
 
 footer svg {
   fill: currentcolor;
-  color: var(--mt-link-color);
+  color: var(--mt-background-color-primary);
 }
 
 footer .footer {
@@ -41,8 +42,18 @@ footer .columns > div div {
   padding-left: 10px;
 }
 
+/* small logo on the top left */
 footer a[aria-label="logo-small"] {
-  display: none; /* hide logo-small link in footer for non-refresh template */
+  display: none;
+  position: absolute;
+  left: 2%;
+  top: 8%;
+}
+
+footer a[aria-label="logo-small"] span.icon-logo-small,
+footer a[aria-label="logo-small"] span.icon-logo-small svg {
+  width: 40px;
+  height: 40px;
 }
 
 /* flex container for footer nav larger displays */
@@ -87,10 +98,10 @@ footer .columns ul li:last-of-type {
 
 footer .columns ul li a[href] {
   text-decoration: none;
-  color: var(--mt-global-color-accent-quinary);
+  color: var(--mt-background-color-primary);
   line-height: var(--mt-body-line-height);
   height: auto;
-  font-size: var(--mt-footer-font-size-footer-l);
+  font-size: var(--mt-footer-font-size-footer-m);
 }
 
 
@@ -98,7 +109,7 @@ footer .columns ul li a[href] {
 footer .columns h1 {
   font-size: var(--mt-footer-font-size-footer-s);
   font-weight: var(--mt-font-weight-bolder);
-  color: var(--mt-global-color-accent-quaternary);
+  color: var(--mt-background-color-primary);
   margin-top: unset;
   margin-bottom: 20px;
   padding-bottom: 3%;
@@ -147,7 +158,6 @@ right align for larger screen */
 @media (min-width: 768px) {
   footer .columns > div > div:nth-child(5) > h1:first-of-type,
   footer .columns > div > div:nth-child(5) > p {
-    text-align: right;
     line-height: unset;
   }
 
@@ -158,14 +168,13 @@ right align for larger screen */
 }
 
 footer .columns > div > div:nth-child(5) > p a[href] {
-  color: var(--mt-global-color-accent-quaternary);
+  color: var(--mt-background-color-primary);
 }
 
 /* Copyright and Logo (mobile) */
 footer > .footer > div > div:last-child > ul {
   display: flex;
   flex-direction: column;
-  color: var(--mt-global-color-accent-quaternary);
   font-weight: var(--mt-font-weight-thin);
   font-size: var(--mt-footer-font-size-footer-m);
   margin-top: 28px;
@@ -192,6 +201,55 @@ footer > .footer > div > div:last-child span.icon-logo {
   height: 23px;
 }
 
+/* position big logo bottom right */
+
+footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+}
+
+footer > .footer > div > div:last-child span.icon-logo,
+footer > .footer > div > div:last-child span.icon-logo svg {
+  width: 250px;
+  height: 30px;
+  color: var(--mt-background-color-primary);
+}
+
+/* breakpoints for small and big logos */
+@media (min-width: 768px) {
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+    bottom: 10%;
+  }
+}
+
+@media (min-width: 1024px) {
+  footer a[aria-label="logo-small"] {
+    display: block;
+    left: 2%;
+    top: 5%;
+  }
+
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+    bottom: 13%;
+  }
+}
+
+@media (min-width: 1400px) {
+  footer a[aria-label="logo-small"] span.icon-logo-small,
+  footer a[aria-label="logo-small"] span.icon-logo-small svg {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (min-width: 1500px) {
+  footer a[aria-label="logo-small"] {
+    left: 4%;
+    top: 10%;
+  }
+}
+
 /* Copyright and logo (larger screens) */
 @media (min-width: 768px){
   /* flex container */
@@ -207,7 +265,7 @@ footer > .footer > div > div:last-child span.icon-logo {
 
   /* copyright text */
   footer > .footer > div > div:last-child > ul > li:first-child {
-    font-size: var(--mt-footer-font-size-footer-l);
+    font-size: var(--mt-footer-font-size-footer-m);
   }
 
   footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
