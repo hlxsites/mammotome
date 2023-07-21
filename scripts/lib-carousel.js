@@ -113,9 +113,11 @@ const dottedNavOnClickEvents = () => {
  */
 const arrowNavOnClickEvents = () => {
   const arrowNav = document.querySelector('.arrow-nav');
-  if (arrowNav) {[...arrowNav.children].forEach((el) => {
-    el.addEventListener('click', arrowNavigation);
-  });}
+  if (arrowNav) {
+    [...arrowNav.children].forEach((el) => {
+      el.addEventListener('click', arrowNavigation);
+    });
+  }
 };
 
 /**
