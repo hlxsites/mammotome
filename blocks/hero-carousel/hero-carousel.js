@@ -9,6 +9,9 @@ import {
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
+// Number of required columns in table
+const NUM_COLUMNS = 3;
+
 /**
  * Replace img tags with picture tags
  * @param picture
@@ -33,13 +36,11 @@ const optimizeThumbnails = (picture) => {
 };
 
 /**
- * Remove whitespace and newlines from data
- * @param data as a string
+ * Check if align property has a valid value (left,right,center)
+ * @param str
  * @returns {*}
  */
-function parseData(data) {
-  return data.replace(/[\n\s]/g, '');
-}
+const checkAlign = (str) => str.includes('left') || str.includes('center') || str.includes('right');
 
 /**
  * Get configuration from table containing align property and remove after parsing
@@ -47,21 +48,16 @@ function parseData(data) {
  * @returns {*[]}: config array literal
  */
 function getConfig(block) {
-  const checkAlign = (str) => str.includes('left') || str.includes('center') || str.includes('right');
+  if (block.children.length === 0 || block.children[0].children.length !== NUM_COLUMNS) {
+    throw new Error('Invalid configuration. Table with 3 columns and at least 1 row required');
+  }
 
-  const slides = block.children;
-  const config = [];
-  if (slides.length === 0 || slides[0].children.length !== 3) return config;
-  [...slides].forEach((slide) => {
-    const alignValue = parseData(slide.children[1].innerText);
+  return Array.from(block.children).map((slide) => {
+    const alignValue = slide.children[1].innerText.replace(/[\n\s]/g, '');
     const align = checkAlign(alignValue) ? alignValue : 'left';
-    const configItem = {
-      align,
-    };
-    config.push(configItem);
     slide.children[1].remove();
+    return { align };
   });
-  return config;
 }
 
 /**
@@ -79,7 +75,7 @@ export default function decorate(block) {
   // check if required amount of columns and rows are present
   if (config.length === 0) {
     block.innerHTML = '<code>Invalid configuration. '
-      + 'Table with 3 columns and at least 1 row required</code>';
+      + `Table with ${NUM_COLUMNS} columns and at least 1 row required</code>`;
     return;
   }
   // Add white-overlay container to each slide
