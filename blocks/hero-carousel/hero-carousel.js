@@ -71,9 +71,9 @@ export default function decorate(block) {
   const slideContainer = block.children;
   [...slideContainer].forEach((slide, i) => {
     slide.setAttribute('style', `justify-content: ${config[i].align};`);
-    const blurry = document.createElement('div');
-    blurry.classList.add('white-overlay');
-    slide.appendChild(blurry);
+    const overlay = document.createElement('div');
+    overlay.classList.add('white-overlay');
+    slide.appendChild(overlay);
   });
 
   optimizeThumbnails(block);
