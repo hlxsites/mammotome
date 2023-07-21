@@ -44,7 +44,7 @@
   display: none;
 }
 
-.video.block > div > div:nth-child(3):has(img) {
+.video.block > div > div:nth-child(3) {
   position: relative;
   cursor: pointer;
 }
