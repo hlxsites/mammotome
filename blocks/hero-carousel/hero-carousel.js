@@ -6,34 +6,11 @@ import {
   createButtonRow,
   createDottedNav,
   initSlider,
+  optimizeThumbnails,
 } from '../../scripts/lib-carousel.js';
-import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 // Number of required columns in table
 const NUM_COLUMNS = 3;
-
-/**
- * Replace img tags with picture tags
- * @param picture
- */
-const optimizeThumbnails = (picture) => {
-  picture
-    .querySelectorAll('img')
-    .forEach((img) => {
-      img
-        .closest('picture')
-        .replaceWith(
-          createOptimizedPicture(
-            img.src,
-            img.alt,
-            false,
-            null,
-            null,
-            [{ width: '768' }],
-          ),
-        );
-    });
-};
 
 /**
  * Check if align property has a valid value (left,right,center)
