@@ -75,7 +75,6 @@
   --mt-prev-next-header-link-text-color: var(--mt-global-color-base-secondary);
   --mt-top-navigation-actual-page-color: var(--mt-global-color-base-secondary);
   --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
-  --mt-hero-light-arc-color: var(--mt-global-color-accent-secondary);
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
   --mt-global-horizontal-line-color: #EBE4E7;
 
@@ -680,10 +679,6 @@ main img {
   width: 100%;
 }
 
-main .section.arc-bottom svg {
-  position: static;
-}
-
 a.button i.link-icon svg {
   width: 1.25em;
   fill: var(--mt-global-color-accent-primary);;
@@ -691,7 +686,7 @@ a.button i.link-icon svg {
 
 
 main .section{
-  margin: 3% 0;
+  margin: 5% 0;
   padding: 0 10%;
   position: relative;
   z-index: 20;
@@ -737,12 +732,6 @@ main .section[data-section-status='initialized'] {
   padding: 10% 0;
 }
 
-.section.logo-primary-background.callout.arc-top,
-.section.logo-secondary-background.callout.arc-top,
-.section.callout.arc-top {
-  padding: 0 0 10%;
-}
-
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
@@ -777,12 +766,6 @@ main .schedule-demo .default-content-wrapper h2 {
   font-size: var(--mt-heading-font-size-l);
 }
 
-.section.callout.arc-top h1,
-.section.callout.arc-top h2,
-.section.callout.arc-top h3 {
-  padding: 5% 15% 3%;
-}
-
 .section.callout .button-container a {
   overflow: inherit;
 }
@@ -814,10 +797,6 @@ main .section.our-history .year h3 {
   order: 2;
   font-size: var(--mt-font-size-100);
   color: var(--mt-background-color-primary);
-}
-
-.section.arc-after-section p {
-  text-align: left;
 }
 
 main .section.our-history .year .description p {
@@ -1020,46 +999,6 @@ main .section.our-history .year.highlight .icon-calendar {
   padding: 3% 0;
   margin: 0;
   position: relative;
-}
-
-.section .arc {
-  margin: -7% -15% 0;
-}
-
-main .section.arc-bottom {
-  padding: 3% 0 0;
-}
-
-main .section.arc-bottom .arc {
-  margin: 2% 0 0;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-.section .arc svg {
-  display: block;
-  width: 110%;
-  max-width: 110%;
-  fill: var(--mt-background-color-primary);
-  background-color: transparent;
-  position: relative;
-  top: -1px;
-}
-
-/* Position preceding content */
-.section.arc-after-section {
-  margin-top: -13%;
-  position: relative;
-  padding: 5% 10% 0;
-}
-
-/* Smaller space for hero light */
-.section.arc-after-hero-light {
-  margin-top: 4%;
-}
-
-.section.arc-top {
-  margin-top: -30px;
-  z-index: 10;
 }
 
 /* Divider as Section Metadata */

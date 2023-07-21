@@ -28,15 +28,6 @@ const DEFAULT_TEMPLATE = 'legacy';
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
-// ARC decorations icons
-const ARC_BOTTOM_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
-  + '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z"/>\n'
-  + '</svg>';
-
-const ARC_TOP_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1437 210.42">\n'
-+ '    <path class="cls-1" d="M0,21.28V210.42H1437v-.11C784.82-93.55,0,21.28,0,21.28Z" transform="translate(718.500000, 105.211150) scale(-1, -1) translate(-718.500000, -105.211150)" />\n'
-+ '</svg>';
-
 // Define the custom audiences mapping for experimentation
 const EXPERIMENTATION_CONFIG = {
   audiences: {
@@ -68,24 +59,14 @@ function buildHeroBlock(main) {
     heroBlock.classList.add(`hero-${heroType}`);
   };
 
-  function appendArcAndBuildBlock(section, elems) {
+  function doBuildBlock(section, elems) {
     if (button) {
       elems.push(button);
     }
 
-    const arc = document.createElement('div');
-    arc.classList.add('hero-arc');
-    arc.innerHTML = ARC_BOTTOM_SVG;
-
-    elems.push(arc);
-
     section.append(buildBlock('hero', { elems }));
     if (metaData) {
       section.append(metaData);
-    }
-
-    if (main.firstElementChild) {
-      main.firstElementChild.classList.toggle('arc-after-section');
     }
 
     main.prepend(section);
@@ -106,7 +87,7 @@ function buildHeroBlock(main) {
       elems.push(h2);
     }
 
-    appendArcAndBuildBlock(section, elems);
+    doBuildBlock(section, elems);
     setHeroType('big');
     // eslint-disable-next-line max-len,no-bitwise
   } else if (h1 && h2 && picture && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_FOLLOWING)) {
@@ -118,16 +99,13 @@ function buildHeroBlock(main) {
       elems.push(h2);
     }
 
-    appendArcAndBuildBlock(section, elems);
+    doBuildBlock(section, elems);
     setHeroType('light');
     // position PICTURE to the right place for hero light
     const newPictureParent = main.querySelector('.hero-light').firstChild;
     const newPictureDiv = document.createElement('div');
     newPictureDiv.appendChild(picture);
     newPictureParent.appendChild(newPictureDiv);
-    // change spacer after arc
-    const arcAfterSection = main.querySelector('.arc-after-section');
-    arcAfterSection.classList.replace('arc-after-section', 'arc-after-hero-light');
   } else if (h2 && picture
     // eslint-disable-next-line no-bitwise
     && (h2.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
@@ -141,7 +119,7 @@ function buildHeroBlock(main) {
 
     elems.push(h2);
 
-    appendArcAndBuildBlock(section, elems);
+    doBuildBlock(section, elems);
     setHeroType('big');
   }
 }
@@ -188,19 +166,6 @@ function decorateStyledSections(main) {
       const bgImage = section.dataset.backgroundImage;
       if (bgImage) {
         createOptimizedBackgroundImage(section, bgImage);
-      }
-    });
-
-  Array.from(main.querySelectorAll('.section.arc-bottom, .section.arc-top'))
-    .forEach((section) => {
-      const arc = document.createElement('div');
-      arc.classList.add('arc');
-      if (section.classList.contains('arc-bottom')) {
-        arc.innerHTML = ARC_BOTTOM_SVG;
-        section.append(arc);
-      } else if (section.classList.contains('arc-top')) {
-        arc.innerHTML = ARC_TOP_SVG;
-        section.prepend(arc);
       }
     });
 }

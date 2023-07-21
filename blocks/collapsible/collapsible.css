@@ -87,10 +87,6 @@
     line-height: unset;
 }
 
-.section.arc-after-section.collapsible-container {
-    margin-top: 0;
-}
-
 .collapsible-wrapper {
   display: flex;
   justify-content: center;

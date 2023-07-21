@@ -27,10 +27,6 @@
   justify-content: center;
 }
 
-.section.arc-after-section.cards-container {
-  margin-top: -6%;
-}
-
 .cards > ul {
   list-style: none;
   width: 100%;
