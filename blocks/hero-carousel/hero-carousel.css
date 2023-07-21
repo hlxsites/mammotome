@@ -160,7 +160,7 @@ main .section.hero-carousel-container{
 }
 
 /* Dotted Nav */
-.hero-carousel .dotted-nav .bullet {
+.hero-carousel .dotted-nav .dot {
     margin: 0 6px;
     border-radius: 50%;
     width: 9px;

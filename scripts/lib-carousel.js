@@ -43,14 +43,12 @@ const activateBullet = (bulletId) => {
     if (el.id === bulletId) {
       el.classList.replace('inactive', 'active');
       const activeAttributes = {
-        'aria-disabled': 'true',
         'aria-current': 'true',
       };
       addAttributes(el, activeAttributes);
     } else {
       el.classList.replace('active', 'inactive');
       const inactiveAttributes = {
-        'aria-disabled': 'false',
         'aria-current': 'false',
       };
       addAttributes(el, inactiveAttributes);
@@ -199,24 +197,23 @@ export function createDottedNav(slides) {
   const dottedNavContainer = document.createElement('div');
   dottedNavContainer.classList.add('dotted-nav');
   const bottomNavAttributes = {
-    role: 'group',
     'aria-label': 'Slide Controls',
   };
   addAttributes(dottedNavContainer, bottomNavAttributes);
 
   let j = 1;
   slides.forEach(() => {
-    const nextSlide = slides.length === j ? 1 : j + 1;
+    // const nextSlide = slides.length === j ? 1 : j + 1;
     const bottomNavEl = document.createElement('button');
     const bottomNavElAttribute = {
       id: `slider-dot-${j}`,
-      'aria-label': `Go to Slide ${nextSlide}`,
+      'aria-label': `Select Slide ${j} of ${slides.length}`,
       role: 'button',
       'aria-current': j === 1 ? 'true' : 'false',
-      'aria-controls': 'carousel',
+      'aria-controls': `slide-${j}`,
     };
     addAttributes(bottomNavEl, bottomNavElAttribute);
-    bottomNavEl.classList.add('bullet');
+    bottomNavEl.classList.add('dot');
     bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
     dottedNavContainer.appendChild(bottomNavEl);
     j += 1;
@@ -320,7 +317,7 @@ export function createPictures(sliderWrapper) {
   const sliderAttributes = {
     id: 'carousel',
     role: 'group',
-    'aria-label': 'Image Carousel',
+    'aria-label': 'Slider Carousel',
   };
   addAttributes(slider, sliderAttributes);
   return slider;
