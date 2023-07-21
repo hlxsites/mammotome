@@ -27,8 +27,8 @@ export function optimizeThumbnails(picture) {
             img.src,
             img.alt,
             false,
-            null,
-            null,
+            img.width,
+            img.height,
           ),
         );
     });
