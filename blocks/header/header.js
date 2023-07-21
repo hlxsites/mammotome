@@ -55,6 +55,7 @@ function createMobileMenuControlsBlock() {
   mobileMenuControls.addEventListener('click', (e) => {
     e.stopPropagation();
     backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
+    backButton.closest('[aria-expanded]').parentElement.classList.remove('nav-expanded');
   });
 
   mobileMenuControls.append(backButton);
@@ -88,12 +89,9 @@ function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = nav.querySelector('.nav-brand > p > a');
   homePageLink.setAttribute('aria-label', 'Navigate to homepage');
 
-  const scrollingLogo = document.createElement('img');
-  scrollingLogo.setAttribute('src', '/icons/logo-small.svg');
-  scrollingLogo.setAttribute('class', 'scrolling-logo');
-  scrollingLogo.setAttribute('height', '40px');
-  scrollingLogo.setAttribute('width', '40px');
-  scrollingLogo.classList.add('logo-hidden');
+  const scrollingLogo = document.createElement('span');
+  scrollingLogo.classList.add('logo-hidden', 'scrolling-logo', 'icon', 'icon-logo-small');
+  scrollingLogo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><use href="#icons-sprite-logo-small"></use></svg>';
 
   const defaultLogo = homePageLink.firstChild;
 
@@ -422,11 +420,19 @@ export default async function decorate(block) {
 
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            if (expanded) {
+              navSection.parentElement.classList.remove('nav-expanded');
+            } else {
+              navSection.parentElement.classList.add('nav-expanded');
+            }
           }
         });
       });
 
-      const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li:has(ul) > a');
+      // not using :has selector because it's not supported in FF (fixes https://github.com/hlxsites/mammotome/issues/499)
+      const firstLevelLis = Array.from(nav.querySelectorAll('.nav-sections > ul > li'));
+      const firstLevelLinks = firstLevelLis.filter((li) => li.querySelector('ul')).map((li) => li.querySelector('a'));
+
       firstLevelLinks.forEach((link) => {
         link.addEventListener('click', (event) => {
           if (!isDesktop.matches) {

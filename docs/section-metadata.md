@@ -21,8 +21,6 @@ based on visual differences between sections such as a different background colo
       * [Accent secondary blur overlay](#accent-secondary-blur-overlay)
       * [Gradient primary blur overlay](#gradient-primary-blur-overlay)
       * [Gradient secondary blur overlay](#gradient-secondary-blur-overlay)
-      * [Arc top](#arc-top)
-      * [Arc bottom](#arc-bottom)
   * [Callout](#callout)
   * [Narrow](#narrow)
   * [Divider](#divider)
@@ -97,9 +95,7 @@ Transforms links in the nav bar to buttons.
 
 #### Logo Primary background
 
-Adds a magenta background to the section with small Mammotome logos. 
-
-**Note:** the arc at the top will be generated with `arc top` style. see below... 
+Adds a magenta background to the section with small Mammotome logos.
 
 **_Example:_**
 
@@ -210,38 +206,15 @@ Adds a gradient overlay over the section.
 
 ![gradient-secondary-blur-overlay-example.png](assets/gradient-secondary-blur-overlay-example.png)
 
-#### Arc top
-
-Adds an arc at the top of the section. The arc top is being used in combindation with a background style. See above
-
-
-**_Example:_**
-
-| Section Metadata |         |
-|------------------|---------|
-| Style            | arc top |
-
-![logo-primary-background-example.png](assets/logo-primary-background-example.png)
-
-#### Arc bottom
-
-Adds an arc at the bottom of the section. The arc bottom is being used in combindation with a background style.
-
-**_Example:_**
-
-| Section Metadata |            |
-|------------------|------------|
-| Style            | arc bottom |
-
 ## Callout
 
-Puts the content of the section in the center and sets the the fonts size for h1, h2 and h3 to the same value. Can be used in combination with `arc top`.
+Puts the content of the section in the center and sets the the fonts size for h1, h2 and h3 to the same value.
 
 **_Example:_**
 
 | Section Metadata |         |
 |------------------|---------|
-| Style            | Logo primary background, arc top, callout  |
+| Style            | Logo primary background, callout  |
 
 ![callout-example.png](assets/callout-example.png)
 

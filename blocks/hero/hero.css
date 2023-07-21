@@ -11,7 +11,7 @@ main .hero-container {
 
 main .hero-big {
   position: relative;
-  padding: 10% 0 0;
+  padding: 10% 0 7%;
 }
 
 main .hero-big::after {
@@ -27,6 +27,12 @@ main .hero-big::after {
   transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
 }
 
+main .hero-light {
+  background-color: var(--mt-global-color-accent-secondary);
+  opacity: 0.8;
+  padding: 0 0 5%;
+}
+
 main .hero-big > div > div {
   text-align: center;
 }
@@ -39,11 +45,6 @@ main .hero-big > div > div > *:not(picture),
 main .hero-light > div > div > *:not(picture){
     position: relative;
     z-index: 20;
-}
-
-main .hero-light > div > div:first-child {
-    background-color: var(--mt-hero-light-arc-color);
-    opacity: 0.8;
 }
 
 main .hero h1, main .hero h2 {
@@ -92,31 +93,6 @@ main .hero a:hover {
   background-color: rgb(132 50 155 / 27%);
 }
 
-main .hero-arc {
-  position: relative;
-  bottom: -1px;
-}
-
-main .hero-big .hero-arc {
-  margin: 8% 0 0;
-}
-
-main .hero-light .hero-arc {
-  margin: 15% 0 0;
-}
-
-main .hero .hero-arc svg {
-  display: block;
-  width: 110%;
-  max-width: 110%;
-  fill: var(--mt-background-color-primary);
-  background-color: transparent;
-}
-
-main .hero-light .hero-arc svg {
-  background-color: transparent;
-}
-
 main .hero-big picture {
   position: absolute;
   width: 110%;
@@ -132,7 +108,6 @@ main .hero-light picture {
   justify-content: center;
   width: 100%;
   display: flex;
-  margin-top: -29%;
   padding: 0 12px;
 }
 
