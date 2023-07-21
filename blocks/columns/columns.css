@@ -116,17 +116,6 @@ main .columns-3-cols .button sup {
   top: -0.35rem;
 }
 
-/* Adds additional margins to avoid overflow of text into hero arc */
-main .columns .hero-arc-margin {
-  margin-top: 20%;
-}
-
-@media (min-width: 1024px) {
-  main .columns .hero-arc-margin {
-    margin-top: 10%;
-  }
-}
-
 main .columns > div > div {
   order: 0;
   width: 95%;

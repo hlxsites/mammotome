@@ -21,8 +21,6 @@ based on visual differences between sections such as a different background colo
       * [Accent secondary blur overlay](#accent-secondary-blur-overlay)
       * [Gradient primary blur overlay](#gradient-primary-blur-overlay)
       * [Gradient secondary blur overlay](#gradient-secondary-blur-overlay)
-      * [Arc top](#arc-top)
-      * [Arc bottom](#arc-bottom)
   * [Callout](#callout)
   * [Narrow](#narrow)
   * [Divider](#divider)
