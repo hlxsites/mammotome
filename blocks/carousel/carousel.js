@@ -6,8 +6,31 @@ import {
   initSlider,
   createPictures,
   createArrowNav,
-  optimizeThumbnails,
 } from '../../scripts/lib-carousel.js';
+import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
+
+/**
+ * Get optimized img element width default
+ * @param picture
+ */
+export function optimizeThumbnails(picture) {
+  picture
+    .querySelectorAll('img')
+    .forEach((img) => {
+      img
+        .closest('picture')
+        .replaceWith(
+          createOptimizedPicture(
+            img.src,
+            img.alt,
+            false,
+            null,
+            null,
+            [{ width: '768' }],
+          ),
+        );
+    });
+}
 
 export default function decorate(block) {
   optimizeThumbnails(block);

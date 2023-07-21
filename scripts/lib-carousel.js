@@ -1,5 +1,3 @@
-import { createOptimizedPicture } from './lib-franklin.js';
-
 const sliderDurationMs = 3500;
 let activeSlide = 1;
 let slideShow = false;
@@ -326,27 +324,4 @@ export function createPictures(sliderWrapper) {
   };
   addAttributes(slider, sliderAttributes);
   return slider;
-}
-
-/**
- * Replace img tags with picture tags
- * @param picture
- */
-export function optimizeThumbnails(picture) {
-  picture
-    .querySelectorAll('img')
-    .forEach((img) => {
-      img
-        .closest('picture')
-        .replaceWith(
-          createOptimizedPicture(
-            img.src,
-            img.alt,
-            false,
-            null,
-            null,
-            [{ width: '768' }],
-          ),
-        );
-    });
 }
