@@ -426,7 +426,10 @@ export default async function decorate(block) {
         });
       });
 
-      const firstLevelLinks = nav.querySelectorAll('.nav-sections > ul > li:has(ul) > a');
+      // not using :has selector because it's not supported in FF (fixes https://github.com/hlxsites/mammotome/issues/499)
+      const firstLevelLis = Array.from(nav.querySelectorAll('.nav-sections > ul > li'));
+      const firstLevelLinks = firstLevelLis.filter((li) => li.querySelector('ul')).map((li) => li.querySelector('a'));
+
       firstLevelLinks.forEach((link) => {
         link.addEventListener('click', (event) => {
           if (!isDesktop.matches) {
