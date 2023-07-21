@@ -2,14 +2,14 @@ footer {
   margin: 0;
   padding: 7% 5% 5%;
   position: relative; /* needed to absolutely position logos in lower right and top left corners */
-  background-color: var(--mt-global-color-base-primary);
-  color: var(--mt-background-color-primary);
+  background-color: var(--mt-footer-background-color-primary);
+  color: var(--mt-text-color-inverted);
   font-size: var(--mt-body-font-size-m);
 }
 
 footer svg {
   fill: currentcolor;
-  color: var(--mt-background-color-primary);
+  color: var(--mt-footer-icon-color-primary);
 }
 
 footer .footer {
@@ -98,7 +98,7 @@ footer .columns ul li:last-of-type {
 
 footer .columns ul li a[href] {
   text-decoration: none;
-  color: var(--mt-background-color-primary);
+  color: var(--mt-link-inverted-color);
   line-height: var(--mt-body-line-height);
   height: auto;
   font-size: var(--mt-footer-font-size-footer-m);
@@ -109,7 +109,7 @@ footer .columns ul li a[href] {
 footer .columns h1 {
   font-size: var(--mt-footer-font-size-footer-s);
   font-weight: var(--mt-font-weight-bolder);
-  color: var(--mt-background-color-primary);
+  color: var(--mt-heading-color-inverted);
   margin-top: unset;
   margin-bottom: 20px;
   padding-bottom: 3%;
@@ -212,7 +212,7 @@ footer > .footer > div > div:last-child span.icon-logo,
 footer > .footer > div > div:last-child span.icon-logo svg {
   width: 250px;
   height: 30px;
-  color: var(--mt-background-color-primary);
+  color: var(--mt-footer-icon-color-primary);
 }
 
 /* breakpoints for small and big logos */
