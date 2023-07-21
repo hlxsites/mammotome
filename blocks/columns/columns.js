@@ -59,7 +59,11 @@ export default function decorate(block) {
         const textWrapper = text.closest('div');
         textWrapper.classList.add('columns-txt-wrapper');
       }
-      const imageCards = Array.from(col.querySelectorAll('main .columns.image-cards p:has(picture)'));
+
+      // not using :has selector because it's not supported in FF (fixes https://github.com/hlxsites/mammotome/issues/499)
+      const paragraphs = Array.from(col.querySelectorAll('main .columns.image-cards p'));
+      const imageCards = paragraphs.filter((p) => p.querySelector('picture'));
+
       imageCards.forEach((imageCard) => {
         const imageCardLink = imageCard.querySelector('a');
         if (imageCardLink) {

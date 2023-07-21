@@ -824,11 +824,6 @@ main .section.our-history .year .description p {
   order: 3;
 }
 
-main .section.our-history .year .description p:has(img) {
-  order: 1;
-  text-align: center;
-}
-
 main .section.our-history .year .icon-calendar {
   display: flex;
   background-color: var(--mt-our-history-color-secondary);
