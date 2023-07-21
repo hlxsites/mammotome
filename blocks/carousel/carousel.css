@@ -149,7 +149,7 @@
 }
 
 /* bottom nav container */
-.carousel .slider-wrapper .bottom-nav {
+.carousel .slider-wrapper .dotted-nav {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -159,7 +159,7 @@
 }
 
 /* Bottom Nav */
-.carousel .bottom-nav .bullet {
+.carousel .dotted-nav .bullet {
     margin: 0 6px;
     border-radius: 50%;
     width: 6px;
@@ -167,8 +167,8 @@
 }
 
 
-/* Bottom Nav Buttons */
-.carousel .bottom-nav button,
+/* dotted Nav Buttons */
+.carousel .dotted-nav button,
 .carousel .arrow-nav button {
     background: none;
     border: none;
@@ -178,12 +178,12 @@
 }
 
 /* active for bottom nav */
-.carousel .bottom-nav .active {
+.carousel .dotted-nav .active {
     background-color: #000;
 }
 
 /* inactive for bottom nav */
-.carousel .bottom-nav .inactive {
+.carousel .dotted-nav .inactive {
     background-color: #000;
     opacity: 0.2;
 }

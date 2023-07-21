@@ -60,7 +60,7 @@
   --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
   --mt-button-hover-color: var(--mt-global-color-dark-blue);
   --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
-  --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
+  --mt-heading-color-primary: var(--mt-global-color-base-primary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
   --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-header-colored-secondary: var(--mt-global-color-accent-primary);

@@ -1,0 +1,184 @@
+main .section.hero-carousel-container{
+    padding: 0;
+    margin: 0;
+}
+
+
+/* sliders */
+.hero-carousel .slider {
+    display: flex;
+    position: relative;
+    height: min-content;
+    align-items: center;
+}
+
+.hero-carousel .slider > div {
+    display: flex;
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.hero-carousel .slider > div:nth-child(n+2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* White Stripe */
+.hero-carousel .slider > div > div.white-overlay {
+    position: absolute;
+    background-color: rgb(255 255 255 / 60%);
+    z-index: 2;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 78% ;
+}
+
+@media screen and (min-width: 768px) {
+    .hero-carousel .slider > div > div.white-overlay {
+        all: unset;
+    }
+}
+
+
+
+/* text with link buttons */
+.hero-carousel .slider > div > div:first-child {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    z-index: 3;
+    align-items: flex-start;
+    padding: 3%;
+    flex: 1;
+}
+
+@media screen and (min-width: 768px) {
+    .hero-carousel .slider > div > div:first-child {
+        width: 50%;
+        padding: 5%;
+    }
+}
+
+/* BG IMAGE Container */
+.hero-carousel .slider > div > div:last-child {
+    z-index: 1
+}
+
+
+.hero-carousel .slider > div > div img {
+    width: 1800px;
+    object-fit: cover;
+    min-height: 500px;
+}
+
+
+.hero-carousel .slider > div > div > h1 {
+    color: var(--mt-heading-color-primary);
+}
+
+
+.hero-carousel .slider > div > div > h1,
+.hero-carousel .slider > div > div > p{
+    text-align: left;
+    padding-left: 10%;
+}
+
+
+.hero-carousel .slider > div > div > p {
+    font-size: var(--mt-body-font-size-m);
+    line-height: var(--mt-body-text-medium-line-height);
+}
+
+
+/* Button */
+.hero-carousel a.button:any-link{
+    border-radius: 25px;
+    padding: 8px 20px;
+    width: 200px;
+}
+
+.hero-carousel a.button-light:any-link{
+    background-color: white;
+    color: var(--mt-global-color-accent-primary);
+}
+
+.hero-carousel .slider > div .button-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-left: 10%;
+    padding-top: 4%;
+
+}
+
+@media screen and (min-width: 768px) {
+    .hero-carousel .slider > div .button-row {
+        flex-direction: row;
+        gap: 5%;
+    }
+}
+
+/* hide slide */
+.hero-carousel .slider .hide {
+    opacity: 0;
+    transition-duration: 500ms;
+    transition-property: opacity;
+}
+
+/* show slide */
+.hero-carousel .slider .show {
+    /* display: block; */
+    transition-duration: 500ms;
+    transition-property: opacity;
+}
+
+/* bottom nav container */
+.hero-carousel.slider-wrapper .dotted-nav {
+    display: flex;
+    position: absolute;
+    transform: translateY(-50px);
+    justify-content: center;
+    width: 100%;
+    height: 20px;
+    z-index: 4;
+    margin-top: 9px;
+    margin-bottom: 9px;
+}
+
+/* Dotted Nav */
+.hero-carousel .dotted-nav .bullet {
+    margin: 0 6px;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+}
+
+
+/* Dotted Nav Buttons */
+.hero-carousel .dotted-nav button,
+.hero-carousel .arrow-nav button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* active for dotted nav */
+.hero-carousel .dotted-nav .active {
+    background-color: #000;
+}
+
+/* inactive for dotted nav */
+.hero-carousel .dotted-nav .inactive {
+    background-color: #000;
+    opacity: 0.2;
+}
