@@ -3,6 +3,12 @@ main .section.hero-carousel-container{
     margin: 0;
 }
 
+.hero-carousel.slider-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+
 
 /* sliders */
 .hero-carousel .slider {
@@ -135,7 +141,6 @@ main .section.hero-carousel-container{
 
 /* show slide */
 .hero-carousel .slider .show {
-    /* display: block; */
     transition-duration: 500ms;
     transition-property: opacity;
 }
@@ -144,7 +149,7 @@ main .section.hero-carousel-container{
 .hero-carousel.slider-wrapper .dotted-nav {
     display: flex;
     position: absolute;
-    transform: translateY(-50px);
+    transform: translateY(-20px);
     justify-content: center;
     width: 100%;
     height: 20px;
@@ -157,8 +162,8 @@ main .section.hero-carousel-container{
 .hero-carousel .dotted-nav .bullet {
     margin: 0 6px;
     border-radius: 50%;
-    width: 6px;
-    height: 6px;
+    width: 9px;
+    height: 9px;
 }
 
 

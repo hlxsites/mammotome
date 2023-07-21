@@ -10,7 +10,7 @@ import {
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 /**
- * Optimize thumbnails
+ * Replace img tags with picture tags
  * @param picture
  */
 const optimizeThumbnails = (picture) => {
@@ -32,6 +32,11 @@ const optimizeThumbnails = (picture) => {
     });
 };
 
+/**
+ * Remove whitespace and newlines from data
+ * @param data as a string
+ * @returns {*}
+ */
 function parseData(data) {
   return data.replace(/[\n\s]/g, '');
 }
@@ -59,8 +64,18 @@ function getConfig(block) {
   return config;
 }
 
+/**
+ * Decorate hero-carousel block
+ * @param block
+ */
 export default function decorate(block) {
-  const config = getConfig(block);
+  let config;
+  try {
+    config = getConfig(block);
+  } catch (e) {
+    block.innerHTML = `<code>${e.message}</code>`;
+    return;
+  }
   // check if required amount of columns and rows are present
   if (config.length === 0) {
     block.innerHTML = '<code>Invalid configuration. '
@@ -68,12 +83,9 @@ export default function decorate(block) {
     return;
   }
   // Add white-overlay container to each slide
-  const slideContainer = block.children;
-  [...slideContainer].forEach((slide, i) => {
+  Array.from(block.children).forEach((slide, i) => {
     slide.setAttribute('style', `justify-content: ${config[i].align};`);
-    const overlay = document.createElement('div');
-    overlay.classList.add('white-overlay');
-    slide.appendChild(overlay);
+    slide.appendChild(Object.assign(document.createElement('div'), { className: 'white-overlay' }));
   });
 
   optimizeThumbnails(block);
