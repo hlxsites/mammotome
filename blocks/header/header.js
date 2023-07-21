@@ -55,6 +55,7 @@ function createMobileMenuControlsBlock() {
   mobileMenuControls.addEventListener('click', (e) => {
     e.stopPropagation();
     backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
+    backButton.closest('[aria-expanded]').parentElement.classList.remove('nav-expanded');
   });
 
   mobileMenuControls.append(backButton);
@@ -422,6 +423,11 @@ export default async function decorate(block) {
 
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            if (expanded) {
+              navSection.parentElement.classList.remove('nav-expanded');
+            } else {
+              navSection.parentElement.classList.add('nav-expanded');
+            }
           }
         });
       });
