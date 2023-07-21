@@ -1,5 +1,6 @@
 /* Header colors */
 :root {
+  --mt-header-color-logo-text: #78787a;
   --mt-header-color-nav-icons: #3a3a3a;
   --mt-header-menu-items-fint-color:#ffffff8f;
   --mt-header-search-input-color: #D7D7D7;
@@ -115,13 +116,20 @@ header .nav-brand {
   line-height: 1;
   padding: var(--mt-nav-padding);
   display: flex;
-  align-items: center;
-  min-width: 200px;
+  flex-direction: column;
+  row-gap: 10px;
+  align-items: start;
+  min-width: 250px;
+}
+
+header .nav-brand p:last-child {
+  color: var(--mt-header-color-logo-text);
+  width: 250px;
 }
 
 .icon-logo svg {
-  width: 200px;
-  height: 23px;
+  width: 250px;
+  height: 29px;
   fill: currentcolor;
   color: var(--mt-global-color-base-primary);
 }
@@ -760,8 +768,8 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .icon-logo {
-    width: 200px;
-    height: 15px;
+    width: 250px;
+    height: 29px;
   }
 
   header nav .nav-hamburger {
