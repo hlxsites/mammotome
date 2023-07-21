@@ -86,28 +86,38 @@ function createOverflowDropdown(navSections) {
 }
 
 function addNavigationLogoForScrollingPage(nav) {
-  const homePageLink = nav.querySelector('.nav-brand > p > a');
+  const [navBrandPrimary, navBrandSecondary] = nav.querySelectorAll('.nav-brand > p');
+
+  if (!navBrandPrimary) return;
+
+  const homePageLink = navBrandPrimary.querySelector('a');
   homePageLink.setAttribute('aria-label', 'Navigate to homepage');
 
   const scrollingLogo = document.createElement('span');
-  scrollingLogo.classList.add('logo-hidden', 'scrolling-logo', 'icon', 'icon-logo-small');
+  scrollingLogo.className = 'logo-hidden scrolling-logo icon icon-logo-small';
   scrollingLogo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><use href="#icons-sprite-logo-small"></use></svg>';
 
   const defaultLogo = homePageLink.firstChild;
 
   homePageLink.append(scrollingLogo);
 
+  if (navBrandSecondary) {
+    navBrandSecondary.classList.add('nav-brand-text');
+  }
+
+  // Simple debounce function to improve scroll performance
+  let timeout;
   window.addEventListener('scroll', () => {
-    const scrollPosition = window.scrollY;
-    if (scrollPosition > 40) {
-      nav.classList.add('narrow');
-      defaultLogo.classList.add('logo-hidden');
-      scrollingLogo.classList.remove('logo-hidden');
-    } else {
-      nav.classList.remove('narrow');
-      defaultLogo.classList.remove('logo-hidden');
-      scrollingLogo.classList.add('logo-hidden');
-    }
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      const isScrolled = window.scrollY > 40;
+      nav.classList.toggle('narrow', isScrolled);
+      defaultLogo.classList.toggle('logo-hidden', isScrolled);
+      scrollingLogo.classList.toggle('logo-hidden', !isScrolled);
+      if (navBrandSecondary) {
+        navBrandSecondary.classList.toggle('logo-hidden', isScrolled);
+      }
+    }, 50);
   });
 }
 
