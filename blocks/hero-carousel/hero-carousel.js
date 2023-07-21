@@ -29,7 +29,6 @@ export function optimizeThumbnails(picture) {
             false,
             null,
             null,
-            [{ width: '1800' }],
           ),
         );
     });
