@@ -119,14 +119,31 @@ header .nav-brand {
   min-width: 200px;
 }
 
-header nav .nav-brand img {
-  width: 128px;
-  height: auto;
+.icon-logo svg {
+  width: 200px;
+  height: 23px;
+  fill: currentcolor;
+  color: var(--mt-global-color-base-primary);
+}
+
+header nav .icon-search {
+  position: absolute;
+  right: 18px;
+}
+
+header nav .icon-search svg {
+  fill: currentcolor;
+  color: var(--mt-global-color-base-primary);
 }
 
 header nav .nav-brand .scrolling-logo {
   height: 40px;
   width: 40px;
+}
+
+header nav .nav-brand .scrolling-logo svg {
+  fill: currentcolor;
+  color: var(--mt-global-color-base-primary);
 }
 
 header nav .nav-brand .logo-hidden {
@@ -247,16 +264,6 @@ header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > l
 
 header nav:not(.nav-mobile) .nav-sections ul > li.nav-multilevel > ul > li:hover {
   background-color: inherit;
-}
-
-.icon-logo svg{
-  width: 200px;
-  height: 23px;
-}
-
-header nav .icon-search {
-  position: absolute;
-  right: 18px;
 }
 
 @media screen and (min-width: 768px) {

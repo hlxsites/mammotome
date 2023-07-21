@@ -1,9 +1,15 @@
 footer {
-  padding: 0 5%;
-  margin-top: 5%;
-  margin-bottom: 0;
-  background-color: var(--mt-background-color-primary);
+  margin: 0;
+  padding: 7% 5% 5%;
+  position: relative; /* needed to absolutely position logos in lower right and top left corners */
+  background-color: var(--mt-footer-background-color-primary);
+  color: var(--mt-text-color-inverted);
   font-size: var(--mt-body-font-size-m);
+}
+
+footer svg {
+  fill: currentcolor;
+  color: var(--mt-footer-icon-color-primary);
 }
 
 footer .footer {
@@ -34,6 +40,20 @@ footer .columns > div div {
   display: block;
   width: 48%;
   padding-left: 10px;
+}
+
+/* small logo on the top left */
+footer a[aria-label="logo-small"] {
+  display: none;
+  position: absolute;
+  left: 2%;
+  top: 8%;
+}
+
+footer a[aria-label="logo-small"] span.icon-logo-small,
+footer a[aria-label="logo-small"] span.icon-logo-small svg {
+  width: 40px;
+  height: 40px;
 }
 
 /* flex container for footer nav larger displays */
@@ -78,10 +98,10 @@ footer .columns ul li:last-of-type {
 
 footer .columns ul li a[href] {
   text-decoration: none;
-  color: var(--mt-global-color-accent-quinary);
+  color: var(--mt-link-inverted-color);
   line-height: var(--mt-body-line-height);
   height: auto;
-  font-size: var(--mt-footer-font-size-footer-l);
+  font-size: var(--mt-footer-font-size-footer-m);
 }
 
 
@@ -89,7 +109,7 @@ footer .columns ul li a[href] {
 footer .columns h1 {
   font-size: var(--mt-footer-font-size-footer-s);
   font-weight: var(--mt-font-weight-bolder);
-  color: var(--mt-global-color-accent-quaternary);
+  color: var(--mt-heading-color-inverted);
   margin-top: unset;
   margin-bottom: 20px;
   padding-bottom: 3%;
@@ -138,7 +158,6 @@ right align for larger screen */
 @media (min-width: 768px) {
   footer .columns > div > div:nth-child(5) > h1:first-of-type,
   footer .columns > div > div:nth-child(5) > p {
-    text-align: right;
     line-height: unset;
   }
 
@@ -149,14 +168,13 @@ right align for larger screen */
 }
 
 footer .columns > div > div:nth-child(5) > p a[href] {
-  color: var(--mt-global-color-accent-quaternary);
+  color: var(--mt-background-color-primary);
 }
 
 /* Copyright and Logo (mobile) */
 footer > .footer > div > div:last-child > ul {
   display: flex;
   flex-direction: column;
-  color: var(--mt-global-color-accent-quaternary);
   font-weight: var(--mt-font-weight-thin);
   font-size: var(--mt-footer-font-size-footer-m);
   margin-top: 28px;
@@ -168,12 +186,6 @@ footer > .footer > div > div:last-child > ul {
 footer > .footer > div > div:last-child > ul > li:first-child {
   text-decoration: none;
   margin-bottom: 10px;
-}
-
-/* Design by link  (mobile) */
-footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
-  text-decoration: none;
-  color: var(--mt-global-color-accent-quaternary);
 }
 
 /* logo item (mobile) */
@@ -189,29 +201,70 @@ footer > .footer > div > div:last-child span.icon-logo {
   height: 23px;
 }
 
+/* position big logo bottom right */
+footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+  position: absolute;
+  bottom: 2%;
+  right: 5%;
+}
+
+footer > .footer > div > div:last-child span.icon-logo,
+footer > .footer > div > div:last-child span.icon-logo svg {
+  width: 250px;
+  height: 30px;
+  color: var(--mt-footer-icon-color-primary);
+}
+
+/* breakpoints for small and big logos */
+@media (min-width: 600px) {
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+    bottom: 8%;
+  }
+}
+
+@media (min-width: 1024px) {
+  footer a[aria-label="logo-small"] {
+    display: block;
+    left: 2%;
+    top: 5%;
+  }
+
+  footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
+    bottom: 13%;
+  }
+}
+
+@media (min-width: 1400px) {
+  footer a[aria-label="logo-small"] span.icon-logo-small,
+  footer a[aria-label="logo-small"] span.icon-logo-small svg {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (min-width: 1500px) {
+  footer a[aria-label="logo-small"] {
+    left: 4%;
+    top: 10%;
+  }
+}
+
 /* Copyright and logo (larger screens) */
 @media (min-width: 768px){
   /* flex container */
   footer > .footer > div > div:last-child > ul {
-    flex-flow: wrap;
+    flex-direction: row;
   }
 
   footer > .footer > div > div:last-child > ul > li {
     margin: 0;
     padding: 0;
+    width: 100%;
   }
 
   /* copyright text */
   footer > .footer > div > div:last-child > ul > li:first-child {
-    flex-grow: 2;
-    flex-basis: 100%;
-    font-size: var(--mt-footer-font-size-footer-l);
-  }
-
-  /* design by link */
-  footer > .footer > div > div:last-child > ul > li:nth-child(2) {
-    flex-basis: 50%;
-    flex-shrink: 0;
+    font-size: var(--mt-footer-font-size-footer-m);
   }
 
   footer > .footer > div > div:last-child > ul > li:nth-child(2) > a[href] {
@@ -220,8 +273,6 @@ footer > .footer > div > div:last-child span.icon-logo {
 
   /* corp logo */
   footer > .footer > div > div:last-child > ul > li:last-child {
-    flex-basis: 50%;
-    flex-shrink: 0;
     margin: 0;
     text-align: right;
   }

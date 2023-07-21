@@ -68,6 +68,7 @@
   --mt-input-hover-color: var(--mt-text-color);
   --mt-link-color: var(--mt-global-color-accent-primary);
   --mt-link-hover-color: var(--mt-global-color-dark-blue);
+  --mt-link-inverted-color: var(--mt-global-color-white);
   --mt-text-color: var(--mt-global-color-base-secondary);
   --mt-text-color-inverted: var(--mt-global-color-white);
   --mt-list-color: var(--mt-global-color-accent-senary);
@@ -169,6 +170,10 @@
   /* history */
   --mt-our-history-color-primary: var(--mt-global-color-base-primary);
   --mt-our-history-color-secondary: var(--mt-global-color-accent-primary);
+
+  /* footer */
+  --mt-footer-icon-color-primary: var(--mt-background-color-primary);
+  --mt-footer-background-color-primary: var(--mt-global-color-base-primary);
 }
 
 *,
@@ -821,6 +826,8 @@ main .section.our-history .year .icon-calendar {
 main .section.our-history .year .icon-calendar svg {
   width: 40%;
   height: 40%;
+  fill: currentcolor;
+  color: var(--mt-background-color-primary);
 }
 
 main .section.our-history .year::after {

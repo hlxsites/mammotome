@@ -89,12 +89,9 @@ function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = nav.querySelector('.nav-brand > p > a');
   homePageLink.setAttribute('aria-label', 'Navigate to homepage');
 
-  const scrollingLogo = document.createElement('img');
-  scrollingLogo.setAttribute('src', '/icons/logo-small.svg');
-  scrollingLogo.setAttribute('class', 'scrolling-logo');
-  scrollingLogo.setAttribute('height', '40px');
-  scrollingLogo.setAttribute('width', '40px');
-  scrollingLogo.classList.add('logo-hidden');
+  const scrollingLogo = document.createElement('span');
+  scrollingLogo.classList.add('logo-hidden', 'scrolling-logo', 'icon', 'icon-logo-small');
+  scrollingLogo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><use href="#icons-sprite-logo-small"></use></svg>';
 
   const defaultLogo = homePageLink.firstChild;
 
