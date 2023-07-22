@@ -80,7 +80,7 @@ main .section.hero-carousel-container{
 
 
 .hero-carousel .slider > div > div img {
-    width: 1800px;
+    width: 3000px;
     object-fit: cover;
     min-height: 500px;
 }

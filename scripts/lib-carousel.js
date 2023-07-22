@@ -170,7 +170,6 @@ export function createArrowNav() {
   const leftSliderAttributes = {
     id: 'slider-arrow-left',
     'aria-label': 'Previous Slide',
-    role: 'button',
   };
   addAttributes(arrowLeft, leftSliderAttributes);
   arrowLeft.innerHTML = HTML_ARROW_LEFT;
@@ -198,6 +197,7 @@ export function createDottedNav(slides) {
   dottedNavContainer.classList.add('dotted-nav');
   const bottomNavAttributes = {
     'aria-label': 'Slide Controls',
+    role: 'region',
   };
   addAttributes(dottedNavContainer, bottomNavAttributes);
 
@@ -210,7 +210,7 @@ export function createDottedNav(slides) {
       'aria-label': `Select Slide ${j} of ${slides.length}`,
       role: 'button',
       'aria-current': j === 1 ? 'true' : 'false',
-      'aria-controls': `slide-${j}`,
+      'aria-controls': `slider-slide-${j}`,
     };
     addAttributes(bottomNavEl, bottomNavElAttribute);
     bottomNavEl.classList.add('dot');

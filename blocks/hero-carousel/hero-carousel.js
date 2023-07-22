@@ -25,10 +25,11 @@ export function optimizeThumbnails(picture) {
         .replaceWith(
           createOptimizedPicture(
             img.src,
-            'Slider-Image',
+            img.alt,
             false,
-            img.width,
-            img.height,
+            window.innerWidth,
+            null,
+            [{ media: '(min-width: 750px)', width: '3000' }, { media: '(min-width: 450px)', width: '750' }, { width: '450' }],
           ),
         );
     });
