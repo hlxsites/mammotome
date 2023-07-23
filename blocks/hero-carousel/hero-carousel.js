@@ -27,9 +27,8 @@ export function optimizeThumbnails(picture) {
             img.src,
             img.alt,
             false,
-            window.innerWidth,
-            null,
-            [{ media: '(min-width: 750px)', width: '3000' }, { media: '(min-width: 450px)', width: '750' }, { width: '450' }],
+            img.width,
+            img.height,
           ),
         );
     });

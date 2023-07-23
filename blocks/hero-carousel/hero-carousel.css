@@ -36,12 +36,12 @@ main .section.hero-carousel-container{
 /* White Stripe */
 .hero-carousel .slider > div > div.white-overlay {
     position: absolute;
-    background-color: rgb(255 255 255 / 60%);
+    background-color: rgb(255 255 255 / 70%);
     z-index: 2;
     top: 50%;
     transform: translateY(-50%);
     width: 100%;
-    height: 78% ;
+    height: 100% ;
 }
 
 @media screen and (min-width: 768px) {
@@ -78,11 +78,14 @@ main .section.hero-carousel-container{
     z-index: 1
 }
 
+.hero-carousel .slider > div > div picture {
+    width: 110%;
+}
 
-.hero-carousel .slider > div > div img {
-    width: 3000px;
-    object-fit: cover;
+.hero-carousel .slider > div > div picture img {
+    width: 100%;
     min-height: 500px;
+    object-fit: cover;
 }
 
 
@@ -150,7 +153,7 @@ main .section.hero-carousel-container{
 .hero-carousel.slider-wrapper .dotted-nav {
     display: flex;
     position: absolute;
-    transform: translateY(-20px);
+    transform: translateY(-10px);
     justify-content: center;
     width: 100%;
     height: 20px;
@@ -161,7 +164,7 @@ main .section.hero-carousel-container{
 
 /* Dotted Nav */
 .hero-carousel .dotted-nav .dot {
-    margin: 0 6px;
+    margin: 6px;
     border-radius: 50%;
     width: 9px;
     height: 9px;
