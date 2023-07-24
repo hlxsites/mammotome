@@ -5,6 +5,8 @@ import {
   setSliderIds,
   createDottedNav,
   initSlider,
+  te,
+  ts,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
@@ -46,7 +48,7 @@ export function createButtonRow(slides) {
       buttons.forEach((button, i) => {
         button.remove();
         if (i % 2 === 1) {
-          button.querySelector('a').classList.add('button-light');
+          button.querySelector('a').classList.add('button', 'secondary');
         }
         buttonRow.appendChild(button);
       });
@@ -116,4 +118,7 @@ export default function decorate(block) {
     sliderWrapper.appendChild(dottedNavContainer);
     initSlider(slides.length);
   }
+  // TODO: SLIDER TEST
+  te();
+  ts();
 }

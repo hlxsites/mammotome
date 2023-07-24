@@ -128,6 +128,15 @@ const toNextSlide = () => {
 };
 
 /**
+ * Navigate to previous slide
+ */
+const toPrevSlide = () => {
+  incrementActiveSlide(-1);
+  activateSlide(`slider-slide-${activeSlide}`);
+  activateBullet(`slider-dot-${activeSlide}`);
+};
+
+/**
  * Start slide show
  */
 const startSlideShow = () => {
@@ -300,3 +309,31 @@ export function createPictures(sliderWrapper) {
   addAttributes(slider, sliderAttributes);
   return slider;
 }
+
+// ---------------------------------------- SLIDER TEST
+
+let touchStartX = 0;
+let touchEndX = 0;
+function handleGesture() {
+  if (touchEndX < touchStartX) {
+    toNextSlide();
+  }
+  if (touchEndX > touchStartX) {
+    toPrevSlide();
+  }
+}
+
+export function ts() {
+  document.addEventListener('touchstart', (e) => {
+    stopSlideShow();
+    touchStartX = e.touches[0].clientX;
+  });
+}
+
+export function te() {
+  document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    handleGesture(e);
+  });
+}
+// ----------------------------------------
