@@ -3,7 +3,6 @@ import {
   createSliderWrapper,
   createSlider,
   setSliderIds,
-  createButtonRow,
   createDottedNav,
   initSlider,
 } from '../../scripts/lib-carousel.js';
@@ -32,6 +31,28 @@ export function optimizeThumbnails(picture) {
           ),
         );
     });
+}
+
+/**
+ * create button links as part of the text
+ * @param slides
+ */
+export function createButtonRow(slides) {
+  slides.forEach((slide) => {
+    const buttons = slide.querySelectorAll('.button-container');
+    if (buttons.length > 0) {
+      const buttonRow = document.createElement('div');
+      buttonRow.classList.add('button-row');
+      buttons.forEach((button, i) => {
+        button.remove();
+        if (i % 2 === 1) {
+          button.querySelector('a').classList.add('button-light');
+        }
+        buttonRow.appendChild(button);
+      });
+      slide.firstElementChild.appendChild(buttonRow);
+    }
+  });
 }
 
 /**
