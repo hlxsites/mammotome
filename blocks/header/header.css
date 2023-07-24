@@ -3,7 +3,7 @@
   --mt-header-color-logo-text: #78787a;
   --mt-header-color-nav-icons: #3a3a3a;
   --mt-header-color-nav-links: #6f6f71;
-  --mt-header-color-subnav-links: #ffffff;
+  --mt-header-color-subnav-links: #fff;
   --mt-header-menu-items-fint-color:#ffffff8f;
   --mt-header-search-input-color: #D7D7D7;
   --mt-header-menu-second-level-nav-color: #54006c61;
@@ -31,6 +31,7 @@
   /* font sizes */
   --mt-nav-multilevel-font-size: var(--mt-font-size-90);
   --mt-nav-desktop-multilevel-section-title-font-size: var(--mt-font-size-80);
+  --mt-nav-tool-button-font-size: var(--mt-font-size-75);
 
   /* font families */
   --mt-nav-nav-item-font-family: -apple-system,blinkmacsystemfont,segoe ui,roboto,helvetica neue,arial,aoto aans,sans-serif;
@@ -70,7 +71,7 @@ header nav p {
 
 header nav a:any-link {
   display: block;
-  color: var(--mt-header-color-nav-links);
+  color: var(--mt-header-color-subnav-links);
   width: 100%;
 }
 
@@ -178,6 +179,10 @@ header nav .nav-sections {
   overflow-y: auto;
   top: 0;
   z-index: 100;
+}
+
+header nav li.nav-drop ul a {
+  color: var(--mt-header-color-subnav-links);
 }
 
 header nav .nav-sections ul {
@@ -439,10 +444,6 @@ li.nav-drop {
   cursor: pointer;
 }
 
-li.nav-drop ul a {
-  color: var(--mt-header-color-subnav-links);
-}
-
 
 header nav.nav-mobile li.nav-drop::after {
   content: '';
@@ -571,6 +572,10 @@ header nav.nav-mobile .nav-overflow {
 }
 
 @media (min-width: 1025px) {
+  header nav a:any-link {
+    color: var(--mt-header-color-nav-links);
+  }
+
   header nav .nav-mobile-cover {
     display: none;
   }
@@ -625,10 +630,10 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .nav-sections .nav-button a {
-    border: 1px solid var(--mt-global-color-base-primary);
-    padding: 7px 10px;
-    border-radius: 5px;
+    padding: 5px 30px;
+    border-radius: 10px;
     margin-left: 10px;
+    font-size: var(--mt-nav-tool-button-font-size);
   }
 
   header nav .nav-sections ul > li.nav-multilevel > ul > li > ul > li > a {
@@ -808,11 +813,6 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections .nav-button {
     padding-right: unset;
-  }
-
-  header nav .nav-sections .nav-button .btn-invert {
-    background-color: var(--mt-global-color-base-primary);
-    color: white;
   }
 
   header nav .nav-sections .nav-drop[aria-expanded="true"]::after {

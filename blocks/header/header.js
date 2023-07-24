@@ -405,7 +405,11 @@ export default async function decorate(block) {
             navSectionList.appendChild(li);
             if (config.style) {
               li.classList.add(`${config.style}`);
-              if (config.style === 'nav-button' && j % 2) li.querySelector('a').classList.add('btn-invert');
+              if (config.style === 'nav-button' && j % 2) {
+                li.querySelector('a').classList.add('button', 'secondary');
+              } else {
+                li.querySelector('a').classList.add('button', 'primary');
+              }
             }
           });
         } else {
