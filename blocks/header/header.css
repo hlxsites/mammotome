@@ -2,6 +2,8 @@
 :root {
   --mt-header-color-logo-text: #78787a;
   --mt-header-color-nav-icons: #3a3a3a;
+  --mt-header-color-nav-links: #6f6f71;
+  --mt-header-color-subnav-links: #ffffff;
   --mt-header-menu-items-fint-color:#ffffff8f;
   --mt-header-search-input-color: #D7D7D7;
   --mt-header-menu-second-level-nav-color: #54006c61;
@@ -68,7 +70,7 @@ header nav p {
 
 header nav a:any-link {
   display: block;
-  color: currentcolor;
+  color: var(--mt-header-color-nav-links);
   width: 100%;
 }
 
@@ -435,6 +437,10 @@ li.nav-drop {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+}
+
+li.nav-drop ul a {
+  color: var(--mt-header-color-subnav-links);
 }
 
 
