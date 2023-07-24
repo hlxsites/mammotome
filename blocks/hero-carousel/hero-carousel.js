@@ -25,8 +25,8 @@ export function optimizeThumbnails(picture) {
         .replaceWith(
           createOptimizedPicture(
             img.src,
-            img.alt,
-            false,
+            'Slider Image',
+            true,
             img.width,
             img.height,
           ),
