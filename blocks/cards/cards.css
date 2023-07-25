@@ -189,7 +189,7 @@
 .cards-card-body a.button:hover {
     background: none;
     border: none;
-    color: var(--mt-button-hover-color);
+    color: var(--mt-button-hover-color-primary);
 }
 
 .cards-card-body > p {

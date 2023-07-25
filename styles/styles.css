@@ -19,6 +19,8 @@
 :root {
   /* global colors */
   --mt-global-color-base-primary: #84329B;
+  --mt-global-color-base-primary-light: #a03ebb;
+  --mt-global-color-base-primary-very-light: #f7dbff;
   --mt-global-color-base-secondary: #3D3E40;
   --mt-global-color-accent-primary: #5F8DDA;
   --mt-global-color-accent-secondary: #487ED9;
@@ -45,21 +47,20 @@
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
   --mt-background-color-secondary: var(--mt-global-color-black);
-  --mt-button-background-color-primary: var(--mt-global-color-dark-blue);
+  --mt-button-background-color-primary: var(--mt-global-color-accent-quinary);
   --mt-button-background-color-secondary: var(--mt-global-color-white);
   --mt-input-background-color: var(--mt-background-color-primary);
 
   /* border colors */
-  --mt-button-border-color-primary: var(--mt-global-color-dark-blue);
+  --mt-button-border-color-primary: var(--mt-global-color-accent-quinary);
   --mt-button-border-color-secondary: var(--mt-button-border-color-primary);
   --mt-input-border-color: var(--mt-global-color-base-secondary);
 
   /* feature colors */
   --mt-button-color-primary: var(--mt-global-color-white);
-  --mt-button-color-secondary: var(--mt-global-color-dark-blue);
-  --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
-  --mt-button-hover-color: var(--mt-global-color-dark-blue);
-  --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
+  --mt-button-color-secondary: var(--mt-global-color-accent-quinary);
+  --mt-button-hover-color-primary: var(--mt-global-color-base-primary-light);
+  --mt-button-hover-color-secondary: var(--mt-global-color-base-primary-very-light);
   --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
   --mt-heading-color-inverted: var(--mt-global-color-white);

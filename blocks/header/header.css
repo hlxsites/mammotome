@@ -122,17 +122,17 @@ header .nav-brand {
   flex-direction: column;
   row-gap: 10px;
   align-items: start;
-  min-width: 250px;
+  min-width: 225px;
 }
 
 header .nav-brand p:last-child {
   color: var(--mt-header-color-logo-text);
-  width: 250px;
+  width: 225px;
 }
 
 .icon-logo svg {
-  width: 250px;
-  height: 29px;
+  width: 225px;
+  height: 26px;
   fill: currentcolor;
   color: var(--mt-global-color-base-primary);
 }
@@ -460,6 +460,7 @@ header nav.nav-mobile li.nav-drop::after {
 header nav .nav-search {
   display: flex;
   align-items: center;
+  height: var(--mt-nav-content-height);
 }
 
 header nav .nav-search-aside {
@@ -576,6 +577,10 @@ header nav.nav-mobile .nav-overflow {
     color: var(--mt-header-color-nav-links);
   }
 
+  header nav .nav-search {
+    align-items: flex-end;
+  }
+
   header nav .nav-mobile-cover {
     display: none;
   }
@@ -630,7 +635,7 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .nav-sections .nav-button a {
-    padding: 5px 30px;
+    padding: 5px 20px;
     border-radius: 10px;
     margin-left: 10px;
     font-size: var(--mt-nav-tool-button-font-size);
@@ -779,8 +784,8 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .icon-logo {
-    width: 250px;
-    height: 29px;
+    width: 225px;
+    height: 26px;
   }
 
   header nav .nav-hamburger {
@@ -804,7 +809,7 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections .nav-drop,
   header nav .nav-sections .nav-button{
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     position: relative;
     cursor: pointer;
     height: var(--mt-nav-content-height);
