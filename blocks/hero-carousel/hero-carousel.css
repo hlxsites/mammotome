@@ -51,7 +51,7 @@ main .section.hero-carousel-container{
     height: 100% ;
 }
 
-@media screen and (width >= 768px) {
+@media (min-width: 768px) {
     .hero-carousel .slider > div > div.white-overlay {
         all: unset;
     }
@@ -73,7 +73,7 @@ main .section.hero-carousel-container{
     flex: 1;
 }
 
-@media screen and (width >= 768px) {
+@media (min-width: 768px) {
     .hero-carousel .slider > div > div:first-child {
         width: 50%;
         padding: 5%;
@@ -90,7 +90,7 @@ main .section.hero-carousel-container{
 }
 
 .hero-carousel .slider > div > div picture img {
-    width: 100%;
+    width: 5000px;
     min-height: 500px;
     object-fit: cover;
 }
@@ -135,16 +135,15 @@ main .section.hero-carousel-container{
 .hero-carousel .slider .hide {
     opacity: 0;
 
-    /* transition-duration: 500ms; */
+     /*transition-duration: 500ms;*/
 
-    /* transition-property: opacity; */
+     /*transition-property: opacity;*/
 }
 
 /* show slide */
 .hero-carousel .slider .show {
-    /* transition-duration: 500ms; */
-
-    /* transition-property: opacity; */
+    transition-duration: 500ms;
+    transition-property: opacity;
     left: 0;
 
 }

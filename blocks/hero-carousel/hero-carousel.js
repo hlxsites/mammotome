@@ -7,6 +7,7 @@ import {
   initSlider,
   te,
   ts,
+  tm,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
@@ -119,6 +120,7 @@ export default function decorate(block) {
     initSlider(slides.length);
   }
   // TODO: SLIDER TEST
-  te();
-  ts();
+  te(block);
+  ts(block);
+  tm(block);
 }

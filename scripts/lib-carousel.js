@@ -10,6 +10,10 @@ const HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.or
   + '<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"/>\n'
   + '</svg>\n';
 
+let touchStartX = 0;
+let touchEndX = 0;
+let touchRelX = 0;
+
 /**
  * Increment active slide value
  * @param direction
@@ -65,15 +69,15 @@ const activateSlide = (targetPicture) => {
   Array.from(slider.children).forEach((el) => {
     if (el.id === targetPicture) {
       el.classList.replace('hide', 'show');
-      el.style.left = '0px';
+      el.style.removeProperty('left');
     } else {
       el.classList.replace('show', 'hide');
     }
   });
 };
 
-function fadeOutSlide(targetPicture, direction = 1) {
-  const leftPos = (direction * 800) / (Math.abs(direction));
+function moveSlideOut(targetPicture, direction = 1) {
+  const leftPos = (direction * touchStartX) / (Math.abs(direction));
   const slide = document.getElementById(targetPicture);
   slide.style.left = `${leftPos}px`;
 }
@@ -129,7 +133,7 @@ const arrowNavOnClickEvents = () => {
  * Navigate to next slide
  */
 const toNextSlide = () => {
-  fadeOutSlide(`slider-slide-${activeSlide}`, -1);
+  // moveSlideOut(`slider-slide-${activeSlide}`, -1);
   incrementActiveSlide(1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
@@ -139,7 +143,7 @@ const toNextSlide = () => {
  * Navigate to previous slide
  */
 const toPrevSlide = () => {
-  fadeOutSlide(`slider-slide-${activeSlide}`, 1);
+  // moveSlideOut(`slider-slide-${activeSlide}`, 1);
   incrementActiveSlide(-1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
@@ -321,9 +325,9 @@ export function createPictures(sliderWrapper) {
 
 // ---------------------------------------- SLIDER TEST
 
-let touchStartX = 0;
-let touchEndX = 0;
 function handleGesture() {
+  const slide = document.getElementById(`slider-slide-${activeSlide}`);
+  slide.style.left = `${touchRelX}px`;
   if (touchEndX < touchStartX) {
     toNextSlide();
   }
@@ -332,19 +336,24 @@ function handleGesture() {
   }
 }
 
-export function ts() {
-  document.addEventListener('touchstart', (e) => {
+export function tm(block) {
+  block.addEventListener('touchmove', (e) => {
+    touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
+  });
+}
+
+export function ts(block) {
+  block.addEventListener('touchstart', (e) => {
+    touchStartX = Math.floor(e.touches[0].clientX);
     stopSlideShow();
-    touchStartX = e.touches[0].clientX;
+    handleGesture();
   });
 }
 
-export function te() {
-  document.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].clientX;
-    handleGesture(e);
+export function te(block) {
+  block.addEventListener('touchend', (e) => {
+    touchEndX = Math.floor(e.changedTouches[0].clientX);
   });
 }
-
 
 // ----------------------------------------
