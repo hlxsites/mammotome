@@ -23,6 +23,13 @@ main .section.hero-carousel-container{
     display: flex;
     justify-content: flex-start;
     flex: 1;
+
+    /* TODO: slider test */
+
+    /* left: 1000px; */
+
+    transition: all 0.5s ease-in;
+
 }
 
 .hero-carousel .slider > div:nth-child(n+2) {
@@ -44,7 +51,7 @@ main .section.hero-carousel-container{
     height: 100% ;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (width >= 768px) {
     .hero-carousel .slider > div > div.white-overlay {
         all: unset;
     }
@@ -66,7 +73,7 @@ main .section.hero-carousel-container{
     flex: 1;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (width >= 768px) {
     .hero-carousel .slider > div > div:first-child {
         width: 50%;
         padding: 5%;
@@ -117,7 +124,7 @@ main .section.hero-carousel-container{
 
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (width >= 768px) {
     .hero-carousel .slider > div .button-row {
         flex-direction: row;
         gap: 5%;
@@ -127,14 +134,19 @@ main .section.hero-carousel-container{
 /* hide slide */
 .hero-carousel .slider .hide {
     opacity: 0;
-    transition-duration: 500ms;
-    transition-property: opacity;
+
+    /* transition-duration: 500ms; */
+
+    /* transition-property: opacity; */
 }
 
 /* show slide */
 .hero-carousel .slider .show {
-    transition-duration: 500ms;
-    transition-property: opacity;
+    /* transition-duration: 500ms; */
+
+    /* transition-property: opacity; */
+    left: 0;
+
 }
 
 /* dotted nav container */
@@ -150,7 +162,7 @@ main .section.hero-carousel-container{
     margin-bottom: 8px;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (width >= 768px) {
     .hero-carousel.slider-wrapper .dotted-nav {
         transform: translateY(-20px);
     }
@@ -167,12 +179,14 @@ main .section.hero-carousel-container{
     width: 8px;
     height: 8px;
     padding: 0;
-    cursor: pointer;
     flex-shrink: 0;
+    pointer-events: none;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (width >= 768px) {
     .hero-carousel .dotted-nav .dot {
+        cursor: pointer;
+        pointer-events: all;
         width: 8px;
         height: 8px;
     }

@@ -65,11 +65,18 @@ const activateSlide = (targetPicture) => {
   Array.from(slider.children).forEach((el) => {
     if (el.id === targetPicture) {
       el.classList.replace('hide', 'show');
+      el.style.left = '0px';
     } else {
       el.classList.replace('show', 'hide');
     }
   });
 };
+
+function fadeOutSlide(targetPicture, direction = 1) {
+  const leftPos = (direction * 800) / (Math.abs(direction));
+  const slide = document.getElementById(targetPicture);
+  slide.style.left = `${leftPos}px`;
+}
 
 /**
  * Navigate with Bottom Bullet navigation
@@ -122,6 +129,7 @@ const arrowNavOnClickEvents = () => {
  * Navigate to next slide
  */
 const toNextSlide = () => {
+  fadeOutSlide(`slider-slide-${activeSlide}`, -1);
   incrementActiveSlide(1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
@@ -131,6 +139,7 @@ const toNextSlide = () => {
  * Navigate to previous slide
  */
 const toPrevSlide = () => {
+  fadeOutSlide(`slider-slide-${activeSlide}`, 1);
   incrementActiveSlide(-1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
@@ -336,4 +345,6 @@ export function te() {
     handleGesture(e);
   });
 }
+
+
 // ----------------------------------------
