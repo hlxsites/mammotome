@@ -326,8 +326,6 @@ export function createPictures(sliderWrapper) {
 // ---------------------------------------- SLIDER TEST
 
 function handleGesture() {
-  const slide = document.getElementById(`slider-slide-${activeSlide}`);
-  slide.style.left = `${touchRelX}px`;
   if (touchEndX < touchStartX) {
     toNextSlide();
   }
@@ -339,6 +337,8 @@ function handleGesture() {
 export function tm(block) {
   block.addEventListener('touchmove', (e) => {
     touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
+    const slide = document.getElementById(`slider-slide-${activeSlide}`);
+    slide.style.left = `${touchRelX}px`;
   });
 }
 
@@ -346,13 +346,13 @@ export function ts(block) {
   block.addEventListener('touchstart', (e) => {
     touchStartX = Math.floor(e.touches[0].clientX);
     stopSlideShow();
-    handleGesture();
   });
 }
 
 export function te(block) {
   block.addEventListener('touchend', (e) => {
     touchEndX = Math.floor(e.changedTouches[0].clientX);
+    handleGesture();
   });
 }
 
