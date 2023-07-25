@@ -182,7 +182,7 @@ function createButton(fd) {
   const button = document.createElement('button');
   button.textContent = fd.Label;
   button.type = fd.Type;
-  button.classList.add('button');
+  button.classList.add('button', 'primary');
   button.dataset.redirect = fd.Extra || '';
   button.id = fd.Id;
   button.name = fd.Name;

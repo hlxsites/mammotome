@@ -19,6 +19,8 @@
 :root {
   /* global colors */
   --mt-global-color-base-primary: #84329B;
+  --mt-global-color-base-primary-light: #a03ebb;
+  --mt-global-color-base-primary-very-light: #f7dbff;
   --mt-global-color-base-secondary: #3D3E40;
   --mt-global-color-accent-primary: #5F8DDA;
   --mt-global-color-accent-secondary: #487ED9;
@@ -34,7 +36,7 @@
   --mt-global-color-dove-gray: #666;
   --mt-global-color-blue-ribbon: #035fe6;
   --mt-global-color-light-blue: #BECAE9;
-  --mt-global-color-dark-blue: #215BBB;
+  --mt-global-color-dark-blue: #1b51a7;
   --mt-global-color-silver: #ccc;
   --mt-global-color-alabaste: #F7F7F7;
   --mt-global-color-gallery: #ECECEC;
@@ -45,22 +47,21 @@
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
   --mt-background-color-secondary: var(--mt-global-color-black);
-  --mt-button-background-color-primary: var(--mt-global-color-accent-primary);
-  --mt-button-background-color-seconary: var(--mt-global-color-white);
+  --mt-button-background-color-primary: var(--mt-global-color-accent-quinary);
+  --mt-button-background-color-secondary: var(--mt-global-color-white);
   --mt-input-background-color: var(--mt-background-color-primary);
 
   /* border colors */
-  --mt-button-border-color-primary: var(--mt-global-color-accent-primary);
+  --mt-button-border-color-primary: var(--mt-global-color-accent-quinary);
   --mt-button-border-color-secondary: var(--mt-button-border-color-primary);
   --mt-input-border-color: var(--mt-global-color-base-secondary);
 
   /* feature colors */
   --mt-button-color-primary: var(--mt-global-color-white);
-  --mt-button-color-secondary: var(--mt-global-color-accent-primary);
-  --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
-  --mt-button-hover-color: var(--mt-global-color-dark-blue);
-  --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
-  --mt-heading-color-primary: var(--mt-global-color-base-primary);
+  --mt-button-color-secondary: var(--mt-global-color-accent-quinary);
+  --mt-button-hover-color-primary: var(--mt-global-color-base-primary-light);
+  --mt-button-hover-color-secondary: var(--mt-global-color-base-primary-very-light);
+  --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
   --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-header-colored-secondary: var(--mt-global-color-accent-primary);
@@ -95,7 +96,7 @@
 
   /* feature font weights */
   --mt-body-font-weight: var(--mt-font-weight-thin);
-  --mt-button-font-weight: var(--mt-font-weight-boldest);
+  --mt-button-font-weight: var(--mt-font-weight-regular);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
   --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
@@ -131,7 +132,7 @@
   --mt-list-line-height: 1.95rem;
   --mt-hero-line-height-title: 1;
   --mt-hero-line-height-subtitle: 1.5;
-  --mt-nav-height: 85px;
+  --mt-nav-height: 100px;
   --mt-nav-height-narrow: 60px;
   --mt-prev-next-header-link-line-height: var(--mt-font-size-185);
   --mt-prev-next-button-line-height: var(--mt-font-size-120);
@@ -544,10 +545,10 @@ a.button:any-link,
 button {
   display: inline-block;
   box-sizing: border-box;
-  padding: 15px 50px;
+  padding: 5px 40px;
   margin: 0;
-  border: 2px solid transparent;
-  border-radius: 5px;
+  border: 1px solid transparent;
+  border-radius: 14px;
   cursor: pointer;
   font-size: var(--mt-button-font-size);
   font-weight: var(--mt-button-font-weight);
@@ -589,7 +590,7 @@ button:disabled:hover {
 
 a.button.secondary,
 button.secondary {
-  background-color: unset;
+  background-color: var(--mt-button-background-color-secondary);
   border-color: var(--mt-button-border-color-secondary);
   color: var(--mt-button-color-secondary);
 }
