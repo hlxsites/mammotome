@@ -23,11 +23,6 @@ main .section.hero-carousel-container{
     display: flex;
     justify-content: flex-start;
     flex: 1;
-
-    /* TODO: slider test */
-
-    /* left: 1000px; */
-
     transition: all 0.5s ease-in;
 
 }
@@ -124,7 +119,7 @@ main .section.hero-carousel-container{
 
 }
 
-@media screen and (width >= 768px) {
+@media (min-width: 768px) {
     .hero-carousel .slider > div .button-row {
         flex-direction: row;
         gap: 5%;
@@ -134,10 +129,6 @@ main .section.hero-carousel-container{
 /* hide slide */
 .hero-carousel .slider .hide {
     opacity: 0;
-
-     /*transition-duration: 500ms;*/
-
-     /*transition-property: opacity;*/
 }
 
 /* show slide */
@@ -161,15 +152,13 @@ main .section.hero-carousel-container{
     margin-bottom: 8px;
 }
 
-@media screen and (width >= 768px) {
+@media (min-width: 768px) {
     .hero-carousel.slider-wrapper .dotted-nav {
         transform: translateY(-20px);
     }
-
 }
 
 /* Dotted Nav */
-
 .hero-carousel .dotted-nav .dot {
     margin: 6px;
     border: 4px solid black;
@@ -182,7 +171,7 @@ main .section.hero-carousel-container{
     pointer-events: none;
 }
 
-@media screen and (width >= 768px) {
+@media (min-width: 768px) {
     .hero-carousel .dotted-nav .dot {
         cursor: pointer;
         pointer-events: all;

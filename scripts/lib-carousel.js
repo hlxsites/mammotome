@@ -1,8 +1,10 @@
+/**
+ * Slider duration in milliseconds for auto-advance.
+ * @type {number}
+ */
 const sliderDurationMs = 3500;
-let activeSlide = 1;
-let slideShow = false;
-let slideCount = 0;
 
+// HTML code for arrow icons
 const HTML_ARROW_LEFT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
   + '<path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"/>\n'
   + '</svg>';
@@ -10,6 +12,9 @@ const HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.or
   + '<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"/>\n'
   + '</svg>\n';
 
+let activeSlide = 1;
+let slideShow = false;
+let slideCount = 0;
 let touchStartX = 0;
 let touchEndX = 0;
 let touchRelX = 0;
@@ -24,6 +29,7 @@ const incrementActiveSlide = (direction = 1) => {
   } else {
     activeSlide = (activeSlide - 1) > 0 ? activeSlide - 1 : slideCount;
   }
+  return activeSlide;
 };
 
 /**
@@ -44,30 +50,21 @@ const addAttributes = (el, attributes) => {
 const activateBullet = (bulletId) => {
   const btnNav = document.querySelector('.dotted-nav');
   [...btnNav.children].forEach((el) => {
-    if (el.id === bulletId) {
-      el.classList.replace('inactive', 'active');
-      const activeAttributes = {
-        'aria-current': 'true',
-      };
-      addAttributes(el, activeAttributes);
-    } else {
-      el.classList.replace('active', 'inactive');
-      const inactiveAttributes = {
-        'aria-current': 'false',
-      };
-      addAttributes(el, inactiveAttributes);
-    }
+    const isActive = el.id === bulletId;
+    el.classList.toggle('active', isActive);
+    el.classList.toggle('inactive', !isActive);
+    el.setAttribute('aria-current', isActive ? 'true' : 'false');
   });
 };
 
 /**
  * Slides picture switcher
- * @param targetPicture
+ * @param slideId: format: slider-slide-${activeSlide}
  */
-const activateSlide = (targetPicture) => {
+const activateSlide = (slideId) => {
   const slider = document.querySelector('.slider');
   Array.from(slider.children).forEach((el) => {
-    if (el.id === targetPicture) {
+    if (el.id === slideId) {
       el.classList.replace('hide', 'show');
       el.style.removeProperty('left');
     } else {
@@ -85,7 +82,7 @@ const dottedNavigation = (event) => {
   const sliderTarget = `slider-slide-${targetId}`;
   activateSlide(sliderTarget);
   activateBullet(event.target.id);
-  incrementActiveSlide();
+  activeSlide = incrementActiveSlide();
 };
 
 /**
@@ -96,7 +93,7 @@ const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
   const increment = navButton === 'slider-arrow-left' ? -1 : 1;
 
-  incrementActiveSlide(increment);
+  activeSlide = incrementActiveSlide(increment);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -106,8 +103,8 @@ const arrowNavigation = (event) => {
  */
 const dottedNavOnClickEvents = () => {
   const btnNav = document.querySelector('.dotted-nav');
-  [...btnNav.children].forEach((el) => {
-    el.addEventListener('click', dottedNavigation);
+  btnNav.addEventListener('click', (event) => {
+    dottedNavigation(event);
   });
 };
 
@@ -117,8 +114,8 @@ const dottedNavOnClickEvents = () => {
 const arrowNavOnClickEvents = () => {
   const arrowNav = document.querySelector('.arrow-nav');
   if (arrowNav) {
-    [...arrowNav.children].forEach((el) => {
-      el.addEventListener('click', arrowNavigation);
+    arrowNav.addEventListener('click', (event) => {
+      arrowNavigation(event);
     });
   }
 };
@@ -127,8 +124,7 @@ const arrowNavOnClickEvents = () => {
  * Navigate to next slide
  */
 const toNextSlide = () => {
-  // moveSlideOut(`slider-slide-${activeSlide}`, -1);
-  incrementActiveSlide(1);
+  activeSlide = incrementActiveSlide(1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -137,8 +133,7 @@ const toNextSlide = () => {
  * Navigate to previous slide
  */
 const toPrevSlide = () => {
-  // moveSlideOut(`slider-slide-${activeSlide}`, 1);
-  incrementActiveSlide(-1);
+  activeSlide = incrementActiveSlide(-1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -148,7 +143,7 @@ const toPrevSlide = () => {
  */
 const startSlideShow = () => {
   if (!slideShow) {
-    slideShow = window.setInterval(toNextSlide, sliderDurationMs);
+    slideShow = window.setInterval(() => toNextSlide(slideCount), sliderDurationMs);
   }
 };
 
@@ -160,6 +155,9 @@ const stopSlideShow = () => {
   slideShow = false;
 };
 
+/**
+ * Handle touch gestures (back and forward swipe) for touch devices
+ */
 function handleGesture() {
   if (touchEndX < touchStartX) {
     toNextSlide();
@@ -169,16 +167,24 @@ function handleGesture() {
   }
 }
 
-function touchMoveEl(block) {
-  block.addEventListener('touchmove', (e) => {
+/**
+ * Touch Move Event Listener
+ * @param slideContainer: slider wrapper or block containing the slides
+ */
+function touchMoveEl(slideContainer) {
+  slideContainer.addEventListener('touchmove', (e) => {
     touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
     const slide = document.getElementById(`slider-slide-${activeSlide}`);
     slide.style.left = `${touchRelX}px`;
   });
 }
 
-function touchStartEl(block) {
-  block.addEventListener('touchstart', (e) => {
+/**
+ * Touch Start Event Listener
+ * @param slideContainer: slider wrapper or block containing the slides
+ */
+function touchStartEl(slideContainer) {
+  slideContainer.addEventListener('touchstart', (e) => {
     e.preventDefault();
     touchStartX = Math.floor(e.touches[0].clientX);
     stopSlideShow();
@@ -186,8 +192,12 @@ function touchStartEl(block) {
   { passive: false });
 }
 
-function touchEndEl(block) {
-  block.addEventListener('touchend', (e) => {
+/**
+ * Touch End Event Listener
+ * @param slideContainer: slider wrapper or block containing the slides
+ */
+function touchEndEl(slideContainer) {
+  slideContainer.addEventListener('touchend', (e) => {
     e.preventDefault();
     touchEndX = Math.floor(e.changedTouches[0].clientX);
     handleGesture();
@@ -354,7 +364,3 @@ export function createPictures(sliderWrapper) {
   addAttributes(slider, sliderAttributes);
   return slider;
 }
-
-// ---------------------------------------- SLIDER TEST
-
-// ----------------------------------------

@@ -1,10 +1,10 @@
 import {
   addEnclosingDiv,
-  createSliderWrapper,
-  createSlider,
-  setSliderIds,
   createDottedNav,
+  createSlider,
+  createSliderWrapper,
   initSlider,
+  setSliderIds,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
@@ -116,8 +116,4 @@ export default function decorate(block) {
     sliderWrapper.appendChild(dottedNavContainer);
     initSlider(slides.length);
   }
-  // TODO: SLIDER TEST
-  // te(block);
-  // ts(block);
-  // tm(block);
 }
