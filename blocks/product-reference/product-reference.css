@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 .product-reference-wrapper, .product-reference {
   max-width: 1300px;
   margin: auto;
