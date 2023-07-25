@@ -76,12 +76,6 @@ const activateSlide = (targetPicture) => {
   });
 };
 
-function moveSlideOut(targetPicture, direction = 1) {
-  const leftPos = (direction * touchStartX) / (Math.abs(direction));
-  const slide = document.getElementById(targetPicture);
-  slide.style.left = `${leftPos}px`;
-}
-
 /**
  * Navigate with Bottom Bullet navigation
  * @param event
@@ -166,6 +160,41 @@ const stopSlideShow = () => {
   slideShow = false;
 };
 
+function handleGesture() {
+  if (touchEndX < touchStartX) {
+    toNextSlide();
+  }
+  if (touchEndX > touchStartX) {
+    toPrevSlide();
+  }
+}
+
+function touchMoveEl(block) {
+  block.addEventListener('touchmove', (e) => {
+    touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
+    const slide = document.getElementById(`slider-slide-${activeSlide}`);
+    slide.style.left = `${touchRelX}px`;
+  });
+}
+
+function touchStartEl(block) {
+  block.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    touchStartX = Math.floor(e.touches[0].clientX);
+    stopSlideShow();
+  },
+  { passive: false });
+}
+
+function touchEndEl(block) {
+  block.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    touchEndX = Math.floor(e.changedTouches[0].clientX);
+    handleGesture();
+  },
+  { passive: false });
+}
+
 /**
  * Initialize Slider
  * @param slidesLength: number of slides
@@ -175,6 +204,9 @@ export function initSlider(slidesLength) {
   const sliderWrapper = document.querySelector('.slider-wrapper');
   sliderWrapper.addEventListener('mouseover', stopSlideShow);
   sliderWrapper.addEventListener('mouseleave', startSlideShow);
+  touchStartEl(sliderWrapper);
+  touchMoveEl(sliderWrapper);
+  touchEndEl(sliderWrapper);
   startSlideShow();
   dottedNavOnClickEvents();
   arrowNavOnClickEvents();
@@ -324,36 +356,5 @@ export function createPictures(sliderWrapper) {
 }
 
 // ---------------------------------------- SLIDER TEST
-
-function handleGesture() {
-  if (touchEndX < touchStartX) {
-    toNextSlide();
-  }
-  if (touchEndX > touchStartX) {
-    toPrevSlide();
-  }
-}
-
-export function tm(block) {
-  block.addEventListener('touchmove', (e) => {
-    touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
-    const slide = document.getElementById(`slider-slide-${activeSlide}`);
-    slide.style.left = `${touchRelX}px`;
-  });
-}
-
-export function ts(block) {
-  block.addEventListener('touchstart', (e) => {
-    touchStartX = Math.floor(e.touches[0].clientX);
-    stopSlideShow();
-  });
-}
-
-export function te(block) {
-  block.addEventListener('touchend', (e) => {
-    touchEndX = Math.floor(e.changedTouches[0].clientX);
-    handleGesture();
-  });
-}
 
 // ----------------------------------------
