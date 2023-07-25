@@ -636,7 +636,7 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections .nav-button a {
     padding: 5px 20px;
-    border-radius: 10px;
+    border-radius: 15px;
     margin-left: 10px;
     font-size: var(--mt-nav-tool-button-font-size);
   }
@@ -805,7 +805,6 @@ header nav.nav-mobile .nav-overflow {
     height: initial;
   }
 
-
   header nav .nav-sections .nav-drop,
   header nav .nav-sections .nav-button{
     display: flex;
@@ -818,6 +817,11 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections .nav-button {
     padding-right: unset;
+  }
+
+  header nav.narrow .nav-sections .nav-drop,
+  header nav.narrow .nav-sections .nav-button{
+    align-items: center;
   }
 
   header nav .nav-sections .nav-drop[aria-expanded="true"]::after {
