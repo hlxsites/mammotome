@@ -548,7 +548,7 @@ button {
   padding: 5px 40px;
   margin: 0;
   border: 1px solid transparent;
-  border-radius: 20px;
+  border-radius: 14px;
   cursor: pointer;
   font-size: var(--mt-button-font-size);
   font-weight: var(--mt-button-font-weight);
