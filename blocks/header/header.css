@@ -653,7 +653,7 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections > ul > li:hover > ul {
     visibility: visible;
     opacity: 1;
-    top: 33px;
+    top: 50px;
     z-index: 1000;
   }
 
@@ -675,7 +675,7 @@ header nav.nav-mobile .nav-overflow {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    top: 45px;
+    top: 62px;
     left: -1em;
     margin-top: 12px;
     white-space: nowrap;
