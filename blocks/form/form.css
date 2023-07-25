@@ -33,12 +33,6 @@
     --form-input-border-size: 1px;
     --form-input-border-color: var(--mt-global-color-gallery);
     --form-input-background-color: var(--mt-global-color-alabaste);
-    --form-button-color: var(--mt-background-color-primary);
-    --form-button-font-size: var(--form-font-size-s);
-    --form-button-background-color: var(--mt-global-color-accent-primary);
-    --form-button-background-hover-color: var(--mt-global-color-blue-ribbon);
-    --form-button-border: 2px solid transparent;
-    --form-button-padding:15px 50px;
     --form-submit-wrapper-margin: 36px 0 0 0;
     --form-submit-width: 100%
 }
@@ -197,24 +191,13 @@ main .form .form-checkbox-wrapper label {
     padding: 0 0 0 0.5rem;
 }
 
-main .form input[type='checkbox'], 
+main .form input[type='checkbox'],
 main .form input[type='radio'] {
     width: 16px;
     height: 13px;
     margin: 0 0 0 0.3rem;
     display: inline-block;
     flex-shrink: 0;
-}
-
-main .form button {
-    color: var(--form-button-color);
-    background: var(--form-button-background-color);
-    border: var(--form-button-border);
-    padding: var(--form-button-padding);
-    font-size: var(--form-button-font-size);
-    font-weight: var(--mt-font-weight-bold);
-    border-radius: unset;
-    border-radius: 3px;
 }
 
 main .form .field-wrapper ul {
@@ -237,7 +220,7 @@ main .form .form-submission-error {
 }
 
 main .form-submit-wrapper {
-    margin: var(--form-submit-wrapper-margin); 
+    margin: var(--form-submit-wrapper-margin);
     grid-column: 1/-1;
 }
 
@@ -280,9 +263,7 @@ main .form-file-wrapper .file-description {
 main .form-file-wrapper .file-description button {
     --form-button-padding: 15px;
 
-    background: none;
-    background-image: url("/icons/trash.svg");
-    background-repeat: no-repeat;
+    background: url("/icons/trash.svg") no-repeat;
     width: unset;
     border: unset;
     text-align: center;
@@ -303,7 +284,7 @@ main .form form .field-tooltip {
 
 main .form form .field-tooltip::before {
     content: '';
-    position: absolute; 
+    position: absolute;
     left: 10%;
     top: 0;
     border: 6px solid transparent;
@@ -339,7 +320,7 @@ main .connectus .form-description {
 main :is(.contact, .schedule-demo, .learn-more) .form-consent {
     font-size: var(--mt-font-size-90);
     padding: 0.375rem 0 4%;
-    border-bottom: solid 2px var(--mt-global-color-gallery);   
+    border-bottom: solid 2px var(--mt-global-color-gallery);
     margin: 0;
     line-height: normal;
     grid-column: 1/-1;
