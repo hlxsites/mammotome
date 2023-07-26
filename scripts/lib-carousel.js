@@ -176,7 +176,8 @@ function touchMoveEl(slideContainer) {
     touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
     const slide = document.getElementById(`slider-slide-${activeSlide}`);
     slide.style.left = `${touchRelX}px`;
-  });
+  },
+  { passive: false });
 }
 
 /**
