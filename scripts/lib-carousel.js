@@ -184,13 +184,15 @@ function disableScrolling(e) {
  * @param slideContainer: slider wrapper or block containing the slides
  */
 function touchMoveEl(slideContainer) {
-  slideContainer.addEventListener('touchmove', (e) => {
-    disableScrolling(e);
-    touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
-    const slide = document.getElementById(`slider-slide-${activeSlide}`);
-    slide.style.left = `${touchRelX}px`;
-  },
-  { passive: false });
+  slideContainer.addEventListener(
+    'touchmove', (e) => {
+      disableScrolling(e);
+      touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
+      const slide = document.getElementById(`slider-slide-${activeSlide}`);
+      slide.style.left = `${touchRelX}px`;
+    },
+    { passive: false },
+  );
 }
 
 /**
