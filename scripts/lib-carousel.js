@@ -174,7 +174,7 @@ function handleGesture() {
 function disableScrolling(e) {
   const isLink = e.target.tagName.toLowerCase() === 'a';
   const isButton = e.target.tagName.toLowerCase() === 'button';
-  if (!isLink || !isButton) {
+  if (!isLink && !isButton) {
     e.preventDefault();
   }
 }
