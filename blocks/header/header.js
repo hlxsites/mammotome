@@ -283,7 +283,12 @@ async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
   if (!input.active) {
     input.placeholder = await translate('navSearchPlaceholder', 'What are you looking for?');
-    searchElement.prepend(input);
+
+    const inputContainer = document.createElement('div');
+    inputContainer.classList.add('nav-search-input-container');
+    inputContainer.appendChild(input);
+
+    searchElement.prepend(inputContainer);
     searchElement.append(input.aside);
     input.active = true;
     input.focus();
@@ -291,7 +296,7 @@ async function searchClick(event) {
     input.active = false;
     input.value = '';
     input.dispatchEvent(new Event('input', { bubbles: true }));
-    searchElement.removeChild(input);
+    searchElement.removeChild(input.parentElement);
     searchElement.removeChild(input.aside);
   }
   event.preventDefault();
@@ -496,6 +501,13 @@ export default async function decorate(block) {
     decorateSupScriptInTextBelow(nav);
     // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
+
+    // remove empty sections
+    Array.from(nav.children).forEach((section) => {
+      if (section.children.length === 1 && section.children[0].tagName === 'UL' && section.children[0].children.length === 0) {
+        section.remove();
+      }
+    });
 
     const navWrapper = document.createElement('div');
     navWrapper.className = 'nav-wrapper';
