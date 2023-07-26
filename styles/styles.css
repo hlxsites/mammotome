@@ -43,6 +43,7 @@
   --mt-global-color-accent-grey: #BFBFBF;
   --mt-global-color-line-grey: #D5D8DC;
   --mt-global-color-red: #c36;
+  --mt-global-color-cornflower-blue: #618CDB;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
@@ -79,6 +80,7 @@
   --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
   --mt-global-horizontal-line-color: #EBE4E7;
+  --mt-global-horizontal-line-color-blue: var(--mt-global-color-cornflower-blue);
 
 
   /* fonts families */
@@ -1010,7 +1012,7 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 /* Divider as Section Metadata */
-.section hr.divider {
+.section hr.divider.primary {
   border: 0;
   height: 4px;
   background-color: var(--mt-global-horizontal-line-color);
@@ -1018,6 +1020,15 @@ main .section.our-history .year.highlight .icon-calendar {
   margin: calc(26px + 10px + 3%) auto auto;
 }
 
+.section hr.divider.secondary {
+  border: 0;
+  height: 4px;
+  background-color: var(--mt-global-horizontal-line-color-blue);
+  width: 34px;
+  margin: calc(26px + 10px + 3%) auto auto;
+}
+
+/* Spacer as Section Metadata */
 .section.spacer {
   margin-top: 0;
   margin-bottom: 0;
