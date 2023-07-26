@@ -457,6 +457,10 @@ header nav .nav-search {
   height: var(--mt-nav-content-height);
 }
 
+header nav .nav-search .nav-search-input-container {
+  position: relative;
+}
+
 header nav .nav-search-aside {
   position: absolute;
   left: 0;
@@ -477,7 +481,8 @@ header nav.narrow .nav-search-aside {
 
 header nav input[type='search'].nav-search-input  {
   position: absolute;
-  right: 60px;
+  right: var(--mt-nav-padding);
+  top: -15px;
   padding: 0 24px;
   min-height: 30px;
   height: 30px;
@@ -490,7 +495,6 @@ header nav input[type='search'].nav-search-input  {
   overflow: visible;
   display: inline-block;
   width: 350px;
-  max-width: 70%;
   text-align: left;
   z-index: 1000;
 }
@@ -869,6 +873,10 @@ header nav.nav-mobile .nav-overflow {
     display: block;
     width: 100%;
     padding-right: 24px;
+  }
+
+  header nav input[type='search'].nav-search-input  {
+    top: -35px;
   }
 }
 
