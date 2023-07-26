@@ -177,7 +177,9 @@ function touchMoveEl(slideContainer) {
     const slide = document.getElementById(`slider-slide-${activeSlide}`);
     slide.style.left = `${touchRelX}px`;
   },
-  { passive: false });
+  {
+    passive: false,
+  });
 }
 
 /**
@@ -190,7 +192,9 @@ function touchStartEl(slideContainer) {
     touchStartX = Math.floor(e.touches[0].clientX);
     stopSlideShow();
   },
-  { passive: false });
+  {
+    passive: false,
+  });
 }
 
 /**
@@ -203,7 +207,9 @@ function touchEndEl(slideContainer) {
     touchEndX = Math.floor(e.changedTouches[0].clientX);
     handleGesture();
   },
-  { passive: false });
+  {
+    passive: false,
+  });
 }
 
 /**
