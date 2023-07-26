@@ -104,6 +104,10 @@ const embedPDF = async (block, href) => {
     .slice(2)}`;
   const fileName = href.slice(href.lastIndexOf('/') + 1);
 
+  const supportFullScreen = !!document.fullscreenEnabled
+    || !!document.webkitFullscreenEnabled
+    || !!document.msFullscreenEnabled;
+
   const config = {
     apiKey: null,
     divId,
@@ -119,11 +123,11 @@ const embedPDF = async (block, href) => {
       // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_ui/
       options: {
         defaultViewMode: 'FIT_WIDTH',
-        embedMode: 'FULL_WINDOW',
+        embedMode: supportFullScreen ? 'FULL_WINDOW' : 'IN_LINE',
         showAnnotationTools: false,
         showBookmarks: true,
         showDownloadPDF: true,
-        showFullScreen: true,
+        showFullScreen: supportFullScreen,
         showPrintPDF: true,
         showThumbnails: true,
         showZoomControl: true,
