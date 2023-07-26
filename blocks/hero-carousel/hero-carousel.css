@@ -1,4 +1,4 @@
-main .section.hero-carousel-container{
+main .section.hero-carousel-container {
     padding: 0;
     margin: 0;
 }
@@ -8,37 +8,50 @@ main .section.hero-carousel-container{
     justify-content: flex-end;
     flex-direction: column;
     align-items: center;
+    height: 60vh;
+    width: 100%;
+    min-height: 500px;
 }
 
 
 /* sliders */
 .hero-carousel .slider {
     display: flex;
-    position: relative;
-    height: min-content;
+    position: absolute;
     align-items: center;
+    width: 100%;
+    height: 60vh;
+    min-height: 500px;
 }
 
 .hero-carousel .slider > div {
+    position: absolute;
     display: flex;
     justify-content: flex-start;
     flex: 1;
-    transition: all 0.5s ease-in;
-
-}
-
-.hero-carousel .slider > div:nth-child(n+2) {
-    position: absolute;
-    top: 0;
+    transition: all 0.5s linear;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
+}
+
+.hero-carousel .slider > div.text-align-left {
+    justify-content: flex-start;
+}
+
+.hero-carousel .slider > div.text-align-center {
+    justify-content: center;
+}
+
+.hero-carousel .slider > div.text-align-right {
+    justify-content: flex-end;
 }
 
 /* White Stripe */
 .hero-carousel .slider > div > div.white-overlay {
     position: absolute;
-    background-color: rgb(255 255 255 / 70%);
+    background-color: rgb(255 255 255 / 80%);
     z-index: 2;
     top: 50%;
     transform: translateY(-50%);
@@ -86,9 +99,32 @@ main .section.hero-carousel-container{
 
 .hero-carousel .slider > div > div picture img {
     width: 5000px;
+    height: 60vh;
     min-height: 500px;
     object-fit: cover;
+    user-select: none;
 }
+
+
+/* IMG position, opposite of text align */
+.hero-carousel .slider > div > div picture img.position-left {
+    object-position: left;
+}
+
+.hero-carousel .slider > div > div picture img.position-right {
+    object-position: right;
+}
+
+@media (min-width: 768px) {
+    .hero-carousel .slider > div > div picture img.position-left {
+        object-position: unset;
+    }
+
+    .hero-carousel .slider > div > div picture img.position-right {
+        object-position: unset;
+    }
+}
+
 
 
 .hero-carousel .slider > div > div > h1 {

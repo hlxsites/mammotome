@@ -75,8 +75,12 @@ function getConfig(block) {
   return Array.from(block.children).map((slide) => {
     const alignValue = slide.children[1].innerText.replace(/[\n\s]/g, '');
     const align = checkAlign(alignValue) ? alignValue : 'left';
+    const imgAlign = align === 'center' || align === 'right' ? 'left' : 'right';
     slide.children[1].remove();
-    return { align };
+    return {
+      align,
+      imgAlign,
+    };
   });
 }
 
@@ -98,13 +102,15 @@ export default function decorate(block) {
       + `Table with ${NUM_COLUMNS} columns and at least 1 row required</code>`;
     return;
   }
-  // Add white-overlay container to each slide
+  // Optimize images
+  optimizeThumbnails(block);
+  // Add white-overlay, position text and image to each slide
   Array.from(block.children).forEach((slide, i) => {
-    slide.setAttribute('style', `justify-content: ${config[i].align};`);
+    slide.classList.add(`text-align-${config[i].align}`);
     slide.appendChild(Object.assign(document.createElement('div'), { className: 'white-overlay' }));
+    slide.querySelector('img').classList.add(`position-${config[i].imgAlign}`);
   });
 
-  optimizeThumbnails(block);
   addEnclosingDiv(block);
   // setup carousel and slider elements
   const sliderWrapper = createSliderWrapper(block);
