@@ -171,7 +171,6 @@ header nav .nav-sections {
   color: var(--mt-global-color-white);
   font-size: var(--mt-font-size-100);
   padding-left: var(--mt-nav-padding-m);
-  padding-right: var(--mt-nav-padding-m);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -877,6 +876,10 @@ header nav.nav-mobile .nav-overflow {
 
   header nav input[type='search'].nav-search-input  {
     top: -35px;
+  }
+
+  header nav.narrow input[type='search'].nav-search-input  {
+    top: -25px;
   }
 }
 
