@@ -168,18 +168,29 @@ function handleGesture() {
 }
 
 /**
+ * Prevent scrolling when swiping for touch devices
+ * @param e event
+ */
+function disableScrolling(e) {
+  const isLink = e.target.tagName.toLowerCase() === 'a';
+  const isButton = e.target.tagName.toLowerCase() === 'button';
+  if (!isLink || !isButton) {
+    e.preventDefault();
+  }
+}
+
+/**
  * Touch Move Event Listener
  * @param slideContainer: slider wrapper or block containing the slides
  */
 function touchMoveEl(slideContainer) {
   slideContainer.addEventListener('touchmove', (e) => {
+    disableScrolling(e);
     touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
     const slide = document.getElementById(`slider-slide-${activeSlide}`);
     slide.style.left = `${touchRelX}px`;
   },
-  {
-    passive: false,
-  });
+  { passive: false });
 }
 
 /**
@@ -188,13 +199,11 @@ function touchMoveEl(slideContainer) {
  */
 function touchStartEl(slideContainer) {
   slideContainer.addEventListener('touchstart', (e) => {
-    e.preventDefault();
+    disableScrolling(e);
     touchStartX = Math.floor(e.touches[0].clientX);
     stopSlideShow();
   },
-  {
-    passive: false,
-  });
+  { passive: false });
 }
 
 /**
@@ -203,13 +212,11 @@ function touchStartEl(slideContainer) {
  */
 function touchEndEl(slideContainer) {
   slideContainer.addEventListener('touchend', (e) => {
-    e.preventDefault();
+    disableScrolling(e);
     touchEndX = Math.floor(e.changedTouches[0].clientX);
     handleGesture();
   },
-  {
-    passive: false,
-  });
+  { passive: false });
 }
 
 /**
