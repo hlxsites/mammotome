@@ -19,6 +19,7 @@
   /* padding */
   --mt-nav-padding: 10px;
   --mt-nav-padding-m: 20px;
+  --mt-nav-padding-s: 5px;
 
   /* line heights */
   --mt-nav-selections-desktop: 1.35rem;
@@ -79,7 +80,13 @@ header nav a:any-link {
 header nav .nav-hamburger {
   display: flex;
   width: 15%;
-  padding: var(--mt-nav-padding);
+  padding: var(--mt-nav-padding-s);
+}
+
+@media (min-width: 340px) {
+    header nav .nav-hamburger {
+        padding: var(--mt-nav-padding);
+    }
 }
 
 header nav .nav-hamburger button {
@@ -95,21 +102,9 @@ header nav .nav-hamburger button {
   white-space: initial;
   width: 100%;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   line-height: 1.1;
-}
-
-@media screen and (min-width: 542px) {
-  header nav .nav-hamburger button {
-    justify-content: center;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  header nav .nav-hamburger button {
-    justify-content: flex-end;
-  }
 }
 
 /* brand */
@@ -122,7 +117,15 @@ header .nav-brand {
   flex-direction: column;
   row-gap: 10px;
   align-items: start;
-  min-width: 225px;
+  min-width: 245px; /* width of logo + 2 * 10 padding */
+}
+
+header nav .nav-brand {
+  width: 75%;
+}
+
+header nav.narrow .nav-brand {
+  min-width: 60px;
 }
 
 header .nav-brand p:last-child {
@@ -135,11 +138,6 @@ header .nav-brand p:last-child {
   height: 26px;
   fill: currentcolor;
   color: var(--mt-global-color-base-primary);
-}
-
-header nav .icon-search {
-  position: absolute;
-  right: 18px;
 }
 
 header nav .icon-search svg {
@@ -281,25 +279,21 @@ header nav:not(.nav-mobile) .nav-sections ul > li.nav-multilevel > ul > li:hover
   background-color: inherit;
 }
 
-@media screen and (min-width: 768px) {
-  header nav .icon-search {
-    right: 30px;
-  }
-}
-
 header nav .nav-tools .icon-search {
   width: 21px;
   height: 21px;
 }
 
-header nav .nav-brand {
-  width: 75%;
-}
-
 header nav .nav-tools {
   display: flex;
-  width: 10%;
   justify-content: center;
+  padding: var(--mt-nav-padding-s);
+}
+
+@media (min-width: 340px) {
+    header nav .nav-tools {
+        padding: var(--mt-nav-padding);
+    }
 }
 
 header nav .nav-hamburger-icon,
@@ -579,6 +573,10 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-search {
     align-items: flex-end;
+  }
+
+  header nav.narrow .nav-search {
+    align-items: center;
   }
 
   header nav .nav-mobile-cover {
