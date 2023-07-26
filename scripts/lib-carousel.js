@@ -201,12 +201,15 @@ function touchMoveEl(slideContainer) {
  * @param slideContainer: slider wrapper or block containing the slides
  */
 function touchStartEl(slideContainer) {
-  slideContainer.addEventListener('touchstart', (e) => {
-    disableScrolling(e);
-    touchStartX = Math.floor(e.touches[0].clientX);
-    stopSlideShow();
-  },
-  { passive: false });
+  slideContainer.addEventListener(
+    'touchstart',
+    (e) => {
+      disableScrolling(e);
+      touchStartX = Math.floor(e.touches[0].clientX);
+      stopSlideShow();
+    },
+    { passive: false },
+  );
 }
 
 /**
@@ -214,12 +217,15 @@ function touchStartEl(slideContainer) {
  * @param slideContainer: slider wrapper or block containing the slides
  */
 function touchEndEl(slideContainer) {
-  slideContainer.addEventListener('touchend', (e) => {
-    disableScrolling(e);
-    touchEndX = Math.floor(e.changedTouches[0].clientX);
-    handleGesture();
-  },
-  { passive: false });
+  slideContainer.addEventListener(
+    'touchend',
+    (e) => {
+      disableScrolling(e);
+      touchEndX = Math.floor(e.changedTouches[0].clientX);
+      handleGesture();
+    },
+    { passive: false },
+  );
 }
 
 /**
