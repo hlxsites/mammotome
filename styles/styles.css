@@ -82,7 +82,7 @@
 
 
   /* fonts families */
-  --mt-body-font-family: "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
   --mt-form-font-family: var(--mt-body-font-family);
 
