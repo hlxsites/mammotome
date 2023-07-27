@@ -11,11 +11,9 @@
  */
 @font-face {
   font-family: "robotoflex-regular-normal-400-fallback";
+  size-adjust: 98%;
   src: local("Arial");
   font-display: swap;
-  size-adjust: 98%;
-  descent-override: 15%;
-  line-gap-override: 0%;
 }
 
 :root {
@@ -84,7 +82,7 @@
 
 
   /* fonts families */
-  --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-body-font-family: "robotoflex-regular-normal-400-fallback", sans-serif;
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
   --mt-form-font-family: var(--mt-body-font-family);
 
