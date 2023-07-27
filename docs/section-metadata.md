@@ -216,15 +216,16 @@ Adds background color to the section and cancels padding. Available in two varia
 | Section Metadata |                                                           |
 |------------------|-----------------------------------------------------------|
 | Style            | highlight                                                 |
-| Background-Image | ![columns-subnavigation.png](assets/columns-subnavigation.png) |
+
+![columns-subnavigation.png](assets/columns-subnavigation.png)
 
 **_Example Highlight-Medium:_**
 
 | Section Metadata |                                                          |
 |------------------|----------------------------------------------------------|
 | Style            | highlight-medium                                         |
-| Background-Image | ![columns-metrics.png](assets/columns-metrics.png) |
 
+![columns-metrics.png](assets/columns-metrics.png)
 
 ## Callout
 
