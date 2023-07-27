@@ -19,8 +19,15 @@ let touchStartX = 0;
 let touchEndX = 0;
 let touchRelX = 0;
 let touchStartY = 0;
-// let touchEndY = 0;
 let touchRelY = 0;
+
+let sliderWrapper;
+let slider;
+let sliderChildren;
+const sliderIds = [];
+let dottedNavChildren;
+let dottedNavContainer;
+let arrowNavContainer;
 
 /**
  * Increment active slide value
@@ -51,8 +58,7 @@ const addAttributes = (el, attributes) => {
  * @param bulletId
  */
 const activateBullet = (bulletId) => {
-  const btnNav = document.querySelector('.dotted-nav');
-  [...btnNav.children].forEach((el) => {
+  dottedNavChildren.forEach((el) => {
     const isActive = el.id === bulletId;
     el.classList.toggle('active', isActive);
     el.classList.toggle('inactive', !isActive);
@@ -65,8 +71,7 @@ const activateBullet = (bulletId) => {
  * @param slideId
  */
 const activateSlide = (slideId) => {
-  const slider = document.querySelector('.slider');
-  Array.from(slider.children).forEach((el) => {
+  sliderChildren.forEach((el) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
       el.style.removeProperty('left');
@@ -105,9 +110,8 @@ const arrowNavigation = (event) => {
  * Add event listeners for bottom bullet navigation
  */
 const dottedNavOnClickEvents = () => {
-  const btnNav = document.querySelector('.dotted-nav');
-  btnNav.addEventListener('click', (event) => {
-    dottedNavigation(event);
+  dottedNavContainer.addEventListener('click', (event) => {
+    if (event.target && event.target.nodeName === 'BUTTON') dottedNavigation(event);
   });
 };
 
@@ -115,9 +119,8 @@ const dottedNavOnClickEvents = () => {
  * Event Listeners for arrow navigation
  */
 const arrowNavOnClickEvents = () => {
-  const arrowNav = document.querySelector('.arrow-nav');
-  if (arrowNav) {
-    arrowNav.addEventListener('click', (event) => {
+  if (arrowNavContainer) {
+    arrowNavContainer.addEventListener('click', (event) => {
       arrowNavigation(event);
     });
   }
@@ -209,7 +212,6 @@ function touchStartEl(slideContainer) {
   slideContainer.addEventListener(
     'touchstart',
     (e) => {
-      // disableScrolling(e);
       touchStartX = Math.floor(e.touches[0].clientX);
       touchStartY = Math.floor(e.touches[0].clientY);
       stopSlideShow();
@@ -226,7 +228,6 @@ function touchEndEl(slideContainer) {
   slideContainer.addEventListener(
     'touchend',
     (e) => {
-      // disableScrolling(e);
       touchEndX = Math.floor(e.changedTouches[0].clientX);
       handleGesture();
     },
@@ -236,11 +237,10 @@ function touchEndEl(slideContainer) {
 
 /**
  * Initialize Slider
- * @param slidesLength - number of slides
+ * comes after all decoration is done
  */
-export function initSlider(slidesLength) {
-  slideCount = slidesLength;
-  const sliderWrapper = document.querySelector('.slider-wrapper');
+export function initSlider() {
+  slideCount = sliderIds.length;
   sliderWrapper.addEventListener('mouseover', stopSlideShow);
   sliderWrapper.addEventListener('mouseleave', startSlideShow);
   touchStartEl(sliderWrapper);
@@ -253,40 +253,36 @@ export function initSlider(slidesLength) {
 
 /**
  * Create Arrow navigation
- * @returns {HTMLDivElement}
+ * @returns {HTMLDivElement} - arrow navigation container
  */
 export function createArrowNav() {
-  const arrowNavContainer = document.createElement('div');
+  arrowNavContainer = document.createElement('div');
   arrowNavContainer.classList.add('arrow-nav');
 
-  const arrowLeft = document.createElement('button');
-  const leftSliderAttributes = {
-    id: 'slider-arrow-left',
-    'aria-label': 'Previous Slide',
-  };
-  addAttributes(arrowLeft, leftSliderAttributes);
-  arrowLeft.innerHTML = HTML_ARROW_LEFT;
-  arrowNavContainer.appendChild(arrowLeft);
+  const arrowLeft = `
+    <button id="slider-arrow-left" 
+            aria-label="Previous Slide">
+      ${HTML_ARROW_LEFT}
+    </button>
+  `;
+  const arrowRight = `
+    <button id="slider-arrow-right" 
+            aria-label="Next Slide" 
+            role="button">
+      ${HTML_ARROW_RIGHT}
+    </button>
+  `;
 
-  const arrowRight = document.createElement('button');
-  const rightSliderAttributes = {
-    id: 'slider-arrow-right',
-    'aria-label': 'Next Slide',
-    role: 'button',
-  };
-  addAttributes(arrowRight, rightSliderAttributes);
-  arrowRight.innerHTML = HTML_ARROW_RIGHT;
-  arrowNavContainer.appendChild(arrowRight);
+  arrowNavContainer.innerHTML = arrowLeft + arrowRight;
   return arrowNavContainer;
 }
 
 /**
  * Create bottom bullet navigation
- * @param slides - create a dotted navigation for each slide and return the container
- * @returns {HTMLDivElement}
+ * @returns {HTMLDivElement} - dottedNavContainer
  */
-export function createDottedNav(slides) {
-  const dottedNavContainer = document.createElement('div');
+export function createDottedNav() {
+  dottedNavContainer = document.createElement('div');
   dottedNavContainer.classList.add('dotted-nav');
   const bottomNavAttributes = {
     'aria-label': 'Slide Controls',
@@ -295,22 +291,31 @@ export function createDottedNav(slides) {
   addAttributes(dottedNavContainer, bottomNavAttributes);
 
   let j = 1;
-  slides.forEach(() => {
-    // const nextSlide = slides.length === j ? 1 : j + 1;
-    const bottomNavEl = document.createElement('button');
+  let navElements = '';
+
+  sliderIds.forEach(() => {
     const bottomNavElAttribute = {
       id: `slider-dot-${j}`,
-      'aria-label': `Select Slide ${j} of ${slides.length}`,
+      'aria-label': `Select Slide ${j} of ${sliderIds.length}`,
       role: 'button',
       'aria-current': j === 1 ? 'true' : 'false',
       'aria-controls': `slider-slide-${j}`,
     };
-    addAttributes(bottomNavEl, bottomNavElAttribute);
-    bottomNavEl.classList.add('dot');
-    bottomNavEl.classList.add(j === 1 ? 'active' : 'inactive');
-    dottedNavContainer.appendChild(bottomNavEl);
+
+    navElements += `
+      <button id="${bottomNavElAttribute.id}" 
+              aria-label="${bottomNavElAttribute['aria-label']}" 
+              role="${bottomNavElAttribute.role}" 
+              aria-current="${bottomNavElAttribute['aria-current']}" 
+              aria-controls="${bottomNavElAttribute['aria-controls']}" 
+              class="dot ${j === 1 ? 'active' : 'inactive'}">
+      </button>
+    `;
     j += 1;
   });
+
+  dottedNavContainer.innerHTML = navElements;
+  dottedNavChildren = Array.from(dottedNavContainer.children);
   return dottedNavContainer;
 }
 
@@ -328,22 +333,22 @@ export function addEnclosingDiv(block) {
 }
 
 /**
- * Set slide-wrapper class
- * @param sliderWrapper
- * @returns {*}
+ * Set slide-wrapper class, this is the first class to call when creating a slider
+ * @param sliderContainer -  container for the carousel
  */
-export function createSliderWrapper(sliderWrapper) {
-  sliderWrapper.classList.add('slider-wrapper');
+export function createSliderWrapper(sliderContainer) {
+  sliderContainer.classList.add('slider-wrapper');
+  sliderWrapper = sliderContainer;
   return sliderWrapper;
 }
 
 /**
- * Create non Picture Slider from existing sliderWrapper
- * @param sliderWrapper
+ * Create (non-picture-only slider and add under sliderWrapper
+ * @returns {HTMLDivElement} - slider elements
  */
-export function createSlider(sliderWrapper) {
+export function createSlideSlider() {
   const existingDivs = sliderWrapper.children;
-  const slider = document.createElement('div');
+  slider = document.createElement('div');
   if (existingDivs.length > 0) {
     [...existingDivs].forEach((el) => {
       slider.appendChild(el);
@@ -351,34 +356,32 @@ export function createSlider(sliderWrapper) {
   }
   slider.classList.add('slider');
   sliderWrapper.appendChild(slider);
+  sliderChildren = Array.from(slider.children);
   return slider;
 }
 
 /**
- * // set picture id (slide 1 - n)
- * @param slider
+ * // set slider ids (slide 1 - n)
  * @returns {*[]}
  */
-export function setSliderIds(slider) {
+export function setSliderIds() {
   let i = 1;
-  const slides = [];
-  [...slider.children].forEach((el) => {
+  sliderChildren.forEach((el) => {
     el.setAttribute('id', `slider-slide-${i}`);
     el.classList.add(i === 1 ? 'show' : 'hide');
-    slides.push(`slider-slide-${i}`);
+    sliderIds.push(`slider-slide-${i}`);
     i += 1;
   });
-  return slides;
+  return sliderIds;
 }
 
 /**
- * put pictures under slider flex container
- * @param sliderWrapper
- * @returns {HTMLDivElement}
+ * Create PictureSlider and add under sliderWrapper
+ * @returns {HTMLDivElement} - slider elements
  */
-export function createPictures(sliderWrapper) {
+export function createPictureSlider() {
   const pictures = sliderWrapper.getElementsByTagName('picture');
-  const slider = document.createElement('div');
+  slider = document.createElement('div');
   slider.classList.add('slider');
   [...pictures].forEach((el) => {
     slider.appendChild(el);
@@ -391,5 +394,10 @@ export function createPictures(sliderWrapper) {
     'aria-label': 'Slider Carousel',
   };
   addAttributes(slider, sliderAttributes);
+  sliderChildren = Array.from(slider.children);
   return slider;
+}
+
+export function getSliderChildren() {
+  return sliderChildren;
 }

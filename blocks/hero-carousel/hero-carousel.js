@@ -1,15 +1,17 @@
 import {
   addEnclosingDiv,
   createDottedNav,
-  createSlider,
+  createSlideSlider,
   createSliderWrapper,
   initSlider,
   setSliderIds,
+  getSliderChildren,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 // Number of required columns in table
 const NUM_COLUMNS = 3;
+const INVALID_CONFIGURATION_MESSAGE = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
 
 /**
  * Get optimized img element width default
@@ -69,7 +71,7 @@ const checkAlign = (str) => str.includes('left') || str.includes('center') || st
  */
 function getConfig(block) {
   if (block.children.length === 0 || block.children[0].children.length !== NUM_COLUMNS) {
-    throw new Error('Invalid configuration. Table with 3 columns and at least 1 row required');
+    throw new Error(INVALID_CONFIGURATION_MESSAGE);
   }
 
   return Array.from(block.children).map((slide) => {
@@ -98,8 +100,7 @@ export default function decorate(block) {
   }
   // check if required amount of columns and rows are present
   if (config.length === 0) {
-    block.innerHTML = '<code>Invalid configuration. '
-      + `Table with ${NUM_COLUMNS} columns and at least 1 row required</code>`;
+    block.innerHTML = `<code>${INVALID_CONFIGURATION_MESSAGE}</code>`;
     return;
   }
   // Optimize images
@@ -114,12 +115,14 @@ export default function decorate(block) {
   addEnclosingDiv(block);
   // setup carousel and slider elements
   const sliderWrapper = createSliderWrapper(block);
-  const slider = createSlider(sliderWrapper);
-  const slides = setSliderIds(slider);
-  createButtonRow(sliderWrapper.querySelectorAll('.slider > div'));
-  if (slides.length > 1) {
-    const dottedNavContainer = createDottedNav(slides);
+  createSlideSlider();
+  const sliderIds = setSliderIds();
+  const sliderChildren = getSliderChildren();
+  // createButtonRow(sliderWrapper.querySelectorAll('.slider > div'));
+  createButtonRow(sliderChildren);
+  if (sliderIds.length > 1) {
+    const dottedNavContainer = createDottedNav();
     sliderWrapper.appendChild(dottedNavContainer);
-    initSlider(slides.length);
+    initSlider();
   }
 }
