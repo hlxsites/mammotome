@@ -121,6 +121,31 @@ main .columns > div > div {
   width: 95%;
 }
 
+.columns.subnavigation {
+  padding: 20px 0;
+}
+
+.columns.subnavigation > div {
+  gap: unset;
+}
+
+.columns.subnavigation > div > div {
+  border-right: 1px solid #797a7c;
+  padding: 15px 0;
+}
+
+.columns.subnavigation > div > div:last-child {
+  border-right: unset;
+}
+
+.columns.subnavigation a.button.primary {
+  background-color: unset;
+  border: unset;
+  color: var(--mt-heading-color-secondary);
+  font-size: var(--mt-heading-font-size-l);
+  font-weight: var(--mt-font-weight-boldest);
+}
+
 main .columns.centered > div {
   text-align: center;
 }
