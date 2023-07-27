@@ -121,21 +121,34 @@ main .columns > div > div {
   width: 95%;
 }
 
-.columns.subnavigation {
-  padding: 20px 0;
-}
-
-.columns.subnavigation > div {
+main .columns.subnavigation > div {
   gap: unset;
 }
 
-.columns.subnavigation > div > div {
-  border-right: 1px solid #797a7c;
+main .columns.centered > div {
+  text-align: center;
+}
+
+main .columns.simple > div {
+  align-items: flex-start;
+}
+
+main .columns.centered > div > div {
+  align-self: flex-start;
+}
+
+main .columns.subnavigation {
+  padding: 0;
+}
+
+main .columns.subnavigation > div > div {
+  width: 100%;
+  border-bottom: 1px solid #797a7c;
   padding: 15px 0;
 }
 
-.columns.subnavigation > div > div:last-child {
-  border-right: unset;
+main .columns.subnavigation > div > div:last-child {
+  border-bottom: unset;
 }
 
 .columns.subnavigation a.button.primary {
@@ -144,10 +157,6 @@ main .columns > div > div {
   color: var(--mt-heading-color-secondary);
   font-size: var(--mt-heading-font-size-l);
   font-weight: var(--mt-font-weight-boldest);
-}
-
-main .columns.centered > div {
-  text-align: center;
 }
 
 div[class^="columns image-color-"] img {
@@ -178,14 +187,6 @@ main .columns.text-small > div p {
 
 main .section.narrow .columns-wrapper {
   padding: 0 15%;
-}
-
-main .columns.simple > div {
-  align-items: flex-start;
-}
-
-main .columns.centered > div > div {
-  align-self: flex-start;
 }
 
 main .columns > div > .columns-img-col {
@@ -283,6 +284,10 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
     gap: 0;
   }
 
+  main .columns.subnavigation > div {
+    flex-direction: column;
+  }
+
   main .columns[class*="image-color-"] > div:not(:first-child) {
     margin-top: 8%;
   }
@@ -293,5 +298,24 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 
   main .columns > div > .columns-img-col {
     order: unset;
+  }
+
+  main .columns.subnavigation > div > div:last-child {
+    border-right: unset;
+  }
+}
+
+@media (min-width: 1024px) {
+  main .columns.subnavigation {
+    padding: 20px 0;
+  }
+
+  main .columns.subnavigation > div {
+    flex-direction: unset;
+  }
+
+  main .columns.subnavigation > div > div {
+    border-right: 1px solid #797a7c;
+    border-bottom: unset;
   }
 }
