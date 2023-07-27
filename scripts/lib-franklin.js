@@ -630,16 +630,12 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 /**
  * Add a divider into section from Section Metadata block
  * @param section section element
- * @param pos position of divider (before or after) default is after
+ * @param type primary (grey) or secondary (blue)
  */
-export function addDivider(section, pos) {
+export function addDivider(section, type) {
   const divider = document.createElement('hr');
-  divider.classList.add('divider');
-  if (pos === 'before') {
-    section.insertBefore(divider, section.firstChild);
-  } else {
-    section.appendChild(divider);
-  }
+  divider.classList.add('divider', type);
+  section.appendChild(divider);
 }
 
 /** Add a spacer into section from Section Metadata block
@@ -697,8 +693,8 @@ export function decorateSections(main) {
           styles.forEach((style) => style && section.classList.add(style));
         } else if (key === 'divider') { // add divider from section metadata
           const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
-          const dividerPos = dividerMeta[0] || 'after';
-          addDivider(section, dividerPos);
+          const dividerType = dividerMeta[0] === 'secondary' ? 'secondary' : 'primary';
+          addDivider(section, dividerType);
         } else if (key === 'spacer') {
           const spacerMeta = meta.spacer.split(',').map((spacer) => toClassName(spacer.trim()));
           const spacerValue = parseInt(spacerMeta[0], 10) || '0';

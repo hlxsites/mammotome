@@ -228,23 +228,29 @@ Narrow style puts the content in a section that is fixed to **610px**.
 
 ## Divider
 
-Adds a divider before or after the section.
+Adds a divider. The divider comes with two flavors: **primary** and **secondary**. 
 
 
-| Divider |                                |
-| ------- | ------------------------------ |
-| before  | add divider before the section |
-| after   | add divider after the section  |
+| Divider   |                                  |
+|-----------|----------------------------------|
+| primary   | add divider with grey color 50%  |
+| secondary | add divider with blue color 34px |
 
 **_Example_**
 
 
-| Section Metadata |       |
-| ---------------- | ----- |
-| divider          | after |
-
+| Section Metadata |                      |
+| ---------------- |----------------------|
+| divider          | primary or [_empty_] |
 
 ![line-example.png](assets/line-example.png)
+
+
+| Section Metadata |           |
+| ---------------- |-----------|
+| divider          | secondary |
+
+![divider-blue-example.png](assets/divider-blue-example.png)
 
 ## Button-Width
 
