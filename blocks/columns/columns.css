@@ -172,13 +172,13 @@ main .columns.subnavigation a.button.primary {
 main .columns.metrics h2 {
   margin-bottom: 5px;
   color: var(--mt-heading-color-secondary);
-  font-size: var(--mt-heading-font-size-xl);
+  font-size: var(--mt-heading-font-size-xxl);
   font-weight: var(--mt-font-weight-bold);
   letter-spacing: 1px;
 }
 
 main .columns.metrics p {
-  font-size: var(--mt-body-font-size-s);
+  font-size: var(--mt-body-font-size-m);
   line-height: var(--mt-body-line-height);
 }
 
