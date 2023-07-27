@@ -1012,20 +1012,20 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 /* Divider as Section Metadata */
-.section hr.divider.primary {
+.section hr.divider {
   border: 0;
   height: 4px;
-  background-color: var(--mt-global-horizontal-line-color);
-  width: 50%;
   margin: calc(26px + 10px + 3%) auto auto;
 }
 
+.section hr.divider.primary {
+  background-color: var(--mt-global-horizontal-line-color);
+  width: 50%;
+}
+
 .section hr.divider.secondary {
-  border: 0;
-  height: 4px;
   background-color: var(--mt-global-horizontal-line-color-blue);
   width: 34px;
-  margin: calc(26px + 10px + 3%) auto auto;
 }
 
 /* Spacer as Section Metadata */

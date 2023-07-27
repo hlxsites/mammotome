@@ -228,7 +228,7 @@ Narrow style puts the content in a section that is fixed to **610px**.
 
 ## Divider
 
-Adds a divider before or after the section.
+Adds a divider. The divider comes with two flavors: **primary** and **secondary**. 
 
 
 | Divider   |                                  |
@@ -239,9 +239,9 @@ Adds a divider before or after the section.
 **_Example_**
 
 
-| Section Metadata |                  |
-| ---------------- |------------------|
-| divider          | primary or _empty_ |
+| Section Metadata |                      |
+| ---------------- |----------------------|
+| divider          | primary or [_empty_] |
 
 ![line-example.png](assets/line-example.png)
 
