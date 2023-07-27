@@ -169,7 +169,7 @@ main .columns.subnavigation a.button.primary {
   font-weight: var(--mt-font-weight-boldest);
 }
 
-main .columns.metrics h1 {
+main .columns.metrics h2 {
   margin-bottom: 5px;
   color: var(--mt-heading-color-secondary);
   font-size: var(--mt-heading-font-size-xl);

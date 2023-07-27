@@ -9,6 +9,8 @@
 - _Linked Images_: Makes the images clickable with the link from the text 
 - _Image Color Primary Blue_: Creates a blue background behind the image
 - _Image Color Light Blue_: Creates a light blue background behind the image
+- _Subnavigation_: Formats the text as a subnavigation. Supports a single link per column only.
+- _Metrics_: Formats the text as a metrics. Supports a single H2 and arbitrary text below.
 
 ### Content Structure
 
@@ -21,4 +23,9 @@
 ### Example
 
 ![columns-example.png](../assets/columns-example.png)
-s
+
+### Example: Subnavigation
+![columns-subnavigation.png](../assets/columns-subnavigation.png)
+
+### Example: Metrics
+![columns-metrics.png](../assets/columns-metrics.png)
