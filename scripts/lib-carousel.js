@@ -18,6 +18,9 @@ let slideCount = 0;
 let touchStartX = 0;
 let touchEndX = 0;
 let touchRelX = 0;
+let touchStartY = 0;
+// let touchEndY = 0;
+let touchRelY = 0;
 
 /**
  * Increment active slide value
@@ -59,7 +62,7 @@ const activateBullet = (bulletId) => {
 
 /**
  * Slides picture switcher
- * @param slideId: format: slider-slide-${activeSlide}
+ * @param slideId
  */
 const activateSlide = (slideId) => {
   const slider = document.querySelector('.slider');
@@ -174,21 +177,23 @@ function handleGesture() {
 function disableScrolling(e) {
   const isLink = e.target.tagName.toLowerCase() === 'a';
   const isButton = e.target.tagName.toLowerCase() === 'button';
-  if (!isLink && !isButton) {
+  const isMoveY = Math.abs(touchRelY) > Math.abs(touchRelX);
+  if (!isLink && !isButton && !isMoveY) {
     e.preventDefault();
   }
 }
 
 /**
  * Touch Move Event Listener
- * @param slideContainer: slider wrapper or block containing the slides
+ * @param slideContainer - slider wrapper or block containing the slides
  */
 function touchMoveEl(slideContainer) {
   slideContainer.addEventListener(
     'touchmove',
     (e) => {
-      disableScrolling(e);
       touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
+      touchRelY = Math.floor(e.touches[0].clientY) - touchStartY;
+      disableScrolling(e);
       const slide = document.getElementById(`slider-slide-${activeSlide}`);
       slide.style.left = `${touchRelX}px`;
     },
@@ -198,14 +203,15 @@ function touchMoveEl(slideContainer) {
 
 /**
  * Touch Start Event Listener
- * @param slideContainer: slider wrapper or block containing the slides
+ * @param slideContainer - slider wrapper or block containing the slides
  */
 function touchStartEl(slideContainer) {
   slideContainer.addEventListener(
     'touchstart',
     (e) => {
-      disableScrolling(e);
+      // disableScrolling(e);
       touchStartX = Math.floor(e.touches[0].clientX);
+      touchStartY = Math.floor(e.touches[0].clientY);
       stopSlideShow();
     },
     { passive: false },
@@ -214,13 +220,13 @@ function touchStartEl(slideContainer) {
 
 /**
  * Touch End Event Listener
- * @param slideContainer: slider wrapper or block containing the slides
+ * @param slideContainer - slider wrapper or block containing the slides
  */
 function touchEndEl(slideContainer) {
   slideContainer.addEventListener(
     'touchend',
     (e) => {
-      disableScrolling(e);
+      // disableScrolling(e);
       touchEndX = Math.floor(e.changedTouches[0].clientX);
       handleGesture();
     },
@@ -230,7 +236,7 @@ function touchEndEl(slideContainer) {
 
 /**
  * Initialize Slider
- * @param slidesLength: number of slides
+ * @param slidesLength - number of slides
  */
 export function initSlider(slidesLength) {
   slideCount = slidesLength;
@@ -276,7 +282,7 @@ export function createArrowNav() {
 
 /**
  * Create bottom bullet navigation
- * @param slides: create a dotted navigation for each slide and return the container
+ * @param slides - create a dotted navigation for each slide and return the container
  * @returns {HTMLDivElement}
  */
 export function createDottedNav(slides) {
