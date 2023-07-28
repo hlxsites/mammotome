@@ -21,6 +21,7 @@ based on visual differences between sections such as a different background colo
       * [Accent secondary blur overlay](#accent-secondary-blur-overlay)
       * [Gradient primary blur overlay](#gradient-primary-blur-overlay)
       * [Gradient secondary blur overlay](#gradient-secondary-blur-overlay)
+      * [Highlight](#highlight)
   * [Callout](#callout)
   * [Narrow](#narrow)
   * [Divider](#divider)
@@ -206,6 +207,26 @@ Adds a gradient overlay over the section.
 
 ![gradient-secondary-blur-overlay-example.png](assets/gradient-secondary-blur-overlay-example.png)
 
+#### Highlight
+
+Adds background color to the section and cancels padding. Available in two variants, _highlight_ and _highlight-medium_.
+
+**_Example Highlight:_**
+
+| Section Metadata |                                                           |
+|------------------|-----------------------------------------------------------|
+| Style            | highlight                                                 |
+
+![columns-subnavigation.png](assets/columns-subnavigation.png)
+
+**_Example Highlight-Medium:_**
+
+| Section Metadata |                                                          |
+|------------------|----------------------------------------------------------|
+| Style            | highlight-medium                                         |
+
+![columns-metrics.png](assets/columns-metrics.png)
+
 ## Callout
 
 Puts the content of the section in the center and sets the the fonts size for h1, h2 and h3 to the same value.
@@ -228,23 +249,29 @@ Narrow style puts the content in a section that is fixed to **610px**.
 
 ## Divider
 
-Adds a divider before or after the section.
+Adds a divider. The divider comes with two flavors: **primary** and **secondary**. 
 
 
-| Divider |                                |
-| ------- | ------------------------------ |
-| before  | add divider before the section |
-| after   | add divider after the section  |
+| Divider   |                                  |
+|-----------|----------------------------------|
+| primary   | add divider with grey color 50%  |
+| secondary | add divider with blue color 34px |
 
 **_Example_**
 
 
-| Section Metadata |       |
-| ---------------- | ----- |
-| divider          | after |
-
+| Section Metadata |                      |
+| ---------------- |----------------------|
+| divider          | primary or [_empty_] |
 
 ![line-example.png](assets/line-example.png)
+
+
+| Section Metadata |           |
+| ---------------- |-----------|
+| divider          | secondary |
+
+![divider-blue-example.png](assets/divider-blue-example.png)
 
 ## Button-Width
 

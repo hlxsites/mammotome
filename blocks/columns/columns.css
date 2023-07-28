@@ -7,6 +7,8 @@
   --columns-link-color: var(--mt-link-color);
   --mt-ordered-list-font-size: var(--mt-font-size-80);
   --columns-font-weight: var(--mt-font-weight-regular);
+  --mt-columns-subnavigation-border-color: #797a7c;
+  --mt-columns-metrics-border-color: #a8b4c4;
 }
 
 main .columns {
@@ -95,6 +97,30 @@ main .columns > div p {
   line-height: 1.5;
 }
 
+body.refresh .columns h2 {
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-bold);
+  text-transform: unset;
+  letter-spacing: unset;
+}
+
+body.refresh .columns h3 {
+  font-size: var(--mt-heading-font-size-m);
+  font-weight: var(--mt-font-weight-bold);
+  text-transform: unset;
+  letter-spacing: unset;
+  margin-bottom: 5px;
+}
+
+body.refresh .columns p {
+  font-size: var(--mt-heading-font-size-l);
+  color: var(--mt-global-color-base-tertiary);
+}
+
+body.refresh .columns:not(.subnavigation, .metrics) .button-container {
+  margin-top: 50px;
+}
+
 main .columns.centered h1,
 main .columns.centered h2,
 main .columns.centered h3,
@@ -121,8 +147,64 @@ main .columns > div > div {
   width: 95%;
 }
 
+main .columns.subnavigation > div,
+main .columns.metrics > div {
+  gap: unset;
+}
+
 main .columns.centered > div {
   text-align: center;
+}
+
+main .columns.simple > div {
+  align-items: flex-start;
+}
+
+main .columns.centered > div > div {
+  align-self: flex-start;
+}
+
+main .columns.subnavigation,
+main .columns.metrics {
+  padding: 0 5%;
+}
+
+main .columns.subnavigation > div > div,
+main .columns.metrics > div > div {
+  width: 100%;
+  border-bottom: 1px solid var(--mt-columns-subnavigation-border-color);
+  padding: 15px 0;
+}
+
+main .columns.metrics > div > div {
+  border-color: var(--mt-columns-metrics-border-color);
+}
+
+main .columns.subnavigation > div > div:last-child,
+main .columns.metrics > div > div:last-child {
+  border-bottom: unset;
+}
+
+main .columns.subnavigation a.button.primary {
+  background-color: unset;
+  border: unset;
+  color: var(--mt-heading-color-secondary);
+  font-size: var(--mt-heading-font-size-l);
+  font-weight: var(--mt-font-weight-boldest);
+}
+
+main .columns.metrics h2 {
+  margin-bottom: 5px;
+  color: var(--mt-heading-color-secondary);
+  font-size: var(--mt-heading-font-size-xxl);
+  font-weight: var(--mt-font-weight-bold);
+  letter-spacing: 1px;
+}
+
+main .columns.metrics p {
+  color: var(--mt-background-color-secondary);
+  font-size: var(--mt-body-font-size-m);
+  line-height: var(--mt-body-line-height);
 }
 
 div[class^="columns image-color-"] img {
@@ -153,14 +235,6 @@ main .columns.text-small > div p {
 
 main .section.narrow .columns-wrapper {
   padding: 0 15%;
-}
-
-main .columns.simple > div {
-  align-items: flex-start;
-}
-
-main .columns.centered > div > div {
-  align-self: flex-start;
 }
 
 main .columns > div > .columns-img-col {
@@ -227,9 +301,17 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
   z-index: 20;
 }
 
+.section.tight .columns {
+  margin-top: 0;
+}
+
 @media (min-width: 768px) {
   .columns .columns-img {
     padding: 10%;
+  }
+
+  body.refresh .columns h2 {
+    font-size: var(--mt-heading-font-size-xxl);
   }
 }
 
@@ -258,6 +340,11 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
     gap: 0;
   }
 
+  main .columns.subnavigation > div,
+  main .columns.metrics > div {
+    flex-direction: column;
+  }
+
   main .columns[class*="image-color-"] > div:not(:first-child) {
     margin-top: 8%;
   }
@@ -268,5 +355,32 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 
   main .columns > div > .columns-img-col {
     order: unset;
+  }
+
+  main .columns.subnavigation > div > div:last-child,
+  main .columns.metrics > div > div:last-child {
+    border-right: unset;
+  }
+}
+
+@media (min-width: 1024px) {
+  main .columns.subnavigation,
+  main .columns.metrics {
+    padding: 20px 0;
+  }
+
+  main .columns.subnavigation > div,
+  main .columns.metrics > div {
+    flex-direction: unset;
+  }
+
+  main .columns.subnavigation > div > div {
+    border-right: 1px solid var(--mt-columns-subnavigation-border-color);
+    border-bottom: unset;
+  }
+
+  main .columns.metrics > div > div {
+    border-right: 1px solid var(--mt-columns-metrics-border-color);
+    border-bottom: unset;
   }
 }

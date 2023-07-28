@@ -19,7 +19,10 @@
 :root {
   /* global colors */
   --mt-global-color-base-primary: #84329B;
+  --mt-global-color-base-primary-light: #a03ebb;
+  --mt-global-color-base-primary-very-light: #f7dbff;
   --mt-global-color-base-secondary: #3D3E40;
+  --mt-global-color-base-tertiary: #6f6f6f;
   --mt-global-color-accent-primary: #5F8DDA;
   --mt-global-color-accent-secondary: #487ED9;
   --mt-global-color-accent-tertiary: #78aaff24;
@@ -32,34 +35,38 @@
   --mt-global-color-orange: #ff5f3f;
   --mt-global-color-oslo-gray: #818a91;
   --mt-global-color-dove-gray: #666;
+  --mt-global-color-light-gray: #f6f6f8;
   --mt-global-color-blue-ribbon: #035fe6;
+  --mt-global-color-blue-light: #d0dded;
   --mt-global-color-light-blue: #BECAE9;
-  --mt-global-color-dark-blue: #215BBB;
+  --mt-global-color-dark-blue: #1b51a7;
   --mt-global-color-silver: #ccc;
   --mt-global-color-alabaste: #F7F7F7;
   --mt-global-color-gallery: #ECECEC;
   --mt-global-color-accent-grey: #BFBFBF;
   --mt-global-color-line-grey: #D5D8DC;
   --mt-global-color-red: #c36;
+  --mt-global-color-cornflower-blue: #618CDB;
 
   /* feature background colors */
   --mt-background-color-primary: var(--mt-global-color-white);
   --mt-background-color-secondary: var(--mt-global-color-black);
-  --mt-button-background-color-primary: var(--mt-global-color-accent-primary);
-  --mt-button-background-color-seconary: var(--mt-global-color-white);
+  --mt-background-color-highlight: var(--mt-global-color-light-gray);
+  --mt-background-color-highlight-medium: var(--mt-global-color-blue-light);
+  --mt-button-background-color-primary: var(--mt-global-color-accent-quinary);
+  --mt-button-background-color-secondary: var(--mt-global-color-white);
   --mt-input-background-color: var(--mt-background-color-primary);
 
   /* border colors */
-  --mt-button-border-color-primary: var(--mt-global-color-accent-primary);
+  --mt-button-border-color-primary: var(--mt-global-color-accent-quinary);
   --mt-button-border-color-secondary: var(--mt-button-border-color-primary);
   --mt-input-border-color: var(--mt-global-color-base-secondary);
 
   /* feature colors */
   --mt-button-color-primary: var(--mt-global-color-white);
-  --mt-button-color-secondary: var(--mt-global-color-accent-primary);
-  --mt-button-hover-color-primary: var(--mt-global-color-accent-secondary);
-  --mt-button-hover-color: var(--mt-global-color-dark-blue);
-  --mt-button-hover-color-secondary: var(--mt-global-color-accent-tertiary);
+  --mt-button-color-secondary: var(--mt-global-color-accent-quinary);
+  --mt-button-hover-color-primary: var(--mt-global-color-base-primary-light);
+  --mt-button-hover-color-secondary: var(--mt-global-color-base-primary-very-light);
   --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
   --mt-heading-color-inverted: var(--mt-global-color-white);
@@ -78,6 +85,7 @@
   --mt-top-navigation-link-color: var(--mt-global-color-accent-quinary);
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
   --mt-global-horizontal-line-color: #EBE4E7;
+  --mt-global-horizontal-line-color-blue: var(--mt-global-color-cornflower-blue);
 
 
   /* fonts families */
@@ -95,7 +103,7 @@
 
   /* feature font weights */
   --mt-body-font-weight: var(--mt-font-weight-thin);
-  --mt-button-font-weight: var(--mt-font-weight-boldest);
+  --mt-button-font-weight: var(--mt-font-weight-regular);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
   --mt-tab-navigation-font-weight: var(--mt-font-weight-bold) ;
@@ -131,7 +139,7 @@
   --mt-list-line-height: 1.95rem;
   --mt-hero-line-height-title: 1;
   --mt-hero-line-height-subtitle: 1.5;
-  --mt-nav-height: 85px;
+  --mt-nav-height: 100px;
   --mt-nav-height-narrow: 60px;
   --mt-prev-next-header-link-line-height: var(--mt-font-size-185);
   --mt-prev-next-button-line-height: var(--mt-font-size-120);
@@ -239,6 +247,11 @@ h5 {
 
   h2 {
     font-size: var(--mt-heading-font-size-xl);
+  }
+
+  body.refresh h2 {
+    font-size: var(--mt-heading-font-size-xxl);
+    font-weight: var(--mt-font-weight-bold);
   }
 
   h4 {
@@ -475,6 +488,25 @@ p {
   padding: 0 5%;;
 }
 
+/* Refresh styles */
+
+body.refresh h2 {
+  font-size: var(--mt-heading-font-size-mobile-xxl);
+  font-weight: var(--mt-font-weight-bold);
+}
+
+body.refresh p {
+  font-size: var(--mt-heading-font-size-l);
+  color: var(--mt-global-color-base-tertiary);
+}
+
+@media (min-width: 767px) {
+  body.refresh h2 {
+    font-size: var(--mt-heading-font-size-xxl);
+    font-weight: var(--mt-font-weight-bold);
+  }
+}
+
 /* section style  inverted text  */
 .section.inverted-text,
 .section.inverted-text h1,
@@ -544,10 +576,10 @@ a.button:any-link,
 button {
   display: inline-block;
   box-sizing: border-box;
-  padding: 15px 50px;
+  padding: 5px 40px;
   margin: 0;
-  border: 2px solid transparent;
-  border-radius: 5px;
+  border: 1px solid transparent;
+  border-radius: 14px;
   cursor: pointer;
   font-size: var(--mt-button-font-size);
   font-weight: var(--mt-button-font-weight);
@@ -589,7 +621,7 @@ button:disabled:hover {
 
 a.button.secondary,
 button.secondary {
-  background-color: unset;
+  background-color: var(--mt-button-background-color-secondary);
   border-color: var(--mt-button-border-color-secondary);
   color: var(--mt-button-color-secondary);
 }
@@ -1012,14 +1044,43 @@ main .section.our-history .year.highlight .icon-calendar {
 .section hr.divider {
   border: 0;
   height: 4px;
-  background-color: var(--mt-global-horizontal-line-color);
-  width: 50%;
   margin: calc(26px + 10px + 3%) auto auto;
 }
 
+.section hr.divider.primary {
+  background-color: var(--mt-global-horizontal-line-color);
+  width: 50%;
+}
+
+.section hr.divider.secondary {
+  background-color: var(--mt-global-horizontal-line-color-blue);
+  width: 34px;
+}
+
+/* Spacer as Section Metadata */
 .section.spacer {
   margin-top: 0;
   margin-bottom: 0;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.section.highlight {
+  margin: 0;
+  padding: 5% 10%;
+  background-color: var(--mt-background-color-highlight);
+}
+
+.section.highlight-medium {
+  margin: 0;
+  padding: 5% 10%;
+  background-color: var(--mt-background-color-highlight-medium);
+}
+
+.section.tight {
+  margin-top: 10px;
+}
+
+.section.nopadding {
+  padding: 0;
 }
