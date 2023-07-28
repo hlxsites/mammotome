@@ -1038,3 +1038,7 @@ main .section.our-history .year.highlight .icon-calendar {
   background-color: var(--mt-background-color-highlight-medium);
   padding: 0;
 }
+
+.section.tight {
+  margin-top: 10px;
+}
