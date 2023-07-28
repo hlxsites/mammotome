@@ -57,6 +57,7 @@ main .hero h1 {
   max-width: 1200px;
   padding: 0 5%;
   font-size: var(--mt-hero-font-size-l);
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
   line-height: var(--mt-hero-line-height-title);
 }
@@ -66,6 +67,7 @@ main .hero h2 {
   margin-bottom: 35px;
   padding: 0 24px;
   font-size: var(--mt-hero-font-size-s);
+  font-family: var(--mt-body-font-family-thin);
   font-weight: var(--mt-font-weight-thin);
   line-height: var(--mt-hero-line-height-subtitle);
 }
@@ -77,6 +79,7 @@ main .hero-light h1 {
 
 main .hero-light h2 {
   font-size: var(--mt-hero-light-font-size-s);
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
 }
 

@@ -10,10 +10,80 @@
  * governing permissions and limitations under the License.
  */
 @font-face {
+  font-family: "robotoflex-regular-normal-300-fallback";
+  font-style: normal;
+  font-weight: 300;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
+}
+
+@font-face {
   font-family: "robotoflex-regular-normal-400-fallback";
-  size-adjust: 98%;
-  src: local("Arial");
-  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-500-fallback";
+  font-style: normal;
+  font-weight: 500;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-600-fallback";
+  font-style: normal;
+  font-weight: 600;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-700-fallback";
+  font-style: normal;
+  font-weight: 700;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-800-fallback";
+  font-style: normal;
+  font-weight: 800;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-900-fallback";
+  font-style: normal;
+  font-weight: 900;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
 }
 
 :root {
@@ -88,7 +158,14 @@
 
 
   /* fonts families */
-  --mt-body-font-family: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-body-font-family-thin: roboto, "robotoflex-regular-normal-300-fallback", sans-serif;
+  --mt-body-font-family-regular: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-body-font-family-bold: roboto, "robotoflex-regular-normal-500-fallback", sans-serif;
+  --mt-body-font-family-bolder: roboto, "robotoflex-regular-normal-600-fallback", sans-serif;
+  --mt-body-font-family-boldest: roboto, "robotoflex-regular-normal-700-fallback", sans-serif;
+  --mt-body-font-family-superbold: roboto, "robotoflex-regular-normal-800-fallback", sans-serif;
+  --mt-body-font-family-heavy: roboto, "robotoflex-regular-normal-900-fallback", sans-serif;
+  --mt-body-font-family: var(--mt-body-font-family-regular);
   --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
   --mt-form-font-family: var(--mt-body-font-family);
 
@@ -98,10 +175,11 @@
   --mt-font-weight-bold: 500;
   --mt-font-weight-bolder: 600;
   --mt-font-weight-boldest: 700;
+  --mt-font-weight-superbold: 800;
   --mt-font-weight-heavy: 900;
 
   /* feature font weights */
-  --mt-body-font-weight: var(--mt-font-weight-thin);
+  --mt-body-font-weight: var(--mt-font-weight-regular);
   --mt-button-font-weight: var(--mt-font-weight-regular);
   --mt-prev-next-header-link: var(--mt-font-weight-bold);
   --mt-prev-next-button-font-weight: var(--mt-font-weight-regular);
@@ -211,6 +289,7 @@ h5,
 h6 {
   text-align: center;
   margin: 0.5rem 0 1rem;
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
   line-height: 1.2;
   color: var(--mt-global-color-base-secondary);
@@ -314,6 +393,7 @@ a:hover {
 }
 
 strong {
+  font-family: var(--mt-body-font-family-heavy);
   font-weight: var(--mt-font-weight-heavy);
 }
 
@@ -557,6 +637,7 @@ button {
   border-radius: 14px;
   cursor: pointer;
   font-size: var(--mt-button-font-size);
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-button-font-weight);
   line-height: var(--mt-button-line-height);
   text-align: center;
@@ -620,6 +701,7 @@ a.button:has(i.link-icon) span {
 a.button:has(i.link-icon) {
   display: flex;
   width: 100%;
+  font-family: var(--mt-body-font-family);
   font-weight: var(--mt-body-font-weight);
   align-items: center;
   background: none;
@@ -747,6 +829,7 @@ main .section[data-section-status='initialized'] {
 .section.callout h1,
 .section.callout h2,
 .section.callout h3 {
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
   line-height: 1.5em;
   padding: 3% 5%;
@@ -758,6 +841,7 @@ main .section.our-history h2 {
   text-align: center;
   color: var(--mt-our-history-color-primary);
   font-size: var(--mt-body-font-size-m);
+  font-family: var(--mt-body-font-family-heavy);
   font-weight: var(--mt-font-weight-heavy);
   text-transform: uppercase;
   letter-spacing: 4px;
@@ -768,6 +852,7 @@ main .contact .default-content-wrapper h2,
 main .schedule-demo .default-content-wrapper h2 {
   text-align: center;
   font-size: var(--mt-heading-font-size-xl);
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
   text-transform: none;
   margin: 0 5px;

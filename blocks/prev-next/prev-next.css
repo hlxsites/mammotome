@@ -57,6 +57,7 @@
 .prev-next a .prev-next-button {
     color: var(--mt-prev-next-button-text-color);
     font-size: var(--mt-prev-next-button-font-size);
+    font-family: var(--mt-body-font-family-regular);
     font-weight: var(--mt-prev-next-button-font-weight);
     line-height: var(--mt-prev-next-button-line-height);
     letter-spacing: 1.7px;
@@ -75,6 +76,7 @@
     color: var(--mt-prev-next-header-link-text-color);
     line-height: var(--mt-prev-next-header-link-line-height);
     font-size: var(--mt-prev-next-header-font-size);
+    font-family: var(--mt-body-font-family-bold);
     font-weight: var(--mt-prev-next-header-link);
     white-space: nowrap;
     grid-row: 2 / 3;

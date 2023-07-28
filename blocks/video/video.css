@@ -36,6 +36,7 @@
   flex-grow: 1;
   margin-bottom: 20px;
   font-size: var(--mt-heading-font-size-l);
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
   text-align: center;
 }

@@ -36,7 +36,8 @@
 
   /* font families */
   --mt-nav-nav-item-font-family: -apple-system,blinkmacsystemfont,segoe ui,roboto,helvetica neue,arial,aoto aans,sans-serif;
-  --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family);
+  --mt-nav-desktop-font-family: var(--mt-body-font-family-bold);
+  --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family-regular);
 
   /* transition timing */
   --mt-nav-transition-timing: cubic-bezier(0.76, 0.34, 1, 1);
@@ -110,6 +111,7 @@ header nav .nav-hamburger button {
 /* brand */
 header .nav-brand {
   font-size: var(--mt-heading-font-size-l);
+  font-family: var(--mt-body-font-family-heavy);
   font-weight: var(--mt-font-weight-heavy);
   line-height: 1;
   padding: var(--mt-nav-padding);
@@ -130,6 +132,8 @@ header nav.narrow .nav-brand {
 
 header .nav-brand p:last-child {
   color: var(--mt-header-color-logo-text);
+  font-family: var(--mt-body-font-family-thin);
+  font-weight: var(--mt-font-weight-thin);
   width: 225px;
 }
 
@@ -204,10 +208,12 @@ header nav .nav-sections ul > li > ul {
 }
 
 header nav .nav-sections ul > li > ul > li {
+  font-family: var(--mt-nav-desktop-font-family);
   font-weight: var(--mt-nav-desktop-font-weight);
 }
 
 header nav .nav-sections ul > li[aria-expanded="true"] > ul > li > a {
+  font-family: var(--mt-nav-desktop-multilevel-font-family);
   font-weight: var(--mt-nav-desktop-multilevel-font-weight);
   padding: 10px 0;
 }
@@ -222,6 +228,7 @@ header nav .nav-sections ul > li > ul > li > ul {
 
 header nav .nav-sections ul > li > ul > li > ul > li {
   color: var(--mt-global-color-white);
+  font-family: var(--mt-nav-desktop-multilevel-font-family);
   font-weight: var(--mt-nav-desktop-multilevel-font-weight);
   text-transform: none;
   letter-spacing: normal;
@@ -231,7 +238,8 @@ header nav .nav-sections ul > li > ul > li > ul > li {
 header nav .nav-sections ul > li.nav-multilevel > ul > li {
   color: var(--mt-header-menu-items-fint-color);
   font-size: 0.8rem;
-  font-weight: 700;
+  font-family: var(--mt-body-font-family-boldest);
+  font-weight: var(--mt-font-weight-boldest);
   text-transform: uppercase;
   letter-spacing: 3px;
   text-align: center;
@@ -255,7 +263,7 @@ header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > l
   color: var(--mt-header-menu-items-fint-color);
   font-size: var(--mt-nav-desktop-multilevel-section-title-font-size);
   font-weight: var(--mt-font-weight-boldest);
-  font-family: var(--mt-nav-desktop-multilevel-font-family);
+  font-family: var(--mt-body-font-family-boldest);
   line-height: 1;
   letter-spacing: 3px;
   padding: var(--mt-nav-padding);
@@ -397,6 +405,7 @@ header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > l
   text-align: initial;
   row-gap: unset;
   font-size: var(--mt-nav-multilevel-font-size);
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-font-weight-regular);
   letter-spacing: normal;
   margin: var(--mt-nav-padding) var(--mt-nav-padding) 0;
@@ -507,6 +516,7 @@ header nav input[type='search'].nav-search-input  {
 
 header nav .nav-search-result-title {
   font-size: var(--mt-button-line-height);
+  font-family: var(--mt-body-font-family-heavy);
   font-weight: var(--mt-font-weight-heavy);
   color: var(--mt-heading-color-secondary);
   text-transform: uppercase;
@@ -549,6 +559,7 @@ header nav .nav-search-wrapper {
 
 header nav .nav-search-title {
   color: var(--mt-global-color-accent-primary);
+  font-family: var(--mt-body-font-family-bold);
   font-weight: var(--mt-font-weight-bold);
   margin-bottom: 14px;
   overflow-wrap: break-word;
@@ -559,6 +570,7 @@ header nav .nav-search-description {
   margin-bottom: 25px;
   font-size: var(--mt-body-font-size-m);
   overflow-wrap: break-word;
+  font-family: var(--mt-body-font-family-regular);
   font-weight: var(--mt-search-result-font-weight);
   line-height: var(--mt-body-line-height);
   color: var(--mt-sarch-result-text-color);
@@ -598,6 +610,7 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections > ul > li {
     flex: 0 1 auto;
     position: relative;
+    font-family: var(--mt-body-font-family-bold);
     font-weight: var(--mt-font-weight-bold);
     padding: 0;
   }
@@ -727,6 +740,7 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections ul > li.nav-overflow > ul.nav-overflow-list > li.nav-drop a {
     color: white;
     font-size: var(--mt-font-size-90);
+    font-family: var(--mt-body-font-family-bold);
     font-weight: var(--mt-font-weight-bold);
     text-transform: none;
     letter-spacing: normal;
@@ -836,6 +850,7 @@ header nav.nav-mobile .nav-overflow {
     text-align: center;
     color: var(--mt-header-menu-items-fint-color);
     font-size: var(--mt-nav-desktop-multilevel-section-title-font-size);
+    font-family: var(--mt-body-font-family-boldest);
     font-weight: var(--mt-font-weight-boldest);
     line-height: 1;
     letter-spacing: 3px;
@@ -843,6 +858,7 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections > ul > li.nav-multilevel[aria-expanded="true"] > ul > li > ul > li {
     font-size: var(--mt-nav-multilevel-font-size);
+    font-family: var(--mt-nav-desktop-multilevel-font-family);
     font-weight: var(--mt-nav-desktop-multilevel-font-weight);
     line-height: var(--mt-nav-desktop-multilevel-line-height);
     letter-spacing: normal;

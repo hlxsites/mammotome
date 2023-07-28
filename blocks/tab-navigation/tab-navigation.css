@@ -12,6 +12,7 @@
 
 .tab-navigation > div div a {
     font-size: var(--mt-tab-navigation-font-size);
+    font-family: var(--mt-body-font-family-bold);
     font-weight: var(--mt-tab-navigation-font-weight);
     color: var( --mt-top-navigation-link-color);
 }
