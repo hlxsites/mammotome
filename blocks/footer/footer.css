@@ -169,6 +169,7 @@ right align for larger screen */
 
 footer .columns > div > div:nth-child(5) > p a[href] {
   color: var(--mt-background-color-primary);
+  font-size: var(--mt-footer-font-size-footer-m);
 }
 
 /* Copyright and Logo (mobile) */
