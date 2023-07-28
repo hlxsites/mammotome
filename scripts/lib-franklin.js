@@ -630,16 +630,12 @@ export function createOptimizedPicture(src, alt = '', eager = false, width = nul
 /**
  * Add a divider into section from Section Metadata block
  * @param section section element
- * @param pos position of divider (before or after) default is after
+ * @param type primary (grey) or secondary (blue)
  */
-export function addDivider(section, pos) {
+export function addDivider(section, type) {
   const divider = document.createElement('hr');
-  divider.classList.add('divider');
-  if (pos === 'before') {
-    section.insertBefore(divider, section.firstChild);
-  } else {
-    section.appendChild(divider);
-  }
+  divider.classList.add('divider', type);
+  section.appendChild(divider);
 }
 
 /** Add a spacer into section from Section Metadata block
@@ -697,8 +693,8 @@ export function decorateSections(main) {
           styles.forEach((style) => style && section.classList.add(style));
         } else if (key === 'divider') { // add divider from section metadata
           const dividerMeta = meta.divider.split(',').map((divider) => toClassName(divider.trim()));
-          const dividerPos = dividerMeta[0] || 'after';
-          addDivider(section, dividerPos);
+          const dividerType = dividerMeta[0] === 'secondary' ? 'secondary' : 'primary';
+          addDivider(section, dividerType);
         } else if (key === 'spacer') {
           const spacerMeta = meta.spacer.split(',').map((spacer) => toClassName(spacer.trim()));
           const spacerValue = parseInt(spacerMeta[0], 10) || '0';
@@ -911,41 +907,48 @@ export function setActiveLink(links, className) {
  * @param {Element} element container element
  */
 export function decorateButtons(element) {
+  const excludedParentClasses = ['.prev-next', '.tab-navigation'];
+
+  const isSingleChild = (el, tagName) => el.childNodes.length === 1 && el.tagName === tagName;
+  const addClassAndContainer = (el, a, className, containerClass) => {
+    a.className = className;
+    el.classList.add(containerClass);
+  };
+  const handlePdfLink = (a, parent, url) => {
+    if (url.pathname.endsWith('.pdf')) {
+      a.target = '_blank';
+      if (parent.tagName.toLowerCase() === 'div' && parent.classList.contains('button-container')) {
+        const icon = document.createElement('i');
+        icon.classList.add('link-icon');
+        icon.innerHTML = PDF_ICON;
+        const spanText = document.createElement('span');
+        spanText.innerHTML = a.innerHTML;
+        a.innerHTML = '';
+        a.append(icon, spanText);
+      }
+    }
+  };
+
   element.querySelectorAll('a').forEach((a) => {
     // Suppress a-to-button decoration when in excludedParentClasses
-    const excludedParentClasses = ['.prev-next', '.tab-navigation'];
-    const isClosest = (el) => a.closest(el);
-    if (!excludedParentClasses.some(isClosest)) {
-      a.title = a.title || a.textContent;
-      if (a.href !== a.textContent && !a.querySelector('img')) {
-        const parent = a.parentElement;
-        const grandparent = parent.parentElement;
-        const isSingleChild = (el, tagName) => el.childNodes.length === 1 && el.tagName === tagName;
-        const addClassAndContainer = (el, className, containerClass) => {
-          a.className = className;
-          el.classList.add(containerClass);
-        };
+    if (!excludedParentClasses.some((className) => a.closest(className))) {
+      const parent = a.parentElement;
+      const grandparent = parent.parentElement;
 
+      a.title = a.title || a.textContent;
+      a.setAttribute('aria-label', a.title);
+
+      if (a.href !== a.textContent && !a.querySelector('img')) {
         if (isSingleChild(parent, 'P') || isSingleChild(parent, 'DIV')) {
-          addClassAndContainer(parent, 'button primary', 'button-container');
+          addClassAndContainer(parent, a, 'button primary', 'button-container');
         } else if (isSingleChild(parent, 'STRONG') && isSingleChild(grandparent, 'P')) {
-          addClassAndContainer(grandparent, 'button primary', 'button-container');
+          addClassAndContainer(grandparent, a, 'button primary', 'button-container');
         } else if (isSingleChild(parent, 'EM') && isSingleChild(grandparent, 'P')) {
-          addClassAndContainer(grandparent, 'button secondary', 'button-container');
+          addClassAndContainer(grandparent, a, 'button secondary', 'button-container');
         }
+
         const url = new URL(a.href);
-        if (url.pathname.endsWith('.pdf')) {
-          a.target = '_blank';
-          if (parent.tagName.toLowerCase() === 'div' && parent.classList.contains('button-container')) {
-            const icon = document.createElement('i');
-            icon.classList.add('link-icon');
-            icon.innerHTML = PDF_ICON;
-            const spanText = document.createElement('span');
-            spanText.innerHTML = a.innerHTML;
-            a.innerHTML = '';
-            a.append(icon, spanText);
-          }
-        }
+        handlePdfLink(a, parent, url);
       }
     }
   });
