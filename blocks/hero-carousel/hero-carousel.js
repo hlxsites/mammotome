@@ -27,7 +27,7 @@ export function optimizeThumbnails(picture) {
           createOptimizedPicture(
             img.src,
             'Slider Image',
-            false,
+            true,
             img.width,
             img.height,
           ),
