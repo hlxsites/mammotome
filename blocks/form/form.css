@@ -155,7 +155,6 @@ main .form label {
     color: var(--form-label-color);
     padding: var(--form-label-padding);
     line-height: var(--form-label-line-height);
-    font-family: var(--mt-form-font-family);
 }
 
 main .form :is(input, textarea, select) {
