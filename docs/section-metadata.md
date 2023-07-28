@@ -21,6 +21,7 @@ based on visual differences between sections such as a different background colo
       * [Accent secondary blur overlay](#accent-secondary-blur-overlay)
       * [Gradient primary blur overlay](#gradient-primary-blur-overlay)
       * [Gradient secondary blur overlay](#gradient-secondary-blur-overlay)
+      * [Highlight](#highlight)
   * [Callout](#callout)
   * [Narrow](#narrow)
   * [Divider](#divider)
@@ -205,6 +206,26 @@ Adds a gradient overlay over the section.
 | Background-Image | ![bg-image-example.jpg](assets/bg-image-example.jpg) |
 
 ![gradient-secondary-blur-overlay-example.png](assets/gradient-secondary-blur-overlay-example.png)
+
+#### Highlight
+
+Adds background color to the section and cancels padding. Available in two variants, _highlight_ and _highlight-medium_.
+
+**_Example Highlight:_**
+
+| Section Metadata |                                                           |
+|------------------|-----------------------------------------------------------|
+| Style            | highlight                                                 |
+
+![columns-subnavigation.png](assets/columns-subnavigation.png)
+
+**_Example Highlight-Medium:_**
+
+| Section Metadata |                                                          |
+|------------------|----------------------------------------------------------|
+| Style            | highlight-medium                                         |
+
+![columns-metrics.png](assets/columns-metrics.png)
 
 ## Callout
 

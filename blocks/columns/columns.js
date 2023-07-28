@@ -8,7 +8,7 @@
  */
 function decorateOnlyTextColumn(col) {
   if (col.firstChild && col.firstChild.nodeType === Node.TEXT_NODE
-     && !col.firstElementChild) {
+    && !col.firstElementChild) {
     const paragraph = document.createElement('p');
     paragraph.appendChild(col.firstChild);
     col.appendChild(paragraph);
@@ -33,28 +33,37 @@ export default function decorate(block) {
           const href = a.getAttribute('href');
           const p = pic.parentElement;
           const newA = document.createElement('a');
+          const imageLinkLabel = a.getAttribute('aria-label');
           newA.setAttribute('href', href);
+          newA.setAttribute('aria-label', imageLinkLabel);
           newA.appendChild(pic);
           p.appendChild(newA);
         }
       }
+
       if (pic && !text) {
         const oddeven = (index % 2 === 0) ? 'even' : 'odd';
         const picWrapper = pic.closest('div');
-        picWrapper.classList.add('columns-img-wrapper');
-        picWrapper.classList.add(`columns-img-wrapper-${oddeven}`);
         const picDecoration = document.createElement('div');
-        picDecoration.classList.add('columns-img-decoration');
         const picImg = document.createElement('div');
+        const frag = document.createDocumentFragment();
+
+        picWrapper.classList.add('columns-img-wrapper', `columns-img-wrapper-${oddeven}`);
+
+        picDecoration.classList.add('columns-img-decoration');
         picImg.classList.add('columns-img');
         picImg.appendChild(pic);
         picDecoration.appendChild(picImg);
-        picWrapper.appendChild(picDecoration);
+
+        frag.appendChild(picDecoration);
+        picWrapper.appendChild(frag);
+
         if (picWrapper && picWrapper.children.length === 1) {
           // picture is only content in column
           picWrapper.classList.add('columns-img-col');
         }
       }
+
       if (text && !pic) {
         const textWrapper = text.closest('div');
         textWrapper.classList.add('columns-txt-wrapper');
