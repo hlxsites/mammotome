@@ -283,6 +283,10 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
   z-index: 20;
 }
 
+.section.tight .columns {
+  margin-top: 0;
+}
+
 @media (min-width: 768px) {
   .columns .columns-img {
     padding: 10%;
