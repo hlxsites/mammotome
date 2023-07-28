@@ -97,6 +97,30 @@ main .columns > div p {
   line-height: 1.5;
 }
 
+body.refresh .columns h2 {
+  font-size: var(--mt-heading-font-size-xl);
+  font-weight: var(--mt-font-weight-bold);
+  text-transform: unset;
+  letter-spacing: unset;
+}
+
+body.refresh .columns h3 {
+  font-size: var(--mt-heading-font-size-m);
+  font-weight: var(--mt-font-weight-bold);
+  text-transform: unset;
+  letter-spacing: unset;
+  margin-bottom: 5px;
+}
+
+body.refresh .columns p {
+  font-size: var(--mt-heading-font-size-l);
+  color: var(--mt-global-color-base-tertiary);
+}
+
+body.refresh .columns:not(.subnavigation, .metrics) .button-container {
+  margin-top: 50px;
+}
+
 main .columns.centered h1,
 main .columns.centered h2,
 main .columns.centered h3,
@@ -178,6 +202,7 @@ main .columns.metrics h2 {
 }
 
 main .columns.metrics p {
+  color: var(--mt-background-color-secondary);
   font-size: var(--mt-body-font-size-m);
   line-height: var(--mt-body-line-height);
 }
@@ -283,6 +308,10 @@ main .columns.image-color-light-blue > div > .columns-img-col::before {
 @media (min-width: 768px) {
   .columns .columns-img {
     padding: 10%;
+  }
+
+  body.refresh .columns h2 {
+    font-size: var(--mt-heading-font-size-xxl);
   }
 }
 

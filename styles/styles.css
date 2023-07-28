@@ -22,6 +22,7 @@
   --mt-global-color-base-primary-light: #a03ebb;
   --mt-global-color-base-primary-very-light: #f7dbff;
   --mt-global-color-base-secondary: #3D3E40;
+  --mt-global-color-base-tertiary: #6f6f6f;
   --mt-global-color-accent-primary: #5F8DDA;
   --mt-global-color-accent-secondary: #487ED9;
   --mt-global-color-accent-tertiary: #78aaff24;
@@ -246,6 +247,11 @@ h5 {
 
   h2 {
     font-size: var(--mt-heading-font-size-xl);
+  }
+
+  body.refresh h2 {
+    font-size: var(--mt-heading-font-size-xxl);
+    font-weight: var(--mt-font-weight-bold);
   }
 
   h4 {
@@ -480,6 +486,25 @@ p {
   line-height: 1.9rem;
   font-weight: var(--mt-font-weight-thin);
   padding: 0 5%;;
+}
+
+/* Refresh styles */
+
+body.refresh h2 {
+  font-size: var(--mt-heading-font-size-mobile-xxl);
+  font-weight: var(--mt-font-weight-bold);
+}
+
+body.refresh p {
+  font-size: var(--mt-heading-font-size-l);
+  color: var(--mt-global-color-base-tertiary);
+}
+
+@media (min-width: 767px) {
+  body.refresh h2 {
+    font-size: var(--mt-heading-font-size-xxl);
+    font-weight: var(--mt-font-weight-bold);
+  }
 }
 
 /* section style  inverted text  */
@@ -1041,15 +1066,21 @@ main .section.our-history .year.highlight .icon-calendar {
 }
 
 .section.highlight {
+  margin: 0;
+  padding: 5% 10%;
   background-color: var(--mt-background-color-highlight);
-  padding: 0;
 }
 
 .section.highlight-medium {
+  margin: 0;
+  padding: 5% 10%;
   background-color: var(--mt-background-color-highlight-medium);
-  padding: 0;
 }
 
 .section.tight {
   margin-top: 10px;
+}
+
+.section.nopadding {
+  padding: 0;
 }
