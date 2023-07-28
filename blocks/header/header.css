@@ -1,6 +1,6 @@
 /* Header colors */
 :root {
-  --mt-header-color-logo-text: #595959;
+  --mt-header-color-logo-text: var(--mt-global-color-base-tertiary);
   --mt-header-color-nav-icons: #3a3a3a;
   --mt-header-color-nav-links: #575757;
   --mt-header-color-subnav-links: #fff;
@@ -129,8 +129,9 @@ header nav.narrow .nav-brand {
 }
 
 header .nav-brand p:last-child {
-  color: var(--mt-header-color-logo-text);
   width: 225px;
+  color: var(--mt-header-color-logo-text);
+  font-size: var(--mt-body-font-size-s);
 }
 
 .icon-logo svg {
