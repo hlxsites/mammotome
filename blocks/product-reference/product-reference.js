@@ -8,10 +8,10 @@ import {
   translate,
 } from '../../scripts/lib-franklin.js';
 
-async function createButtons(country, language, productCode) {
+async function createButtons(country, language, product) {
   return [
     [
-      `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Information Url ${country}/${language}`)}`, 'contact/')}`,
+      product.Information ? `${window.location.pathname}#${product.Information}` : `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Information Url ${country}/${language}`)}`, 'contact/')}`,
       ['primary'],
       await translate('productReferenceInformation', 'Request Information'),
     ],
@@ -21,7 +21,7 @@ async function createButtons(country, language, productCode) {
       await translate('productReferenceSupport', 'Product Support'),
     ],
     [
-      `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Support Url ${country}/${language}`)}`, 'product-support')}/${productCode}`,
+      `/${country}/${language}/${await getConfigValue(`${toCamelCase(`product Reference Support Url ${country}/${language}`)}`, 'product-support')}/${product.Page}`,
       ['secondary'],
       await translate('productReferenceDocuments', 'Product Documents'),
     ],
@@ -45,7 +45,7 @@ export default async function decorate(block) {
     return;
   }
 
-  const buttons = await createButtons(country, language, product.Page);
+  const buttons = await createButtons(country, language, product);
 
   const imgStructure = [
     {
