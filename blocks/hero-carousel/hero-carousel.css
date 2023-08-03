@@ -110,6 +110,21 @@ main .section.hero-carousel-container {
     text-align: right;
 }
 
+.hero-carousel .slider > div.text-align-right > div:nth-child(2) {
+    text-align: left;
+}
+
+.hero-carousel .slider > div.text-align-center > div:nth-child(2) {
+    text-align: center;
+    object-fit: cover;
+}
+
+.hero-carousel .slider > div.text-align-center > div:nth-child(2) picture img {
+    text-align: center;
+    object-fit: cover;
+    width: 100%
+}
+
 .hero-carousel .slider > div > div picture {
     width: 110%;
 }
