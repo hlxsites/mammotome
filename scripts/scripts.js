@@ -276,11 +276,43 @@ async function loadLazy(doc) {
   document.dispatchEvent(new Event('franklin.loadLazy_completed'));
 }
 
+// google tag manager
+function loadGTM() {
+  if (window.location.hostname.includes('localhost') || document.location.hostname.includes('.hlx.page')) {
+    return;
+  }
+
+  const scriptTag = document.createElement('script');
+  scriptTag.innerHTML = `
+  // googleTagManager
+  (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({
+          'gtm.start':
+              new Date().getTime(), event: 'gtm.js'
+      });
+      var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', 'GTM-KNBZTHP');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('set', {
+      'cookie_flags': 'SameSite=None;Secure'
+  });
+  `;
+  document.head.prepend(scriptTag);
+}
+
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
  */
 function loadDelayed() {
+  window.setTimeout(() => loadGTM(), 500);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
