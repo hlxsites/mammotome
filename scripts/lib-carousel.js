@@ -13,6 +13,7 @@ const HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.or
   + '</svg>\n';
 
 let activeSlide = 1;
+let activeSlideElement = null;
 let slideShow = false;
 let slideCount = 0;
 let touchStartX = 0;
@@ -20,6 +21,7 @@ let touchEndX = 0;
 let touchRelX = 0;
 let touchStartY = 0;
 let touchRelY = 0;
+let elementStartPosX = 0;
 
 let sliderWrapper;
 let slider;
@@ -75,6 +77,7 @@ const activateSlide = (slideId) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
       el.style.removeProperty('left');
+      activeSlideElement = el;
     } else {
       el.classList.replace('show', 'hide');
     }
@@ -197,8 +200,7 @@ function touchMoveEl(slideContainer) {
       touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
       touchRelY = Math.floor(e.touches[0].clientY) - touchStartY;
       disableScrolling(e);
-      const slide = document.getElementById(`slider-slide-${activeSlide}`);
-      slide.style.left = `${touchRelX}px`;
+      activeSlideElement.style.transform = `translateX(${elementStartPosX + touchRelX}px)`;
     },
     { passive: false },
   );
@@ -214,6 +216,7 @@ function touchStartEl(slideContainer) {
     (e) => {
       touchStartX = Math.floor(e.touches[0].clientX);
       touchStartY = Math.floor(e.touches[0].clientY);
+      elementStartPosX = activeSlideElement.offsetLeft;
       stopSlideShow();
     },
     { passive: false },
@@ -243,6 +246,7 @@ export function initSlider() {
   slideCount = sliderIds.length;
   sliderWrapper.addEventListener('mouseover', stopSlideShow);
   sliderWrapper.addEventListener('mouseleave', startSlideShow);
+  activeSlideElement = document.getElementById(`slider-slide-${activeSlide}`);
   touchStartEl(sliderWrapper);
   touchMoveEl(sliderWrapper);
   touchEndEl(sliderWrapper);

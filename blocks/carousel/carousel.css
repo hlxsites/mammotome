@@ -73,6 +73,7 @@
 /* Slide container */
 .carousel .slider-wrapper .slider {
     position: relative;
+    overflow-x: clip;
 }
 
 /* Pictures in slider */
@@ -105,9 +106,8 @@
 /* Second to n slide in slider */
 .carousel .slider-wrapper .slider picture:nth-child(n+2) {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
+    left: 0;
+    top: 0;
     z-index: 1;
     flex-direction: column;
     justify-content: flex-start;
