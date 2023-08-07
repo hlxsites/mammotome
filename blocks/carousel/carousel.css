@@ -116,8 +116,7 @@
 /* hide slide */
 .carousel .hide {
     opacity: 0;
-    transition-duration: 500ms;
-    transition-property: opacity;
+    transition-property: right;
 }
 
 /* show slide */

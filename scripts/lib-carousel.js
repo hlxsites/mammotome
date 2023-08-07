@@ -76,7 +76,6 @@ const activateSlide = (slideId) => {
   sliderChildren.forEach((el) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
-      el.style.removeProperty('left');
       activeSlideElement = el;
     } else {
       el.classList.replace('show', 'hide');
@@ -232,7 +231,10 @@ function touchEndEl(slideContainer) {
     'touchend',
     (e) => {
       touchEndX = Math.floor(e.changedTouches[0].clientX);
+      const prevSlide = activeSlideElement;
       handleGesture();
+      prevSlide.classList.replace('show', 'hide');
+      prevSlide.style.removeProperty('transform');
     },
     { passive: false },
   );
