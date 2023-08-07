@@ -27,6 +27,7 @@ const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
 // Define the custom audiences mapping for experimentation
+// noinspection JSUnusedGlobalSymbols
 const EXPERIMENTATION_CONFIG = {
   audiences: {
     device: {
@@ -222,8 +223,8 @@ export async function decorateMain(main) {
   decorateSupScriptInTextBelow(main);
 
   if (main.querySelector('.section.our-history')) {
-    decorateHistorySection(main);
-    observeHistorySection(main);
+    await decorateHistorySection(main);
+    await observeHistorySection(main);
   }
 }
 
@@ -309,7 +310,7 @@ async function loadLazy(doc) {
   }
 
   // Mark customer as having viewed the page once
-  localStorage.setItem('franklin-visitor-returning', true);
+  localStorage.setItem('franklin-visitor-returning', Boolean(true).toString());
 
   document.dispatchEvent(new Event('franklin.loadLazy_completed'));
 }
