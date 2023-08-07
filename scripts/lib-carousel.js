@@ -41,7 +41,8 @@ const incrementActiveSlide = (direction = 1) => {
   } else {
     activeSlide = (activeSlide - 1) > 0 ? activeSlide - 1 : slideCount;
   }
-  return activeSlide;
+  activeSlideElement = document.getElementById(`slider-slide-${activeSlide}`);
+  return [activeSlide, activeSlideElement];
 };
 
 /**
@@ -76,7 +77,7 @@ const activateSlide = (slideId) => {
   sliderChildren.forEach((el) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
-      activeSlideElement = el;
+      // activeSlideElement = el;
     } else {
       el.classList.replace('show', 'hide');
     }
@@ -92,7 +93,7 @@ const dottedNavigation = (event) => {
   const sliderTarget = `slider-slide-${targetId}`;
   activateSlide(sliderTarget);
   activateBullet(event.target.id);
-  activeSlide = incrementActiveSlide();
+  [activeSlide, activeSlideElement] = incrementActiveSlide();
 };
 
 /**
@@ -102,8 +103,7 @@ const dottedNavigation = (event) => {
 const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
   const increment = navButton === 'slider-arrow-left' ? -1 : 1;
-
-  activeSlide = incrementActiveSlide(increment);
+  [activeSlide, activeSlideElement] = incrementActiveSlide(increment);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -121,8 +121,15 @@ const dottedNavOnClickEvents = () => {
  * Event Listeners for arrow navigation
  */
 const arrowNavOnClickEvents = () => {
-  if (arrowNavContainer) {
-    arrowNavContainer.addEventListener('click', (event) => {
+  const arrowLeft = document.getElementById('slider-arrow-left');
+  const arrowRight = document.getElementById('slider-arrow-right');
+  if (arrowLeft) {
+    arrowLeft.addEventListener('click', (event) => {
+      arrowNavigation(event);
+    });
+  }
+  if (arrowRight) {
+    arrowRight.addEventListener('click', (event) => {
       arrowNavigation(event);
     });
   }
@@ -132,7 +139,7 @@ const arrowNavOnClickEvents = () => {
  * Navigate to next slide
  */
 const toNextSlide = () => {
-  activeSlide = incrementActiveSlide(1);
+  [activeSlide, activeSlideElement] = incrementActiveSlide(1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -141,7 +148,7 @@ const toNextSlide = () => {
  * Navigate to previous slide
  */
 const toPrevSlide = () => {
-  activeSlide = incrementActiveSlide(-1);
+  [activeSlide, activeSlideElement] = incrementActiveSlide(-1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -231,10 +238,10 @@ function touchEndEl(slideContainer) {
     'touchend',
     (e) => {
       touchEndX = Math.floor(e.changedTouches[0].clientX);
-      const prevSlide = activeSlideElement;
+      const previousSlide = activeSlideElement;
       handleGesture();
-      prevSlide.classList.replace('show', 'hide');
-      prevSlide.style.removeProperty('transform');
+      // prevSlide.classList.replace('show', 'hide');
+      previousSlide.style.removeProperty('transform');
     },
     { passive: false },
   );
@@ -264,16 +271,15 @@ export function initSlider() {
 export function createArrowNav() {
   arrowNavContainer = document.createElement('div');
   arrowNavContainer.classList.add('arrow-nav');
-
   const arrowLeft = `
-    <button id="slider-arrow-left" 
+    <button id="slider-arrow-left"
             aria-label="Previous Slide">
       ${HTML_ARROW_LEFT}
     </button>
   `;
   const arrowRight = `
-    <button id="slider-arrow-right" 
-            aria-label="Next Slide" 
+    <button id="slider-arrow-right"
+            aria-label="Next Slide"
             role="button">
       ${HTML_ARROW_RIGHT}
     </button>
