@@ -135,21 +135,59 @@ function buildAutoBlocks(main) {
   }
 }
 
+const resizeListeners = new WeakMap();
+
 /**
- * Creates an optimized background image for the given section.
- * The image is created for the given breakpoints.
- * Default breakpoints are mobile, tablet and desktop.
- * @param section The section to create the background image for
- * @param bgImage The background image to optimize
- * @param breakpoints The breakpoints to optimize the image for
+ * Sets an optimized background image for a given section element.
+ * This function takes into account the device's viewport width and device pixel ratio
+ * to choose the most appropriate image from the provided breakpoints.
+ *
+ * @param {HTMLElement} section - The section element to which the background image will be applied.
+ * @param {string} bgImage - The base URL of the background image.
+ * @param {Array<{width: string, media?: string}>} [breakpoints=[
+ *  { width: '450' },
+ *  { media: '(min-width: 450px)', width: '750' },
+ *  { media: '(min-width: 750px)', width: '2000' }
+ * ]] - An array of breakpoint objects. Each object contains a `width` which is the width of the
+ * image to request, and an optional `media` which is a media query string indicating when this
+ * breakpoint should be used.
  */
 function createOptimizedBackgroundImage(section, bgImage, breakpoints = [{ width: '450' }, { media: '(min-width: 450px)', width: '750' }, { media: '(min-width: 750px)', width: '2000' }]) {
-  const url = new URL(bgImage, window.location.href);
-  const pathname = encodeURI(url.pathname);
+  const updateBackground = () => {
+    const url = new URL(bgImage, window.location.href);
+    const pathname = encodeURI(url.pathname);
 
-  const images = breakpoints.map((br, i) => `url(${pathname}?width=${br.width}&format=webply&optimize=medium) ${i + 1}x`);
-  section.style.backgroundImage = `image-set(${images.join(', ')})`;
-  section.style.backgroundSize = 'cover';
+    // Filter all matching breakpoints
+    const matchedBreakpoints = breakpoints
+      .filter((br) => !br.media || window.matchMedia(br.media).matches);
+
+    // If there are any matching breakpoints, pick the one with the highest resolution
+    let matchedBreakpoint;
+    if (matchedBreakpoints.length) {
+      matchedBreakpoint = matchedBreakpoints
+        .reduce((acc, curr) => (parseInt(curr.width, 10) > parseInt(acc.width, 10) ? curr : acc));
+    } else {
+      [matchedBreakpoint] = breakpoints;
+    }
+
+    const adjustedWidth = matchedBreakpoint.width * window.devicePixelRatio;
+    section.style.backgroundImage = `url(${pathname}?width=${adjustedWidth}&format=webply&optimize=medium)`;
+    section.style.backgroundSize = 'cover';
+  };
+
+  // If a listener already exists for this section, remove it to prevent duplicates.
+  if (resizeListeners.has(section)) {
+    window.removeEventListener('resize', resizeListeners.get(section));
+  }
+
+  // Store the updateBackground function in the WeakMap for this section
+  resizeListeners.set(section, updateBackground);
+
+  // Now, attach the new listener
+  window.addEventListener('resize', updateBackground);
+
+  // Immediately update the background
+  updateBackground();
 }
 
 /**
