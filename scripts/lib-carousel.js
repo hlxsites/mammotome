@@ -32,8 +32,15 @@ let dottedNavContainer;
 let arrowNavContainer;
 
 /**
+ * Get a slide from Slider Children
+ * @param slideId - Selector ID of the slide
+ * @returns {*} - Slide element
+ */
+const getSlide = (slideId) => sliderChildren.find((el) => el.id === slideId);
+
+/**
  * Increment active slide value
- * @param direction
+ * @param direction - 1 right or -1 left
  */
 const incrementActiveSlide = (direction = 1) => {
   if (direction > 0) {
@@ -41,7 +48,7 @@ const incrementActiveSlide = (direction = 1) => {
   } else {
     activeSlide = (activeSlide - 1) > 0 ? activeSlide - 1 : slideCount;
   }
-  activeSlideElement = document.getElementById(`slider-slide-${activeSlide}`);
+  activeSlideElement = getSlide(`slider-slide-${activeSlide}`);
   return [activeSlide, activeSlideElement];
 };
 
@@ -70,14 +77,13 @@ const activateBullet = (bulletId) => {
 };
 
 /**
- * Slides picture switcher
+ * Slides slider switcher
  * @param slideId
  */
 const activateSlide = (slideId) => {
   sliderChildren.forEach((el) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
-      // activeSlideElement = el;
     } else {
       el.classList.replace('show', 'hide');
     }
@@ -93,7 +99,8 @@ const dottedNavigation = (event) => {
   const sliderTarget = `slider-slide-${targetId}`;
   activateSlide(sliderTarget);
   activateBullet(event.target.id);
-  [activeSlide, activeSlideElement] = incrementActiveSlide();
+  activeSlideElement = getSlide(sliderTarget);
+  activeSlide = parseInt(targetId, 10);
 };
 
 /**
@@ -121,16 +128,11 @@ const dottedNavOnClickEvents = () => {
  * Event Listeners for arrow navigation
  */
 const arrowNavOnClickEvents = () => {
-  const arrowLeft = document.getElementById('slider-arrow-left');
-  const arrowRight = document.getElementById('slider-arrow-right');
-  if (arrowLeft) {
-    arrowLeft.addEventListener('click', (event) => {
-      arrowNavigation(event);
-    });
-  }
-  if (arrowRight) {
-    arrowRight.addEventListener('click', (event) => {
-      arrowNavigation(event);
+  if (arrowNavContainer) {
+    Array.from(arrowNavContainer.children).forEach((el) => {
+      el.addEventListener('click', (event) => {
+        arrowNavigation(event);
+      });
     });
   }
 };
@@ -240,7 +242,6 @@ function touchEndEl(slideContainer) {
       touchEndX = Math.floor(e.changedTouches[0].clientX);
       const previousSlide = activeSlideElement;
       handleGesture();
-      // prevSlide.classList.replace('show', 'hide');
       previousSlide.style.removeProperty('transform');
     },
     { passive: false },
