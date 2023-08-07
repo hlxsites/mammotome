@@ -199,7 +199,7 @@ main .section.hero-carousel-container {
 /* hide slide */
 .hero-carousel .slider .hide {
     opacity: 0;
-    transition-property: right;
+    transition-property: margin-left;
 }
 
 /* show slide */
