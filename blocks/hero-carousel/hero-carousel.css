@@ -26,7 +26,6 @@ main .section.hero-carousel-container {
     display: flex;
     justify-content: flex-start;
     flex: 1;
-    transition: all 0.5s linear;
     left: 0;
     top: 0;
     width: 100%;
@@ -50,10 +49,9 @@ main .section.hero-carousel-container {
     position: absolute;
     background-color: rgb(255 255 255 / 80%);
     z-index: 2;
-    top: 50%;
-    transform: translateY(-50%);
     width: 100%;
     height: 100% ;
+    top: 0;
 }
 
 @media (width >= 768px) {
@@ -80,7 +78,7 @@ main .section.hero-carousel-container {
 
 
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .hero-carousel .slider > div > div:first-child {
         width: 50%;
         padding: 5%;
@@ -189,7 +187,7 @@ main .section.hero-carousel-container {
 
 }
 
-@media (min-width: 860px) {
+@media (width >= 860px) {
     .hero-carousel .slider > div .button-row {
         flex-direction: row;
         gap: 5%;
@@ -199,6 +197,7 @@ main .section.hero-carousel-container {
 /* hide slide */
 .hero-carousel .slider .hide {
     opacity: 0;
+    transition-property: margin-left;
 }
 
 /* show slide */
@@ -213,19 +212,13 @@ main .section.hero-carousel-container {
 .hero-carousel.slider-wrapper .dotted-nav {
     display: flex;
     position: absolute;
-    transform: translateY(-20px);
     justify-content: center;
     width: 100%;
     height: 20px;
     z-index: 4;
     margin-top: 8px;
     margin-bottom: 8px;
-}
-
-@media (min-width: 768px) {
-    .hero-carousel.slider-wrapper .dotted-nav {
-        transform: translateY(-20px);
-    }
+    bottom: 20px;
 }
 
 /* Dotted Nav */
@@ -245,8 +238,6 @@ main .section.hero-carousel-container {
     .hero-carousel .dotted-nav .dot {
         cursor: pointer;
         pointer-events: all;
-        width: 8px;
-        height: 8px;
     }
 }
 

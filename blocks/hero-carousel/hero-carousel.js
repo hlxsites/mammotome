@@ -6,6 +6,7 @@ import {
   initSlider,
   setSliderIds,
   getSliderChildren,
+  setSlideDuration,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
@@ -123,6 +124,7 @@ export default function decorate(block) {
   if (sliderIds.length > 1) {
     const dottedNavContainer = createDottedNav();
     sliderWrapper.appendChild(dottedNavContainer);
+    setSlideDuration(4000);
     initSlider();
   }
 }
