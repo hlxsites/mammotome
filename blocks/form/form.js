@@ -226,9 +226,6 @@ function createInput(fd) {
   input.type = fd.Type;
   setPlaceholder(input, fd);
   setNumberConstraints(input, fd);
-  if (!fd.Label && fd.Description) {
-    input.setAttribute('aria-label', fd.Description);
-  }
   return input;
 }
 
