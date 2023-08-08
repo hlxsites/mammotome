@@ -151,10 +151,12 @@
 .carousel .slider-wrapper .dotted-nav {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     z-index: 998;
     margin-top: 9px;
     margin-bottom: 9px;
+    height: 20px;
 }
 
 /* Bottom Nav */
