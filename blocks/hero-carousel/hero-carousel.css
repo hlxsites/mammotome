@@ -218,12 +218,7 @@ main .section.hero-carousel-container {
     z-index: 4;
     margin-top: 8px;
     margin-bottom: 8px;
-}
-
-@media (width >= 768px) {
-    .hero-carousel.slider-wrapper .dotted-nav {
-        /*transform: translateY(-20px);*/
-    }
+    bottom: 20px;
 }
 
 /* Dotted Nav */
