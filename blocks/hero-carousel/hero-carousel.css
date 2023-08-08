@@ -8,6 +8,7 @@ main .section.hero-carousel-container {
     justify-content: flex-end;
     flex-direction: column;
     align-items: center;
+    height: 60vh;
     width: 100%;
     min-height: 500px;
 }
@@ -16,8 +17,10 @@ main .section.hero-carousel-container {
 /* sliders */
 .hero-carousel .slider {
     display: flex;
+    position: absolute;
     align-items: center;
     width: 100%;
+    height: 60vh;
     min-height: 500px;
 }
 
@@ -103,36 +106,18 @@ main .section.hero-carousel-container {
     z-index: 1
 }
 
-.hero-carousel .slider > div > div:nth-child(2) {
-    width: 100%;
-    text-align: right;
-}
-
-.hero-carousel .slider > div.text-align-right > div:nth-child(2) {
-    text-align: left;
-}
-
-.hero-carousel .slider > div.text-align-center > div:nth-child(2) {
-    text-align: center;
-    object-fit: cover;
-}
-
-.hero-carousel .slider > div > div picture img {
-    min-height: 500px;
-    height: 100%;
-    user-select: none;
-    object-fit: cover;
-}
-
-.hero-carousel .slider > div.text-align-center > div:nth-child(2) picture img {
-    text-align: center;
-    object-fit: cover;
-    width: 100%
-}
-
 .hero-carousel .slider > div > div picture {
     width: 110%;
 }
+
+.hero-carousel .slider > div > div picture img {
+    width: 5000px;
+    height: 60vh;
+    min-height: 500px;
+    object-fit: cover;
+    user-select: none;
+}
+
 
 /* IMG position, opposite of text align */
 .hero-carousel .slider > div > div picture img.position-left {
@@ -150,12 +135,6 @@ main .section.hero-carousel-container {
 
     .hero-carousel .slider > div > div picture img.position-right {
         object-position: unset;
-    }
-}
-
-@media (width >= 1100) {
-    .hero-carousel .slider > div > div picture img {
-        object-fit: unset;
     }
 }
 
