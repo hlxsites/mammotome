@@ -26,7 +26,6 @@ export function optimizeThumbnails(picture) {
             true,
             img.width,
             img.height,
-            null,
             [{ width: '768' }],
           ),
         );
