@@ -8,6 +8,10 @@ import decorateUTM from './utm.js';
 const SITE_KEY = '6Lc0qYoiAAAAADNOimWbvoSdn2YawNsa6Wbxejpp';
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
 
+function getLocaleRegion() {
+  return (getMetadata('locale') || 'en-US').split('-');
+}
+
 function loadScript(url) {
   const head = document.querySelector('head');
   let script = head.querySelector(`script[src="${url}"]`);
@@ -99,12 +103,9 @@ async function submitForm(form, token) {
       sampleRUM('form:submit');
       window.location.href = form.dataset?.redirect || '/us/en/thank-you/';
     } else {
-      let error = 'Error: Failed to submit form';
-      try {
-        error = (await response.json()).message || error;
-      } catch (err) { // error format not in json display simple text.
-        error = await response.text();
-      }
+      const [locale] = getLocaleRegion();
+      const dictionary = window.placeholders.default[`i18n-${locale}`];
+      const error = dictionary[`formSubmissionError-${response.status}`] || dictionary.formSubmissionError;
       throw new Error(error);
     }
   } catch (error) {
@@ -112,10 +113,22 @@ async function submitForm(form, token) {
   }
 }
 
+function addGEC(form) {
+  const email = form.querySelector('input[name=email]');
+  if (email) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'form_complete',
+      enhanced_conversion_data: { email: email.value },
+    });
+  }
+}
+
 async function handleSubmit(form) {
   if (form.getAttribute('data-submitting') !== 'true') {
     form.setAttribute('data-submitting', 'true');
     clearError(form);
+    addGEC(form);
     const { grecaptcha } = window;
     if (grecaptcha) {
       grecaptcha.ready(() => {
@@ -213,6 +226,9 @@ function createInput(fd) {
   input.type = fd.Type;
   setPlaceholder(input, fd);
   setNumberConstraints(input, fd);
+  if (!fd.Label && fd.Description) {
+    input.setAttribute('aria-label', fd.Description);
+  }
   return input;
 }
 
@@ -438,8 +454,7 @@ export default async function decorate(block) {
     let formURL = formLink.href;
     const config = readBlockConfig(block);
     if (formURL.endsWith('contact.json')) {
-      const localeStr = getMetadata('locale') || 'en';
-      const [locale, region] = localeStr.split('-');
+      const [locale, region] = getLocaleRegion();
       if (locale === 'en' && region && region.toLowerCase() === 'gb') {
         formURL += '?sheet=uk';
       } else if (locale !== 'en') {
