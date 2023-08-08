@@ -165,6 +165,14 @@
     border-radius: 50%;
     width: 8px;
     height: 8px;
+    pointer-events: none;
+}
+
+@media (width >= 768px) {
+    .carousel .dotted-nav .dot {
+        pointer-events: all;
+        cursor: pointer;
+    }
 }
 
 
