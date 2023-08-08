@@ -2,7 +2,7 @@
  * Slider duration in milliseconds for auto-advance.
  * @type {number}
  */
-const sliderDurationMs = 3500;
+let sliderDurationMs = 3500;
 
 // HTML code for arrow icons
 const HTML_ARROW_LEFT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
@@ -411,6 +411,18 @@ export function createPictureSlider() {
   return slider;
 }
 
+/**
+ * Get and Array of Slide Children
+ * @returns {*} - sliderChildren
+ */
 export function getSliderChildren() {
   return sliderChildren;
+}
+
+/**
+ * Set Slide Show Duration in ms and overwrite default
+ * @param duration - duration in ms
+ */
+export function setSlideDuration(duration) {
+  sliderDurationMs = duration;
 }
