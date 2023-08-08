@@ -243,8 +243,6 @@ main .section.hero-carousel-container {
     .hero-carousel .dotted-nav .dot {
         cursor: pointer;
         pointer-events: all;
-        width: 8px;
-        height: 8px;
     }
 }
 
