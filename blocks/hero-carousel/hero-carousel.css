@@ -222,7 +222,7 @@ main .section.hero-carousel-container {
 
 @media (width >= 768px) {
     .hero-carousel.slider-wrapper .dotted-nav {
-        transform: translateY(-20px);
+        /*transform: translateY(-20px);*/
     }
 }
 
