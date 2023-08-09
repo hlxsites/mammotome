@@ -187,14 +187,18 @@ function handleGesture() {
 /**
  * Prevent scrolling when swiping for touch devices
  * @param e event
+ * @returns {boolean} true if scrolling is prevented
  */
-function disableScrolling(e) {
-  const isLink = e.target.tagName.toLowerCase() === 'a';
-  const isButton = e.target.tagName.toLowerCase() === 'button';
+function shouldPreventDefaultScrolling(e) {
+  const isLinkOrButton = ['a', 'button'].includes(e.target.tagName.toLowerCase());
   const isMoveY = Math.abs(touchRelY) > Math.abs(touchRelX);
-  if (!isLink && !isButton && !isMoveY) {
+
+  if (!isLinkOrButton && !isMoveY) {
     e.preventDefault();
+    return true;
   }
+
+  return false;
 }
 
 /**
@@ -207,8 +211,7 @@ function touchMoveEl(slideContainer) {
     (e) => {
       touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
       touchRelY = Math.floor(e.touches[0].clientY) - touchStartY;
-      disableScrolling(e);
-      activeSlideElement.style.transform = `translateX(${elementStartPosX + touchRelX}px)`;
+      if (shouldPreventDefaultScrolling(e)) activeSlideElement.style.transform = `translateX(${elementStartPosX + touchRelX}px)`;
     },
     { passive: false },
   );
@@ -241,7 +244,7 @@ function touchEndEl(slideContainer) {
     (e) => {
       touchEndX = Math.floor(e.changedTouches[0].clientX);
       const previousSlide = activeSlideElement;
-      handleGesture();
+      if (shouldPreventDefaultScrolling(e)) handleGesture();
       previousSlide.style.removeProperty('transform');
     },
     { passive: false },
