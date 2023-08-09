@@ -190,10 +190,14 @@ function handleGesture() {
  * @returns {boolean} true if scrolling is prevented
  */
 function shouldPreventDefaultScrolling(e) {
-  const isLinkOrButton = ['a', 'button'].includes(e.target.tagName.toLowerCase());
-  const isMoveY = Math.abs(touchRelY) > Math.abs(touchRelX);
+  // if target is a link or button, allow scrolling and don't prevent default
+  if (['a', 'button'].includes(e.target.tagName.toLowerCase())) {
+    return false;
+  }
 
-  if (!isLinkOrButton && !isMoveY) {
+  const isMovingVertically = Math.abs(touchRelY) > Math.abs(touchRelX);
+  // if touch move is not vertical (=horizontal) prevent scrolling
+  if (!isMovingVertically) {
     e.preventDefault();
     return true;
   }
