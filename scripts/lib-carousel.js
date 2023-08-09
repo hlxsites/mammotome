@@ -2,7 +2,7 @@
  * Slider duration in milliseconds for auto-advance.
  * @type {number}
  */
-const sliderDurationMs = 3500;
+let sliderDurationMs = 3500;
 
 // HTML code for arrow icons
 const HTML_ARROW_LEFT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
@@ -13,6 +13,7 @@ const HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.or
   + '</svg>\n';
 
 let activeSlide = 1;
+let activeSlideElement = null;
 let slideShow = false;
 let slideCount = 0;
 let touchStartX = 0;
@@ -20,6 +21,7 @@ let touchEndX = 0;
 let touchRelX = 0;
 let touchStartY = 0;
 let touchRelY = 0;
+let elementStartPosX = 0;
 
 let sliderWrapper;
 let slider;
@@ -30,8 +32,15 @@ let dottedNavContainer;
 let arrowNavContainer;
 
 /**
+ * Get a slide from Slider Children
+ * @param slideId - Selector ID of the slide
+ * @returns {*} - Slide element
+ */
+const getSlide = (slideId) => sliderChildren.find((el) => el.id === slideId);
+
+/**
  * Increment active slide value
- * @param direction
+ * @param direction - 1 right or -1 left
  */
 const incrementActiveSlide = (direction = 1) => {
   if (direction > 0) {
@@ -39,7 +48,8 @@ const incrementActiveSlide = (direction = 1) => {
   } else {
     activeSlide = (activeSlide - 1) > 0 ? activeSlide - 1 : slideCount;
   }
-  return activeSlide;
+  activeSlideElement = getSlide(`slider-slide-${activeSlide}`);
+  return [activeSlide, activeSlideElement];
 };
 
 /**
@@ -67,14 +77,13 @@ const activateBullet = (bulletId) => {
 };
 
 /**
- * Slides picture switcher
+ * Slides slider switcher
  * @param slideId
  */
 const activateSlide = (slideId) => {
   sliderChildren.forEach((el) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
-      el.style.removeProperty('left');
     } else {
       el.classList.replace('show', 'hide');
     }
@@ -90,7 +99,8 @@ const dottedNavigation = (event) => {
   const sliderTarget = `slider-slide-${targetId}`;
   activateSlide(sliderTarget);
   activateBullet(event.target.id);
-  activeSlide = incrementActiveSlide();
+  activeSlideElement = getSlide(sliderTarget);
+  activeSlide = parseInt(targetId, 10);
 };
 
 /**
@@ -100,8 +110,7 @@ const dottedNavigation = (event) => {
 const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
   const increment = navButton === 'slider-arrow-left' ? -1 : 1;
-
-  activeSlide = incrementActiveSlide(increment);
+  [activeSlide, activeSlideElement] = incrementActiveSlide(increment);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -120,8 +129,10 @@ const dottedNavOnClickEvents = () => {
  */
 const arrowNavOnClickEvents = () => {
   if (arrowNavContainer) {
-    arrowNavContainer.addEventListener('click', (event) => {
-      arrowNavigation(event);
+    Array.from(arrowNavContainer.children).forEach((el) => {
+      el.addEventListener('click', (event) => {
+        arrowNavigation(event);
+      });
     });
   }
 };
@@ -130,7 +141,7 @@ const arrowNavOnClickEvents = () => {
  * Navigate to next slide
  */
 const toNextSlide = () => {
-  activeSlide = incrementActiveSlide(1);
+  [activeSlide, activeSlideElement] = incrementActiveSlide(1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -139,7 +150,7 @@ const toNextSlide = () => {
  * Navigate to previous slide
  */
 const toPrevSlide = () => {
-  activeSlide = incrementActiveSlide(-1);
+  [activeSlide, activeSlideElement] = incrementActiveSlide(-1);
   activateSlide(`slider-slide-${activeSlide}`);
   activateBullet(`slider-dot-${activeSlide}`);
 };
@@ -176,14 +187,22 @@ function handleGesture() {
 /**
  * Prevent scrolling when swiping for touch devices
  * @param e event
+ * @returns {boolean} true if scrolling is prevented
  */
-function disableScrolling(e) {
-  const isLink = e.target.tagName.toLowerCase() === 'a';
-  const isButton = e.target.tagName.toLowerCase() === 'button';
-  const isMoveY = Math.abs(touchRelY) > Math.abs(touchRelX);
-  if (!isLink && !isButton && !isMoveY) {
-    e.preventDefault();
+function shouldPreventDefaultScrolling(e) {
+  // if target is a link or button, allow scrolling and don't prevent default
+  if (['a', 'button'].includes(e.target.tagName.toLowerCase())) {
+    return false;
   }
+
+  const isMovingVertically = Math.abs(touchRelY) > Math.abs(touchRelX);
+  // if touch move is not vertical (=horizontal) prevent scrolling
+  if (!isMovingVertically) {
+    e.preventDefault();
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -196,9 +215,7 @@ function touchMoveEl(slideContainer) {
     (e) => {
       touchRelX = Math.floor(e.touches[0].clientX) - touchStartX;
       touchRelY = Math.floor(e.touches[0].clientY) - touchStartY;
-      disableScrolling(e);
-      const slide = document.getElementById(`slider-slide-${activeSlide}`);
-      slide.style.left = `${touchRelX}px`;
+      if (shouldPreventDefaultScrolling(e)) activeSlideElement.style.transform = `translateX(${elementStartPosX + touchRelX}px)`;
     },
     { passive: false },
   );
@@ -214,6 +231,7 @@ function touchStartEl(slideContainer) {
     (e) => {
       touchStartX = Math.floor(e.touches[0].clientX);
       touchStartY = Math.floor(e.touches[0].clientY);
+      elementStartPosX = activeSlideElement.offsetLeft;
       stopSlideShow();
     },
     { passive: false },
@@ -229,7 +247,9 @@ function touchEndEl(slideContainer) {
     'touchend',
     (e) => {
       touchEndX = Math.floor(e.changedTouches[0].clientX);
-      handleGesture();
+      const previousSlide = activeSlideElement;
+      if (shouldPreventDefaultScrolling(e)) handleGesture();
+      previousSlide.style.removeProperty('transform');
     },
     { passive: false },
   );
@@ -243,6 +263,7 @@ export function initSlider() {
   slideCount = sliderIds.length;
   sliderWrapper.addEventListener('mouseover', stopSlideShow);
   sliderWrapper.addEventListener('mouseleave', startSlideShow);
+  activeSlideElement = document.getElementById(`slider-slide-${activeSlide}`);
   touchStartEl(sliderWrapper);
   touchMoveEl(sliderWrapper);
   touchEndEl(sliderWrapper);
@@ -258,16 +279,15 @@ export function initSlider() {
 export function createArrowNav() {
   arrowNavContainer = document.createElement('div');
   arrowNavContainer.classList.add('arrow-nav');
-
   const arrowLeft = `
-    <button id="slider-arrow-left" 
+    <button id="slider-arrow-left"
             aria-label="Previous Slide">
       ${HTML_ARROW_LEFT}
     </button>
   `;
   const arrowRight = `
-    <button id="slider-arrow-right" 
-            aria-label="Next Slide" 
+    <button id="slider-arrow-right"
+            aria-label="Next Slide"
             role="button">
       ${HTML_ARROW_RIGHT}
     </button>
@@ -398,6 +418,18 @@ export function createPictureSlider() {
   return slider;
 }
 
+/**
+ * Get and Array of Slide Children
+ * @returns {*} - sliderChildren
+ */
 export function getSliderChildren() {
   return sliderChildren;
+}
+
+/**
+ * Set Slide Show Duration in ms and overwrite default
+ * @param duration - duration in ms
+ */
+export function setSlideDuration(duration) {
+  sliderDurationMs = duration;
 }

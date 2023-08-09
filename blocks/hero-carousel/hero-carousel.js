@@ -6,6 +6,7 @@ import {
   initSlider,
   setSliderIds,
   getSliderChildren,
+  setSlideDuration,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
@@ -21,6 +22,7 @@ export function optimizeThumbnails(picture) {
   picture
     .querySelectorAll('img')
     .forEach((img) => {
+      const imgHeight = Math.floor((img.height * 1024) / img.width);
       img
         .closest('picture')
         .replaceWith(
@@ -29,7 +31,7 @@ export function optimizeThumbnails(picture) {
             'Slider Image',
             true,
             img.width,
-            img.height,
+            imgHeight,
           ),
         );
     });
@@ -123,6 +125,7 @@ export default function decorate(block) {
   if (sliderIds.length > 1) {
     const dottedNavContainer = createDottedNav();
     sliderWrapper.appendChild(dottedNavContainer);
+    setSlideDuration(4000);
     initSlider();
   }
 }

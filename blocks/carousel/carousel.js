@@ -23,9 +23,9 @@ export function optimizeThumbnails(picture) {
           createOptimizedPicture(
             img.src,
             img.alt,
-            false,
-            null,
-            null,
+            true,
+            img.width,
+            img.height,
             [{ width: '768' }],
           ),
         );

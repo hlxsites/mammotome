@@ -80,6 +80,7 @@ main .form-container .default-content-wrapper h2:only-child {
     font-weight: var(--mt-font-weight-regular);
     padding-top: calc(5% + 48px);
     padding-bottom: 10px;
+    scroll-margin-top: 150px;
 }
 
 main .form-container .form-wrapper {

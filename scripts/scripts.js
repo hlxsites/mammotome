@@ -27,6 +27,7 @@ const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
 // Define the custom audiences mapping for experimentation
+// noinspection JSUnusedGlobalSymbols
 const EXPERIMENTATION_CONFIG = {
   audiences: {
     device: {
@@ -147,21 +148,59 @@ function buildAutoBlocks(main) {
   }
 }
 
+const resizeListeners = new WeakMap();
+
 /**
- * Creates an optimized background image for the given section.
- * The image is created for the given breakpoints.
- * Default breakpoints are mobile, tablet and desktop.
- * @param section The section to create the background image for
- * @param bgImage The background image to optimize
- * @param breakpoints The breakpoints to optimize the image for
+ * Sets an optimized background image for a given section element.
+ * This function takes into account the device's viewport width and device pixel ratio
+ * to choose the most appropriate image from the provided breakpoints.
+ *
+ * @param {HTMLElement} section - The section element to which the background image will be applied.
+ * @param {string} bgImage - The base URL of the background image.
+ * @param {Array<{width: string, media?: string}>} [breakpoints=[
+ *  { width: '450' },
+ *  { media: '(min-width: 450px)', width: '750' },
+ *  { media: '(min-width: 750px)', width: '2000' }
+ * ]] - An array of breakpoint objects. Each object contains a `width` which is the width of the
+ * image to request, and an optional `media` which is a media query string indicating when this
+ * breakpoint should be used.
  */
 function createOptimizedBackgroundImage(section, bgImage, breakpoints = [{ width: '450' }, { media: '(min-width: 450px)', width: '750' }, { media: '(min-width: 750px)', width: '2000' }]) {
-  const url = new URL(bgImage, window.location.href);
-  const pathname = encodeURI(url.pathname);
+  const updateBackground = () => {
+    const url = new URL(bgImage, window.location.href);
+    const pathname = encodeURI(url.pathname);
 
-  const images = breakpoints.map((br, i) => `url(${pathname}?width=${br.width}&format=webply&optimize=medium) ${i + 1}x`);
-  section.style.backgroundImage = `image-set(${images.join(', ')})`;
-  section.style.backgroundSize = 'cover';
+    // Filter all matching breakpoints
+    const matchedBreakpoints = breakpoints
+      .filter((br) => !br.media || window.matchMedia(br.media).matches);
+
+    // If there are any matching breakpoints, pick the one with the highest resolution
+    let matchedBreakpoint;
+    if (matchedBreakpoints.length) {
+      matchedBreakpoint = matchedBreakpoints
+        .reduce((acc, curr) => (parseInt(curr.width, 10) > parseInt(acc.width, 10) ? curr : acc));
+    } else {
+      [matchedBreakpoint] = breakpoints;
+    }
+
+    const adjustedWidth = matchedBreakpoint.width * window.devicePixelRatio;
+    section.style.backgroundImage = `url(${pathname}?width=${adjustedWidth}&format=webply&optimize=medium)`;
+    section.style.backgroundSize = 'cover';
+  };
+
+  // If a listener already exists for this section, remove it to prevent duplicates.
+  if (resizeListeners.has(section)) {
+    window.removeEventListener('resize', resizeListeners.get(section));
+  }
+
+  // Store the updateBackground function in the WeakMap for this section
+  resizeListeners.set(section, updateBackground);
+
+  // Now, attach the new listener
+  window.addEventListener('resize', updateBackground);
+
+  // Immediately update the background
+  updateBackground();
 }
 
 /**
@@ -196,8 +235,8 @@ export async function decorateMain(main) {
   decorateSupScriptInTextBelow(main);
 
   if (main.querySelector('.section.our-history')) {
-    decorateHistorySection(main);
-    observeHistorySection(main);
+    await decorateHistorySection(main);
+    await observeHistorySection(main);
   }
 }
 
@@ -254,15 +293,6 @@ export function addFavIcon(
   }
 }
 
-function integrateMartech(parent, id) {
-  // Google Tag Manager
-  const script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
-  script.async = true;
-  parent.appendChild(script);
-}
-
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
@@ -300,9 +330,40 @@ async function loadLazy(doc) {
   }
 
   // Mark customer as having viewed the page once
-  localStorage.setItem('franklin-visitor-returning', true);
+  localStorage.setItem('franklin-visitor-returning', Boolean(true).toString());
 
   document.dispatchEvent(new Event('franklin.loadLazy_completed'));
+}
+
+// google tag manager
+function loadGTM() {
+  if (window.location.hostname.includes('localhost') || document.location.hostname.includes('.hlx.page')) {
+    return;
+  }
+
+  const scriptTag = document.createElement('script');
+  scriptTag.innerHTML = `
+  // googleTagManager
+  (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({
+          'gtm.start':
+              new Date().getTime(), event: 'gtm.js'
+      });
+      var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', 'GTM-KNBZTHP');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('set', {
+      'cookie_flags': 'SameSite=None;Secure'
+  });
+  `;
+  document.head.prepend(scriptTag);
 }
 
 /**
@@ -310,7 +371,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => integrateMartech(document.body, 'GTM-KNBZTHP'), 500);
+  window.setTimeout(() => loadGTM(), 500);
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here

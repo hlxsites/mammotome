@@ -18,7 +18,7 @@
     margin-top: 5%;
 }
 
-@media (min-width:  1024px) {
+@media (width >=  1024px) {
     .carousel > div {
         display: flex;
         flex-direction: row;
@@ -36,7 +36,7 @@
     order: 2;
 }
 
-@media (min-width:  768px) {
+@media (width >=  768px) {
     .carousel > div > div {
         order: 1;
         width: 100%;
@@ -65,7 +65,7 @@
     order: 1;
 }
 
-@media (min-width:  1024px) {
+@media (width >=  1024px) {
     .carousel .slider-wrapper {
         order: 2;
     }
@@ -74,6 +74,7 @@
 /* Slide container */
 .carousel .slider-wrapper .slider {
     position: relative;
+    overflow-x: clip;
 }
 
 /* Pictures in slider */
@@ -88,7 +89,7 @@
     object-fit: cover;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .carousel .slider-wrapper .slider picture img {
         object-fit: contain;
     }
@@ -106,9 +107,8 @@
 /* Second to n slide in slider */
 .carousel .slider-wrapper .slider picture:nth-child(n+2) {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
+    left: 0;
+    top: 0;
     z-index: 1;
     flex-direction: column;
     justify-content: flex-start;
@@ -117,8 +117,7 @@
 /* hide slide */
 .carousel .hide {
     opacity: 0;
-    transition-duration: 500ms;
-    transition-property: opacity;
+    transition-property: right;
 }
 
 /* show slide */
@@ -153,18 +152,28 @@
 .carousel .slider-wrapper .dotted-nav {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     z-index: 998;
     margin-top: 9px;
     margin-bottom: 9px;
+    height: 20px;
 }
 
 /* Bottom Nav */
 .carousel .dotted-nav .dot {
-    margin: 0 6px;
+    margin: 6px;
     border-radius: 50%;
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+}
+
+@media (width >= 768px) {
+    .carousel .dotted-nav .dot {
+        pointer-events: all;
+        cursor: pointer;
+    }
 }
 
 
