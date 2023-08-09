@@ -93,6 +93,7 @@ main .section.hero-carousel-container {
 
     .hero-carousel .slider > div.text-align-center > div h1,
     .hero-carousel .slider > div.text-align-center > div p  {
+        font-family: Arial;
         text-align: center;
     }
 
