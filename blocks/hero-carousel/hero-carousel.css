@@ -142,7 +142,6 @@ main .section.hero-carousel-container {
 
 .hero-carousel .slider > div > div > h1 {
     color: var(--mt-heading-color-primary);
-    font-size: 12pt;
 }
 
 
