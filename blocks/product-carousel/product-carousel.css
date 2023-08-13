@@ -19,14 +19,14 @@ main .section.product-carousel-container {
     margin-left: -20%;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .product-carousel .slider {
         width: 100%;
         margin-left: 0;
     }
 }
 
-
+/* blurry white background */
 .product-carousel .slider::before {
     content: "";
     position: absolute;
@@ -35,9 +35,9 @@ main .section.product-carousel-container {
     width: 100%;
     height: 100%;
     z-index: 2;
-    background-color: rgb(255 255 255 / 50%); /* Blurry white overlay */
-    backdrop-filter: blur(2px); /* Adjust the blur strength as needed */
-    pointer-events: none; /* Allows interaction with the content beneath */
+    background-color: rgb(255 255 255 / 50%);
+    backdrop-filter: blur(2px);
+    pointer-events: auto;
 }
 
 @media (width >= 1000px) {
@@ -57,20 +57,29 @@ main .section.product-carousel-container {
     padding: 20px;
 }
 
-.product-carousel .slider > div:nth-child(1) > div:last-child p,
-.product-carousel .slider > div:nth-child(3) > div:last-child p {
-    text-align: center;
-    min-width: 200px;
-    display: none;
-}
+/* .product-carousel .slider > div:nth-child(1) > div:last-child p, */
 
-@media (min-width: 650px) {
-    .product-carousel .slider > div:nth-child(1) > div:last-child p,
-    .product-carousel .slider > div:nth-child(3) > div:last-child p {
-        display: unset;
-    }
+/* .product-carousel .slider > div:nth-child(3) > div:last-child p { */
 
-}
+/*    text-align: center; */
+
+/*    min-width: 200px; */
+
+/*    display: none; */
+
+/* } */
+
+/* @media (min-width: 650px) { */
+
+/*    .product-carousel .slider > div:nth-child(1) > div:last-child p, */
+
+/*    .product-carousel .slider > div:nth-child(3) > div:last-child p { */
+
+/*        display: unset; */
+
+/*    } */
+
+/* } */
 
 .product-carousel .slider > div:nth-child(2) {
     z-index: 3;
@@ -96,7 +105,7 @@ main .section.product-carousel-container {
 }
 
 /* header format */
-.product-carousel .slider div h3 {
+.product-carousel .slider div div h3 {
     font-size: var(--mt-heading-font-size-m);
     font-weight: var(--mt-font-weight-bold);
     text-transform: unset;
@@ -110,21 +119,27 @@ main .section.product-carousel-container {
     display: none;
 }
 
+.product-carousel .slider > div > div:last-child {
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+}
+
 /* Scale first and third image on mobile */
 
-.product-carousel .slider > div:nth-child(1) > div img,
-.product-carousel .slider > div:nth-child(3) > div img,
-.product-carousel .slider > div:nth-child(1) > div picture,
-.product-carousel .slider > div:nth-child(3) > div picture {
+.product-carousel .slider > div:has[style*="order: 1;"] > div img,
+.product-carousel .slider > div:has[style*="order: 3;"] > div img,
+.product-carousel .slider > div:has[style*="order: 1;"] > div picture,
+.product-carousel .slider > div:has[style*="order: 3;"] > div picture {
     margin-top: 10px;
     transform: scale(0.8);
 }
 
 @media (width>=1000px){
-    .product-carousel .slider > div:nth-child(1) > div img,
-    .product-carousel .slider > div:nth-child(3) > div img,
-    .product-carousel .slider > div:nth-child(1) > div picture,
-    .product-carousel .slider > div:nth-child(3) > div picture {
+    .product-carousel .slider > div:has[style*="order: 1;"] > div img,
+    .product-carousel .slider > div:has[style*="order: 3;"] > div img,
+    .product-carousel .slider > div:has[style*="order: 1;"] > div picture,
+    .product-carousel .slider > div:has[style*="order: 3;"] > div picture {
         margin-top: unset;
         transform: scale(1);
     }
@@ -154,11 +169,19 @@ main .section.product-carousel-container {
 }
 
 
-.product-carousel.slider-wrapper .arrow-nav #arrow-left,
-.product-carousel.slider-wrapper .arrow-nav #arrow-right {
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-left,
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
     width: 24px;
     height: 24px;
     text-align: center;
+}
+
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
+    margin-left: 10px;
+}
+
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+    margin-right: 10px;
 }
 
 .product-carousel .arrow-nav button {

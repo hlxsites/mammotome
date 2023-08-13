@@ -93,11 +93,11 @@ const arrowNavigation = (event) => {
   const newSliderChildren = direction === 1
     ? moveArrayRight(sliderChildren)
     : moveArrayLeft(sliderChildren);
-  // slider.innerHTML = '';
-  newSliderChildren.forEach((child,i) => {
-    // slider.appendChild(child);
-    const displaySlide = i + 1 <= 3 ? 'unset' : 'none';
-    child.setAttribute('style', `order: ${i + 1}; display: ${displaySlide};`);
+  // Reorder slider in grid. First 3 slides are visible, the rest are hidden
+  newSliderChildren.forEach((child, i) => {
+    const showSlide = i + 1 <= 3 ? 'display: unset;' : 'display: none;';
+    const slideIndex = i + 1 === 2 ? 'z-index: 3;' : 'z-index: 1;';
+    child.setAttribute('style', `order: ${i + 1};${showSlide}${slideIndex}`);
   });
 };
 
