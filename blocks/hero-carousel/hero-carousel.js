@@ -1,12 +1,11 @@
 import {
-  addEnclosingDiv,
   createDottedNav,
   createSlideSlider,
   createSliderWrapper,
   initSlider,
   setSliderIds,
   getSliderChildren,
-  setSlideDuration,
+  setSlideDuration, addEnclosingDiv,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
@@ -120,7 +119,6 @@ export default function decorate(block) {
   createSlideSlider();
   const sliderIds = setSliderIds();
   const sliderChildren = getSliderChildren();
-  // createButtonRow(sliderWrapper.querySelectorAll('.slider > div'));
   createButtonRow(sliderChildren);
   if (sliderIds.length > 1) {
     const dottedNavContainer = createDottedNav();
