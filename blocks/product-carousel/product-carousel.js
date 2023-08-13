@@ -89,13 +89,15 @@ const arrowNavigation = (event) => {
   const navButton = event.currentTarget.id;
   const direction = navButton === 'slider-arrow-left' ? -1 : 1;
   const sliderChildren = getSliderChildren();
-  const slider = document.querySelector('.slider');
+  // const slider = document.querySelector('.slider');
   const newSliderChildren = direction === 1
     ? moveArrayRight(sliderChildren)
     : moveArrayLeft(sliderChildren);
-  slider.innerHTML = '';
-  newSliderChildren.forEach((child) => {
-    slider.appendChild(child);
+  // slider.innerHTML = '';
+  newSliderChildren.forEach((child,i) => {
+    // slider.appendChild(child);
+    const displaySlide = i + 1 <= 3 ? 'unset' : 'none';
+    child.setAttribute('style', `order: ${i + 1}; display: ${displaySlide};`);
   });
 };
 
