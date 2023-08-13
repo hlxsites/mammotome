@@ -12,7 +12,9 @@ import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 // Number of required columns in table
 const NUM_COLUMNS = 2;
-const INVALID_CONFIGURATION_MESSAGE = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
+const NUM_ROWS = 3;
+const INVALID_NUMBER_OF_COLUMNS_MESSAGE = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
+const INVALID_NUMBER_OF_ROWS_MESSAGE = `Invalid configuration. At least ${NUM_ROWS} rows required to properly show the Product Carousel`;
 
 const HTML_LEFT_ARROW = '<svg fill="rgb(88,127,194)" width="24px" height="24px" viewBox="0 0 1024 1024" class="icon"  xmlns="http://www.w3.org/2000/svg">'
   + '<path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z"/>'
@@ -45,60 +47,79 @@ export function optimizeThumbnails(picture) {
     });
 }
 
+/**
+ * Check if the block has the correct number of columns and rows
+ * @param block
+ */
 function checkConfig(block) {
-  if (block.children.length === 0 || block.children[0].children.length !== NUM_COLUMNS) {
-    throw new Error(INVALID_CONFIGURATION_MESSAGE);
+  if (block.children.length === 0 || block.children[0].children.length < NUM_COLUMNS) {
+    throw new Error(INVALID_NUMBER_OF_COLUMNS_MESSAGE);
+  }
+  if (block.children.length < NUM_ROWS) {
+    throw new Error(INVALID_NUMBER_OF_ROWS_MESSAGE);
   }
 }
 
 /**
- * Move Elements in an array to the right
- * by removing the first element and adding it to the end
+ * Move Elements in an array by a given number of positions.
+ * Positive numPositions value moves elements to the right,
+ * negative numPositions value moves elements to the left.
  * @param arr
+ * @param numPositions
  * @returns {*}
  */
-function moveArrayRight(arr) {
+function moveArrayElements(arr, numPositions) {
   if (arr.length < 2) {
     return arr;
   }
 
-  const firstItem = arr.shift();
-  arr.push(firstItem);
+  const normalizedPositions = numPositions % arr.length;
+  if (normalizedPositions === 0) {
+    return arr;
+  }
+
+  if (normalizedPositions > 0) {
+    let i = 0;
+    while (i < normalizedPositions) {
+      const lastItem = arr.pop();
+      arr.unshift(lastItem);
+      i += 1;
+    }
+  } else {
+    let i = 0;
+    while (i > normalizedPositions) {
+      const firstItem = arr.shift();
+      arr.push(firstItem);
+      i -= 1;
+    }
+  }
 
   return arr;
 }
 
 /**
- * Move Elements in an array to the left
- * by removing the last element and adding it to the beginning
- * @param arr
- * @returns {*}
+ * Updates the style properties of a slide child element.
+ * @param {HTMLElement} child - The slide child element.
+ * @param {number} index - The index of the element.
+ * @returns {void}
  */
-function moveArrayLeft(arr) {
-  if (arr.length < 2) {
-    return arr;
-  }
+const updateChildStyle = (child, index) => {
+  const showSlide = index < 3 ? 'unset' : 'none';
+  const slideIndex = index === 1 ? 3 : 1;
+  child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex};`;
+};
 
-  const lastItem = arr.pop();
-  arr.unshift(lastItem);
-
-  return arr;
-}
-
+/**
+ * Navigation for arrow buttons.
+ * @param {Event} event - The event object.
+ * @returns {void}
+ */
 const arrowNavigation = (event) => {
-  const navButton = event.currentTarget.id;
-  const direction = navButton === 'slider-arrow-left' ? -1 : 1;
   const sliderChildren = getSliderChildren();
-  // const slider = document.querySelector('.slider');
-  const newSliderChildren = direction === 1
-    ? moveArrayRight(sliderChildren)
-    : moveArrayLeft(sliderChildren);
-  // Reorder slider in grid. First 3 slides are visible, the rest are hidden
-  newSliderChildren.forEach((child, i) => {
-    const showSlide = i + 1 <= 3 ? 'display: unset;' : 'display: none;';
-    const slideIndex = i + 1 === 2 ? 'z-index: 3;' : 'z-index: 1;';
-    child.setAttribute('style', `order: ${i + 1};${showSlide}${slideIndex}`);
-  });
+  const direction = event.currentTarget.id === 'slider-arrow-left' ? -1 : 1;
+  const newSliderChildren = moveArrayElements(sliderChildren, direction);
+
+  newSliderChildren.forEach(updateChildStyle);
 };
 
 /**
