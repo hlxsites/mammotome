@@ -54,37 +54,30 @@ main .section.product-carousel-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 20px;
+    padding: 10px;
 }
 
-/* .product-carousel .slider > div:nth-child(1) > div:last-child p, */
-
-/* .product-carousel .slider > div:nth-child(3) > div:last-child p { */
-
-/*    text-align: center; */
-
-/*    min-width: 200px; */
-
-/*    display: none; */
-
-/* } */
-
-/* @media (min-width: 650px) { */
-
-/*    .product-carousel .slider > div:nth-child(1) > div:last-child p, */
-
-/*    .product-carousel .slider > div:nth-child(3) > div:last-child p { */
-
-/*        display: unset; */
-
-/*    } */
-
-/* } */
-
+/* bring second slide to the front */
 .product-carousel .slider > div:nth-child(2) {
     z-index: 3;
 }
 
+/* Hide slide 4 - n */
+.product-carousel .slider > div:nth-child(n+4) {
+    display: none;
+}
+
+.product-carousel .slider > div[style*="order: 1;"] div,
+.product-carousel .slider > div[style*="order: 3;"] div {
+    opacity: 0;
+}
+
+@media (min-width: 500px){
+    .product-carousel .slider > div[style*="order: 1;"] div,
+    .product-carousel .slider > div[style*="order: 3;"] div {
+        opacity: 1;
+    }
+}
 
 .product-carousel .slider > div > div img {
     max-width: 200px;
@@ -114,10 +107,6 @@ main .section.product-carousel-container {
     color: var(--mt-heading-color-primary);
 }
 
-/* Hide slide 4 - n */
-.product-carousel .slider > div:nth-child(n+4) {
-    display: none;
-}
 
 .product-carousel .slider > div > div:last-child {
     display: flex;
@@ -127,19 +116,19 @@ main .section.product-carousel-container {
 
 /* Scale first and third image on mobile */
 
-.product-carousel .slider > div:has[style*="order: 1;"] > div img,
-.product-carousel .slider > div:has[style*="order: 3;"] > div img,
-.product-carousel .slider > div:has[style*="order: 1;"] > div picture,
-.product-carousel .slider > div:has[style*="order: 3;"] > div picture {
+.product-carousel .slider > div[style*="order: 1;"] > div img,
+.product-carousel .slider > div[style*="order: 3;"] > div img,
+.product-carousel .slider > div[style*="order: 1;"] > div picture,
+.product-carousel .slider > div[style*="order: 3;"] > div picture {
     margin-top: 10px;
     transform: scale(0.8);
 }
 
 @media (width>=1000px){
-    .product-carousel .slider > div:has[style*="order: 1;"] > div img,
-    .product-carousel .slider > div:has[style*="order: 3;"] > div img,
-    .product-carousel .slider > div:has[style*="order: 1;"] > div picture,
-    .product-carousel .slider > div:has[style*="order: 3;"] > div picture {
+    .product-carousel .slider > div[style*="order: 1;"] > div img,
+    .product-carousel .slider > div[style*="order: 3;"] > div img,
+    .product-carousel .slider > div[style*="order: 1;"] > div picture,
+    .product-carousel .slider > div[style*="order: 3;"] > div picture {
         margin-top: unset;
         transform: scale(1);
     }

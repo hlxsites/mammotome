@@ -116,7 +116,7 @@ const updateChildStyle = (child, index) => {
  */
 const arrowNavigation = (event) => {
   const sliderChildren = getSliderChildren();
-  const direction = event.currentTarget.id === 'slider-arrow-left' ? -1 : 1;
+  const direction = event.currentTarget.id === 'slider-arrow-left' ? 1 : -1;
   const newSliderChildren = moveArrayElements(sliderChildren, direction);
 
   newSliderChildren.forEach(updateChildStyle);
