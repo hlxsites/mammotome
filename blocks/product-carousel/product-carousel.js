@@ -104,7 +104,7 @@ function moveArrayElements(arr, numPositions) {
  * @returns {void}
  */
 const updateChildStyle = (child, index) => {
-  const showSlide = index < 3 ? 'unset' : 'none';
+  const showSlide = index < 3 ? 'flex' : 'none';
   const slideIndex = index === 1 ? 3 : 1;
   child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex};`;
 };
