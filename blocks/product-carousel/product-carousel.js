@@ -135,6 +135,20 @@ const arrowNavOnClickEvents = (arrowNavContainer) => {
   }
 };
 
+/**
+ * Initialize the slide order
+ * @param sliderChildren
+ */
+const initSlideOrder = (sliderChildren) => {
+  sliderChildren.forEach((child, index) => {
+    child.setAttribute('style', `order: ${index + 1};`);
+  });
+};
+
+/**
+ * Decorate the block
+ * @param block
+ */
 export default function decorate(block) {
   try {
     checkConfig(block);
@@ -153,6 +167,8 @@ export default function decorate(block) {
   setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
   const sliderWrapper = createSliderWrapper(block);
   createSlideSlider();
+  const sliderChildren = getSliderChildren();
+  initSlideOrder(sliderChildren);
   const arrowNavContainer = createArrowNav();
   setSlideDuration(0);
   sliderWrapper.appendChild(arrowNavContainer);

@@ -9,6 +9,7 @@ main .section.product-carousel-container {
     overflow: hidden;
 }
 
+/* Slider Home */
 .product-carousel .slider {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr) minmax(0, 1fr);
@@ -23,6 +24,7 @@ main .section.product-carousel-container {
     .product-carousel .slider {
         width: 100%;
         margin-left: 0;
+        padding: 10px 80px;
     }
 }
 
@@ -48,7 +50,7 @@ main .section.product-carousel-container {
     }
 }
 
-/* slides 1 - n */
+/* slides 1 - n container */
 .product-carousel .slider > div {
     display: flex;
     flex-direction: column;
@@ -56,6 +58,7 @@ main .section.product-carousel-container {
     text-align: center;
     padding: 10px;
 }
+
 
 /* bring second slide to the front */
 .product-carousel .slider > div:nth-child(2) {
@@ -67,12 +70,19 @@ main .section.product-carousel-container {
     display: none;
 }
 
+/* Initial row height for image to prevent CLS */
+.product-carousel .slider > div > div:nth-child(1){
+    height: 200px;
+}
+
+
+/* Hide image on small mobile devices */
 .product-carousel .slider > div[style*="order: 1;"] div,
 .product-carousel .slider > div[style*="order: 3;"] div {
     opacity: 0;
 }
 
-@media (min-width: 500px){
+@media (min-width: 500px) {
     .product-carousel .slider > div[style*="order: 1;"] div,
     .product-carousel .slider > div[style*="order: 3;"] div {
         opacity: 1;
@@ -107,7 +117,7 @@ main .section.product-carousel-container {
     color: var(--mt-heading-color-primary);
 }
 
-
+/* Flex to position header and text */
 .product-carousel .slider > div > div:last-child {
     display: flex;
     flex-direction: column;
@@ -115,7 +125,6 @@ main .section.product-carousel-container {
 }
 
 /* Scale first and third image on mobile */
-
 .product-carousel .slider > div[style*="order: 1;"] > div img,
 .product-carousel .slider > div[style*="order: 3;"] > div img,
 .product-carousel .slider > div[style*="order: 1;"] > div picture,
@@ -166,11 +175,22 @@ main .section.product-carousel-container {
 }
 
 .product-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
-    margin-left: 10px;
+    margin-left: -5px;
 }
 
 .product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
-    margin-right: 10px;
+    margin-right: -5px;
+}
+
+@media (width >= 768px) {
+    .product-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
+        margin-left: 40px;
+    }
+
+    .product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+        margin-right: 40px;
+    }
+
 }
 
 .product-carousel .arrow-nav button {
