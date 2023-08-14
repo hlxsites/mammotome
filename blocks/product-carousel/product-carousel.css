@@ -122,6 +122,7 @@ main .section.product-carousel-container {
     display: flex;
     flex-direction: column;
     height: 200px;
+    max-width: 400px;
 }
 
 /* Scale first and third image on mobile */
