@@ -12,7 +12,7 @@ the third column contains the image.
 
 ### Content Structure
 
-| Carousel                           |                         |         |
+| Hero-Carousel                      |                         |         |
 |------------------------------------|-------------------------|---------|
 | [Header (h1)]<br>[text]<br>[links] | [**left**],[center],[right] | [image] |
 

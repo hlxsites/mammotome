@@ -7,6 +7,7 @@ This is a collection of blocks, specifically developed as part of the Mammotome 
 - [Cards](blocks/cards.md)
 - [Carousel](blocks/carousel.md)
 - [Hero-Carousel](blocks/hero-carousel.md)
+- [Product-Carousel](blocks/product-carousel.md)
 - [Collapsible](blocks/collapsible.md)
 - [Tab Navigation](blocks/tab-nav.md)
 - [Previous-Next Navigation](blocks/prevnext.md)
