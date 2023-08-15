@@ -81,7 +81,7 @@ function checkConfig(block) {
  * @returns {*}
  */
 function moveArrayElements(arr, numPositions) {
-  const length = Array.from(arr).length;
+  const length = [...arr].length;
   if (length < 2) {
     return arr;
   }
