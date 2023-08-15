@@ -81,18 +81,17 @@ function checkConfig(block) {
  * @returns {*}
  */
 function moveArrayElements(arr, numPositions) {
-  const length = [...arr].length;
-  if (length < 2) {
+  if (arr.length < 2) {
     return arr;
   }
 
-  const normalizedPositions = numPositions % length;
+  const normalizedPositions = numPositions % arr.length;
   if (normalizedPositions === 0) {
     return arr;
   }
 
   if (normalizedPositions > 0) {
-    const movedElements = arr.splice(length - normalizedPositions);
+    const movedElements = arr.splice(arr.length - normalizedPositions);
     arr.unshift(...movedElements);
   } else {
     const movedElements = arr.splice(0, -normalizedPositions);
