@@ -19,8 +19,8 @@ const NUM_COLUMNS = 2;
 const NUM_ROWS = 2;
 
 // Error Messages
-const INVALID_NUMBER_OF_COLUMNS_MESSAGE = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
-const INVALID_NUMBER_OF_ROWS_MESSAGE = `Invalid configuration. At least ${NUM_ROWS} rows required to properly show the Product Carousel`;
+const INVALID_COLUMNS_MSG = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
+const INVALID_ROWS_MSG = `Invalid configuration. At least ${NUM_ROWS} rows required to properly show the Product Carousel`;
 
 /**
  *
@@ -66,8 +66,8 @@ export function optimizeThumbnails(picture) {
  * @param block
  */
 function checkConfig(block) {
-  const children = block.children;
-  const [firstChild] = block.children;
+  const children = Array.from(block.children);
+  const [firstChild] = children;
   if (!firstChild || firstChild.children.length < NUM_COLUMNS) throw new Error(INVALID_COLUMNS_MSG);
   if (children.length < NUM_ROWS) throw new Error(INVALID_ROWS_MSG);
 }
