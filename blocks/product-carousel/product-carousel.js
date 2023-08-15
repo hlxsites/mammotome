@@ -22,14 +22,21 @@ const NUM_ROWS = 2;
 const INVALID_NUMBER_OF_COLUMNS_MESSAGE = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
 const INVALID_NUMBER_OF_ROWS_MESSAGE = `Invalid configuration. At least ${NUM_ROWS} rows required to properly show the Product Carousel`;
 
-// HTML for arrow navigation
-const HTML_LEFT_ARROW = '<svg fill="rgb(88,127,194)" width="24px" height="24px" viewBox="0 0 1024 1024" class="icon"  xmlns="http://www.w3.org/2000/svg">'
-  + '<path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z"/>'
-  + '</svg>';
+/**
+ *
+ * @param path
+ * @returns HTML for left/right arrow
+ * @constructor
+ */
+const ARROW_TEMPLATE = (path) => `
+  <svg fill="rgb(88,127,194)" width="24px" height="24px" viewBox="0 0 1024 1024" class="icon" xmlns="http://www.w3.org/2000/svg">
+    <path d="${path}"/>
+  </svg>
+`;
 
-const HTML_RIGHT_ARROW = '<svg fill="rgb(88,127,194)" width="24px" height="24px" viewBox="0 0 1024 1024" class="icon"  xmlns="http://www.w3.org/2000/svg">'
-  + '<path d="M256 120.768L306.432 64 768 512l-461.568 448L256 903.232 659.072 512z"/>'
-  + '</svg>';
+const HTML_LEFT_ARROW = ARROW_TEMPLATE('M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z');
+
+const HTML_RIGHT_ARROW = ARROW_TEMPLATE('M256 120.768L306.432 64 768 512l-461.568 448L256 903.232 659.072 512z');
 
 /**
  * Get optimized img element width default
@@ -59,12 +66,10 @@ export function optimizeThumbnails(picture) {
  * @param block
  */
 function checkConfig(block) {
-  if (block.children.length === 0 || block.children[0].children.length < NUM_COLUMNS) {
-    throw new Error(INVALID_NUMBER_OF_COLUMNS_MESSAGE);
-  }
-  if (block.children.length < NUM_ROWS) {
-    throw new Error(INVALID_NUMBER_OF_ROWS_MESSAGE);
-  }
+  const children = block.children;
+  const [firstChild] = block.children;
+  if (!firstChild || firstChild.children.length < NUM_COLUMNS) throw new Error(INVALID_COLUMNS_MSG);
+  if (children.length < NUM_ROWS) throw new Error(INVALID_ROWS_MSG);
 }
 
 /**
@@ -76,29 +81,22 @@ function checkConfig(block) {
  * @returns {*}
  */
 function moveArrayElements(arr, numPositions) {
-  if (arr.length < 2) {
+  const length = arr.length;
+  if (length < 2) {
     return arr;
   }
 
-  const normalizedPositions = numPositions % arr.length;
+  const normalizedPositions = numPositions % length;
   if (normalizedPositions === 0) {
     return arr;
   }
 
   if (normalizedPositions > 0) {
-    let i = 0;
-    while (i < normalizedPositions) {
-      const lastItem = arr.pop();
-      arr.unshift(lastItem);
-      i += 1;
-    }
+    const movedElements = arr.splice(length - normalizedPositions);
+    arr.unshift(...movedElements);
   } else {
-    let i = 0;
-    while (i > normalizedPositions) {
-      const firstItem = arr.shift();
-      arr.push(firstItem);
-      i -= 1;
-    }
+    const movedElements = arr.splice(0, -normalizedPositions);
+    arr.push(...movedElements);
   }
 
   return arr;
@@ -122,14 +120,10 @@ const updateChildStyle = (child, index) => {
  * @returns {slideChildren}
  */
 const reorderChildren = (sliderChildren) => {
-  const nonEmptyChildren = sliderChildren.filter((el) => el.innerHTML !== '');
-
+  const nonEmptyChildren = sliderChildren.filter((child) => child.innerHTML.trim() !== '');
   const newSliderChildren = setSliderChildren(nonEmptyChildren);
 
-  newSliderChildren.forEach((el, i) => {
-    updateChildStyle(el, i + 1);
-  });
-
+  newSliderChildren.forEach(updateChildStyle);
   return newSliderChildren;
 };
 
@@ -148,9 +142,7 @@ const arrowNavigation = (event) => {
   const increment = isLargeScreen ? 3 : 1;
   const direction = event.currentTarget.id === 'slider-arrow-left' ? increment : -increment;
 
-  const newSliderChildren = moveArrayElements(sliderChildren, direction);
-
-  newSliderChildren.forEach(updateChildStyle);
+  moveArrayElements(sliderChildren, direction).forEach(updateChildStyle);
 };
 
 /**

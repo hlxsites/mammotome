@@ -5,7 +5,8 @@ import {
   initSlider,
   setSliderIds,
   getSliderChildren,
-  setSlideDuration, addEnclosingDiv,
+  setSlideDuration,
+  addEnclosingDiv,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
