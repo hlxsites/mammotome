@@ -5,10 +5,10 @@
 let sliderDurationMs = 3500;
 
 // HTML code for arrow icons
-const HTML_ARROW_LEFT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
+let HTML_ARROW_LEFT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
   + '<path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"/>\n'
   + '</svg>';
-const HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
+let HTML_ARROW_RIGHT = '<svg fill="rgb(217, 217, 217)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
   + '<path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"/>\n'
   + '</svg>\n';
 
@@ -80,7 +80,7 @@ const activateBullet = (bulletId) => {
  * Slides slider switcher
  * @param slideId
  */
-const activateSlide = (slideId) => {
+export function activateSlide(slideId) {
   sliderChildren.forEach((el) => {
     if (el.id === slideId) {
       el.classList.replace('hide', 'show');
@@ -88,7 +88,7 @@ const activateSlide = (slideId) => {
       el.classList.replace('show', 'hide');
     }
   });
-};
+}
 
 /**
  * Navigate with Bottom Bullet navigation
@@ -119,6 +119,7 @@ const arrowNavigation = (event) => {
  * Add event listeners for bottom bullet navigation
  */
 const dottedNavOnClickEvents = () => {
+  if (!dottedNavContainer) return;
   dottedNavContainer.addEventListener('click', (event) => {
     if (event.target && event.target.nodeName === 'BUTTON') dottedNavigation(event);
   });
@@ -128,13 +129,12 @@ const dottedNavOnClickEvents = () => {
  * Event Listeners for arrow navigation
  */
 const arrowNavOnClickEvents = () => {
-  if (arrowNavContainer) {
-    Array.from(arrowNavContainer.children).forEach((el) => {
-      el.addEventListener('click', (event) => {
-        arrowNavigation(event);
-      });
+  if (!arrowNavContainer) return;
+  Array.from(arrowNavContainer.children).forEach((el) => {
+    el.addEventListener('click', (event) => {
+      arrowNavigation(event);
     });
-  }
+  });
 };
 
 /**
@@ -259,17 +259,22 @@ function touchEndEl(slideContainer) {
  * Initialize Slider
  * comes after all decoration is done
  */
-export function initSlider() {
+export function initSlider(dottedNav = true, arrowNav = true, touchNav = true) {
   slideCount = sliderIds.length;
-  sliderWrapper.addEventListener('mouseover', stopSlideShow);
-  sliderWrapper.addEventListener('mouseleave', startSlideShow);
   activeSlideElement = document.getElementById(`slider-slide-${activeSlide}`);
-  touchStartEl(sliderWrapper);
-  touchMoveEl(sliderWrapper);
-  touchEndEl(sliderWrapper);
-  startSlideShow();
-  dottedNavOnClickEvents();
-  arrowNavOnClickEvents();
+  if (touchNav) {
+    touchStartEl(sliderWrapper);
+    touchMoveEl(sliderWrapper);
+    touchEndEl(sliderWrapper);
+  }
+  // if there is more than one slide and sliderDurationMs is set, start slide show
+  if (slideCount > 1 && sliderDurationMs > 0) {
+    sliderWrapper.addEventListener('mouseover', stopSlideShow);
+    sliderWrapper.addEventListener('mouseleave', startSlideShow);
+    startSlideShow();
+  }
+  if (dottedNav) dottedNavOnClickEvents();
+  if (arrowNav) arrowNavOnClickEvents();
 }
 
 /**
@@ -420,16 +425,36 @@ export function createPictureSlider() {
 
 /**
  * Get and Array of Slide Children
- * @returns {*} - sliderChildren
+ * @returns sliderChildren - sliderChildren
  */
 export function getSliderChildren() {
   return sliderChildren;
 }
 
 /**
+ * Set new Slider Children in case update is needed
+ * @param newSliderChildren
+ * @returns slideChildren - new slider children
+ */
+export function setSliderChildren(newSliderChildren) {
+  sliderChildren = newSliderChildren;
+  return sliderChildren;
+}
+
+/**
  * Set Slide Show Duration in ms and overwrite default
- * @param duration - duration in ms
+ * @param duration - duration in ms, 0 = no slide show
  */
 export function setSlideDuration(duration) {
   sliderDurationMs = duration;
+}
+
+/** Set Left and Right Arrow HTML
+ *
+ * @param leftArrow - HTML for left arrow
+ * @param rightArrow - HTML for right arrow
+ */
+export function setLeftAndRightArrowHtml(leftArrow, rightArrow) {
+  HTML_ARROW_LEFT = leftArrow;
+  HTML_ARROW_RIGHT = rightArrow;
 }

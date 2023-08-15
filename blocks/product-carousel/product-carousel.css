@@ -1,0 +1,217 @@
+main .section.product-carousel-container {
+    padding: 0;
+    margin: 0;
+}
+
+.product-carousel {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Slider Home */
+.product-carousel .slider {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    padding: 5px 20px 0;
+    overflow: hidden;
+    width: 140%;
+    margin-left: -20%;
+    animation: fade-in 1s ease-in;
+}
+
+@media (min-width: 1000px) {
+    .product-carousel .slider {
+        width: 100%;
+        margin-left: 0;
+        padding: 5px 80px 0;
+    }
+}
+
+/* blurry white background */
+.product-carousel .slider::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: rgb(255 255 255 / 50%);
+    backdrop-filter: blur(2px);
+    pointer-events: auto;
+}
+
+@media (min-width: 1000px) {
+    @supports (backdrop-filter: none) {
+        .product-carousel .slider::before {
+            content: unset;
+        }
+    }
+}
+
+/* slides 1 - n container */
+.product-carousel .slider > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    animation: fade-in 0.5s ease-in;
+
+}
+
+
+/* bring second slide to the front */
+.product-carousel .slider > div:nth-child(2) {
+    z-index: 3;
+}
+
+/* Hide slide 4 - n */
+.product-carousel .slider > div:nth-child(n+4) {
+    display: none;
+}
+
+/* Initial row height for image to prevent CLS */
+.product-carousel .slider > div > div:nth-child(1){
+    height: 200px;
+}
+
+
+/* Hide image on small mobile devices */
+.product-carousel .slider > div[style*="order: 1;"] div,
+.product-carousel .slider > div[style*="order: 3;"] div {
+    opacity: 0;
+}
+
+@media (min-width: 500px) {
+    .product-carousel .slider > div[style*="order: 1;"] div,
+    .product-carousel .slider > div[style*="order: 3;"] div {
+        opacity: 1;
+    }
+}
+
+.product-carousel .slider > div > div img {
+    max-width: 200px;
+    min-width: 100px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-carousel .slider > div > div picture {
+    width: 100%
+}
+
+/* Link format */
+.product-carousel .slider div a:any-link {
+    font-size: var(--mt-cards-callout-text-font-size);
+    font-weight: var(--mt-font-weight-boldest);
+}
+
+/* header format */
+.product-carousel .slider div div h3 {
+    font-size: var(--mt-heading-font-size-m);
+    font-weight: var(--mt-font-weight-bold);
+    text-transform: unset;
+    letter-spacing: unset;
+    margin-bottom: 15px;
+    color: var(--mt-heading-color-primary);
+}
+
+/* Flex to position header and text */
+.product-carousel .slider > div > div:last-child {
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    max-width: 400px;
+}
+
+/* Scale first and third image on mobile */
+.product-carousel .slider > div[style*="order: 1;"] > div img,
+.product-carousel .slider > div[style*="order: 3;"] > div img,
+.product-carousel .slider > div[style*="order: 1;"] > div picture,
+.product-carousel .slider > div[style*="order: 3;"] > div picture {
+    margin-top: 10px;
+    transform: scale(0.8);
+}
+
+@media (min-width: 1000px){
+    .product-carousel .slider > div[style*="order: 1;"] > div img,
+    .product-carousel .slider > div[style*="order: 3;"] > div img,
+    .product-carousel .slider > div[style*="order: 1;"] > div picture,
+    .product-carousel .slider > div[style*="order: 3;"] > div picture {
+        margin-top: unset;
+        transform: scale(1);
+    }
+}
+
+
+
+/* Arrow nav flex container */
+.product-carousel.slider-wrapper .arrow-nav {
+    position: absolute;
+    align-items: center;
+    display: flex;
+    width: 50%;
+    min-width: 350px;
+    justify-content: space-between;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 3;
+    flex: 0 0 auto;
+}
+
+@media (min-width: 1000px) {
+    .product-carousel.slider-wrapper .arrow-nav {
+        width: 100%;
+    }
+}
+
+
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-left,
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+    width: 24px;
+    height: 24px;
+    text-align: center;
+}
+
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
+    margin-left: -5px;
+}
+
+.product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+    margin-right: -5px;
+}
+
+@media (min-width: 768px) {
+    .product-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
+        margin-left: 40px;
+    }
+
+    .product-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+        margin-right: 40px;
+    }
+
+}
+
+.product-carousel .arrow-nav button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
