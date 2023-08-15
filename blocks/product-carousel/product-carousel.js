@@ -122,7 +122,7 @@ const updateChildStyle = (child, index) => {
  * @returns {slideChildren}
  */
 const reorderChildren = (sliderChildren) => {
-  const nonEmptyChildren = sliderChildren.filter(el => el.innerHTML !== '');
+  const nonEmptyChildren = sliderChildren.filter((el) => el.innerHTML !== '');
 
   const newSliderChildren = setSliderChildren(nonEmptyChildren);
 
@@ -132,7 +132,6 @@ const reorderChildren = (sliderChildren) => {
 
   return newSliderChildren;
 };
-
 
 /**
  * Navigation for arrow buttons.
@@ -153,7 +152,6 @@ const arrowNavigation = (event) => {
 
   newSliderChildren.forEach(updateChildStyle);
 };
-
 
 /**
  * Event Listeners for arrow navigation
@@ -192,7 +190,7 @@ const fillSlideGrid = (sliderWrapper) => {
 
   const emptySlidesToAdd = new Array(elementsToAdd).fill(emptySlide);
 
-  emptySlidesToAdd.forEach(slide => sliderWrapper.appendChild(slide.cloneNode(true)));
+  emptySlidesToAdd.forEach((slide) => sliderWrapper.appendChild(slide.cloneNode(true)));
 };
 
 /**
