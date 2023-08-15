@@ -148,8 +148,8 @@ sampleRUM.drain('convert', (cevent, cvalueThunk, element, listenTo = []) => {
     if (Array.isArray(elements) || elements instanceof NodeList) {
       elements.forEach((e) => registerConversionListener(e, listenTo, cevent, cvalueThunk));
     } else {
-      listenTo.forEach((eventName) => element.addEventListener(
-        eventName, (e) => trackConversion(e.target)));
+      listenTo.forEach((eventName) => element
+        .addEventListener(eventName, (e) => trackConversion(e.target)));
     }
   }
 
