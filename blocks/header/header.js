@@ -7,7 +7,9 @@ import {
   createDomStructure,
   decorateSupScript,
   getInfo,
-  decorateSupScriptInTextBelow, readBlockConfig,
+  decorateSupScriptInTextBelow,
+  readBlockConfig,
+  sampleRUM,
 } from '../../scripts/lib-franklin.js';
 
 // media query match that indicates mobile/tablet width
@@ -224,26 +226,26 @@ async function search(value) {
 }
 
 async function searchInput(event) {
-  const { value, aside } = event.target;
+  const { value: searchTerm, aside } = event.target;
 
   aside.innerHTML = '';
 
   const url = new URL(window.location);
-  if (value.length >= 3) {
-    url.searchParams.set('ee_search_query', value);
+  if (searchTerm.length >= 3) {
+    url.searchParams.set('ee_search_query', searchTerm);
   } else {
     url.searchParams.delete('ee_search_query');
   }
 
-  if (value.length >= 3) {
+  if (searchTerm.length >= 3) {
     const title = document.createElement('h1');
     title.classList.add('nav-search-result-title');
-    title.textContent = `${await translate('navSearchResultsFor', 'Search Results for')}: ${value}`;
+    title.textContent = `${await translate('navSearchResultsFor', 'Search Results for')}: ${searchTerm}`;
     aside.append(title);
     aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
 
     try {
-      const hits = await search(value);
+      const hits = await search(searchTerm);
       if (hits.length > 0) {
         hits.forEach((hit) => {
           const wrapper = document.createElement('div');
@@ -261,11 +263,13 @@ async function searchInput(event) {
           wrapper.appendChild(searchDescription);
           aside.appendChild(wrapper);
         });
+        sampleRUM('search', { source: 'input.nav-search-input', target: searchTerm });
       } else {
         const searchTitle = document.createElement('h3');
         searchTitle.classList.add('nav-search-title');
         searchTitle.textContent = await translate('navSearchNoResult', 'No Result');
         aside.appendChild(searchTitle);
+        sampleRUM('nullsearch', { source: 'input.nav-search-input', target: searchTerm });
       }
     } catch (error) {
       const searchTitle = document.createElement('h3');
