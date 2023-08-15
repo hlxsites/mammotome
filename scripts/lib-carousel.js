@@ -425,9 +425,19 @@ export function createPictureSlider() {
 
 /**
  * Get and Array of Slide Children
- * @returns {*} - sliderChildren
+ * @returns sliderChildren - sliderChildren
  */
 export function getSliderChildren() {
+  return sliderChildren;
+}
+
+/**
+ * Set new Slider Children in case update is needed
+ * @param newSliderChildren
+ * @returns slideChildren - new slider children
+ */
+export function setSliderChildren(newSliderChildren) {
+  sliderChildren = newSliderChildren;
   return sliderChildren;
 }
 

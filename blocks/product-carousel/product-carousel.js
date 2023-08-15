@@ -7,15 +7,22 @@ import {
   setSlideDuration,
   createArrowNav,
   setLeftAndRightArrowHtml,
+  setSliderChildren,
 } from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
-// Number of required columns in table
+// Large sreen bigger than px
+const LARGE_SCREEN = 1000;
+
+// Number of required column and rows in table
 const NUM_COLUMNS = 2;
-const NUM_ROWS = 3;
+const NUM_ROWS = 2;
+
+// Error Messages
 const INVALID_NUMBER_OF_COLUMNS_MESSAGE = `Invalid configuration. Table with ${NUM_COLUMNS} columns and at least 1 row required`;
 const INVALID_NUMBER_OF_ROWS_MESSAGE = `Invalid configuration. At least ${NUM_ROWS} rows required to properly show the Product Carousel`;
 
+// HTML for arrow navigation
 const HTML_LEFT_ARROW = '<svg fill="rgb(88,127,194)" width="24px" height="24px" viewBox="0 0 1024 1024" class="icon"  xmlns="http://www.w3.org/2000/svg">'
   + '<path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z"/>'
   + '</svg>';
@@ -110,20 +117,47 @@ const updateChildStyle = (child, index) => {
 };
 
 /**
+ * Reorder the children of the slider and remove empty children for mobile view
+ * @param sliderChildren
+ * @returns {slideChildren}
+ */
+const reorderChildren = (sliderChildren) => {
+  const nonEmptyChildren = sliderChildren.filter(el => el.innerHTML !== '');
+
+  const newSliderChildren = setSliderChildren(nonEmptyChildren);
+
+  newSliderChildren.forEach((el, i) => {
+    updateChildStyle(el, i + 1);
+  });
+
+  return newSliderChildren;
+};
+
+
+/**
  * Navigation for arrow buttons.
  * @param {Event} event - The event object.
  * @returns {void}
  */
 const arrowNavigation = (event) => {
-  const sliderChildren = getSliderChildren();
-  const direction = event.currentTarget.id === 'slider-arrow-left' ? 1 : -1;
+  const isLargeScreen = window.innerWidth > LARGE_SCREEN;
+
+  const sliderChildren = isLargeScreen
+    ? getSliderChildren()
+    : reorderChildren(getSliderChildren());
+
+  const increment = isLargeScreen ? 3 : 1;
+  const direction = event.currentTarget.id === 'slider-arrow-left' ? increment : -increment;
+
   const newSliderChildren = moveArrayElements(sliderChildren, direction);
 
   newSliderChildren.forEach(updateChildStyle);
 };
 
+
 /**
  * Event Listeners for arrow navigation
+ * @param arrowNavContainer
  */
 const arrowNavOnClickEvents = (arrowNavContainer) => {
   if (arrowNavContainer) {
@@ -143,6 +177,22 @@ const initSlideOrder = (sliderChildren) => {
   sliderChildren.forEach((child, index) => {
     child.setAttribute('style', `order: ${index + 1};`);
   });
+};
+
+/**
+ * Fill Slide Grid to match 3 rows for each series
+ * @param sliderWrapper
+ */
+const fillSlideGrid = (sliderWrapper) => {
+  const sliderWrapperChildren = Array.from(sliderWrapper.children);
+  const emptySlide = document.createElement('div');
+
+  const targetLength = Math.ceil(sliderWrapperChildren.length / 3) * 3;
+  const elementsToAdd = targetLength - sliderWrapperChildren.length;
+
+  const emptySlidesToAdd = new Array(elementsToAdd).fill(emptySlide);
+
+  emptySlidesToAdd.forEach(slide => sliderWrapper.appendChild(slide.cloneNode(true)));
 };
 
 /**
@@ -166,12 +216,14 @@ export default function decorate(block) {
   });
   setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
   const sliderWrapper = createSliderWrapper(block);
+  // Only fill slider grid with empty div elements if screen width is greater than 1000px
+  if (window.innerWidth > LARGE_SCREEN) fillSlideGrid(sliderWrapper);
   createSlideSlider();
   const sliderChildren = getSliderChildren();
   initSlideOrder(sliderChildren);
   const arrowNavContainer = createArrowNav();
   setSlideDuration(0);
-  sliderWrapper.appendChild(arrowNavContainer);
+  if (sliderChildren.length > 3) sliderWrapper.appendChild(arrowNavContainer);
   initSlider(false, false, false);
-  arrowNavOnClickEvents(arrowNavContainer);
+  if (sliderChildren.length > 3) arrowNavOnClickEvents(arrowNavContainer);
 }

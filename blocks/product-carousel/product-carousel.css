@@ -14,17 +14,17 @@ main .section.product-carousel-container {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr) minmax(0, 1fr);
     gap: 20px;
-    padding: 20px;
+    padding: 5px 20px 0;
     overflow: hidden;
     width: 140%;
     margin-left: -20%;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1000px) {
     .product-carousel .slider {
         width: 100%;
         margin-left: 0;
-        padding: 10px 80px;
+        padding: 5px 80px 0;
     }
 }
 
