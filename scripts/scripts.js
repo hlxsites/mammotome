@@ -124,6 +124,18 @@ function buildHeroBlock(main) {
 }
 
 /**
+ * load fonts.css and set a session storage flag
+ */
+async function loadFonts() {
+  await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`, null);
+  try {
+    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+  } catch (e) {
+    // do nothing
+  }
+}
+
+/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
@@ -248,6 +260,15 @@ async function loadEager(doc) {
   if (main) {
     await decorateMain(main);
     await waitForLCP(LCP_BLOCKS);
+
+    try {
+      /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
+      if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
+        loadFonts();
+      }
+    } catch (e) {
+      // do nothing
+    }
   }
 }
 
@@ -280,8 +301,6 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
-  loadCSS('/styles/fonts.css', null);
-
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
@@ -290,6 +309,7 @@ async function loadLazy(doc) {
   await loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
+  loadFonts();
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');

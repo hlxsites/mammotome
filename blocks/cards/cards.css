@@ -10,7 +10,9 @@
   --mt-cards-callout-text-font-size: 12px;
 
   /* font family */
-  --mt-cards-font-family: var(--mt-body-font-family);
+  --mt-cards-font-family: var(--mt-body-font-family-regular);
+  --mt-cards-font-family-bold: var(--mt-body-font-family-bold);
+  --mt-cards-font-family-boldest: var(--mt-body-font-family-boldest);
 
   /* font color */
   --mt-cards-title-font-color: var(--mt-global-color-base-primary);
@@ -211,7 +213,7 @@
 .cards-card-body.no-heading > p:first-of-type > strong{
   font-weight: var(--mt-font-weight-bold);
   font-size: var(--mt-cards-title-font-size);
-  font-family: var(--mt-cards-font-family);
+  font-family: var(--mt-cards-font-family-bold);
   color: var(--mt-cards-title-font-color);
   line-height: 1.2;
   text-align: center;
@@ -244,6 +246,7 @@
   text-transform: uppercase;
   color: var(--mt-cards-callout-text-color);
   font-size: var(--mt-cards-callout-text-font-size);
+  font-family: var(--mt-cards-font-family-boldest);
   font-weight: var(--mt-font-weight-boldest);
   line-height: 1.5;
   margin-bottom: 0;

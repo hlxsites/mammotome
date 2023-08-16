@@ -3,6 +3,9 @@
     --mt-collapsible-question-font-color: var(--mt-global-color-base-primary);
     --mt-collapsible-question-expanded-font-color: var(--mt-global-color-accent-quinary);
 
+    /* font family */
+    --mt-collapsible-question-font-family: var(--mt-body-font-family-boldest);
+
     /* font weight */
     --mt-collapsible-question-hover-font-weight: var(--mt-font-weight-boldest);
 
@@ -32,6 +35,7 @@
 }
 
 .collapsible .question a:hover {
+    font-family: var(--mt-collapsible-question-font-family);
     font-weight: var(--mt-collapsible-question-hover-font-weight);
     color: unset;
 }

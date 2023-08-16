@@ -19,12 +19,14 @@
     --form-fieldset-legend-padding: 0.5rem 0 1rem 0;
     --form-fieldset-legend-color: var(--mt-global-color-base-primary);
     --form-fieldset-legend-font-size: 28px;
+    --form-fieldset-legend-font-family: var(--mt-body-font-family-boldest);
     --form-fieldset-legend-font-weight: var(--mt-font-weight-boldest);
     --form-label-padding: 0.3rem 0 0;
     --form-label-color: var(--mt-global-color-charcoal);
     --form-label-font-size: var(--form-font-size-xs);
     --form-label-line-height: 1.2;
-    --form-label-font-weight: bold;
+    --form-label-font-family: var(--mt-body-font-family-bold);
+    --form-label-font-weight: var(--mt-font-weight-bold);
     --form-input-margin: 1rem 0 0;
     --form-input-padding: 10px;
     --form-input-height: 46px;
@@ -74,6 +76,7 @@ main .form-container .default-content-wrapper p {
 
 main .form-container .default-content-wrapper h2:only-child {
     font-size: var(--mt-font-size-162);
+    font-family: var(--mt-body-font-family-regular);
     font-weight: var(--mt-font-weight-regular);
     padding-top: calc(5% + 48px);
     padding-bottom: 10px;
@@ -124,6 +127,7 @@ main .form form > fieldset {
 
 main .form fieldset > legend {
     padding: var(--form-fieldset-legend-padding);
+    font-family: var(--form-fieldset-legend-font-family);
     font-weight: var(--form-fieldset-legend-font-weight);
     font-size: var(--form-fieldset-legend-font-size);
     line-height: 1;
@@ -131,7 +135,8 @@ main .form fieldset > legend {
 }
 
 main .form form > fieldset > legend {
-    --form-fieldset-legend-font-weight: normal;
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-regular);
+    --form-fieldset-legend-font-family: var(--mt-body-font-family-regular);
 
     color: var(--form-fieldset-legend-color);
     border-bottom: 1px solid rgb(0 0 0 / 10%);
@@ -145,12 +150,12 @@ main .form fieldset > fieldset > legend {
 }
 
 main .form label {
+    font-family: var(--form-label-font-family);
     font-weight: var(--form-label-font-weight);
     font-size: var(--form-label-font-size);
     color: var(--form-label-color);
     padding: var(--form-label-padding);
     line-height: var(--form-label-line-height);
-    font-family: var(--mt-form-font-family);
 }
 
 main .form :is(input, textarea, select) {
@@ -188,6 +193,7 @@ main .form .form-radio-wrapper label,
 main .form .form-checkbox-wrapper label {
     --form-label-line-height: 1.5;
 
+    font-family: var(--mt-body-font-family-regular);
     font-weight: var(--mt-font-weight-regular);
     padding: 0 0 0 0.5rem;
 }
@@ -304,7 +310,8 @@ main .learn-more fieldset > fieldset {
 }
 
 main .connectus form > fieldset > legend {
-    --form-fieldset-legend-font-weight: bold;
+    --form-fieldset-legend-font-family: var(--mt-body-font-family-bold);
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-bold);
 
     border-bottom: unset;
     margin-bottom: unset;
@@ -312,6 +319,7 @@ main .connectus form > fieldset > legend {
 
 main .connectus .form-description {
     font-size: var(--mt-font-size-130);
+    font-family: var(--mt-body-font-family-bolder);
     font-weight: var(--mt-font-weight-bolder);
     border-bottom: solid 2px var(--mt-global-color-gallery);
     line-height: 1.5;
@@ -408,7 +416,8 @@ main .study-request .form-milestones-fs > fieldset {
 main .study-request .form-submission-type-fs {
     --form-fieldset-columns: 1;
     --form-fieldset-grid-gap: 0;
-    --form-fieldset-legend-font-weight: bold;
+    --form-fieldset-legend-font-family: var(--mt-body-font-family-bold);
+    --form-fieldset-legend-font-weight: var(--mt-font-weight-bold);
 }
 
 main .wizard .form-wizard-button-wrapper {

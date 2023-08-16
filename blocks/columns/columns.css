@@ -6,6 +6,7 @@
   --columns-gap: 65px;
   --columns-link-color: var(--mt-link-color);
   --mt-ordered-list-font-size: var(--mt-font-size-80);
+  --columns-font-family: var(--mt-body-font-family-regular);
   --columns-font-weight: var(--mt-font-weight-regular);
   --mt-columns-subnavigation-border-color: #797a7c;
   --mt-columns-metrics-border-color: #a8b4c4;
@@ -74,7 +75,8 @@ main .columns p {
 }
 
 main .columns h4 {
-  font-weight: 800;
+  font-family: var(--mt-body-font-family-superbold);
+  font-weight: var(--mt-font-weight-superbold);
   text-transform: uppercase;
   letter-spacing: 4px;
   margin-bottom: calc(4% + 20px);
@@ -84,7 +86,8 @@ main .columns h4 {
 
 main .columns h2 {
   font-size: 0.8rem;
-  font-weight: 900;
+  font-family: var(--mt-body-font-family-heavy);
+  font-weight: var(--mt-font-weight-heavy);
   letter-spacing: 4px;
   margin-bottom: 20px;
   color: var(--mt-heading-color-primary);
@@ -92,7 +95,8 @@ main .columns h2 {
 }
 
 main .columns > div p {
-  font-weight: 300;
+  font-family: var(--mt-body-font-family-thin);
+  font-weight: var(--mt-font-weight-thin);
   font-size: 1.3rem;
   line-height: 1.5;
 }
@@ -190,6 +194,7 @@ main .columns.subnavigation a.button.primary {
   border: unset;
   color: var(--mt-heading-color-secondary);
   font-size: var(--mt-heading-font-size-l);
+  font-family: var(--mt-body-font-family-boldest);
   font-weight: var(--mt-font-weight-boldest);
 }
 
@@ -197,6 +202,7 @@ main .columns.metrics h2 {
   margin-bottom: 5px;
   color: var(--mt-heading-color-secondary);
   font-size: var(--mt-heading-font-size-xxl);
+  font-family: var(--mt-body-font-family-bold);
   font-weight: var(--mt-font-weight-bold);
   letter-spacing: 1px;
 }
@@ -249,7 +255,8 @@ main .columns.image-cards p:has(picture) {
   text-align: center;
   line-height: 2;
   font-size: var(--mt-font-size-130);
-  font-weight: 500;
+  font-family: var(--mt-body-font-family-bold);
+  font-weight: var(--mt-font-weight-bold);
   padding: 0 0 15px;
   display: flex;
   margin: 5% 15%;

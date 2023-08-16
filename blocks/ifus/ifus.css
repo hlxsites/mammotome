@@ -26,6 +26,7 @@
 }
 
 .ifus h2, .ifus h3, .ifus h4 {
+    font-family: var(--mt-body-font-family-bold);
     font-weight: var(--mt-font-weight-bold);
     text-align: left;
 }
