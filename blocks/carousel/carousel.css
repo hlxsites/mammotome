@@ -127,21 +127,20 @@
 }
 
 /* Arrow nav flex container */
-.carousel .slider-wrapper .slider .arrow-nav {
+.carousel .slider-wrapper .arrow-nav {
     position: absolute;
     align-items: center;
     display: flex;
     width: 100%;
     justify-content: space-between;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%,-50%);
-    z-index: 999;
+    z-index: 3;
 }
 
-
-.carousel .slider-wrapper .slider .arrow-nav #arrow-left,
-.carousel .slider-wrapper .slider .arrow-nav #arrow-right {
+.carousel .slider-wrapper .arrow-nav #arrow-left,
+.carousel .slider-wrapper .arrow-nav #arrow-right {
     width: 24px;
     height: 24px;
     text-align: center;

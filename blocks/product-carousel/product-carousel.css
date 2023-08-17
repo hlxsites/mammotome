@@ -70,9 +70,7 @@ main .section.product-carousel-container {
     text-align: center;
     padding: 10px;
     animation: fade-in 0.5s ease-in;
-
 }
-
 
 /* bring second slide to the front */
 .product-carousel .slider > div:nth-child(2) {
