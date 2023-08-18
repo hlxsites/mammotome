@@ -1,4 +1,4 @@
-import Carousel  from '../../scripts/lib-carousel.js';
+import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 // import { addEnclosingDiv, initSlider } from '../../scripts/lib-carousel';
 
@@ -110,7 +110,8 @@ const updateChildStyle = (child, index) => {
  * @returns {slideChildren}
  */
 const reorderChildren = (productCarousel) => {
-  productCarousel.sliderChildren = productCarousel.sliderChildren.filter((child) => child.innerHTML.trim() !== '');
+  productCarousel.sliderChildren = productCarousel
+    .sliderChildren.filter((child) => child.innerHTML.trim() !== '');
 
   productCarousel.sliderChildren.forEach(updateChildStyle);
   return productCarousel.sliderChildren;
@@ -125,13 +126,14 @@ const arrowNavigation = (productCarousel, event) => {
   const isLargeScreen = window.innerWidth > LARGE_SCREEN;
 
   const sliderChildren = isLargeScreen
-    ? productCarousel.sliderChildren
+    ? productCarousel.getSlides()
     : reorderChildren(productCarousel);
 
   const increment = isLargeScreen ? 3 : 1;
   const direction = event.currentTarget.id === 'slider-arrow-left' ? increment : -increment;
 
-  moveArrayElements(productCarousel.sliderChildren, direction).forEach(updateChildStyle);
+  // moveArrayElements(productCarousel.sliderChildren, direction).forEach(updateChildStyle);
+  moveArrayElements(sliderChildren, direction).forEach(updateChildStyle);
 };
 
 /**
@@ -139,11 +141,10 @@ const arrowNavigation = (productCarousel, event) => {
  * @param arrowNavContainer
  */
 const arrowNavOnClickEvents = (productCarousel) => {
-  const arrowNavContainer = productCarousel.arrowNavContainer
-  if (arrowNavContainer) {
+  if (productCarousel.arrowNavContainer) {
     Array.from(arrowNavContainer.children).forEach((el) => {
       el.addEventListener('click', (event) => {
-        arrowNavigation(productCarousel,event);
+        arrowNavigation(productCarousel, event);
       });
     });
   }
@@ -172,7 +173,8 @@ const fillSlideGrid = (productCarousel) => {
 
   const emptySlidesToAdd = new Array(elementsToAdd).fill(emptySlide);
 
-  emptySlidesToAdd.forEach((slide) => productCarousel.sliderWrapper.appendChild(slide.cloneNode(true)));
+  emptySlidesToAdd.forEach((slide) => productCarousel
+    .sliderWrapper.appendChild(slide.cloneNode(true)));
 };
 
 /**
@@ -196,15 +198,11 @@ export default function decorate(block) {
   const productCarousel = new Carousel(block);
   // Only fill slider grid with empty div elements if screen width is greater than 1000px
   if (window.innerWidth > LARGE_SCREEN) fillSlideGrid(productCarousel);
-  productCarousel.createSlideSlider()
+  productCarousel.createSlideSlider();
   productCarousel.setSliderIds();
-  const sliderChildren = productCarousel.sliderChildren;
-  initSlideOrder(sliderChildren);
+  initSlideOrder(productCarousel.getSlides());
   productCarousel.setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
-  let arrowNavContainer = null;
-  if (productCarousel.sliderChildren.length > 3) productCarousel.createArrowNav();
+  if (productCarousel.getSlides().length > 3) productCarousel.createArrowNav();
   productCarousel.initSlider(false, false, false);
-  if (productCarousel.sliderChildren.length > 3) arrowNavOnClickEvents(productCarousel);
+  if (productCarousel.getSlides().length > 3) arrowNavOnClickEvents(productCarousel);
 }
-
-

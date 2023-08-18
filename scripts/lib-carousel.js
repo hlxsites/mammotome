@@ -28,7 +28,6 @@ const addAttributes = (el, attributes) => {
 /**
  *
  * @param sliderContainer - DOM element where carousel will be inserted
- * @returns Carousel Object
  * @constructor
  */
 export default function Carousel(sliderContainer) {
@@ -81,7 +80,7 @@ export default function Carousel(sliderContainer) {
       self.sliderChildren = Array.from(sliderDiv.children);
     },
     /**
-     * Create a picture onlye slider from a container element
+     * Create a picture only slider from a container element
      * @param sliderWrapper - default is self.sliderWrapper
      */
     createPictureSlider(sliderWrapper = self.sliderWrapper) {
@@ -409,6 +408,20 @@ export default function Carousel(sliderContainer) {
       }
       if (dottedNav) self.dottedNavOnClickEvents();
       if (arrowNav) self.arrowNavOnClickEvents();
+    },
+    /**
+     * Check if Slider has slides attached
+     * @return {boolean}
+     */
+    hasSlides() {
+      return (self.sliderChildren.length > 0) || false;
+    },
+    /**
+     * Get all slides
+     * @return {null}
+     */
+    getSlides() {
+      return self.sliderChildren;
     },
   };
   self.init();

@@ -113,6 +113,27 @@ main .section.product-carousel-container {
     width: 100%
 }
 
+/* Link format */
+.product-carousel .slider div a:any-link {
+    color: var(--mt-global-color-accent-secondary);
+    font-size: var(--mt-cards-callout-text-font-size);
+    font-weight: var(--mt-font-weight-regular);
+}
+
+/* header format */
+.product-carousel .slider div div h3 {
+    font-size: var(--mt-heading-font-size-l);
+    font-weight: var(--mt-font-weight-bold);
+    text-transform: unset;
+    letter-spacing: unset;
+    margin-bottom: 15px;
+    color: var(--mt-heading-color-primary);
+}
+
+.product-carousel .slider div div p {
+    font-size: initial;
+}
+
 /* Flex to position header and text */
 .product-carousel .slider > div > div:last-child {
     display: flex;

@@ -109,8 +109,9 @@ export default function decorate(block) {
   const heroCarousel = new Carousel(block);
   heroCarousel.createSlideSlider();
   heroCarousel.setSliderIds();
-  createButtonRow(heroCarousel.sliderChildren);
-  if (heroCarousel.sliderIds.length > 1) {
+  // createButtonRow(heroCarousel.sliderChildren);
+  createButtonRow(heroCarousel.getSlides());
+  if (heroCarousel.getSlides().length > 1) {
     heroCarousel.createDottedNav();
     heroCarousel.setSliderInterval(4000);
     heroCarousel.initSlider();
