@@ -1,12 +1,4 @@
-import {
-  addEnclosingDiv,
-  createSliderWrapper,
-  setSliderIds,
-  createDottedNav,
-  initSlider,
-  createPictureSlider,
-  createArrowNav,
-} from '../../scripts/lib-carousel.js';
+import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 /**
@@ -34,18 +26,15 @@ export function optimizeThumbnails(picture) {
 
 export default function decorate(block) {
   optimizeThumbnails(block);
-  addEnclosingDiv(block);
 
-  const sliderWrapper = createSliderWrapper(block.firstElementChild.lastElementChild);
-  const slider = createPictureSlider();
-  const slides = setSliderIds();
-  if (slides.length > 1) {
-    const arrowNav = createArrowNav();
-    slider.appendChild(arrowNav);
+  const carousel = new Carousel(block.firstElementChild.lastElementChild);
+  carousel.createPictureSlider();
+  carousel.setSliderIds();
 
-    const dottedNavContainer = createDottedNav();
-    sliderWrapper.appendChild(dottedNavContainer);
-
-    initSlider();
+  // if (carousel.sliderIds.length > 1) {
+  if (carousel.hasSlides()) {
+    carousel.createArrowNav();
+    carousel.createDottedNav();
+    carousel.initSlider();
   }
 }

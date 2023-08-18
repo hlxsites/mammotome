@@ -1,13 +1,4 @@
-import {
-  createDottedNav,
-  createSlideSlider,
-  createSliderWrapper,
-  initSlider,
-  setSliderIds,
-  getSliderChildren,
-  setSlideDuration,
-  addEnclosingDiv,
-} from '../../scripts/lib-carousel.js';
+import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 // Number of required columns in table
@@ -114,17 +105,15 @@ export default function decorate(block) {
     slide.querySelector('img').classList.add(`position-${config[i].imgAlign}`);
   });
 
-  addEnclosingDiv(block);
   // setup carousel and slider elements
-  const sliderWrapper = createSliderWrapper(block);
-  createSlideSlider();
-  const sliderIds = setSliderIds();
-  const sliderChildren = getSliderChildren();
-  createButtonRow(sliderChildren);
-  if (sliderIds.length > 1) {
-    const dottedNavContainer = createDottedNav();
-    sliderWrapper.appendChild(dottedNavContainer);
-    setSlideDuration(4000);
-    initSlider();
+  const heroCarousel = new Carousel(block);
+  heroCarousel.createSlideSlider();
+  heroCarousel.setSliderIds();
+  // createButtonRow(heroCarousel.sliderChildren);
+  createButtonRow(heroCarousel.getSlides());
+  if (heroCarousel.getSlides().length > 1) {
+    heroCarousel.createDottedNav();
+    heroCarousel.setSliderInterval(4000);
+    heroCarousel.initSlider();
   }
 }
