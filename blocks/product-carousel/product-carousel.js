@@ -187,7 +187,6 @@ export default function decorate(block) {
   }
 
   optimizeThumbnails(block);
-  // addEnclosingDiv(block);
   block.querySelectorAll('.button-container').forEach((el) => {
     el.classList.remove('button-container');
   });
