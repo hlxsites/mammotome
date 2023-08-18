@@ -423,6 +423,9 @@ export default function Carousel(sliderContainer) {
     getSlides() {
       return self.sliderChildren;
     },
+    getArrowNavContainer() {
+      return self.arrowNavContainer;
+    },
   };
   self.init();
   return self;

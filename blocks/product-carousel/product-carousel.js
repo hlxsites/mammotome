@@ -141,8 +141,8 @@ const arrowNavigation = (productCarousel, event) => {
  * @param arrowNavContainer
  */
 const arrowNavOnClickEvents = (productCarousel) => {
-  if (productCarousel.arrowNavContainer) {
-    Array.from(arrowNavContainer.children).forEach((el) => {
+  if (productCarousel.getArrowNavContainer()) {
+    Array.from(productCarousel.getArrowNavContainer().children).forEach((el) => {
       el.addEventListener('click', (event) => {
         arrowNavigation(productCarousel, event);
       });
