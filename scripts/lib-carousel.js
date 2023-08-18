@@ -202,9 +202,11 @@ export default function Carousel(sliderContainer) {
      * @param direction - +1 left or -1 right
      */
     incrementActiveSlide(direction) {
-      self.activeSlide = (
-        self.activeSlide + direction - 1 + self.slideCount
-      ) % (self.slideCount + 1);
+      if (direction > 0) {
+        self.activeSlide = (self.activeSlide + 1) <= self.slideCount ? self.activeSlide + 1 : 1;
+      } else {
+        self.activeSlide = (self.activeSlide - 1) > 0 ? self.activeSlide - 1 : self.slideCount;
+      }
       self.activeSlideElement = self.sliderChildren.find((el) => el.id === `slider-slide-${self.activeSlide}`);
     },
     /**
