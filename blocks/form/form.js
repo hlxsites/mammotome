@@ -39,7 +39,7 @@ function constructPayload(form) {
     if (fe.type === 'radio') {
       if (fe.checked) payload[fe.name] = fe.value;
     } else if (fe.type === 'checkbox') {
-      if (fe.checked) payload[fe.name] = payload[fe.name] ? `${payload[fe.name]}, ${fe.value}` : fe.value;
+      if (fe.checked) payload[fe.name] = payload[fe.name] ? `${payload[fe.name]}; ${fe.value}` : fe.value;
     } else if (fe.type === 'file' && fe.files?.length > 0) {
       attachments[fe.name] = fe.files;
     } else {
