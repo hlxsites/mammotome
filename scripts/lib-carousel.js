@@ -159,11 +159,11 @@ export default function Carousel(sliderContainer) {
 
       self.sliderIds.forEach(() => {
         const dottedNavElAttribute = {
-          id: `slider-dot-${j}`,
+          id: `${self.carouselId}-dot-${j}`,
           'aria-label': `Select Slide ${j} of ${self.sliderIds.length}`,
           role: 'button',
           'aria-current': j === 1 ? 'true' : 'false',
-          'aria-controls': `slider-slide-${j}`,
+          'aria-controls': `${self.carouselId}-slide-${j}`,
         };
 
         navElements += `
@@ -190,9 +190,9 @@ export default function Carousel(sliderContainer) {
     setSliderIds() {
       let i = 1;
       self.sliderChildren.forEach((el) => {
-        el.setAttribute('id', `slider-slide-${i}`);
+        el.setAttribute('id', `${self.carouselId}-slide-${i}`);
         el.classList.add(i === 1 ? 'show' : 'hide');
-        self.sliderIds.push(`slider-slide-${i}`);
+        self.sliderIds.push(`${self.carouselId}-slide-${i}`);
         i += 1;
       });
     },
@@ -206,7 +206,7 @@ export default function Carousel(sliderContainer) {
       } else {
         self.activeSlide = (self.activeSlide - 1) > 0 ? self.activeSlide - 1 : self.slideCount;
       }
-      self.activeSlideElement = self.sliderChildren.find((el) => el.id === `slider-slide-${self.activeSlide}`);
+      self.activeSlideElement = self.sliderChildren.find((el) => el.id === `${self.carouselId}-slide-${self.activeSlide}`);
     },
     /**
      * Activate a slide
@@ -241,8 +241,8 @@ export default function Carousel(sliderContainer) {
      */
     moveSlide(direction) {
       self.incrementActiveSlide(direction);
-      self.activateSlide(`slider-slide-${self.activeSlide}`);
-      self.activateDot(`slider-dot-${self.activeSlide}`);
+      self.activateSlide(`${self.carouselId}-slide-${self.activeSlide}`);
+      self.activateDot(`${self.carouselId}-dot-${self.activeSlide}`);
     },
     /**
      * Start the slide show
@@ -265,7 +265,7 @@ export default function Carousel(sliderContainer) {
      */
     dottedNavigation(event) {
       const targetId = event.target.id.match(/\d+/)?.[0] || 1;
-      const sliderTarget = `slider-slide-${targetId}`;
+      const sliderTarget = `${self.carouselId}-slide-${targetId}`;
       self.activateSlide(sliderTarget);
       self.activateDot(event.target.id);
       self.activeSlideElement = self.sliderChildren.find((el) => el.id === sliderTarget);
@@ -279,8 +279,8 @@ export default function Carousel(sliderContainer) {
       const navButton = event.currentTarget.id;
       const increment = navButton === 'slider-arrow-left' ? -1 : 1;
       self.incrementActiveSlide(increment);
-      self.activateSlide(`slider-slide-${self.activeSlide}`);
-      self.activateDot(`slider-dot-${self.activeSlide}`);
+      self.activateSlide(`${self.carouselId}-slide-${self.activeSlide}`);
+      self.activateDot(`${self.carouselId}-dot-${self.activeSlide}`);
     },
     /**
      * Register click events for dots
@@ -394,7 +394,7 @@ export default function Carousel(sliderContainer) {
      */
     initSlider(dottedNav = true, arrowNav = true, touchNav = true) {
       self.slideCount = self.sliderIds.length;
-      self.activeSlideElement = document.getElementById(`slider-slide-${self.activeSlide}`);
+      self.activeSlideElement = document.getElementById(`${self.carouselId}-slide-${self.activeSlide}`);
       if (touchNav) {
         self.touchStartEl();
         self.touchMoveEl();
