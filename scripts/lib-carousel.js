@@ -264,7 +264,8 @@ export default function Carousel(sliderContainer) {
      * @param event
      */
     dottedNavigation(event) {
-      const targetId = event.target.id.match(/\d+/)?.[0] || 1;
+      const matches = event.target.id.match(/\d+$/);
+      const targetId = matches ? parseInt(matches[0], 10) : 1;
       const sliderTarget = `${self.carouselId}-slide-${targetId}`;
       self.activateSlide(sliderTarget);
       self.activateDot(event.target.id);
@@ -338,7 +339,7 @@ export default function Carousel(sliderContainer) {
      */
     shouldPreventDefaultScrolling(e) {
     // if target is a link or button, allow scrolling and don't prevent default
-      if (['a', 'button'].includes(e.target.tagName.toLowerCase())) {
+      if (['a', 'button', 'svg'].includes(e.target.tagName.toLowerCase())) {
         return false;
       }
 
