@@ -139,7 +139,8 @@ main .section.product-carousel-container {
     max-width: 400px;
 }
 
-.product-carousel .slider > div > div:last-child::after {
+.product-carousel .slider > div:nth-child(1) > div:last-child::after,
+.product-carousel .slider > div:nth-child(3) > div:last-child::after {
     content: "";
     position: absolute;
     bottom: 0;
