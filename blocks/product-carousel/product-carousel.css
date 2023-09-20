@@ -32,7 +32,7 @@ main .section.product-carousel-container {
     animation: fade-in 1s ease-in;
 }
 
-@media (min-width: 1000px) {
+@media (width >= 1000px) {
     .product-carousel .slider {
         width: 100%;
         margin-left: 0;
@@ -54,11 +54,9 @@ main .section.product-carousel-container {
     pointer-events: auto;
 }
 
-@media (min-width: 1000px) {
-    @supports (backdrop-filter: none) {
-        .product-carousel .slider::before {
-            content: unset;
-        }
+@media (width >= 1000px) {
+    .product-carousel .slider::before {
+        display: none;
     }
 }
 
@@ -87,14 +85,13 @@ main .section.product-carousel-container {
     height: 200px;
 }
 
-
 /* Hide image on small mobile devices */
 .product-carousel .slider > div[style*="order: 1;"] div,
 .product-carousel .slider > div[style*="order: 3;"] div {
     opacity: 0;
 }
 
-@media (min-width: 500px) {
+@media (width >= 500px) {
     .product-carousel .slider > div[style*="order: 1;"] div,
     .product-carousel .slider > div[style*="order: 3;"] div {
         opacity: 1;
@@ -142,6 +139,27 @@ main .section.product-carousel-container {
     max-width: 400px;
 }
 
+.product-carousel .slider > div > div:last-child::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0%), rgb(255 255 255 / 100%));
+}
+
+/* Hide text of hidden products with a gradient on mobile */
+@media (width >= 1000px){
+    .product-carousel .slider > div > div:last-child {
+        height: auto;
+    }
+
+    .product-carousel .slider > div > div:last-child::after {
+        display: none;
+    }
+}
+
 /* Scale first and third image on mobile */
 .product-carousel .slider > div[style*="order: 1;"] > div img,
 .product-carousel .slider > div[style*="order: 3;"] > div img,
@@ -151,7 +169,7 @@ main .section.product-carousel-container {
     transform: scale(0.8);
 }
 
-@media (min-width: 1000px){
+@media (width >= 1000px){
     .product-carousel .slider > div[style*="order: 1;"] > div img,
     .product-carousel .slider > div[style*="order: 3;"] > div img,
     .product-carousel .slider > div[style*="order: 1;"] > div picture,
@@ -178,7 +196,7 @@ main .section.product-carousel-container {
     flex: 0 0 auto;
 }
 
-@media (min-width: 1000px) {
+@media (width >= 1000px) {
     .product-carousel.slider-wrapper .arrow-nav {
         width: 100%;
     }
@@ -200,7 +218,7 @@ main .section.product-carousel-container {
     margin-right: -5px;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .product-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
         margin-left: 40px;
     }
