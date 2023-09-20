@@ -132,7 +132,6 @@ const arrowNavigation = (productCarousel, event) => {
   const increment = isLargeScreen ? 3 : 1;
   const direction = event.currentTarget.id === 'slider-arrow-left' ? increment : -increment;
 
-  // moveArrayElements(productCarousel.sliderChildren, direction).forEach(updateChildStyle);
   moveArrayElements(sliderChildren, direction).forEach(updateChildStyle);
 };
 
