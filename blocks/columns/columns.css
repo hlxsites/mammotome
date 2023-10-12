@@ -239,6 +239,10 @@ main .columns.text-small > div p {
     font-size: 1rem;
 }
 
+main .columns.text-bold > div p {
+  font-weight: var(--mt-font-weight-regular);
+}
+
 main .section.narrow .columns-wrapper {
   padding: 0 15%;
 }

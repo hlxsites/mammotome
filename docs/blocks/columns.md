@@ -6,6 +6,7 @@
 - _Centered_: centers text and images in the column
 - _Images Small_: Shows the whole image and makes it a little smaller
 - _Text Small_: Makes the text a little smaller
+- Text Bold : Makes the text bolder (default: 300 to 400)
 - _Linked Images_: Makes the images clickable with the link from the text 
 - _Image Color Primary Blue_: Creates a blue background behind the image
 - _Image Color Light Blue_: Creates a light blue background behind the image
