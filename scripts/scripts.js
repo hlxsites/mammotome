@@ -18,11 +18,6 @@ import {
   decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
-import {
-  decorateHistorySection,
-  observeHistorySection,
-} from './lib-history-section.js';
-
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
@@ -232,9 +227,10 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
-  decorateSupScriptInTextBelow(main);
+  decorateSupScriptInTextBelow(main.querySelector(':first-child'));
 
   if (main.querySelector('.section.our-history')) {
+    const { decorateHistorySection, observeHistorySection } = await import('./lib-history-section.js');
     await decorateHistorySection(main);
     await observeHistorySection(main);
   }
@@ -294,11 +290,23 @@ export function addFavIcon(
 }
 
 /**
+ * decorates  everything that doesn't need to be delayed.
+ * @param {Element|Document} doc The container element
+ */
+function decorateSupScriptLazy(main) {
+  main.querySelectorAll('main > :not(:first-child)').forEach((elem) => {
+    decorateSupScriptInTextBelow(elem);
+  });
+}
+
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+  decorateSupScriptLazy(main);
   await loadBlocks(main);
 
   const { hash } = window.location;
