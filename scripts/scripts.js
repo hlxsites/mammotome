@@ -231,6 +231,7 @@ export async function decorateMain(main) {
   decorateSupScriptInTextBelow(main.querySelector(':first-child'));
 
   if (main.querySelector('.section.our-history')) {
+    // import the history library only if needed
     const { decorateHistorySection, observeHistorySection } = await import('./lib-history-section.js');
     await decorateHistorySection(main);
     await observeHistorySection(main);
@@ -306,8 +307,10 @@ function decorateSupScriptLazy(main) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+
   // run sup script decoration for non-LCP content
   decorateSupScriptLazy(main);
+
   await loadBlocks(main);
 
   const { hash } = window.location;
