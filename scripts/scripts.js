@@ -295,7 +295,7 @@ export function addFavIcon(
  * decorates  everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
  */
-function decorateSupScriptLazy(main) {
+function decorateSupScriptDelayed(main) {
   main.querySelectorAll('main > :not(:first-child)').forEach((elem) => {
     decorateSupScriptInTextBelow(elem);
   });
@@ -307,10 +307,6 @@ function decorateSupScriptLazy(main) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-
-  // run sup script decoration for non-LCP content
-  decorateSupScriptLazy(main);
-
   await loadBlocks(main);
 
   const { hash } = window.location;
@@ -396,6 +392,8 @@ function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  // run sup script decoration for non-LCP content
+  decorateSupScriptDelayed(main);
 }
 
 async function loadPage() {
