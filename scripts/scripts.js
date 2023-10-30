@@ -308,6 +308,8 @@ function decorateNonLCPSuperScript(main) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
+  // run sup script decoration for non-LCP content
+  decorateNonLCPSuperScript(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
@@ -392,9 +394,6 @@ function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
-  
-  // run sup script decoration for non-LCP content
-  decorateNonLCPSuperScript(document.querySelector('main'));
 }
 
 async function loadPage() {
