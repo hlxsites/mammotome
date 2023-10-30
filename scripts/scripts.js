@@ -227,6 +227,7 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
+  // run decoration for first child(LCP content)
   decorateSupScriptInTextBelow(main.querySelector(':first-child'));
 
   if (main.querySelector('.section.our-history')) {
@@ -305,6 +306,7 @@ function decorateSupScriptLazy(main) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
+  // run sup script decoration for non-LCP content
   decorateSupScriptLazy(main);
   await loadBlocks(main);
 
