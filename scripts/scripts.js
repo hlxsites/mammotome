@@ -394,7 +394,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
   
   // run sup script decoration for non-LCP content
-  decorateNonLCPSuperScript(main);
+  decorateNonLCPSuperScript(document.querySelector('main'));
 }
 
 async function loadPage() {
