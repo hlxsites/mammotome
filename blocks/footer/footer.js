@@ -16,6 +16,31 @@ export default async function decorate(block) {
     const footer = document.createElement('div');
     footer.innerHTML = html;
 
+    // Duplicate .icon-logo element
+    const logoElement = footer.querySelector('.icon-logo');
+
+    if (logoElement) {
+      const logoParagraph = logoElement.parentElement.parentElement;
+      if (logoParagraph) {
+        const clonedParagraph = logoParagraph.cloneNode(true);
+        const newDiv = document.createElement('div');
+        newDiv.appendChild(clonedParagraph);
+        footer.insertBefore(newDiv, footer.firstElementChild);
+      }
+    }
+
+    // Duplicate .icon-danahertrustmark element
+    const trustmarkElement = footer.querySelector('.icon-danahertrustmark');
+    if (trustmarkElement) {
+      const trustmarkParagraph = trustmarkElement.parentElement;
+      if (trustmarkParagraph) {
+        const clonedParagraph = trustmarkParagraph.cloneNode(true);
+        const newDiv = document.createElement('div');
+        newDiv.appendChild(clonedParagraph);
+        footer.querySelector('.columns').firstElementChild.appendChild(newDiv);
+      }
+    }
+
     // decorate cookie settings (us/en/ & /uk/en/ only)
     const cookieSettingsAnchor = footer.querySelector('#legal')?.nextElementSibling?.lastElementChild?.querySelector('a');
     if (cookieSettingsAnchor) {
