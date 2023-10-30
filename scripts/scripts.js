@@ -14,7 +14,7 @@ import {
   setLanguage,
   createMetadata,
   getMetadata,
-  toClassName,
+  getAllMetadata,
   decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
