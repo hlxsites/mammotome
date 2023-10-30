@@ -306,10 +306,8 @@ function decorateSupScriptLazy(main) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-
   // run sup script decoration for non-LCP content
   decorateSupScriptLazy(main);
-  
   await loadBlocks(main);
 
   const { hash } = window.location;
