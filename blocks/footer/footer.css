@@ -60,8 +60,7 @@ footer .columns > div > div:nth-child(5) > p {
   text-align: left;
 }
 
-/* TODO: icon-danahertrustmarkopt for testing instead of icon-danahertrustmark */
-footer span.icon-danahertrustmarkopt {
+footer span.icon-danahertrustmark {
   height: 60px;
   width: 78px;
 }
@@ -149,9 +148,8 @@ footer > .footer > div > div:last-child > p:first-child {
 }
 
 /* Hide trustmark logo in mobile */
-/* TODO: disables for testing */
 footer > .footer > div > div:last-child > p:last-child {
-    /* display: none; */
+     display: none;
 }
 
 @media (min-width: 768px) {
@@ -268,7 +266,8 @@ footer .columns > div > div:last-child {
 /* Hide Trustmark in desktop view */
 @media (min-width: 768px) {
   footer .columns > div > div:last-child {
-    display: none;
+    position: absolute;
+    opacity: 0;
   }
 }
 

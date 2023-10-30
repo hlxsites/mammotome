@@ -30,8 +30,7 @@ export default async function decorate(block) {
     }
 
     // Duplicate .icon-danahertrustmark element
-    // TODO: icon-danahertrustmarkopt for testing instead of icon-danahertrustmark
-    const trustmarkElement = footer.querySelector('.icon-danahertrustmarkopt');
+    const trustmarkElement = footer.querySelector('.icon-danahertrustmark');
     if (trustmarkElement) {
       const trustmarkParagraph = trustmarkElement.parentElement;
       if (trustmarkParagraph) {
