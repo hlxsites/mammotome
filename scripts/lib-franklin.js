@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /*
  * Copyright 2023 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
@@ -864,7 +865,9 @@ export function buildBlock(blockName, content) {
  * @param {object[]} [args] Parameters to be passed to the default export when it is called
  */
 async function loadModule(name, jsPath, cssPath, ...args) {
-  const cssLoaded = cssPath ? new Promise((resolve) => loadCSS(cssPath, resolve)) : Promise.resolve();
+  const cssLoaded = cssPath
+    ? new Promise((resolve) => { loadCSS(cssPath, resolve); })
+    : Promise.resolve();
   const decorationComplete = jsPath
     ? new Promise((resolve) => {
       (async () => {
