@@ -299,7 +299,6 @@ function decorateSupScriptLazy(main) {
   });
 }
 
-
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element|Document} doc The container element
