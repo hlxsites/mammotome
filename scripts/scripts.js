@@ -292,10 +292,10 @@ export function addFavIcon(
 }
 
 /**
- * decorates  everything that doesn't need to be delayed.
+ * decorates NonLCP content SuperScript
  * @param {Element|Document} doc The container element
  */
-function decorateSupScriptDelayed(main) {
+function decorateNonLCPSuperScript(main) {
   main.querySelectorAll('main > :not(:first-child)').forEach((elem) => {
     decorateSupScriptInTextBelow(elem);
   });
@@ -392,8 +392,9 @@ function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  
   // run sup script decoration for non-LCP content
-  decorateSupScriptDelayed(main);
+  decorateNonLCPSuperScript(main);
 }
 
 async function loadPage() {
