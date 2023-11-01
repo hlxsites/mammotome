@@ -14,7 +14,7 @@ import {
   setLanguage,
   createMetadata,
   getMetadata,
-  toClassName,
+  getAllMetadata,
   decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
@@ -26,20 +26,27 @@ import {
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
-// Define the custom audiences mapping for experimentation
-// noinspection JSUnusedGlobalSymbols
-const EXPERIMENTATION_CONFIG = {
-  audiences: {
-    device: {
-      mobile: () => window.innerWidth < 600,
-      desktop: () => window.innerWidth >= 600,
-    },
-    visitor: {
-      new: () => !localStorage.getItem('franklin-visitor-returning'),
-      returning: () => !!localStorage.getItem('franklin-visitor-returning'),
-    },
-  },
+const AUDIENCES = {
+  mobile: () => window.innerWidth < 600,
+  desktop: () => window.innerWidth >= 600,
+  // define your custom audiences here as needed
+  new: () => !localStorage.getItem('franklin-visitor-returning'),
+  returning: () => !!localStorage.getItem('franklin-visitor-returning'),
 };
+
+window.hlx.plugins.add('rum-conversion', {
+  url: '/plugins/rum-conversion/src/index.js',
+  load: 'lazy',
+});
+
+window.hlx.plugins.add('experimentation', {
+  url: '/plugins/experimentation/src/index.js',
+  condition: () => getMetadata('experiment')
+    || Object.keys(getAllMetadata('campaign')).length
+    || Object.keys(getAllMetadata('audience')).length,
+  options: { audiences: AUDIENCES },
+  load: 'eager',
+});
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -248,16 +255,9 @@ async function loadEager(doc) {
   setLanguage();
   decorateTemplateAndTheme();
 
-  // load experiments
-  const experiment = toClassName(getMetadata('experiment'));
-  const instantExperiment = getMetadata('instant-experiment');
-  if (instantExperiment || experiment) {
-    const { runExperiment } = await import('./experimentation/index.js');
-    await runExperiment(experiment, instantExperiment, EXPERIMENTATION_CONFIG);
-  }
-
   const main = doc.querySelector('main');
   if (main) {
+    await window.hlx.plugins.run('loadEager');
     await decorateMain(main);
     await waitForLCP(LCP_BLOCKS);
 
@@ -314,29 +314,11 @@ async function loadLazy(doc) {
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');
   createMetadata('msapplication-TileImage', `${window.hlx.codeBasePath}/styles/icons/favicon-270x270.png`);
-
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
 
-  // Load experimentation preview overlay
-  if (window.location.hostname === 'localhost' || window.location.hostname.endsWith('.hlx.page')) {
-    const preview = await import(`${window.hlx.codeBasePath}/tools/preview/preview.js`);
-    await preview.default();
-    if (window.hlx.experiment) {
-      const experimentation = await import(`${window.hlx.codeBasePath}/tools/preview/experimentation.js`);
-      experimentation.default();
-    }
-  }
-
-  // as per https://github.com/adobe/franklin-rum-conversion
-  const context = {
-    getMetadata,
-    toClassName,
-  };
-  // eslint-disable-next-line import/no-relative-packages
-  const { initConversionTracking } = await import('../plugins/rum-conversion/src/index.js');
-  await initConversionTracking.call(context, document, '');
+  await window.hlx.plugins.run('loadLazy');
 
   // Mark customer as having viewed the page once
   localStorage.setItem('franklin-visitor-returning', Boolean(true).toString());
@@ -381,13 +363,19 @@ function loadGTM() {
  */
 function loadDelayed() {
   window.setTimeout(() => loadGTM(), 500);
-  // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => {
+    window.hlx.plugins.load('delayed');
+    window.hlx.plugins.run('loadDelayed');
+    // eslint-disable-next-line import/no-cycle
+    return import('./delayed.js');
+  }, 3000);
   // load anything that can be postponed to the latest here
 }
 
 async function loadPage() {
+  await window.hlx.plugins.load('eager');
   await loadEager(document);
+  await window.hlx.plugins.load('lazy');
   await loadLazy(document);
   loadDelayed();
 }
