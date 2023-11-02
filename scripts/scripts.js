@@ -239,7 +239,13 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
-  decorateSupScriptInTextBelow(main);
+
+  /* depending on the content length amount of work in decorateSupScriptInTextBelow might cause the
+   * entire decorateMain to block main-thread more than 50ms to finish. For that reason and to
+   * prevent future content-led perf. degradations, decorateSupScriptInTextBelow function runs in
+   * a separate event-loop task
+   */
+  setTimeout(() => decorateSupScriptInTextBelow(main), 0);
 
   if (main.querySelector('.section.our-history')) {
     await decorateHistorySection(main);
