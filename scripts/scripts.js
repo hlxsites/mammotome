@@ -360,7 +360,7 @@ function loadGTM() {
       'cookie_flags': 'SameSite=None;Secure'
   });
   `;
-  // document.head.prepend(scriptTag);
+  document.head.prepend(scriptTag);
 }
 
 /**
