@@ -386,7 +386,7 @@ function decorateFormFields(form) {
   decorateFile(form);
   decorateCheckbox(form);
   decorateUTM(form);
-  setTimeout(() => decorateSupScriptInTextBelow(form), 0)
+  setTimeout(() => decorateSupScriptInTextBelow(form), 0);
 }
 
 async function decorateFormLayout(block, form) {
