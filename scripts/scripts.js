@@ -239,10 +239,6 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
-  await new Promise((resolve) => {
-    decorateSupScriptInTextBelow(main);
-    resolve();
-  });
 
   if (main.querySelector('.section.our-history')) {
     await decorateHistorySection(main);
@@ -262,6 +258,7 @@ async function loadEager(doc) {
   if (main) {
     await window.hlx.plugins.run('loadEager');
     await decorateMain(main);
+    decorateSupScriptInTextBelow(main);
     await waitForLCP(LCP_BLOCKS);
 
     try {
