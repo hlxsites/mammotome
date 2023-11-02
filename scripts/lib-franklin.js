@@ -473,29 +473,34 @@ function walkNodeTree(root, { inspect, collect, callback } = {}) {
   }
 }
 
+/* depending on the content length amount of work in decorateSupScriptInTextBelow might cause the
+  * entire caller function to block main-thread more than 50ms to finish. For that reason and to
+  * prevent future content-led perf. degradations, decorateSupScriptInTextBelow function should
+  * run in a separate event-loop task
+  */
 export function decorateSupScriptInTextBelow(el) {
-  /* depending on the content length amount of work in decorateSupScriptInTextBelow might cause the
-   * entire decorateMain to block main-thread more than 50ms to finish. For that reason and to
-   * prevent future content-led perf. degradations, decorateSupScriptInTextBelow function runs in
-   * a separate event-loop task
-   */
-  setTimeout(() => walkNodeTree(el, {
-    inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
-    collect: (n) => (n.nodeType === Node.TEXT_NODE),
-    callback: (n) => {
-      const inside = n.parentElement.tagName === 'SUP';
-      const result = decorateSupScript(n.textContent, [], inside);
-      if (result.length > 1) {
-        const replacementNode = document.createElement('span');
-        const newHtml = result.filter((p) => p.textContent !== '').map((p) => `<${p.type}${p.classes ? ` class=${p.classes.join()}` : ''}>${p.textContent}</${p.type}>`).join('');
-        n.parentNode.insertBefore(replacementNode, n);
-        n.parentNode.removeChild(n);
-        replacementNode.outerHTML = newHtml;
-      } else if (inside && result.length === 1 && result[0].classes?.includes('tm')) {
-        n.parentElement.classList.add('tm');
-      }
-    },
-  }), 0);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      walkNodeTree(el, {
+        inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
+        collect: (n) => (n.nodeType === Node.TEXT_NODE),
+        callback: (n) => {
+          const inside = n.parentElement.tagName === 'SUP';
+          const result = decorateSupScript(n.textContent, [], inside);
+          if (result.length > 1) {
+            const replacementNode = document.createElement('span');
+            const newHtml = result.filter((p) => p.textContent !== '').map((p) => `<${p.type}${p.classes ? ` class=${p.classes.join()}` : ''}>${p.textContent}</${p.type}>`).join('');
+            n.parentNode.insertBefore(replacementNode, n);
+            n.parentNode.removeChild(n);
+            replacementNode.outerHTML = newHtml;
+          } else if (inside && result.length === 1 && result[0].classes?.includes('tm')) {
+            n.parentElement.classList.add('tm');
+          }
+        },
+      });
+      resolve();
+    }, 0);
+  });
 }
 
 export function getInfo() {
