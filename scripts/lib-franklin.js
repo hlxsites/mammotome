@@ -475,7 +475,7 @@ function walkNodeTree(root, { inspect, collect, callback } = {}) {
 
 export function decorateSupScriptInTextBelow(el) {
   return walkNodeTree(el, {
-    inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
+    inspect: (n) => !['STYLE', 'SCRIPT', 'SVG'].includes(n.nodeName),
     collect: (n) => (n.nodeType === Node.TEXT_NODE),
     callback: (n) => {
       const inside = n.parentElement.tagName === 'SUP';
