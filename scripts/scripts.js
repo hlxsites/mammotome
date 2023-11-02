@@ -239,7 +239,7 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
-  decorateSupScriptInTextBelow(main);
+  // decorateSupScriptInTextBelow(main);
 
   if (main.querySelector('.section.our-history')) {
     await decorateHistorySection(main);
