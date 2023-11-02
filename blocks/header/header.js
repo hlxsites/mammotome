@@ -502,7 +502,7 @@ export default async function decorate(block) {
 
     await decorateIcons(nav);
     await decorateSearch(nav);
-    setTimeout(() => decorateSupScriptInTextBelow(nav), 0);
+    decorateSupScriptInTextBelow(nav);
     // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
 

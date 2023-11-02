@@ -51,7 +51,7 @@ export default async function decorate(block) {
     }
 
     await decorateIcons(footer);
-    setTimeout(() => decorateSupScriptInTextBelow(footer), 0);
+    decorateSupScriptInTextBelow(footer);
     block.append(footer);
   }
 }

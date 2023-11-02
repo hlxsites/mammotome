@@ -474,7 +474,12 @@ function walkNodeTree(root, { inspect, collect, callback } = {}) {
 }
 
 export function decorateSupScriptInTextBelow(el) {
-  return walkNodeTree(el, {
+  /* depending on the content length amount of work in decorateSupScriptInTextBelow might cause the
+   * entire decorateMain to block main-thread more than 50ms to finish. For that reason and to
+   * prevent future content-led perf. degradations, decorateSupScriptInTextBelow function runs in
+   * a separate event-loop task
+   */
+  setTimeout(() => walkNodeTree(el, {
     inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
     collect: (n) => (n.nodeType === Node.TEXT_NODE),
     callback: (n) => {
@@ -490,7 +495,7 @@ export function decorateSupScriptInTextBelow(el) {
         n.parentElement.classList.add('tm');
       }
     },
-  });
+  }), 0);
 }
 
 export function getInfo() {
