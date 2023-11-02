@@ -258,7 +258,6 @@ async function loadEager(doc) {
   if (main) {
     await window.hlx.plugins.run('loadEager');
     await decorateMain(main);
-    decorateSupScriptInTextBelow(main);
     await waitForLCP(LCP_BLOCKS);
 
     try {
@@ -310,6 +309,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
   loadFonts();
+
+  decorateSupScriptInTextBelow(main);
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');
