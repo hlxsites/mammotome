@@ -239,7 +239,10 @@ export async function decorateMain(main) {
   decorateSections(main);
   decorateStyledSections(main);
   decorateBlocks(main);
-  setTimeout(() => decorateSupScriptInTextBelow(main), 0);
+  await new Promise((resolve) => {
+    decorateSupScriptInTextBelow(main);
+    resolve();
+  });
 
   if (main.querySelector('.section.our-history')) {
     await decorateHistorySection(main);
