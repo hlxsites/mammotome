@@ -163,7 +163,6 @@ main .section.hero-carousel-container {
     justify-content: flex-start;
     align-items: flex-start;
     padding-top: 4%;
-
 }
 
 @media (width >= 860px) {
@@ -203,8 +202,7 @@ main .section.hero-carousel-container {
 /* Dotted Nav */
 .hero-carousel .dotted-nav .dot {
     margin: 6px;
-    border: 4px solid black;
-    background-color: transparent;
+    border: 4px solid var(--mt-hero-carousel-active-dot-color);
     border-radius: 50%;
     width: 8px;
     height: 8px;
@@ -222,10 +220,10 @@ main .section.hero-carousel-container {
 
 /* active for dotted nav */
 .hero-carousel .dotted-nav .active {
-    opacity: unset;
+    border-color: var(--mt-hero-carousel-active-dot-color);
 }
 
 /* inactive for dotted nav */
 .hero-carousel .dotted-nav .inactive {
-    opacity: 0.2;
+    border-color: var(--mt-hero-carousel-inactive-dot-color);
 }
