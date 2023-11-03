@@ -113,7 +113,7 @@
   --mt-global-color-silver: #ccc;
   --mt-global-color-alabaste: #F7F7F7;
   --mt-global-color-gallery: #ECECEC;
-  --mt-global-color-accent-grey: #BFBFBF;
+  --mt-global-color-accent-grey: #a9a9a9;
   --mt-global-color-line-grey: #D5D8DC;
   --mt-global-color-red: #c36;
   --mt-global-color-cornflower-blue: #618CDB;
@@ -156,7 +156,8 @@
   --mt-sarch-result-text-color: var(--mt-global-color-accent-senary);
   --mt-global-horizontal-line-color: #EBE4E7;
   --mt-global-horizontal-line-color-blue: var(--mt-global-color-cornflower-blue);
-
+  --mt-hero-carousel-active-dot-color: var(--mt-global-color-base-secondary);
+  --mt-hero-carousel-inactive-dot-color: var(--mt-global-color-accent-grey);
 
   /* fonts families */
   --mt-body-font-family-thin: roboto, "robotoflex-regular-normal-300-fallback", sans-serif;
