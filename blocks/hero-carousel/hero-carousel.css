@@ -163,7 +163,6 @@ main .section.hero-carousel-container {
     justify-content: flex-start;
     align-items: flex-start;
     padding-top: 4%;
-
 }
 
 @media (width >= 860px) {
