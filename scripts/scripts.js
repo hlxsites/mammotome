@@ -238,9 +238,9 @@ export async function decorateMain(main) {
 
   const section = main.querySelector('.section.our-history');
   if (section) {
-    const { decorateHistorySection, observeHistorySection} = await import('./lib-history-section.js');
-    await decorateHistorySection(main);
-    await observeHistorySection(main);
+    const { decorateHistorySection, observeHistorySection } = await import('./lib-history-section.js');
+    await decorateHistorySection(section);
+    await observeHistorySection(section);
   }
 }
 
