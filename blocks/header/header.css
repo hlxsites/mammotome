@@ -77,6 +77,14 @@ header nav a:any-link {
   width: 100%;
 }
 
+header nav li.nav-drop ul a {
+  color: var(--mt-header-color-subnav-links);
+}
+
+header nav .nav-search-title a:any-link {
+  color: var(--mt-header-color-nav-links);
+}
+
 /* hamburger */
 header nav .nav-hamburger {
   display: flex;
@@ -181,10 +189,6 @@ header nav .nav-sections {
   overflow-y: auto;
   top: 0;
   z-index: 100;
-}
-
-header nav li.nav-drop ul a {
-  color: var(--mt-header-color-subnav-links);
 }
 
 header nav .nav-sections ul {
