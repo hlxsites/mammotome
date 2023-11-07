@@ -28,12 +28,11 @@ export function* getNextSiblings(element, selector) {
 
 /**
  * Decorates the history page.
- * @param {Element} main The main element
+ * @param {Element} section The section
  */
 // eslint-disable-next-line import/prefer-default-export
-export async function decorateHistorySection(main) {
+export async function decorateHistorySection(section) {
   try {
-    const section = main.querySelector('.section.our-history');
     const parent = section.querySelector('.default-content-wrapper');
     const firstH3 = parent.querySelector('h3');
 
@@ -74,12 +73,11 @@ export async function decorateHistorySection(main) {
 }
 /**
  * Observe the history page for changes.
- * @param {Element} main The main element
+ * @param {Element} section The section
 */
 // eslint-disable-next-line import/prefer-default-export
-export async function observeHistorySection(main) {
+export async function observeHistorySection(section) {
   try {
-    const section = main.querySelector('.section.our-history');
     const highlightWhenInViewport = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         // leave this here for debugging: console.log(entry.target.querySelector('h3').innerText);
