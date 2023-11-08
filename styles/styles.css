@@ -959,6 +959,7 @@ main .section.our-history .year::after {
   left: 50%;
   margin-left: -2px;
   height: 145%;
+  z-index: -1;
 }
 
 main .section.our-history .year.highlight::after {
