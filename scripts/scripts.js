@@ -237,7 +237,7 @@ export async function decorateMain(main) {
   decorateSupScriptInTextBelow(main);
 
   // import scripts, decorate and observe for page changes only
-  // if the page contains a history section
+  // if the page contains a history section.
   const section = main.querySelector('.section.our-history');
   if (section) {
     const { decorateHistorySection, observeHistorySection } = await import('./lib-history-section.js');
