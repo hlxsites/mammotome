@@ -18,11 +18,6 @@ import {
   decorateSupScriptInTextBelow,
 } from './lib-franklin.js';
 
-import {
-  decorateHistorySection,
-  observeHistorySection,
-} from './lib-history-section.js';
-
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
@@ -241,9 +236,13 @@ export async function decorateMain(main) {
   decorateBlocks(main);
   decorateSupScriptInTextBelow(main);
 
-  if (main.querySelector('.section.our-history')) {
-    await decorateHistorySection(main);
-    await observeHistorySection(main);
+  // import scripts, decorate and observe for page changes only
+  // if the page contains a history section.
+  const section = main.querySelector('.section.our-history');
+  if (section) {
+    const { decorateHistorySection, observeHistorySection } = await import('./lib-history-section.js');
+    await decorateHistorySection(section);
+    await observeHistorySection(section);
   }
 }
 
