@@ -356,6 +356,10 @@ function loadGTM() {
   document.head.prepend(scriptTag);
 }
 
+// Fathom Analytics Code
+const attrsFa = JSON.parse('{"data-site": "MTMDHVUG"}');
+loadScript('https://cdn.usefathom.com/script.js', attrsFa);
+
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
