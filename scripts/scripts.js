@@ -16,6 +16,7 @@ import {
   getMetadata,
   getAllMetadata,
   decorateSupScriptInTextBelow,
+  loadScript,
 } from './lib-franklin.js';
 
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
