@@ -16,7 +16,6 @@ import {
   getMetadata,
   getAllMetadata,
   decorateSupScriptInTextBelow,
-  loadScript,
 } from './lib-franklin.js';
 
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
@@ -356,10 +355,6 @@ function loadGTM() {
   `;
   document.head.prepend(scriptTag);
 }
-
-// Fathom Analytics Code
-const attrsFa = JSON.parse('{"data-site": "MTMDHVUG"}');
-loadScript('https://cdn.usefathom.com/script.js', attrsFa);
 
 /**
  * Loads everything that happens a lot later,
