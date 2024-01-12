@@ -24,7 +24,7 @@ async function loadScriptFa(src, attrs) {
   });
 }
 
-const attrsFa = {"data-site": "MTMDHVUG"};
+const attrsFa = { 'data-site': 'MTMDHVUG' };
 loadScriptFa('https://cdn.usefathom.com/script.js', attrsFa);
 
 // Core Web Vitals RUM collection
