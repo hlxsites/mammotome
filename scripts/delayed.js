@@ -15,8 +15,8 @@ async function loadScriptFa(src, attrs) {
           script.setAttribute(attr, attrs[attr]);
         }
       }
-      script.onload = resolve;
-      script.onerror = reject;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Script load error'));
       document.head.append(script);
     } else {
       resolve();
