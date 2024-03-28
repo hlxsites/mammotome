@@ -101,6 +101,13 @@ main .columns > div p {
   line-height: 1.5;
 }
 
+main .columns-2-cols div {
+  font-family: var(--mt-body-font-family-thin);
+  font-weight: var(--mt-font-weight-thin);
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+
 body.refresh .columns h2 {
   font-size: var(--mt-heading-font-size-xl);
   font-weight: var(--mt-font-weight-bold);
