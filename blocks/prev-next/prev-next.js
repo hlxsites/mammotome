@@ -10,11 +10,11 @@ const HTML_ARROW_NEXT = '<svg fill="rgba(129,51,151,1)" width="30px" height="30p
 
 export default async function decorate(block) {
   const moveHeaderLinkDiv = (el) => {
-    const text = el.innerText;
+    const text = el.innerHTML;
     const newDiv = document.createElement('div');
     newDiv.classList.add('prev-next-header-link');
-    newDiv.innerText = text;
-    el.innerText = '';
+    newDiv.innerHTML = text;
+    el.innerHTML = '';
     el.insertAdjacentElement('afterbegin', newDiv);
   };
 
