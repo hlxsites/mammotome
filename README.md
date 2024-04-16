@@ -2,8 +2,8 @@
 Franklin site implementing https://www.mammotome.com/
 
 ## Environments
-- Preview: https://main--mammotome--hlxsites.hlx.page/
-- Live: https://main--mammotome--hlxsites.hlx.live/
+- Preview: https://main--mammotome--hlxsites.aem.page/
+- Live: https://main--mammotome--hlxsites.aem.live/
 
 ## Installation
 

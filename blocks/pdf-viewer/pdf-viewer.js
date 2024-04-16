@@ -15,8 +15,8 @@ let sdkLoaded = false;
  * A key is domain-specific and convers all subdomains. As such the placeholders need to
  * feature a key per <domain>.<tld>. In this case a key each for:
  * - localhost
- * - hlx.page
- * - hlx.live
+ * - aem.page
+ * - aem.live
  * - mammotome.com
  *
  * This method checks the host from `window.location` and returns the respective placeholder
