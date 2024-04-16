@@ -327,7 +327,7 @@ async function loadLazy(doc) {
 
 // google tag manager
 function loadGTM() {
-  if (window.location.hostname.includes('localhost') || document.location.hostname.includes('.hlx.page')) {
+  if (window.location.hostname.includes('localhost') || document.location.hostname.includes('.hlx.page') || document.location.hostname.includes('.aem.page')) {
     return;
   }
 
