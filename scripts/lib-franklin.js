@@ -483,7 +483,7 @@ export function decorateSupScriptInTextBelow(el) {
     setTimeout(() => {
       walkNodeTree(el, {
         inspect: (n) => !['STYLE', 'SCRIPT'].includes(n.nodeName),
-        collect: (n) => (n.nodeType === Node.TEXT_NODE),
+        collect: (n) => (n.nodeType === Node.TEXT_NODE || n.nodeName === 'A'),
         callback: (n) => {
           const inside = n.parentElement.tagName === 'SUP';
           const result = decorateSupScript(n.textContent, [], inside);
