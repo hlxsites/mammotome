@@ -519,7 +519,7 @@ export function getInfo() {
 export function adjustAssetURL(asset) {
   if (asset?.URL) {
     const url = new URL(asset.URL, window.location);
-    const isLocalOrHlx = ['localhost', '-mammotome--hlxsites.hlx.page', '-mammotome--hlxsites.hlx.live']
+    const isLocalOrHlx = ['localhost', '-mammotome--hlxsites.hlx.page', '-mammotome--hlxsites.hlx.live', '-mammotome--hlxsites.aem.page', '-mammotome--hlxsites.aem.live']
       .some((domain) => url.hostname.endsWith(domain));
 
     if (isLocalOrHlx) {
@@ -1069,6 +1069,8 @@ export function decorateBlockImgs(block) {
       if (hostname === window.location.hostname
         || hostname.endsWith('-mammotome--hlxsites.hlx.page')
         || hostname.endsWith('-mammotome--hlxsites.hlx.live')
+        || hostname.endsWith('-mammotome--hlxsites.aem.page')
+        || hostname.endsWith('-mammotome--hlxsites.aem.live')
         || hostname === 'localhost') {
         img.replaceWith(
           createOptimizedPicture(img.src, img.alt, false, img.width, img.height),
