@@ -75,29 +75,29 @@ export async function getResolvedAudiences(applicableAudiences, options, context
 /**
  * Replaces element with content from path
  * @param {string} path
- * @param {HTMLElement} element
- * @param {boolean} isBlock
+ * @param {HTMLElement} main
+ * @return Returns the path that was loaded or null if the loading failed
  */
-async function replaceInner(path, element) {
-  const plainPath = path.endsWith('/')
-    ? `${path}index.plain.html`
-    : `${path}.plain.html`;
+async function replaceInner(path, main) {
   try {
-    const resp = await fetch(plainPath);
+    const resp = await fetch(path);
     if (!resp.ok) {
       // eslint-disable-next-line no-console
       console.log('error loading content:', resp);
-      return false;
+      return null;
     }
     const html = await resp.text();
-    // eslint-disable-next-line no-param-reassign
-    element.innerHTML = html;
-    return true;
+    // parse with DOMParser to guarantee valid HTML, and no script execution(s)
+    const dom = new DOMParser().parseFromString(html, 'text/html');
+    // do not use replaceWith API here since this would replace the main reference
+    // in scripts.js as well and prevent proper decoration of the sections/blocks
+    main.innerHTML = dom.querySelector('main').innerHTML;
+    return path;
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log(`error loading content: ${plainPath}`, e);
+    console.log(`error loading content: ${path}`, e);
   }
-  return false;
+  return null;
 }
 
 /**
@@ -223,7 +223,7 @@ function inferEmptyPercentageSplits(variants) {
  * @param {string} instantExperiment The list of varaints
  * @returns {object} the experiment manifest
  */
-export function getConfigForInstantExperiment(
+function getConfigForInstantExperiment(
   experimentId,
   instantExperiment,
   pluginOptions,
@@ -233,13 +233,18 @@ export function getConfigForInstantExperiment(
   const config = {
     label: `Instant Experiment: ${experimentId}`,
     audiences: audience ? audience.split(',').map(context.toClassName) : [],
-    status: 'Active',
+    status: context.getMetadata(`${pluginOptions.experimentsMetaTag}-status`) || 'Active',
+    startDate: context.getMetadata(`${pluginOptions.experimentsMetaTag}-start-date`),
+    endDate: context.getMetadata(`${pluginOptions.experimentsMetaTag}-end-date`),
     id: experimentId,
     variants: {},
     variantNames: [],
   };
 
-  const pages = instantExperiment.split(',').map((p) => new URL(p.trim()).pathname);
+  const nbOfVariants = Number(instantExperiment);
+  const pages = Number.isNaN(nbOfVariants)
+    ? instantExperiment.split(',').map((p) => new URL(p.trim(), window.location).pathname)
+    : new Array(nbOfVariants).fill(window.location.pathname);
 
   const splitString = context.getMetadata(`${pluginOptions.experimentsMetaTag}-split`);
   const splits = splitString
@@ -287,8 +292,15 @@ export function getConfigForInstantExperiment(
  * @param {object} pluginOptions The plugin options
  * @returns {object} containing the experiment manifest
  */
-export async function getConfigForFullExperiment(experimentId, pluginOptions, context) {
-  const path = `${pluginOptions.experimentsRoot}/${experimentId}/${pluginOptions.experimentsConfigFile}`;
+async function getConfigForFullExperiment(experimentId, pluginOptions, context) {
+  let path;
+  if (experimentId.includes(`/${pluginOptions.experimentsConfigFile}`)) {
+    path = new URL(experimentId, window.location.origin).href;
+    // eslint-disable-next-line no-param-reassign
+    [experimentId] = path.split('/').splice(-2, 1);
+  } else {
+    path = `${pluginOptions.experimentsRoot}/${experimentId}/${pluginOptions.experimentsConfigFile}`;
+  }
   try {
     const resp = await fetch(path);
     if (!resp.ok) {
@@ -307,6 +319,7 @@ export async function getConfigForFullExperiment(experimentId, pluginOptions, co
     config.manifest = path;
     config.basePath = `${pluginOptions.experimentsRoot}/${experimentId}`;
     inferEmptyPercentageSplits(Object.values(config.variants));
+    config.status = context.getMetadata(`${pluginOptions.experimentsMetaTag}-status`) || config.status;
     return config;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -336,7 +349,7 @@ function getDecisionPolicy(config) {
   return decisionPolicy;
 }
 
-export async function getConfig(experiment, instantExperiment, pluginOptions, context) {
+async function getConfig(experiment, instantExperiment, pluginOptions, context) {
   const usp = new URLSearchParams(window.location.search);
   const [forcedExperiment, forcedVariant] = usp.has(pluginOptions.experimentsQueryParameter)
     ? usp.get(pluginOptions.experimentsQueryParameter).split('/')
@@ -357,23 +370,22 @@ export async function getConfig(experiment, instantExperiment, pluginOptions, co
     : null;
 
   experimentConfig.resolvedAudiences = await getResolvedAudiences(
-    experimentConfig.audiences,
+    experimentConfig.audiences.map(context.toClassName),
     pluginOptions,
     context,
   );
   experimentConfig.run = (
     // experiment is active or forced
-    (context.toCamelCase(experimentConfig.status) === 'active' || forcedExperiment)
+    (['active', 'on', 'true'].includes(context.toClassName(experimentConfig.status)) || forcedExperiment)
     // experiment has resolved audiences if configured
     && (!experimentConfig.resolvedAudiences || experimentConfig.resolvedAudiences.length)
     // forced audience resolves if defined
     && (!forcedAudience || experimentConfig.audiences.includes(forcedAudience))
+    && (!experimentConfig.startDate || new Date(experimentConfig.startDate) <= Date.now())
+    && (!experimentConfig.endDate || new Date(experimentConfig.endDate) > Date.now())
   );
 
   window.hlx = window.hlx || {};
-  if (!experimentConfig.run) {
-    return false;
-  }
   window.hlx.experiment = experimentConfig;
 
   // eslint-disable-next-line no-console
@@ -413,10 +425,26 @@ export async function runExperiment(document, options, context) {
     console.warn('Invalid experiment config. Please review your metadata, sheet and parser.');
     return false;
   }
+
+  const usp = new URLSearchParams(window.location.search);
+  const forcedVariant = usp.has(pluginOptions.experimentsQueryParameter)
+    ? usp.get(pluginOptions.experimentsQueryParameter).split('/')[1]
+    : null;
+  if (!experimentConfig.run && !forcedVariant) {
+    // eslint-disable-next-line no-console
+    console.warn('Experiment will not run. It is either not active or its configured audiences are not resolved.');
+    return false;
+  }
   // eslint-disable-next-line no-console
   console.debug(`running experiment (${window.hlx.experiment.id}) -> ${window.hlx.experiment.selectedVariant}`);
 
   if (experimentConfig.selectedVariant === experimentConfig.variantNames[0]) {
+    document.body.classList.add(`experiment-${context.toClassName(experimentConfig.id)}`);
+    document.body.classList.add(`variant-${context.toClassName(experimentConfig.selectedVariant)}`);
+    context.sampleRUM('experiment', {
+      source: experimentConfig.id,
+      target: experimentConfig.selectedVariant,
+    });
     return false;
   }
 
@@ -428,18 +456,24 @@ export async function runExperiment(document, options, context) {
   const currentPath = window.location.pathname;
   const control = experimentConfig.variants[experimentConfig.variantNames[0]];
   const index = control.pages.indexOf(currentPath);
-  if (index < 0 || pages[index] === currentPath) {
+  if (index < 0) {
     return false;
   }
 
   // Fullpage content experiment
-  document.body.classList.add(`experiment-${experimentConfig.id}`);
-  const result = await replaceInner(pages[0], document.querySelector('main'));
+  document.body.classList.add(`experiment-${context.toClassName(experimentConfig.id)}`);
+  let result;
+  if (pages[index] !== currentPath) {
+    result = await replaceInner(pages[index], document.querySelector('main'));
+  } else {
+    result = currentPath;
+  }
+  experimentConfig.servedExperience = result || currentPath;
   if (!result) {
     // eslint-disable-next-line no-console
     console.debug(`failed to serve variant ${window.hlx.experiment.selectedVariant}. Falling back to ${experimentConfig.variantNames[0]}.`);
   }
-  document.body.classList.add(`variant-${result ? experimentConfig.selectedVariant : experimentConfig.variantNames[0]}`);
+  document.body.classList.add(`variant-${context.toClassName(result ? experimentConfig.selectedVariant : experimentConfig.variantNames[0])}`);
   context.sampleRUM('experiment', {
     source: experimentConfig.id,
     target: result ? experimentConfig.selectedVariant : experimentConfig.variantNames[0],
@@ -463,9 +497,10 @@ export async function runCampaign(document, options, context) {
   }
 
   let audiences = context.getMetadata(`${pluginOptions.campaignsMetaTagPrefix}-audience`);
+  let resolvedAudiences = null;
   if (audiences) {
     audiences = audiences.split(',').map(context.toClassName);
-    const resolvedAudiences = await getResolvedAudiences(audiences, pluginOptions, context);
+    resolvedAudiences = await getResolvedAudiences(audiences, pluginOptions, context);
     if (!!resolvedAudiences && !resolvedAudiences.length) {
       return false;
     }
@@ -481,9 +516,15 @@ export async function runCampaign(document, options, context) {
     return false;
   }
 
+  window.hlx.campaign = { selectedCampaign: campaign };
+  if (resolvedAudiences) {
+    window.hlx.campaign.resolvedAudiences = window.hlx.campaign;
+  }
+
   try {
     const url = new URL(urlString);
-    const result = replaceInner(url.pathname, document.querySelector('main'));
+    const result = await replaceInner(url.pathname, document.querySelector('main'));
+    window.hlx.campaign.servedExperience = result || window.location.pathname;
     if (!result) {
       // eslint-disable-next-line no-console
       console.debug(`failed to serve campaign ${campaign}. Falling back to default content.`);
@@ -513,7 +554,7 @@ export async function serveAudience(document, options, context) {
   }
 
   const audiences = await getResolvedAudiences(
-    Object.keys(configuredAudiences),
+    Object.keys(configuredAudiences).map(context.toClassName),
     pluginOptions,
     context,
   );
@@ -526,17 +567,21 @@ export async function serveAudience(document, options, context) {
     ? context.toClassName(usp.get(pluginOptions.audiencesQueryParameter))
     : null;
 
-  const urlString = configuredAudiences[forcedAudience || audiences[0]];
+  const selectedAudience = forcedAudience || audiences[0];
+  const urlString = configuredAudiences[selectedAudience];
   if (!urlString) {
     return false;
   }
 
+  window.hlx.audience = { selectedAudience };
+
   try {
     const url = new URL(urlString);
-    const result = replaceInner(url.pathname, document.querySelector('main'));
+    const result = await replaceInner(url.pathname, document.querySelector('main'));
+    window.hlx.audience.servedExperience = result || window.location.pathname;
     if (!result) {
       // eslint-disable-next-line no-console
-      console.debug(`failed to serve audience ${forcedAudience || audiences[0]}. Falling back to default content.`);
+      console.debug(`failed to serve audience ${selectedAudience}. Falling back to default content.`);
     }
     document.body.classList.add(audiences.map((audience) => `audience-${audience}`));
     context.sampleRUM('audiences', {
@@ -551,7 +596,7 @@ export async function serveAudience(document, options, context) {
   }
 }
 
-window.hlx.patchBlockConfig.push((config) => {
+window.hlx.patchBlockConfig?.push((config) => {
   const { experiment } = window.hlx;
 
   // No experiment is running
@@ -652,11 +697,16 @@ export async function loadLazy(document, options, context) {
     ...DEFAULT_OPTIONS,
     ...(options || {}),
   };
-  if (window.location.hostname.endsWith('hlx.page')
-    || window.location.hostname === ('localhost')
-    || (typeof options.isProd === 'function' && !options.isProd())) {
-    // eslint-disable-next-line import/no-cycle
-    const preview = await import('./preview.js');
-    preview.default(document, pluginOptions, { ...context, getResolvedAudiences });
+  // do not show the experimentation pill on prod domains
+  if (window.location.hostname.endsWith('.live')
+    || (typeof options.isProd === 'function' && options.isProd())
+    || (options.prodHost
+        && (options.prodHost === window.location.host
+          || options.prodHost === window.location.hostname
+          || options.prodHost === window.location.origin))) {
+    return;
   }
+  // eslint-disable-next-line import/no-cycle
+  const preview = await import('./preview.js');
+  preview.default(document, pluginOptions, { ...context, getResolvedAudiences });
 }
