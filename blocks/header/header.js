@@ -432,10 +432,15 @@ export default async function decorate(block) {
     if (navSections) {
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.classList.length === 0) navSection.classList.add('nav-drop');
-        if (navSection.querySelector('ul > li > ul > li')) navSection.querySelector('ul > li > ul > li').classList.add('nav-items');
-        if (navSection.querySelector('ul > li > ul > li > ul')) navSection.querySelector('ul > li > ul > li > ul').classList.add('nav-subitems');
-        if (navSection.querySelector('ul > li > ul > li > ul > li')) navSection.querySelector('ul > li > ul > li > ul > li').classList.add('nav-subitem');
-
+        navSection.querySelectorAll('ul > li > ul > li').forEach(element => {
+          element.classList.add('nav-items');
+      });
+      navSection.querySelectorAll('ul > li > ul > li > ul').forEach(element => {
+        element.classList.add('nav-subitems');
+    });
+    navSection.querySelectorAll('ul > li > ul > li > ul > li').forEach(element => {
+      element.classList.add('nav-subitem');
+  });
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
 
