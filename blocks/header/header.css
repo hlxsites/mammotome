@@ -889,6 +889,14 @@ header nav.nav-mobile .nav-overflow {
     border-right: 8px solid transparent;
   }
 
+  li.nav-items {
+    padding-left: 10px;
+}
+
+li.nav-items.nav-subitem {
+  padding-bottom: 5px;
+}
+
   header nav .nav-tools {
     display: block;
     width: 100%;
