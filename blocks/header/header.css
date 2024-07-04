@@ -891,12 +891,27 @@ header nav.nav-mobile .nav-overflow {
 
 .nav-multi li.nav-items {
   padding: var(--mt-nav-padding) 15px;
+  position: relative;
 }
 
 .nav-multi li.nav-items.nav-subitem {
   padding: var(--mt-nav-padding) 15px;
 }
 
+/* Hide .nav-subitem by default */
+.nav-items .nav-subitems {
+  display: none;
+  background-color: var(--mt-global-color-base-primary);
+  position: absolute; /* Position .nav-subitem absolutely */
+  left: 100%; /* Position to the right of .nav-items */
+  top: 0; /* Align with the top of .nav-items */
+  margin-top: -2px;
+}
+
+/* Show .nav-subitem when .nav-items is hovered */
+.nav-items:hover .nav-subitems {
+  display: block; /* or 'flex', 'inline-block', etc., depending on your layout */
+}
 
   header nav .nav-tools {
     display: block;
