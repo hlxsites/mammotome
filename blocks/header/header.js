@@ -435,13 +435,13 @@ export default async function decorate(block) {
         if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multi');
         navSection.querySelectorAll('ul > li > ul > li').forEach(element => {
           element.classList.add('nav-items');
-      });
-      navSection.querySelectorAll('ul > li > ul > li > ul').forEach(element => {
-        element.classList.add('nav-subitems');
-    });
-    navSection.querySelectorAll('ul > li > ul > li > ul > li').forEach(element => {
-      element.classList.add('nav-subitem');
-  });
+        });
+        navSection.querySelectorAll('ul > li > ul > li > ul').forEach(element => {
+          element.classList.add('nav-subitems');
+        });
+        navSection.querySelectorAll('ul > li > ul > li > ul > li').forEach(element => {
+          element.classList.add('nav-subitem');
+        });
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
 
