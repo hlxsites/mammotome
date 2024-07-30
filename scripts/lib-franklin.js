@@ -700,6 +700,10 @@ function readExactBlockConfig(block) {
   return config;
 }
 
+export {
+  readExactBlockConfig,
+};
+
 /**
  * Returns a picture element with webp and fallbacks
  * @param {string} src The image URL
