@@ -1,4 +1,4 @@
-import { readExactBlockConfig } from '../../scripts/aem.js';
+import { readExactBlockConfig } from '../../scripts/lib-franklin.js';
 
 export default function decorate(block) {
   const blockConfig = readExactBlockConfig(block.cloneNode(true));
