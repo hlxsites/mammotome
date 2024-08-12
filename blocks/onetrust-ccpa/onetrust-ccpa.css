@@ -12,4 +12,5 @@
 
 .otnotice-content h1 {
     text-align:center !important;
+    text-transform: uppercase;
 }
