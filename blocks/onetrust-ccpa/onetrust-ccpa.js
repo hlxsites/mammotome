@@ -6,7 +6,7 @@ export default function decorate(block) {
   const initializeOneTrust = async () => {
     await OneTrust.NoticeApi.Initialized.then(async () => { // eslint-disable-line
       await OneTrust.NoticeApi.LoadNotices([ // eslint-disable-line
-        'https://privacyportalde-cdn.onetrust.com/c579c0d0-360f-49c0-bccc-f7b7cded31cd/privacy-notices/draft/0e664032-8cf4-4719-94d8-fdd9685743b5.json',
+        'https://privacyportalde-cdn.onetrust.com/c579c0d0-360f-49c0-bccc-f7b7cded31cd/privacy-notices/0e664032-8cf4-4719-94d8-fdd9685743b5.json',
       ], false);
     }).catch((error) => {
       console.error("Error initializing OneTrust: ", error); // eslint-disable-line
