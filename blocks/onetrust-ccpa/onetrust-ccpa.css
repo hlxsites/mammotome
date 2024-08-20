@@ -1,0 +1,16 @@
+.one-trust {
+    padding: 16px 0;
+}
+
+.otnotice-content .otnotice-sections .otnotice-section-header{
+    text-align:center !important;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #84329B !important;
+}
+
+.otnotice-content h1 {
+    text-align:center !important;
+    text-transform: uppercase;
+}
