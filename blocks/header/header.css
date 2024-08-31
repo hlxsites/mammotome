@@ -212,7 +212,8 @@ header nav .nav-sections ul > li > ul {
   margin-top: 0;
 }
 
-header nav .nav-sections ul > li > ul > li {
+header nav .nav-sections ul > li > ul > li,
+.nav-multi li.nav-items.nav-subitem {
   font-family: var(--mt-nav-desktop-font-family);
   font-weight: var(--mt-nav-desktop-font-weight);
 }
@@ -911,6 +912,17 @@ header nav.nav-mobile .nav-overflow {
 /* Show .nav-subitem when .nav-items is hovered */
 .nav-items:hover .nav-subitems {
   display: block; /* or 'flex', 'inline-block', etc., depending on your layout */
+  margin-top: 12px;
+  white-space: nowrap;
+  background-color: var(--mt-global-color-base-primary);
+  border-style: solid;
+  border-width: 5px;
+  border-color: var(--mt-header-menu-border-color);
+  color: var(--mt-global-color-white);
+  gap: unset;
+  transition: top 300ms ease, opacity 300ms ease;
+  min-width: 200px;
+  padding-left: 0;
 }
 
   header nav .nav-tools {
