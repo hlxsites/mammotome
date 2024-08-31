@@ -22,20 +22,20 @@ function closeOnEscape(e) {
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
-      toggleAllNavSections(navSections);
-      navSectionExpanded.focus();
+    toggleAllNavSections(navSections);
+    navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections);
-      nav.querySelector('button').focus();
-    }
+    // eslint-disable-next-line no-use-before-define
+    toggleMenu(nav, navSections);
+  nav.querySelector('button').focus();
+  }
   }
 }
 
 function openOnKeydown(e) {
   const focused = document.activeElement;
   const isNavDrop = focused.className === 'nav-drop';
-  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
+if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
     // eslint-disable-next-line no-use-before-define
     toggleAllNavSections(focused.closest('.nav-sections'));
@@ -432,8 +432,16 @@ export default async function decorate(block) {
     if (navSections) {
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.classList.length === 0) navSection.classList.add('nav-drop');
-        if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
-
+        if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multi');
+        navSection.querySelectorAll('ul > li > ul > li').forEach(element => {
+          element.classList.add('nav-items');
+        });
+        navSection.querySelectorAll('ul > li > ul > li > ul').forEach(element => {
+          element.classList.add('nav-subitems');
+        });
+        navSection.querySelectorAll('ul > li > ul > li > ul > li').forEach(element => {
+          element.classList.add('nav-subitem');
+        });
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
 

@@ -212,7 +212,8 @@ header nav .nav-sections ul > li > ul {
   margin-top: 0;
 }
 
-header nav .nav-sections ul > li > ul > li {
+header nav .nav-sections ul > li > ul > li,
+.nav-multi li.nav-items.nav-subitem {
   font-family: var(--mt-nav-desktop-font-family);
   font-weight: var(--mt-nav-desktop-font-weight);
 }
@@ -888,6 +889,41 @@ header nav.nav-mobile .nav-overflow {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
   }
+
+.nav-multi li.nav-items {
+  padding: var(--mt-nav-padding) 15px;
+  position: relative;
+}
+
+.nav-multi li.nav-items.nav-subitem {
+  padding: var(--mt-nav-padding) 15px;
+}
+
+/* Hide .nav-subitem by default */
+.nav-items .nav-subitems {
+  display: none;
+  background-color: var(--mt-global-color-base-primary);
+  position: absolute; /* Position .nav-subitem absolutely */
+  left: 100%; /* Position to the right of .nav-items */
+  top: 0; /* Align with the top of .nav-items */
+  margin-top: -2px;
+}
+
+/* Show .nav-subitem when .nav-items is hovered */
+.nav-items:hover .nav-subitems {
+  display: block; /* or 'flex', 'inline-block', etc., depending on your layout */
+  margin-top: 12px;
+  white-space: nowrap;
+  background-color: var(--mt-global-color-base-primary);
+  border-style: solid;
+  border-width: 5px;
+  border-color: var(--mt-header-menu-border-color);
+  color: var(--mt-global-color-white);
+  gap: unset;
+  transition: top 300ms ease, opacity 300ms ease;
+  min-width: 200px;
+  padding-left: 0;
+}
 
   header nav .nav-tools {
     display: block;
