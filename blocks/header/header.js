@@ -442,6 +442,9 @@ export default async function decorate(block) {
         navSection.querySelectorAll('ul > li > ul > li > ul > li').forEach(element => {
           element.classList.add('nav-subitem');
         });
+        navSection.querySelectorAll('ul > li > ul > li > ul > li > ul').forEach(element => {
+          element.classList.add('nav-subitems-level2');
+        });
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
 

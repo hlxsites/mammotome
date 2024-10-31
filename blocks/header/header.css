@@ -925,6 +925,19 @@ header nav.nav-mobile .nav-overflow {
   padding-left: 0;
 }
 
+/* Hide .nav-subitems-level2 by default */
+.nav-subitems-level2 {
+  display: none !important;
+  position: absolute;
+  left: 100%;
+  top: 0;
+}
+
+/* Show .nav-subitems-level2 when .nav-subitem is hovered */
+.nav-subitem:hover .nav-subitems-level2 {
+  display: block !important;
+}
+
   header nav .nav-tools {
     display: block;
     width: 100%;
