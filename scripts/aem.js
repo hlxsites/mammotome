@@ -22,23 +22,23 @@
  * for instance the href of a link, or a search term
  */
 function sampleRUM(checkpoint, data = {}) {
-    sampleRUM.baseURL = sampleRUM.baseURL || new URL(window.RUM_BASE == null ? 'https://rum.hlx.page' : window.RUM_BASE, window.location);
-    sampleRUM.defer = sampleRUM.defer || [];
-    const defer = (fnname) => {
-      sampleRUM[fnname] = sampleRUM[fnname]
-        || ((...args) => sampleRUM.defer.push({ fnname, args }));
-    };
-    sampleRUM.drain = sampleRUM.drain
-      || ((dfnname, fn) => {
-        sampleRUM[dfnname] = fn;
-        sampleRUM.defer
-          .filter(({ fnname }) => dfnname === fnname)
-          .forEach(({ fnname, args }) => sampleRUM[fnname](...args));
-      });
-    sampleRUM.always = sampleRUM.always || [];
-    sampleRUM.always.on = (chkpnt, fn) => {
-      sampleRUM.always[chkpnt] = fn;
-    };
+sampleRUM.baseURL = sampleRUM.baseURL || new URL(window.RUM_BASE == null ? 'https://rum.hlx.page' : window.RUM_BASE, window.location);
+  sampleRUM.defer = sampleRUM.defer || [];
+  const defer = (fnname) => {
+    sampleRUM[fnname] = sampleRUM[fnname]
+      || ((...args) => sampleRUM.defer.push({ fnname, args }));
+  };
+  sampleRUM.drain = sampleRUM.drain
+    || ((dfnname, fn) => {
+      sampleRUM[dfnname] = fn;
+      sampleRUM.defer
+        .filter(({ fnname }) => dfnname === fnname)
+        .forEach(({ fnname, args }) => sampleRUM[fnname](...args));
+    });
+  sampleRUM.always = sampleRUM.always || [];
+  sampleRUM.always.on = (chkpnt, fn) => {
+    sampleRUM.always[chkpnt] = fn;
+  };
     sampleRUM.on = (chkpnt, fn) => {
       sampleRUM.cases[chkpnt] = fn;
     };
