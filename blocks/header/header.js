@@ -19,7 +19,9 @@ function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
     const navSections = nav.querySelector('.nav-sections');
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
+    const navSectionExpanded = navSections.querySelector(
+      '[aria-expanded="true"]',
+    );
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
@@ -56,8 +58,12 @@ function createMobileMenuControlsBlock() {
 
   mobileMenuControls.addEventListener('click', (e) => {
     e.stopPropagation();
-    backButton.closest('[aria-expanded]').setAttribute('aria-expanded', 'false');
-    backButton.closest('[aria-expanded]').parentElement.classList.remove('nav-expanded');
+    backButton
+      .closest('[aria-expanded]')
+      .setAttribute('aria-expanded', 'false');
+    backButton
+      .closest('[aria-expanded]')
+      .parentElement.classList.remove('nav-expanded');
   });
 
   mobileMenuControls.append(backButton);
@@ -147,12 +153,17 @@ function toggleAllNavSections(sections, expanded = false) {
  * @param {*} forceExpanded Optional param to force nav expand behavior when not null
  */
 function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
+  const expanded = forceExpanded !== null
+    ? !forceExpanded
+    : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
 
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
 
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  button.setAttribute(
+    'aria-label',
+    expanded ? 'Open navigation' : 'Close navigation',
+  );
 
   // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
@@ -199,20 +210,29 @@ async function fetchSearchData({ queryIndex }) {
   return window.searchData.data;
 }
 
-async function fetchProductSupportSearchData({ country, language, productSupport }) {
+async function fetchProductSupportSearchData({
+  country,
+  language,
+  productSupport,
+}) {
   if (!window.productSearchData) {
     const products = await getProducts(country, language);
-    window.productSearchData = products.flatMap(({
-      Name, Description, Page, assets,
-    }) => ([{
-      title: Name,
-      description: Description,
-      path: `${productSupport}/${Page}`,
-    }, ...assets.map((asset) => ({
-      title: asset.Name,
-      description: asset.Description,
-      path: asset.URL,
-    }))]));
+    window.productSearchData = products.flatMap(
+      ({
+        Name, Description, Page, assets,
+      }) => [
+        {
+          title: Name,
+          description: Description,
+          path: `${productSupport}/${Page}`,
+        },
+        ...assets.map((asset) => ({
+          title: asset.Name,
+          description: asset.Description,
+          path: asset.URL,
+        })),
+      ],
+    );
   }
   return window.productSearchData;
 }
@@ -221,8 +241,7 @@ async function search(value) {
   const info = getInfo();
   const searchData = await fetchSearchData(info);
   const productSupportData = await fetchProductSupportSearchData(info);
-  return [...searchData, ...productSupportData]
-    .filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
+  return [...searchData, ...productSupportData].filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
 }
 
 async function searchInput(event) {
@@ -240,9 +259,15 @@ async function searchInput(event) {
   if (searchTerm.length >= 3) {
     const title = document.createElement('h1');
     title.classList.add('nav-search-result-title');
-    title.textContent = `${await translate('navSearchResultsFor', 'Search Results for')}: ${searchTerm}`;
+    title.textContent = `${await translate(
+      'navSearchResultsFor',
+      'Search Results for',
+    )}: ${searchTerm}`;
     aside.append(title);
-    aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
+    aside.insertAdjacentHTML(
+      'beforeend',
+      '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>',
+    );
 
     try {
       const hits = await search(searchTerm);
@@ -257,27 +282,45 @@ async function searchInput(event) {
           createDomStructure(decorateSupScript(hit.title), searchLink);
           const searchDescription = document.createElement('div');
           searchDescription.classList.add('nav-search-description');
-          createDomStructure(decorateSupScript(hit.description), searchDescription);
+          createDomStructure(
+            decorateSupScript(hit.description),
+            searchDescription,
+          );
           searchTitle.appendChild(searchLink);
           wrapper.appendChild(searchTitle);
           wrapper.appendChild(searchDescription);
           aside.appendChild(wrapper);
         });
-        sampleRUM('search', { source: 'input.nav-search-input', target: searchTerm });
+        sampleRUM('search', {
+          source: 'input.nav-search-input',
+          target: searchTerm,
+        });
       } else {
         const searchTitle = document.createElement('h3');
         searchTitle.classList.add('nav-search-title');
-        searchTitle.textContent = await translate('navSearchNoResult', 'No Result');
+        searchTitle.textContent = await translate(
+          'navSearchNoResult',
+          'No Result',
+        );
         aside.appendChild(searchTitle);
-        sampleRUM('nullsearch', { source: 'input.nav-search-input', target: searchTerm });
+        sampleRUM('nullsearch', {
+          source: 'input.nav-search-input',
+          target: searchTerm,
+        });
       }
     } catch (error) {
       const searchTitle = document.createElement('h3');
       searchTitle.classList.add('nav-search-title');
-      searchTitle.textContent = await translate('navSearchFailure', 'Search could not be completed at this time - please try again later.');
+      searchTitle.textContent = await translate(
+        'navSearchFailure',
+        'Search could not be completed at this time - please try again later.',
+      );
       aside.appendChild(searchTitle);
     }
-    aside.insertAdjacentHTML('beforeend', '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>');
+    aside.insertAdjacentHTML(
+      'beforeend',
+      '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>',
+    );
   }
   // eslint-disable-next-line no-restricted-globals
   history.replaceState(null, '', url);
@@ -286,7 +329,10 @@ async function searchInput(event) {
 async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
   if (!input.active) {
-    input.placeholder = await translate('navSearchPlaceholder', 'What are you looking for?');
+    input.placeholder = await translate(
+      'navSearchPlaceholder',
+      'What are you looking for?',
+    );
 
     const inputContainer = document.createElement('div');
     inputContainer.classList.add('nav-search-input-container');
@@ -313,7 +359,9 @@ function searchDisable(event) {
 }
 
 async function decorateSearch(block) {
-  const searchSection = block.querySelector('div.nav-tools > p > a > .icon-search');
+  const searchSection = block.querySelector(
+    'div.nav-tools > p > a > .icon-search',
+  );
 
   if (!searchSection) return;
 
@@ -333,8 +381,10 @@ async function decorateSearch(block) {
   searchSection.input = input;
   searchSection.searchElement = searchElement;
 
-  searchSection.parentElement.parentElement
-    .replaceChild(searchElement, searchSection.parentElement);
+  searchSection.parentElement.parentElement.replaceChild(
+    searchElement,
+    searchSection.parentElement,
+  );
 
   searchElement.appendChild(searchSection);
 
@@ -343,7 +393,10 @@ async function decorateSearch(block) {
   searchSection.addEventListener('disable', searchDisable);
 
   if (input.active) {
-    input.placeholder = await translate('navSearchPlaceholder', 'What are you looking for?');
+    input.placeholder = await translate(
+      'navSearchPlaceholder',
+      'What are you looking for?',
+    );
     searchElement.prepend(input);
     searchElement.append(aside);
     input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -410,17 +463,19 @@ export default async function decorate(block) {
             config = readBlockConfig(sectionMetaData);
             sectionMetaData.remove();
           }
-          Array.from(section.querySelectorAll('div > ul > li')).forEach((li, j) => {
-            navSectionList.appendChild(li);
-            if (config.style) {
-              li.classList.add(`${config.style}`);
-              if (config.style === 'nav-button' && j % 2) {
-                li.querySelector('a').classList.add('button', 'secondary');
-              } else {
-                li.querySelector('a').classList.add('button', 'primary');
+          Array.from(section.querySelectorAll('div > ul > li')).forEach(
+            (li, j) => {
+              navSectionList.appendChild(li);
+              if (config.style) {
+                li.classList.add(`${config.style}`);
+                if (config.style === 'nav-button' && j % 2) {
+                  li.querySelector('a').classList.add('button', 'secondary');
+                } else {
+                  li.querySelector('a').classList.add('button', 'primary');
+                }
               }
-            }
-          });
+            },
+          );
         } else {
           section.classList.add(`nav-${classes[1]}`);
         }
@@ -432,7 +487,32 @@ export default async function decorate(block) {
     if (navSections) {
       navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
         if (navSection.classList.length === 0) navSection.classList.add('nav-drop');
-        if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multilevel');
+        if (navSection.querySelector('ul > li > ul > li > ul')) navSection.classList.add('nav-multi');
+        navSection.querySelectorAll('ul > li > ul > li').forEach((element) => {
+          element.classList.add('nav-items');
+        });
+        navSection
+          .querySelectorAll('ul > li > ul > li > ul')
+          .forEach((element) => {
+            element.classList.add('nav-subitems');
+          });
+        navSection
+          .querySelectorAll('ul > li > ul > li > ul > li')
+          .forEach((element) => {
+            element.classList.add('nav-subitem');
+          });
+        navSection
+          .querySelectorAll('ul > li > ul > li > ul > li > ul')
+          .forEach((element) => {
+            element.classList.add('nav-subitems-level2');
+            // Get the parent `li` of the current `ul.nav-subitems-level2`
+            const closestLi = element.closest('li');
+            if (closestLi) {
+              closestLi.classList.add('second-level-mobile');
+            }
+          });
+
+        // Get the parent `li` of the current `ul.nav-subitems-level2`
 
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
@@ -442,7 +522,10 @@ export default async function decorate(block) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
 
             toggleAllNavSections(navSections);
-            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            navSection.setAttribute(
+              'aria-expanded',
+              expanded ? 'false' : 'true',
+            );
             if (expanded) {
               navSection.parentElement.classList.remove('nav-expanded');
             } else {
@@ -453,8 +536,12 @@ export default async function decorate(block) {
       });
 
       // not using :has selector because it's not supported in FF (fixes https://github.com/hlxsites/mammotome/issues/499)
-      const firstLevelLis = Array.from(nav.querySelectorAll('.nav-sections > ul > li'));
-      const firstLevelLinks = firstLevelLis.filter((li) => li.querySelector('ul')).map((li) => li.querySelector('a'));
+      const firstLevelLis = Array.from(
+        nav.querySelectorAll('.nav-sections > ul > li'),
+      );
+      const firstLevelLinks = firstLevelLis
+        .filter((li) => li.querySelector('ul'))
+        .map((li) => li.querySelector('a'));
 
       firstLevelLinks.forEach((link) => {
         link.addEventListener('click', (event) => {
@@ -465,9 +552,13 @@ export default async function decorate(block) {
       });
 
       navSections.querySelector('ul').prepend(createMobileMenuControlsBlock());
-      navSections.querySelector('ul').append(createOverflowDropdown(navSections));
+      navSections
+        .querySelector('ul')
+        .append(createOverflowDropdown(navSections));
       decorateLanguageNav(navSections);
-      const multiLevelNav = navSections.querySelectorAll('li.nav-multilevel > ul > li > ul > li a');
+      const multiLevelNav = navSections.querySelectorAll(
+        'li.nav-multilevel > ul > li > ul > li a',
+      );
       setActiveLink(multiLevelNav, 'active');
     }
 
@@ -508,7 +599,11 @@ export default async function decorate(block) {
 
     // remove empty sections
     Array.from(nav.children).forEach((section) => {
-      if (section.children.length === 1 && section.children[0].tagName === 'UL' && section.children[0].children.length === 0) {
+      if (
+        section.children.length === 1
+        && section.children[0].tagName === 'UL'
+        && section.children[0].children.length === 0
+      ) {
         section.remove();
       }
     });
