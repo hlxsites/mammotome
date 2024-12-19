@@ -30,6 +30,13 @@ export default function decorate(block) {
       });
     }
 
+    if (opCoDetails.OpCoEntity) {
+      const opcoEntityElements = document.getElementsByClassName('OpCoEntity');
+      Array.from(opcoEntityElements).forEach((el) => {
+        el.innerHTML = opCoDetails.OpCoEntity;
+      });
+    }
+
     if (opCoDetails.OpCoEmail) {
       const opcoEmailElements = document.getElementsByClassName('OpCoEmail');
       Array.from(opcoEmailElements).forEach((el) => {
