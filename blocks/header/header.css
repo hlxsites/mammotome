@@ -419,7 +419,7 @@ header nav .nav-sections>ul>li[aria-expanded="true"]>ul {
   z-index: 200;
 }
 
-header nav .nav-sections .nav-multi[aria-expanded="true"] .nav-items.nav-subitem.second-level-mobile > a {
+header nav .nav-sections .nav-multi[aria-expanded="true"] .nav-items.nav-subitem.second-level-mobile>a {
   background-color: none;
   text-transform: uppercase;
   text-align: center;
