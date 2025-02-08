@@ -6,28 +6,49 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
   block.appendChild(marketoScript);
 });
 
-const embedMarketoForm = async (block, formId) => {
-  try {
-    await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
-    const formElement = document.createElement('form');
-    formElement.id = `mktoForm_${formId}`;
-    block.appendChild(formElement);
+const waitForMktoForms = () => new Promise((resolve) => {
+  const checkMktoForms = () => {
     if (window.MktoForms2) {
-      MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId, (form) => {
-        form.onSuccess((followUpUrl) => {
-          window.location.href = followUpUrl;
-          return false;
-        });
-      });
+      resolve(window.MktoForms2);
+    } else {
+      setTimeout(checkMktoForms, 100);
     }
-  } catch (error) {
-    console.error('Error embedding Marketo form:', error);
-    block.textContent = 'Error: Unable to load the form. Please try again later.';
-  }
+  };
+  checkMktoForms();
+});
+
+const embedMarketoForm = async (block, formId) => {
+  await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
+  await waitForMktoForms();
+
+  const formElement = document.createElement('form');
+  formElement.id = `mktoForm_${formId}`;
+  block.appendChild(formElement);
+
+  window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
+
+  window.MktoForms2.whenReady((form) => {
+    form.onSuccess((values, followUpUrl) => {
+      window.location.href = followUpUrl;
+
+      dataLayer.push({
+        event: 'marketo.success',
+        'marketo.timestamp': new Date().toLocaleTimeString(),
+        'marketo.form_id': formId,
+        'marketo.form_values': values,
+        'marketo.follow_up_url': followUpUrl,
+        eventCallback() {
+          form.getFormElem().hide();
+          document.location.href = followUpUrl;
+        },
+      });
+      return false;
+    });
+  });
 };
 
 export default async function decorate(block) {
   const formId = block.textContent.trim();
   block.textContent = '';
-  await embedMarketoForm(block, formId);
+  embedMarketoForm(block, formId);
 }
