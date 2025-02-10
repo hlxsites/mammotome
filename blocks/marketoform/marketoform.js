@@ -6,20 +6,8 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
   block.appendChild(marketoScript);
 });
 
-const waitForMktoForms = () => new Promise((resolve) => {
-  const checkMktoForms = () => {
-    if (window.MktoForms2) {
-      resolve(window.MktoForms2);
-    } else {
-      setTimeout(checkMktoForms, 100);
-    }
-  };
-  checkMktoForms();
-});
-
 const embedMarketoForm = async (block, formId) => {
   await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
-  await waitForMktoForms();
 
   const formElement = document.createElement('form');
   formElement.id = `mktoForm_${formId}`;
