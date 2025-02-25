@@ -18,6 +18,7 @@ const embedMarketoForm = async (block, formId) => {
   window.MktoForms2.whenReady((form) => {
     form.onSuccess((values, followUpUrl) => {
       window.location.href = followUpUrl;
+      const dataLayer = '';
 
       dataLayer.push({
         event: 'marketo.success',
