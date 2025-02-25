@@ -85,12 +85,12 @@ header nav li.nav-drop ul a {
   letter-spacing: 0;
 }
 
-header nav li.nav-drop[aria-expanded="true"] ul a {
-  font-weight: var(--mt-font-weight-regular);
-}
-
 header nav .nav-search-title a:any-link {
   color: var(--mt-header-color-nav-links);
+}
+
+header nav li.nav-drop[aria-expanded="true"] ul a {
+  font-weight: var(--mt-font-weight-regular);
 }
 
 /* hamburger */
@@ -136,7 +136,6 @@ header .nav-brand {
   row-gap: 10px;
   align-items: start;
   min-width: 245px;
-  /* width of logo + 2 * 10 padding */
 }
 
 header nav .nav-brand {
@@ -205,8 +204,8 @@ header nav .nav-sections ul {
   padding-left: 0;
   position: relative;
   left: 0;
-  transition-delay: 0.5s;
   transition: left 300ms var(--mt-nav-transition-timing);
+  transition-delay: 0.5s;
 }
 
 header nav .nav-sections picture {
@@ -929,10 +928,13 @@ header nav.nav-mobile .nav-overflow {
     display: none;
     background-color: var(--mt-global-color-base-primary);
     position: absolute;
+
     /* Position .nav-subitem absolutely */
     left: 100%;
+
     /* Position to the right of .nav-items */
     top: 0;
+
     /* Align with the top of .nav-items */
     margin-top: -2px;
   }
@@ -940,6 +942,7 @@ header nav.nav-mobile .nav-overflow {
   /* Show .nav-subitem when .nav-items is hovered */
   .nav-items:hover .nav-subitems {
     display: block;
+
     /* or 'flex', 'inline-block', etc., depending on your layout */
     margin-top: 12px;
     white-space: nowrap;
@@ -949,8 +952,8 @@ header nav.nav-mobile .nav-overflow {
     border-color: var(--mt-header-menu-border-color);
     color: var(--mt-global-color-white);
     gap: unset;
-    transition-delay: 0.5s;
     transition: top 300ms ease, opacity 300ms ease;
+    transition-delay: 0.5s;
     min-width: 200px;
     padding-left: 0;
   }
@@ -984,7 +987,6 @@ header nav.nav-mobile .nav-overflow {
 }
 
 @media (min-width: 1200px) {
-
   header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
     display: flex;
   }
