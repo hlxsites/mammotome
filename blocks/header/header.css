@@ -204,7 +204,7 @@ header nav .nav-sections ul {
   padding-left: 0;
   position: relative;
   left: 0;
-  transition: left 300ms var(--mt-nav-transition-timing);
+  /* transition: left 300ms var(--mt-nav-transition-timing); */
 }
 
 header nav .nav-sections picture {
