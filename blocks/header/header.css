@@ -39,7 +39,7 @@
   --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family-regular);
 
   /* transition timing */
-  --mt-nav-transition-timing: cubic-bezier(0.76, 0.34, 1, 1);
+  /* --mt-nav-transition-timing: cubic-bezier(0.76, 0.34, 1, 1); */
 }
 
 /* header and nav layout */
@@ -71,7 +71,7 @@ header nav p {
 }
 
 header nav a:any-link {
-  display: block;
+  visibility: visible;
   color: var(--mt-header-color-subnav-links);
   width: 100%;
 }
@@ -205,7 +205,6 @@ header nav .nav-sections ul {
   position: relative;
   left: 0;
   transition: left 300ms var(--mt-nav-transition-timing);
-  transition-delay: 0.5s;
 }
 
 header nav .nav-sections picture {
@@ -244,7 +243,7 @@ header nav .nav-sections ul>li[aria-expanded="true"]>ul>li>a {
 }
 
 header nav .nav-sections ul>li>ul>li>ul {
-  display: block;
+  visibility: visible;
   border-radius: 4px;
   margin-top: 10px;
   padding-left: 0;
@@ -334,7 +333,7 @@ header nav .nav-hamburger-icon,
 header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
   box-sizing: border-box;
-  display: block;
+  visibility: visible;
   position: relative;
   width: 18px;
   height: 3px;
@@ -672,6 +671,7 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections>ul>li>ul>li:hover {
     background-color: var(--mt-header-menu-item-selected-color);
+    visibility: visible;
   }
 
   header nav .nav-sections ul>li.nav-multilevel>ul>li>ul>li {
@@ -681,7 +681,7 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections>ul>li[aria-expanded="true"]>ul>li:hover,
   header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover {
     background-color: var(--mt-header-menu-item-selected-color);
-    transition-delay: 0.5s;
+    /* transition-delay: 0.5s; */
   }
 
   header nav li .active {
@@ -701,7 +701,7 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections>ul>li[aria-expanded="false"]>ul,
   header nav .nav-sections>ul>li:not([aria-expanded])>ul {
-    display: block;
+    visibility: visible;
   }
 
   header nav .nav-sections>ul>li:hover>ul {
@@ -725,7 +725,7 @@ header nav.nav-mobile .nav-overflow {
   /* stylelint-disable-next-line */
   header nav .nav-sections>ul>li>ul,
   header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul {
-    display: block;
+    visibility: visible;
     visibility: hidden;
     opacity: 0;
     position: absolute;
@@ -849,7 +849,7 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .nav-sections {
-    display: block;
+    visibility: visible;
     white-space: nowrap;
     line-height: var(--mt-nav-selections-desktop);
     align-self: unset;
@@ -941,7 +941,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Show .nav-subitem when .nav-items is hovered */
   .nav-items:hover .nav-subitems {
-    display: block;
+    visibility: visible;
 
     /* or 'flex', 'inline-block', etc., depending on your layout */
     margin-top: 12px;
@@ -953,7 +953,7 @@ header nav.nav-mobile .nav-overflow {
     color: var(--mt-global-color-white);
     gap: unset;
     transition: top 300ms ease, opacity 300ms ease;
-    transition-delay: 0.5s;
+    /* transition-delay: 0.5s; */
     min-width: 200px;
     padding-left: 0;
   }
@@ -968,11 +968,11 @@ header nav.nav-mobile .nav-overflow {
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
-    display: block !important;
+    visibility: visible !important;
   }
 
   header nav .nav-tools {
-    display: block;
+    visibility: visible;
     width: 100%;
     padding-right: 24px;
   }
