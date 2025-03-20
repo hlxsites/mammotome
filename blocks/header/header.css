@@ -39,7 +39,7 @@
   --mt-nav-desktop-multilevel-font-family: var(--mt-body-font-family-regular);
 
   /* transition timing */
-  /* --mt-nav-transition-timing: cubic-bezier(0.76, 0.34, 1, 1); */
+  --mt-nav-transition-timing: cubic-bezier(0.76, 0.34, 1, 1);
 }
 
 /* header and nav layout */
@@ -49,6 +49,7 @@ header .nav-wrapper {
   position: fixed;
   z-index: 50;
   box-shadow: 0 0 8px 0 #00000026;
+  visibility: visible;
 }
 
 header nav {
@@ -71,7 +72,7 @@ header nav p {
 }
 
 header nav a:any-link {
-  visibility: visible;
+  display: block;
   color: var(--mt-header-color-subnav-links);
   width: 100%;
 }
@@ -243,7 +244,7 @@ header nav .nav-sections ul>li[aria-expanded="true"]>ul>li>a {
 }
 
 header nav .nav-sections ul>li>ul>li>ul {
-  visibility: visible;
+  display: block;
   border-radius: 4px;
   margin-top: 10px;
   padding-left: 0;
@@ -333,7 +334,7 @@ header nav .nav-hamburger-icon,
 header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
   box-sizing: border-box;
-  visibility: visible;
+  display: block;
   position: relative;
   width: 18px;
   height: 3px;
@@ -366,9 +367,7 @@ header nav .nav-sections ul.nav-expanded {
 
 header nav .nav-sections>ul>li[aria-expanded="false"]>ul,
 header nav .nav-sections>ul>li:not([aria-expanded])>ul {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  display: none;
 }
 
 header nav[aria-expanded="true"] .nav-sections {
@@ -413,11 +412,9 @@ header nav .nav-sections>ul>li[aria-expanded="true"]>ul {
   height: 100%;
   font-size: var(--mt-font-size-100);
   padding: var(--mt-nav-padding-m);
-  /* display: flex; */
+  display: flex;
   flex-direction: column;
   z-index: 200;
-  visibility: visible;
-  opacity: 1;
 }
 
 header nav .nav-sections .nav-multi[aria-expanded="true"] .nav-items.nav-subitem.second-level-mobile > a {
@@ -675,7 +672,6 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections>ul>li>ul>li:hover {
     background-color: var(--mt-header-menu-item-selected-color);
-    visibility: visible;
   }
 
   header nav .nav-sections ul>li.nav-multilevel>ul>li>ul>li {
@@ -685,7 +681,6 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections>ul>li[aria-expanded="true"]>ul>li:hover,
   header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover {
     background-color: var(--mt-header-menu-item-selected-color);
-    /* transition-delay: 0.5s; */
   }
 
   header nav li .active {
@@ -705,7 +700,7 @@ header nav.nav-mobile .nav-overflow {
 
   header nav .nav-sections>ul>li[aria-expanded="false"]>ul,
   header nav .nav-sections>ul>li:not([aria-expanded])>ul {
-    visibility: visible;
+    display: block;
   }
 
   header nav .nav-sections>ul>li:hover>ul {
@@ -729,7 +724,7 @@ header nav.nav-mobile .nav-overflow {
   /* stylelint-disable-next-line */
   header nav .nav-sections>ul>li>ul,
   header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul {
-    visibility: visible;
+    display: block;
     visibility: hidden;
     opacity: 0;
     position: absolute;
@@ -853,7 +848,7 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .nav-sections {
-    visibility: visible;
+    display: block;
     white-space: nowrap;
     line-height: var(--mt-nav-selections-desktop);
     align-self: unset;
@@ -929,7 +924,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Hide .nav-subitem by default */
   .nav-items .nav-subitems {
-    display: none;
+    visibility: hidden;
     background-color: var(--mt-global-color-base-primary);
     position: absolute;
 
@@ -956,7 +951,7 @@ header nav.nav-mobile .nav-overflow {
     border-color: var(--mt-header-menu-border-color);
     color: var(--mt-global-color-white);
     gap: unset;
-    /* transition: top 300ms ease, opacity 300ms ease; */
+    transition: top 300ms ease, opacity 300ms ease;
     /* transition-delay: 0.5s; */
     min-width: 200px;
     padding-left: 0;
@@ -964,7 +959,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Hide .nav-subitems-level2 by default */
   .nav-subitems-level2 {
-    display: none !important;
+    visibility: hidden !important;
     position: absolute;
     left: 100%;
     top: 0;
@@ -972,7 +967,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
-    visibility: visible !important;
+   visibility: visible !important;
   }
 
   header nav .nav-tools {
