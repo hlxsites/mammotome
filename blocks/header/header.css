@@ -366,7 +366,9 @@ header nav .nav-sections ul.nav-expanded {
 
 header nav .nav-sections>ul>li[aria-expanded="false"]>ul,
 header nav .nav-sections>ul>li:not([aria-expanded])>ul {
-  display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 header nav[aria-expanded="true"] .nav-sections {
@@ -411,9 +413,11 @@ header nav .nav-sections>ul>li[aria-expanded="true"]>ul {
   height: 100%;
   font-size: var(--mt-font-size-100);
   padding: var(--mt-nav-padding-m);
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   z-index: 200;
+  visibility: visible;
+  opacity: 1;
 }
 
 header nav .nav-sections .nav-multi[aria-expanded="true"] .nav-items.nav-subitem.second-level-mobile > a {
