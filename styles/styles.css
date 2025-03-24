@@ -21,6 +21,17 @@
 }
 
 @font-face {
+  font-family: "roboto", sans-serif;
+  font-style: italic, oblique;
+  font-weight: 300;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
+}
+
+@font-face {
   font-family: "robotoflex-regular-normal-400-fallback";
   font-style: normal;
   font-weight: 400;
