@@ -11,92 +11,18 @@
  */
 
  @font-face {
-  font-family: 'roboto-regular-normal-300-fallback';
+  font-family: 'Roboto Flex';
+  src: url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;500;600;700;800;900&display=swap');
+  font-weight: 300 400 500 600 700 800 900;
   font-style: normal;
-  font-weight: 300;
-  src: local('Helvetica'), local('Arial'), local('sans-serif');
-  ascent-override: 93.26%;
-  descent-override: 24.54%;
-  line-gap-override: 0.00%;
-  size-adjust: 99.48%;
-  word-spacing: 0%;
 }
 
+/* Define Italic Styles */
 @font-face {
-  font-family: 'roboto-regular-italic-300-fallback';
+  font-family: 'Roboto Flex Italic';
+  src: url('https://fonts.googleapis.com/css2?family=Roboto+Flex:ital,wght@1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+  font-weight: 300 400 500 600 700 800 900;
   font-style: italic;
-  font-weight: 300;
-  src: local('Helvetica Italic'), local('Arial Italic'), local('sans-serif');
-  ascent-override: 93.26%;
-  descent-override: 24.54%;
-  line-gap-override: 0.00%;
-  size-adjust: 99.48%;
-}
-
-@font-face {
-  font-family: 'roboto-regular-normal-400-fallback';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Helvetica'), local('Arial'), local('sans-serif');
-  ascent-override: 93.26%;
-  descent-override: 24.54%;
-  line-gap-override: 0.00%;
-  size-adjust: 99.48%;
-}
-
-@font-face {
-  font-family: 'roboto-regular-normal-500-fallback';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Helvetica Medium'), local('Arial'), local('sans-serif');
-  ascent-override: 93.26%;
-  descent-override: 24.54%;
-  line-gap-override: 0.00%;
-  size-adjust: 99.48%;
-}
-
-@font-face {
-  font-family: 'roboto-regular-normal-600-fallback';
-  font-style: normal;
-  font-weight: 600;
-  src: local('Helvetica Bold'), local('Arial Bold'), local('sans-serif');
-  ascent-override: 100.90%;
-  descent-override: 26.55%;
-  line-gap-override: 0.00%;
-  size-adjust: 91.95%;
-}
-
-@font-face {
-  font-family: 'roboto-regular-normal-700-fallback';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Helvetica Bold'), local('Arial Bold'), local('sans-serif');
-  ascent-override: 100.90%;
-  descent-override: 26.55%;
-  line-gap-override: 0.00%;
-  size-adjust: 91.95%;
-}
-
-@font-face {
-  font-family: 'roboto-regular-normal-800-fallback';
-  font-style: normal;
-  font-weight: 800;
-  src: local('Helvetica Bold'), local('Arial Bold'), local('sans-serif');
-  ascent-override: 100.90%;
-  descent-override: 26.55%;
-  line-gap-override: 0.00%;
-  size-adjust: 91.95%;
-}
-
-@font-face {
-  font-family: 'roboto-regular-normal-900-fallback';
-  font-style: normal;
-  font-weight: 900;
-  src: local('Helvetica Bold'), local('Arial Bold'), local('sans-serif');
-  ascent-override: 100.90%;
-  descent-override: 26.55%;
-  line-gap-override: 0.00%;
-  size-adjust: 91.95%;
 }
 
 
@@ -174,22 +100,18 @@
   --mt-hero-carousel-active-dot-color: var(--mt-global-color-base-secondary);
   --mt-hero-carousel-inactive-dot-color: var(--mt-global-color-accent-grey);
 
-  /* fonts families */
+/* fonts families */
 /* font families */
-/* font families */
---mt-body-font-family-thin: 'Roboto Light', helvetica, arial, sans-serif;
-/* font families */
---mt-body-font-family-thin: 'Roboto Light', 'roboto-regular-normal-300-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-italic: 'Roboto Light Italic', 'roboto-regular-italic-300-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-regular: 'Roboto Regular', 'roboto-regular-normal-400-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-regular-italic: 'Roboto Regular Italic', 'roboto-regular-italic-400-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-bold: 'Roboto Bold', 'roboto-regular-normal-500-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-bold-italic: 'Roboto Bold Italic', 'roboto-regular-italic-500-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-bolder: 'Roboto Bold', 'roboto-regular-normal-600-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-boldest: 'Roboto Bold', 'roboto-regular-normal-700-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-superbold: 'Roboto Bold', 'roboto-regular-normal-800-fallback', helvetica, arial, sans-serif;
---mt-body-font-family-heavy: 'Roboto Bold', 'roboto-regular-normal-900-fallback', helvetica, arial, sans-serif;
-
+--mt-body-font-family-thin: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-italic: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-regular: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-regular-italic: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-bold: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-bold-italic: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-bolder: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-boldest: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-superbold: 'Roboto Flex', helvetica, arial, sans-serif;
+--mt-body-font-family-heavy: 'Roboto Flex', helvetica, arial, sans-serif;
   --mt-body-font-family: var(--mt-body-font-family-regular);
   --mt-fixed-font-family: 'roboto'-mono, menlo, consolas, 'Liberation Mono', monospace;
   --mt-form-font-family: var(--mt-body-font-family);

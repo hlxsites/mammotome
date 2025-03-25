@@ -1,9 +1,8 @@
-@font-face {
+/* @font-face {
     font-display: swap;
     font-family: 'Roboto Regular';
     src: url('./fonts/Roboto-Regular-webfont.eot');
     src: url('./fonts/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('./fonts/Roboto-Regular-webfont.woff2') format('woff2'),
          url('./fonts/Roboto-Regular-webfont.woff') format('woff'),
          url('./fonts/Roboto-Regular-webfont.ttf') format('truetype'),
          url('./fonts/Roboto-Regular-webfont.svg#Roboto-Regular') format('svg');
@@ -74,4 +73,11 @@
          url('./fonts/Roboto-BoldItalic-webfont.svg#Roboto-BoldItalic') format('svg');
     font-weight: 800;
     font-style: italic;
+} */
+
+@font-face {
+    font-family: 'Roboto Flex';
+    src: url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;500;600;700;800;900&display=swap');
+    font-weight: 300 400 500 600 900;
+    font-style: normal;
 }
