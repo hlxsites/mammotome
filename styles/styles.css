@@ -184,15 +184,18 @@
 /* font families */
 /* font families */
 --mt-body-font-family-thin: 'Roboto Light', helvetica, arial, sans-serif;
---mt-body-font-family-italic: 'Roboto Light Italic', helvetica, arial, sans-serif;
---mt-body-font-family-regular: 'Roboto Regular', helvetica, arial, sans-serif;
---mt-body-font-family-regular-italic: 'Roboto Regular Italic', helvetica, arial, sans-serif;
---mt-body-font-family-bold: 'Roboto Bold', helvetica, arial, sans-serif;
---mt-body-font-family-bold-italic: 'Roboto Bold Italic', helvetica, arial, sans-serif;
---mt-body-font-family-bolder: 'Roboto Bold', helvetica, arial, sans-serif;
---mt-body-font-family-boldest: 'Roboto Bold', helvetica, arial, sans-serif;
---mt-body-font-family-superbold: 'Roboto Bold', helvetica, arial, sans-serif;
---mt-body-font-family-heavy: 'Roboto Bold', helvetica, arial, sans-serif;
+/* font families */
+--mt-body-font-family-thin: 'Roboto Light', 'roboto-regular-normal-300-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-italic: 'Roboto Light Italic', 'roboto-regular-italic-300-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-regular: 'Roboto Regular', 'roboto-regular-normal-400-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-regular-italic: 'Roboto Regular Italic', 'roboto-regular-italic-400-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-bold: 'Roboto Bold', 'roboto-regular-normal-500-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-bold-italic: 'Roboto Bold Italic', 'roboto-regular-italic-500-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-bolder: 'Roboto Bold', 'roboto-regular-normal-600-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-boldest: 'Roboto Bold', 'roboto-regular-normal-700-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-superbold: 'Roboto Bold', 'roboto-regular-normal-800-fallback', helvetica, arial, sans-serif;
+--mt-body-font-family-heavy: 'Roboto Bold', 'roboto-regular-normal-900-fallback', helvetica, arial, sans-serif;
+
   --mt-body-font-family: var(--mt-body-font-family-regular);
   --mt-fixed-font-family: 'roboto'-mono, menlo, consolas, 'Liberation Mono', monospace;
   --mt-form-font-family: var(--mt-body-font-family);
@@ -431,7 +434,7 @@ strong {
 }
 
 em {
-  font-family: (var(--mt-body-font-family-regular-italic));
+  font-family: var(mt-body-font-family-italic);
   font-style: italic;
 }
 

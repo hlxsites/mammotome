@@ -1,12 +1,12 @@
 @font-face {
     font-display: swap;
     font-family: 'Roboto Regular';
-    src: url('/fonts/Roboto-Regular-webfont.eot');
-    src: url('/fonts/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/Roboto-Regular-webfont.woff2') format('woff2'),
-         url('/fonts/Roboto-Regular-webfont.woff') format('woff'),
-         url('/fonts/Roboto-Regular-webfont.ttf') format('truetype'),
-         url('/fonts/Roboto-Regular-webfont.svg#Roboto-Regular') format('svg');
+    src: url('../fonts/Roboto-Regular-webfont.eot');
+    src: url('../fonts/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Regular-webfont.woff2') format('woff2'),
+         url('../fonts/Roboto-Regular-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Regular-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Regular-webfont.svg#Roboto-Regular') format('svg');
     font-weight: 400;
     font-style: normal;
 }
@@ -14,12 +14,12 @@
 @font-face {
     font-display: swap;
     font-family: 'Roboto Bold';
-    src: url('/fonts/Roboto-Bold-webfont.eot');
-    src: url('/fonts/Roboto-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/Roboto-Bold-webfont.woff2') format('woff2'),
-         url('/fonts/Roboto-Bold-webfont.woff') format('woff'),
-         url('/fonts/Roboto-Bold-webfont.ttf') format('truetype'),
-         url('/fonts/Roboto-Bold-webfont.svg#Roboto-Bold') format('svg');
+    src: url('../fonts/Roboto-Bold-webfont.eot');
+    src: url('../fonts/Roboto-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Bold-webfont.woff2') format('woff2'),
+         url('../fonts/Roboto-Bold-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Bold-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Bold-webfont.svg#Roboto-Bold') format('svg');
     font-weight: 800;
     font-style: normal;
 }
@@ -27,12 +27,12 @@
 @font-face {
     font-display: swap;
     font-family: 'Roboto Light';
-    src: url('/fonts/Roboto-Light-webfont.eot');
-    src: url('/fonts/Roboto-Light-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/Roboto-Light-webfont.woff2') format('woff2'),
-         url('/fonts/Roboto-Light-webfont.woff') format('woff'),
-         url('/fonts/Roboto-Light-webfont.ttf') format('truetype'),
-         url('/fonts/Roboto-Light-webfont.svg#Roboto-Light') format('svg');
+    src: url('../fonts/Roboto-Light-webfont.eot');
+    src: url('../fonts/Roboto-Light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Light-webfont.woff2') format('woff2'),
+         url('../fonts/Roboto-Light-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Light-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Light-webfont.svg#Roboto-Light') format('svg');
     font-weight: 300;
     font-style: normal;
 }
@@ -40,12 +40,12 @@
 @font-face {
     font-display: swap;
     font-family: 'Roboto Light Italic';
-    src: url('/fonts/Roboto-LightItalic-webfont.eot');
-    src: url('/fonts/Roboto-LightItalic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/Roboto-LightItalic-webfont.woff2') format('woff2'),
-         url('/fonts/Roboto-LightItalic-webfont.woff') format('woff'),
-         url('/fonts/Roboto-LightItalic-webfont.ttf') format('truetype'),
-         url('/fonts/Roboto-LightItalic-webfont.svg#Roboto-LightItalic') format('svg');
+    src: url('../fonts/Roboto-LightItalic-webfont.eot');
+    src: url('../fonts/Roboto-LightItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-LightItalic-webfont.woff2') format('woff2'),
+         url('../fonts/Roboto-LightItalic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-LightItalic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-LightItalic-webfont.svg#Roboto-LightItalic') format('svg');
     font-weight: 300;
     font-style: italic;
 }
@@ -53,12 +53,12 @@
 @font-face {
     font-display: swap;
     font-family: 'Roboto Regular Italic';
-    src: url('/fonts/Roboto-Italic-webfont.eot');
-    src: url('/fonts/Roboto-Italic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/Roboto-Italic-webfont.woff2') format('woff2'),
-         url('/fonts/Roboto-Italic-webfont.woff') format('woff'),
-         url('/fonts/Roboto-Italic-webfont.ttf') format('truetype'),
-         url('/fonts/Roboto-Italic-webfont.svg#Roboto-Italic') format('svg');
+    src: url('../fonts/Roboto-Italic-webfont.eot');
+    src: url('../fonts/Roboto-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Italic-webfont.woff2') format('woff2'),
+         url('../fonts/Roboto-Italic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Italic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Italic-webfont.svg#Roboto-Italic') format('svg');
     font-weight: 400;
     font-style: italic;
 }
@@ -66,12 +66,12 @@
 @font-face {
     font-display: swap;
     font-family: 'Roboto Bold Italic';
-    src: url('/fonts/Roboto-BoldItalic-webfont.eot');
-    src: url('/fonts/Roboto-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/Roboto-BoldItalic-webfont.woff2') format('woff2'),
-         url('/fonts/Roboto-BoldItalic-webfont.woff') format('woff'),
-         url('/fonts/Roboto-BoldItalic-webfont.ttf') format('truetype'),
-         url('/fonts/Roboto-BoldItalic-webfont.svg#Roboto-BoldItalic') format('svg');
+    src: url('../fonts/Roboto-BoldItalic-webfont.eot');
+    src: url('../fonts/Roboto-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-BoldItalic-webfont.woff2') format('woff2'),
+         url('../fonts/Roboto-BoldItalic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-BoldItalic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-BoldItalic-webfont.svg#Roboto-BoldItalic') format('svg');
     font-weight: 800;
     font-style: italic;
 }
