@@ -70,6 +70,12 @@ function buildHeroBlock(main) {
       section.append(metaData);
     }
 
+    document.querySelectorAll('*').forEach((el) => {
+      if (el.textContent && el.textContent.match(/\s$/)) {
+        console.warn(`Trailing space detected in element: <${el.tagName}> with text: "${el.textContent}"`);
+      }
+    });
+
     main.prepend(section);
   }
 

@@ -180,7 +180,7 @@ function readBlockConfig(block) {
       const cols = [...row.children];
       if (cols[1]) {
         const col = cols[1];
-        const name = toClassName(cols[0].textContent);
+        const name = toClassName(cols[0].textContent.trimEnd());
         let value = '';
         if (col.querySelector('a')) {
           const as = [...col.querySelectorAll('a')];
@@ -199,11 +199,11 @@ function readBlockConfig(block) {
         } else if (col.querySelector('p')) {
           const ps = [...col.querySelectorAll('p')];
           if (ps.length === 1) {
-            value = ps[0].textContent;
+            value = ps[0].textContent.trimEnd();
           } else {
-            value = ps.map((p) => p.textContent);
+            value = ps.map((p) => p.textContent.trimEnd());
           }
-        } else value = row.children[1].textContent;
+        } else value = row.children[1].textContent.trimEnd();
         config[name] = value;
       }
     }

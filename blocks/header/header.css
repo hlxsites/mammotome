@@ -205,7 +205,7 @@ header nav .nav-sections ul {
   padding-left: 0;
   position: relative;
   left: 0;
-  /* transition: left 300ms var(--mt-nav-transition-timing); */
+  transition: left 300ms var(--mt-nav-transition-timing);
 }
 
 header nav .nav-sections picture {
@@ -738,7 +738,7 @@ header nav.nav-mobile .nav-overflow {
     border-color: var(--mt-header-menu-border-color);
     color: var(--mt-global-color-white);
     gap: unset;
-    /* transition: top 300ms ease, opacity 300ms ease; */
+    transition: top 300ms ease, opacity 300ms ease;
     min-width: 200px;
     padding-left: 0;
   }
@@ -803,7 +803,7 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop>ul {
     visibility: hidden;
     opacity: 0;
-    /* transition: top 300ms ease, opacity 300ms ease; */
+    transition: top 300ms ease, opacity 300ms ease;
     top: 0;
     left: -14em;
   }
@@ -952,7 +952,7 @@ header nav.nav-mobile .nav-overflow {
     color: var(--mt-global-color-white);
     gap: unset;
     transition: top 300ms ease, opacity 300ms ease;
-    /* transition-delay: 0.5s; */
+    transition-delay: 0.5s;
     min-width: 200px;
     padding-left: 0;
   }
