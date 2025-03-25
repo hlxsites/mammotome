@@ -1,6 +1,14 @@
 @font-face {
     font-family: 'Roboto Flex';
-    src: url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+    src: url('/fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf');
     font-weight: 300 400 500 600 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Flex';
+    src: url('/fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf');
+    font-weight: 300 400 500 600 900;
+    font-style: italic;
 }
 

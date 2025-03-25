@@ -12,15 +12,14 @@
 
  @font-face {
   font-family: 'Roboto Flex';
-  src: url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;500;600;700;800;900&display=swap');
+  src: url('/fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf');
   font-weight: 300 400 500 600 700 800 900;
   font-style: normal;
 }
 
-/* Define Italic Styles */
 @font-face {
   font-family: 'Roboto Flex Italic';
-  src: url('https://fonts.googleapis.com/css2?family=Roboto+Flex:ital,wght@1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+  src: url('/fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf');
   font-weight: 300 400 500 600 700 800 900;
   font-style: italic;
 }
@@ -351,7 +350,6 @@ strong {
 
 em {
   font-family: var(mt-body-font-family-italic);
-  font-style: italic;
 }
 
 p,
