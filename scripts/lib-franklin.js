@@ -788,13 +788,10 @@ export function decorateSections(main) {
     const wrappers = [];
     let defaultContent = false;
     [...section.children].forEach((e) => {
-      const allElements = document.querySelectorAll('p, h1, h2, h3, li');
-      allElements.forEach((el) => {
+      document.querySelectorAll('p, h1, h2, h3, li').forEach((el) => {
         el.childNodes.forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
-            const trimmedText = node.textContent.trim();
-            if (node.nextSibling?.tagName === 'EM') node.textContent = trimmedText;
-            if (node.previousSibling?.tagName === 'EM') node.textContent = trimmedText;
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+            node.textContent = node.textContent.trim();
           }
         });
       });
