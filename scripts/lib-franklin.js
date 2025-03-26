@@ -1364,12 +1364,9 @@ function init() {
   window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('p').forEach((p) => {
       p.childNodes.forEach((node) => {
-        if (node.nodeType === Node.TEXT_NODE && node.nextSibling && node.nextSibling.tagName === 'EM') {
-          node.textContent = node.textContent.trimEnd();
-        }
-
-        if (node.nodeType === Node.TEXT_NODE && node.previousSibling && node.previousSibling.tagName === 'EM') {
-          node.textContent = node.textContent.trimStart();
+        if (node.nodeType === Node.TEXT_NODE) {
+          if (node.nextSibling?.tagName === 'EM') node.textContent = node.textContent.trimEnd();
+          if (node.previousSibling?.tagName === 'EM') node.textContent = node.textContent.trimStart();
         }
       });
     });
