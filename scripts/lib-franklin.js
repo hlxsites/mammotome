@@ -788,6 +788,14 @@ export function decorateSections(main) {
     const wrappers = [];
     let defaultContent = false;
     [...section.children].forEach((e) => {
+      document.querySelectorAll('p').forEach((p) => {
+        p.childNodes.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            if (node.nextSibling?.tagName === 'EM') node.textContent = node.textContent.trimEnd();
+            if (node.previousSibling?.tagName === 'EM') node.textContent = node.textContent.trimStart();
+          }
+        });
+      });
       if (e.tagName === 'DIV' || !defaultContent) {
         const wrapper = document.createElement('div');
         wrappers.push(wrapper);
@@ -1359,17 +1367,6 @@ function init() {
 
   window.addEventListener('error', (event) => {
     sampleRUM('error', { source: event.filename, target: event.lineno });
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('p').forEach((p) => {
-      p.childNodes.forEach((node) => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          if (node.nextSibling?.tagName === 'EM') node.textContent = node.textContent.trimEnd();
-          if (node.previousSibling?.tagName === 'EM') node.textContent = node.textContent.trimStart();
-        }
-      });
-    });
   });
 }
 
