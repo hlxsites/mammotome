@@ -348,8 +348,14 @@ strong {
   font-weight: var(--mt-font-weight-heavy);
 }
 
-em {
+p em {
+  margin-left: 0;
+  display: inline-block;
   font-family: var(--mt-body-font-family-italic);
+}
+
+p {
+  white-space: normal;
 }
 
 p,

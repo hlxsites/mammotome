@@ -313,7 +313,7 @@ export function createDomStructure(structure, parentElement = document.body) {
     }
 
     if (element.textContent) {
-      domElement.textContent = element.textContent.trimEnd();
+      domElement.textContent = element.textContent;
     }
 
     if (element.children) {
@@ -669,7 +669,7 @@ function readExactBlockConfig(block) {
       const cols = [...row.children];
       if (cols[1]) {
         const col = cols[1];
-        const name = cols[0].textContent.trimEnd();
+        const name = cols[0].textContent.trim();
         let value = '';
         if (col.querySelector('a')) {
           const as = [...col.querySelectorAll('a')];
@@ -688,11 +688,11 @@ function readExactBlockConfig(block) {
         } else if (col.querySelector('p')) {
           const ps = [...col.querySelectorAll('p')];
           if (ps.length === 1) {
-            value = ps[0].textContent.trimEnd();
+            value = ps[0].textContent;
           } else {
-            value = ps.map((p) => p.textContent.trimEnd());
+            value = ps.map((p) => p.textContent);
           }
-        } else value = row.children[1].innerHTML.trimEnd();
+        } else value = row.children[1].innerHTML.trim();
         config[name] = value;
       }
     }
@@ -1019,7 +1019,7 @@ export function normalizeHeadings(el, allowedHeadings) {
         }
       }
       if (level !== 7) {
-        tag.outerHTML = `<h${level} id="${tag.id}">${tag.textContent.trimEnd()}</h${level}>`;
+        tag.outerHTML = `<h${level} id="${tag.id}">${tag.textContent}</h${level}>`;
       }
     }
   });
@@ -1359,6 +1359,12 @@ function init() {
 
   window.addEventListener('error', (event) => {
     sampleRUM('error', { source: event.filename, target: event.lineno });
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('p').forEach((p) => {
+      p.innerHTML = p.innerHTML.replace(/GPS\s<em>/g, 'GPS<em>');
+    });
   });
 }
 
