@@ -1,29 +1,90 @@
 /*
  * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the 'License');
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
  @font-face {
-  font-family: 'Roboto Flex';
-  src: url('/fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf');
-  font-weight: 300 400 500 600 700 800 900;
+  font-family: "robotoflex-regular-normal-300-fallback";
   font-style: normal;
+  font-weight: 300;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
 }
 
 @font-face {
-  font-family: 'Roboto Flex Italic';
-  src: url('/fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf');
-  font-weight: 300 400 500 600 700 800 900;
-  font-style: italic;
+  font-family: "robotoflex-regular-normal-400-fallback";
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
 }
 
+@font-face {
+  font-family: "robotoflex-regular-normal-500-fallback";
+  font-style: normal;
+  font-weight: 500;
+  src: local('Arial');
+  ascent-override: 93.26%;
+  descent-override: 24.54%;
+  line-gap-override: 0.00%;
+  size-adjust: 99.48%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-600-fallback";
+  font-style: normal;
+  font-weight: 600;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-700-fallback";
+  font-style: normal;
+  font-weight: 700;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-800-fallback";
+  font-style: normal;
+  font-weight: 800;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
+
+@font-face {
+  font-family: "robotoflex-regular-normal-900-fallback";
+  font-style: normal;
+  font-weight: 900;
+  src: local('Arial Bold');
+  ascent-override: 100.90%;
+  descent-override: 26.55%;
+  line-gap-override: 0.00%;
+  size-adjust: 91.95%;
+}
 
 :root {
   /* global colors */
@@ -99,20 +160,16 @@
   --mt-hero-carousel-active-dot-color: var(--mt-global-color-base-secondary);
   --mt-hero-carousel-inactive-dot-color: var(--mt-global-color-accent-grey);
 
-/* fonts families */
-/* font families */
---mt-body-font-family-thin: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-italic: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-regular: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-regular-italic: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-bold: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-bold-italic: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-bolder: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-boldest: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-superbold: 'Roboto Flex', helvetica, arial, sans-serif;
---mt-body-font-family-heavy: 'Roboto Flex', helvetica, arial, sans-serif;
+  /* fonts families */
+  --mt-body-font-family-thin: roboto, "robotoflex-regular-normal-300-fallback", sans-serif;
+  --mt-body-font-family-regular: roboto, "robotoflex-regular-normal-400-fallback", sans-serif;
+  --mt-body-font-family-bold: roboto, "robotoflex-regular-normal-500-fallback", sans-serif;
+  --mt-body-font-family-bolder: roboto, "robotoflex-regular-normal-600-fallback", sans-serif;
+  --mt-body-font-family-boldest: roboto, "robotoflex-regular-normal-700-fallback", sans-serif;
+  --mt-body-font-family-superbold: roboto, "robotoflex-regular-normal-800-fallback", sans-serif;
+  --mt-body-font-family-heavy: roboto, "robotoflex-regular-normal-900-fallback", sans-serif;
   --mt-body-font-family: var(--mt-body-font-family-regular);
-  --mt-fixed-font-family: 'roboto'-mono, menlo, consolas, 'Liberation Mono', monospace;
+  --mt-fixed-font-family: roboto-mono, menlo, consolas, 'Liberation Mono', monospace;
   --mt-form-font-family: var(--mt-body-font-family);
 
   /* font weights */
@@ -346,16 +403,6 @@ a:hover {
 strong {
   font-family: var(--mt-body-font-family-heavy);
   font-weight: var(--mt-font-weight-heavy);
-}
-
-p em {
-  margin-left: 0;
-  display: inline-block;
-  font-family: var(--mt-body-font-family-italic);
-}
-
-p {
-  white-space: normal;
 }
 
 p,
@@ -723,12 +770,12 @@ main blockquote {
 }
 
 main blockquote p::before {
-  content: '“';
+  content: "“";
   line-height: 0;
 }
 
 main blockquote p::after {
-  content: '”';
+  content: "”";
   line-height: 0;
 }
 
