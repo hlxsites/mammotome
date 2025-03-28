@@ -437,9 +437,6 @@ blockquote {
 }
 
 p {
-  vertical-align: baseline;
-  position: relative;
-  line-height: 0;
   font-size: var(--mt-body-font-size-s);
   line-height: var(--mt-body-line-height);
   font-weight: var(--mt-body-font-weight);
@@ -450,6 +447,14 @@ h1[id*="gps-detect"] sup,
 h2[id*="gps-detect"] sup,
 h3[id*="gps-detect"] sup {
   margin-left: 3px;
+}
+
+sup {
+  font-size: 75%;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.5em;
+  line-height: 0;
 }
 
 sup.tm {
