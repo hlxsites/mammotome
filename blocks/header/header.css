@@ -49,6 +49,7 @@ header .nav-wrapper {
   position: fixed;
   z-index: 50;
   box-shadow: 0 0 8px 0 #00000026;
+  visibility: visible;
 }
 
 header nav {
@@ -205,7 +206,6 @@ header nav .nav-sections ul {
   position: relative;
   left: 0;
   transition: left 300ms var(--mt-nav-transition-timing);
-  transition-delay: 0.5s;
 }
 
 header nav .nav-sections picture {
@@ -681,7 +681,6 @@ header nav.nav-mobile .nav-overflow {
   header nav .nav-sections>ul>li[aria-expanded="true"]>ul>li:hover,
   header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover {
     background-color: var(--mt-header-menu-item-selected-color);
-    transition-delay: 0.5s;
   }
 
   header nav li .active {
@@ -925,7 +924,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Hide .nav-subitem by default */
   .nav-items .nav-subitems {
-    display: none;
+    visibility: hidden;
     background-color: var(--mt-global-color-base-primary);
     position: absolute;
 
@@ -941,7 +940,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Show .nav-subitem when .nav-items is hovered */
   .nav-items:hover .nav-subitems {
-    display: block;
+    visibility: visible;
 
     /* or 'flex', 'inline-block', etc., depending on your layout */
     margin-top: 12px;
@@ -960,7 +959,7 @@ header nav.nav-mobile .nav-overflow {
 
   /* Hide .nav-subitems-level2 by default */
   .nav-subitems-level2 {
-    display: none !important;
+    visibility: hidden !important;
     position: absolute;
     left: 100%;
     top: 0;
@@ -968,11 +967,11 @@ header nav.nav-mobile .nav-overflow {
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
-    display: block !important;
+   visibility: visible !important;
   }
 
   header nav .nav-tools {
-    display: block;
+    visibility: visible;
     width: 100%;
     padding-right: 24px;
   }

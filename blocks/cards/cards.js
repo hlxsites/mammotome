@@ -25,7 +25,6 @@ export default function decorate(block) {
       } else {
         div.className = children.length ? 'cards-card-body' : 'cards-card-body empty';
         const action = div.querySelectorAll('p a');
-
         const containsHeading = Array.from(div.querySelectorAll('h1, h2, h3')).length > 0;
 
         if (!containsHeading) {
