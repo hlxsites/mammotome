@@ -441,6 +441,10 @@ p {
   vertical-align: baseline;
   position: relative;
   line-height: 0;
+  font-size: var(--mt-body-font-size-s);
+  line-height: var(--mt-body-line-height);
+  font-weight: var(--mt-body-font-weight);
+  text-align: center;
 }
 
 h1[id*="gps-detect"] sup,
@@ -459,13 +463,6 @@ sup > span.tm {
   letter-spacing: 0;
   font-size: 8px;
   top: 0.25rem;
-}
-
-p {
-  font-size: var(--mt-body-font-size-s);
-  line-height: var(--mt-body-line-height);
-  font-weight: var(--mt-body-font-weight);
-  text-align: center;
 }
 
 /* Section style for P */
