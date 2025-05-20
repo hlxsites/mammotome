@@ -44,21 +44,24 @@ const addPlayButton = (video) => {
 export default async function decorate(block) {
   const heroImg = block.querySelector('picture');
   if (heroImg) heroImg.classList.add('hero-image');
-  const videoLink = block.querySelector('a');
-
-  const header = block.querySelector('h1, .hero-header, header');
-  const subtitle = block.querySelector('h2, .hero-subtitle, .subtitle');
-  const content = document.createElement('div');
-  content.className = 'hero-content';
-  if (header) content.appendChild(header.cloneNode(true));
-  if (subtitle) content.appendChild(subtitle.cloneNode(true));
+  const videoPath = getVideoURL(block);
 
   block.textContent = '';
   if (heroImg) block.appendChild(heroImg);
-  if (content.childNodes.length) block.appendChild(content);
 
   block.dataset.embedLoaded = false;
-  addPlayButton(block, videoLink);
+  addPlayButton(block);
 
-  // Optionally, add video click handler here if needed
+  if (videoPath) {
+    block.style.cursor = 'pointer';
+    block.addEventListener('click', () => {
+      block.innerHTML = `
+        <div style="position:relative;padding-bottom:56.25%;height:0;">
+          <iframe src="https://www.youtube.com/embed${videoPath}?autoplay=1"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+            allow="autoplay; fullscreen" allowfullscreen title="YouTube Video"></iframe>
+        </div>
+      `;
+    }, { once: true });
+  }
 }
