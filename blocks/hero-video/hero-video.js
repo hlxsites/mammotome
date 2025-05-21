@@ -107,8 +107,10 @@ const addPlayButton = (video) => {
   playButton.classList.add(CSS_CLASS_NAME_ICON_PLAY_VIDEO);
   playButton.innerHTML = HTML_PLAY_ICON;
 
-  const heroImage = video.querySelector('img');
-  heroImage.appendChild(playButton);
+  const img = video.querySelector('picture');
+  if (img && img.parentNode) {
+    img.parentNode.appendChild(playButton);
+  }
 };
 
 const addClickHandler = (video, videoPath) => {

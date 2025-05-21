@@ -3,21 +3,26 @@
   margin: 0;
 }
 
-.hero-image {
-    width: 100%;
-    height: 60vh;
-    min-height: 500px;
+.hero-image, .hero-image picture {
     object-fit: cover;
     user-select: none;
     position: relative;
 }
 
+.hero-image img {
+    align-items: center;
+    width: 100%;
+    min-height: 500px;
+}
+
 .icon-playvideo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-    z-Index: 2;
+  position: absolute;
+  top: 45%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  cursor: pointer;
+  fill: var(--mt-background-color-primary);
+  filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
 }
 
