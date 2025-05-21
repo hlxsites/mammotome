@@ -1,4 +1,8 @@
-import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
+import { createOptimizedPicture, decorateIcons, loadCSS } from '../../scripts/lib-franklin.js';
+
+let playerCssLoaded = false;
+let removeVideo;
+let escHandler;
 
 const CSS_CLASS_NAME_ICON_PLAY_VIDEO = 'icon-playvideo';
 const HTML_PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="99.2px" height="99.2px">\n'
@@ -17,6 +21,7 @@ const getVideoURL = (video) => {
   if (!videoURLString) {
     return '';
   }
+
   const matchURL = videoURLString.match(YOUTUBE_URL_REGEX);
   const videoCode = matchURL && matchURL[7];
 
@@ -27,41 +32,120 @@ const getVideoURL = (video) => {
   return new URL(videoURLString).pathname;
 };
 
-// take input for placeholder image or placeholder video
-// create an arrow button overlay over placeholder
+const onPlayerCssLoaded = () => {
+  playerCssLoaded = true;
+};
+
+const ensurePlayerCSSLoaded = () => {
+  if (!playerCssLoaded) {
+    loadCSS(`${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`, onPlayerCssLoaded);
+  }
+};
+
+const createVideoOverlays = (main) => {
+  const overlay = document.createElement('div');
+  overlay.classList.add('asset-viewer-overlay');
+  main.prepend(overlay);
+
+  const toolbar = document.createElement('div');
+  toolbar.classList.add('asset-viewer-toolbar');
+
+  const toolbarClose = document.createElement('div');
+  toolbarClose.classList.add('asset-viewer-close');
+  toolbar.appendChild(toolbarClose);
+  main.prepend(toolbar);
+
+  return {
+    overlay,
+    toolbar,
+    toolbarClose,
+  };
+};
+
+const createRemoveVideoHandler = (main, overlays, videoIframe) => () => {
+  overlays.overlay.removeEventListener('click', removeVideo);
+  overlays.toolbarClose.removeEventListener('click', removeVideo);
+  window.removeEventListener('keydown', escHandler);
+
+  main.removeChild(overlays.overlay);
+  main.removeChild(overlays.toolbar);
+  main.removeChild(videoIframe);
+};
+
+const registerEventListeners = (main, overlays, videoIframe) => {
+  removeVideo = createRemoveVideoHandler(main, overlays, videoIframe);
+  escHandler = (event) => {
+    if (event.key === 'Escape' || event.key === 'Esc') {
+      removeVideo();
+    }
+  };
+
+  overlays.overlay.addEventListener('click', removeVideo);
+  overlays.toolbarClose.addEventListener('click', removeVideo);
+  window.addEventListener('keydown', escHandler);
+};
+
+const loadVideo = (video, videoPath) => {
+  ensurePlayerCSSLoaded();
+
+  const main = document.querySelector('main');
+
+  const overlays = createVideoOverlays(main);
+
+  const videoIframe = document.createElement('iframe');
+  videoIframe.classList.add('video-player-iframe');
+  videoIframe.setAttribute('allowfullscreen', '');
+  videoIframe.src = `https://www.youtube.com/embed${videoPath}`;
+
+  main.prepend(videoIframe);
+
+  registerEventListeners(main, overlays, videoIframe);
+};
+
 const addPlayButton = (video) => {
   const playButton = document.createElement('span');
   playButton.classList.add(CSS_CLASS_NAME_ICON_PLAY_VIDEO);
   playButton.innerHTML = HTML_PLAY_ICON;
+
+  const heroImage = video.querySelector('img');
+  heroImage.appendChild(playButton);
 };
 
-// video play function; listen for click on icon-playvideo
-// expand video
-// add overlays for exit/etc
-// take in the user text: header > subtitle
-// pull from database for buttons
+const addClickHandler = (video, videoPath) => {
+  video.addEventListener('click', () => loadVideo(video, videoPath), { passive: true });
+};
+
+const optimizeHero = (video) => {
+  const img = video.querySelector('img');
+  if (img) {
+    const imgHeight = Math.floor((img.height * 1024) / img.width);
+    const optimizedPicture = createOptimizedPicture(
+      img.src,
+      img.alt,
+      true,
+      img.width,
+      imgHeight,
+    );
+    optimizedPicture.classList.add('hero-image');
+    img.closest('picture')?.replaceWith(optimizedPicture);
+  }
+};
+
+const decorateVideo = async (video) => {
+  const videoPath = getVideoURL(video);
+  if (!videoPath) {
+    return;
+  }
+
+  addPlayButton(video);
+  addClickHandler(video, videoPath);
+  optimizeHero(video);
+  await decorateIcons(video);
+};
 
 export default async function decorate(block) {
-  const heroImg = block.querySelector('picture');
-  if (heroImg) heroImg.classList.add('hero-image');
-  const videoPath = getVideoURL(block);
-
-  block.textContent = '';
-  if (heroImg) block.appendChild(heroImg);
-
-  block.dataset.embedLoaded = false;
-  addPlayButton(block);
-
-  if (videoPath) {
-    block.style.cursor = 'pointer';
-    block.addEventListener('click', () => {
-      block.innerHTML = `
-        <div style="position:relative;padding-bottom:56.25%;height:0;">
-          <iframe src="https://www.youtube.com/embed${videoPath}?autoplay=1"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
-            allow="autoplay; fullscreen" allowfullscreen title="YouTube Video"></iframe>
-        </div>
-      `;
-    }, { once: true });
+  const video = block.querySelector(':scope > div');
+  if (video) {
+    await decorateVideo(video);
   }
 }
