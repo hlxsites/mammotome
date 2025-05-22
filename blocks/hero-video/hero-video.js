@@ -136,7 +136,7 @@ const optimizeHero = (video) => {
   return null;
 };
 
-const decorateVideo = async (video, productRefBlock) => {
+const decorateVideo = async (video) => {
   const videoPath = getVideoURL(video);
   if (!videoPath) {
     return;
@@ -149,21 +149,7 @@ const decorateVideo = async (video, productRefBlock) => {
 
 export default async function decorate(block) {
   const video = block.querySelector(':scope > div');
-  const productRefBlock = block.querySelector('.product-reference');
   if (video) {
-    await decorateVideo(video, productRefBlock);
-  }
-
-  if (productRefBlock) {
-    const heroImgContainer = block.querySelector('.hero-image')?.parentNode || block;
-    const playButton = block.querySelector(`.${CSS_CLASS_NAME_ICON_PLAY_VIDEO}`);
-    if (playButton) {
-      playButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showProductReferenceOverlay(heroImgContainer, productRefBlock);
-      });
-    }
-
-    productRefBlock.style.display = 'none';
+    await decorateVideo(video);
   }
 }
