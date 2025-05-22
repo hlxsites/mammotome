@@ -102,19 +102,20 @@ const loadVideo = (video, videoPath) => {
   registerEventListeners(main, overlays, videoIframe);
 };
 
-const addPlayButton = (video) => {
+const addPlayButton = (video, videoPath) => {
   const playButton = document.createElement('span');
   playButton.classList.add(CSS_CLASS_NAME_ICON_PLAY_VIDEO);
   playButton.innerHTML = HTML_PLAY_ICON;
+
+  playButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    loadVideo(video, videoPath);
+  });
 
   const img = video.querySelector('picture');
   if (img && img.parentNode) {
     img.parentNode.appendChild(playButton);
   }
-};
-
-const addClickHandler = (video, videoPath) => {
-  video.addEventListener('click', () => loadVideo(video, videoPath), { passive: true });
 };
 
 const optimizeHero = (video) => {
@@ -130,24 +131,39 @@ const optimizeHero = (video) => {
     );
     optimizedPicture.classList.add('hero-image');
     img.closest('picture')?.replaceWith(optimizedPicture);
+    return optimizedPicture;
   }
+  return null;
 };
 
-const decorateVideo = async (video) => {
+const decorateVideo = async (video, productRefBlock) => {
   const videoPath = getVideoURL(video);
   if (!videoPath) {
     return;
   }
 
-  addPlayButton(video);
-  addClickHandler(video, videoPath);
+  addPlayButton(video, videoPath);
   optimizeHero(video);
   await decorateIcons(video);
 };
 
 export default async function decorate(block) {
   const video = block.querySelector(':scope > div');
+  const productRefBlock = block.querySelector('.product-reference');
   if (video) {
-    await decorateVideo(video);
+    await decorateVideo(video, productRefBlock);
+  }
+
+  if (productRefBlock) {
+    const heroImgContainer = block.querySelector('.hero-image')?.parentNode || block;
+    const playButton = block.querySelector(`.${CSS_CLASS_NAME_ICON_PLAY_VIDEO}`);
+    if (playButton) {
+      playButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showProductReferenceOverlay(heroImgContainer, productRefBlock);
+      });
+    }
+
+    productRefBlock.style.display = 'none';
   }
 }
