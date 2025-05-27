@@ -12,7 +12,7 @@
 .hero-image img {
     align-items: center;
     width: 100%;
-    min-height: 500px;
+    min-height: 400px;
 }
 
 .icon-playvideo {
@@ -31,12 +31,40 @@
 }
 
 .product-ref-container:nth-child(2) {
-  justify-content: flex-start;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
   height: 100%;
   pointer-events: auto;
-  margin-left: 5%;
+}
+
+.product-ref-container div > a:nth-child(3) {
+  display: none;
+}
+
+.product-ref-container > div > a > button {
+  height: 35px;
+  width: 80% !important;
+  border-radius: 100px;
+}
+
+.hero-copy {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  justify-content: center;
+  top: 0;
+  height: 65%;
+  z-index: 3;
+  align-items: flex-start;
+  padding: 7%;
+  flex: 1;
+}
+
+.hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+  text-align: left;
+}
+
+.hero-copy h2{ 
+  font-weight: var(--mt-font-weight-thin);
 }

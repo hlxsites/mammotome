@@ -122,18 +122,27 @@ const optimizeHero = (video) => {
   const img = video.querySelector('img');
   if (img) {
     const imgHeight = Math.floor((img.height * 1024) / img.width);
-    const optimizedPicture = createOptimizedPicture(
+    const accessHero = createOptimizedPicture(
       img.src,
       img.alt,
       true,
       img.width,
       imgHeight,
     );
-    optimizedPicture.classList.add('hero-image');
-    img.closest('picture')?.replaceWith(optimizedPicture);
-    return optimizedPicture;
+    accessHero.classList.add('hero-image');
+    img.closest('picture')?.replaceWith(accessHero);
+    return accessHero;
   }
   return null;
+};
+const mainCopy = (video) => {
+  const heroCopy = video.querySelectorAll('h1, h2');
+  if (heroCopy.length > 0) {
+    const copyDiv = document.createElement('div');
+    copyDiv.classList.add('hero-copy');
+    heroCopy.forEach((el) => copyDiv.appendChild(el));
+    video.appendChild(copyDiv);
+  }
 };
 
 const decorateVideo = async (video) => {
@@ -144,6 +153,7 @@ const decorateVideo = async (video) => {
 
   addPlayButton(video, videoPath);
   optimizeHero(video);
+  mainCopy(video);
   await decorateIcons(video);
 };
 
