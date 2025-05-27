@@ -17,13 +17,13 @@
 
 .icon-playvideo {
   position: absolute;
-  top: 45%;
+  top: 40%;
   left: 75%;
   transform: translate(-50%, -50%);
   z-index: 2;
   cursor: pointer;
   fill: var(--mt-background-color-primary);
-  filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
+  filter: drop-shadow(0 0 1rem black);
 }
 
 .product-ref-container:nth-child(1) {
@@ -35,10 +35,12 @@
   top: 0;
   height: 100%;
   pointer-events: auto;
+  z-index: 3;
 }
 
 .product-ref-container div > a:nth-child(3) {
   display: none;
+  z-index: inherit;
 }
 
 .product-ref-container > div > a > button {
@@ -54,7 +56,6 @@
   justify-content: center;
   top: 0;
   height: 65%;
-  z-index: 3;
   align-items: flex-start;
   padding: 7%;
   flex: 1;
@@ -67,4 +68,8 @@
 
 .hero-copy h2{ 
   font-weight: var(--mt-font-weight-thin);
+}
+
+p > a.hero-video:nth-child(1) {
+  display: none;
 }

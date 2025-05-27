@@ -107,6 +107,8 @@ const addPlayButton = (video, videoPath) => {
   playButton.classList.add(CSS_CLASS_NAME_ICON_PLAY_VIDEO);
   playButton.innerHTML = HTML_PLAY_ICON;
 
+  playButton.dataset.videoUrl = videoPath;
+
   playButton.addEventListener('click', (e) => {
     e.stopPropagation();
     loadVideo(video, videoPath);
