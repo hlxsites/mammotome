@@ -14,15 +14,15 @@ const userConfig = {
       message: 'This field is required.',
     },
     {
-      name: 'Last Name',
+      name: 'LastName',
       message: 'This field is required.',
     },
     {
-      name: 'Work Email',
+      name: 'Email',
       message: 'This field is required.',
     },
     {
-      name: 'Email Opt-In',
+      name: 'Unsubscribed',
       message: 'This field is required.',
     },
   ],
@@ -45,7 +45,7 @@ const embedMarketoForm = async (block, formId) => {
 
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
-  MktoForms2.whenReady((form) => {
+  window.MktoForms2.whenReady((form) => {
     const formEl = form.getFormElem()[0];
     const arrayify = getSelection.call.bind([].slice);
 
@@ -178,6 +178,11 @@ const embedMarketoForm = async (block, formId) => {
 
     form.onValidate(isCustomValid);
     fsaatSet();
+
+    form.onSuccess((values, followUpUrl) => {
+      window.location.href = followUpUrl;
+      return false;
+    });
   });
 };
 
