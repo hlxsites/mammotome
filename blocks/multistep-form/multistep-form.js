@@ -20,6 +20,7 @@ const userConfig = {
     {
       name: 'Email',
       message: 'This field is required.',
+      // ADD EMAIL VALIDATION. IT MOVES FORWARD WHEN E-MAIL ISN'T VALID.
     },
     {
       name: 'Unsubscribed',
