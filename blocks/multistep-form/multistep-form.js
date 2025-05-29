@@ -165,9 +165,7 @@ const embedMarketoForm = async (block, formId) => {
       formEl.setAttribute(localFragmentAttr, newHash);
     };
 
-    const isCustomValid = (native, currentStep) => {
-      var currentStep = currentStep || formEl;
-
+    const isCustomValid = (native, currentStep = formEl) => {
       form.submittable(false);
 
       const currentValues = form.getValues();
