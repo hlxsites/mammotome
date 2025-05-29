@@ -75,7 +75,10 @@ const embedMarketoForm = async (block, formId) => {
         return fieldDesc;
       })
       .forEach((fieldDesc) => {
-        fieldDesc.label.parentNode.classList.add('mktoRequiredField');
+        // Add null check to avoid error if label is not found
+        if (fieldDesc.label && fieldDesc.label.parentNode) {
+          fieldDesc.label.parentNode.classList.add('mktoRequiredField');
+        }
       });
 
     const dynableSheet = arrayify(document.styleSheets)
@@ -163,9 +166,10 @@ const embedMarketoForm = async (block, formId) => {
     };
 
     const isCustomValid = (native, currentStep) => {
+      var currentStep = currentStep || formEl;
+
       form.submittable(false);
 
-      let currentStep = currentStep || formEl;
       const currentValues = form.getValues();
 
       const currentUnfilled = userConfig.requiredFields
@@ -187,5 +191,5 @@ const embedMarketoForm = async (block, formId) => {
 export default async function decorate(block) {
   const formId = block.textContent.trim();
   block.textContent = '';
-  embedMarketoForm(block, formId);
+  await embedMarketoForm(block, formId);
 }
