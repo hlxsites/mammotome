@@ -45,13 +45,6 @@ const embedMarketoForm = async (block, formId) => {
 
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
-  // window.MktoForms2.whenReady((form) => {
-  //   form.onSuccess((values, followUpUrl) => {
-  //     window.location.href = followUpUrl;
-  //     return false;
-  //   });
-  // });
-
   MktoForms2.whenReady((form) => {
     const formEl = form.getFormElem()[0];
     const arrayify = getSelection.call.bind([].slice);
@@ -75,7 +68,6 @@ const embedMarketoForm = async (block, formId) => {
         return fieldDesc;
       })
       .forEach((fieldDesc) => {
-        // Add null check to avoid error if label is not found
         if (fieldDesc.label && fieldDesc.label.parentNode) {
           fieldDesc.label.parentNode.classList.add('mktoRequiredField');
         }
@@ -83,6 +75,45 @@ const embedMarketoForm = async (block, formId) => {
 
     const dynableSheet = arrayify(document.styleSheets)
       .filter((sheet) => sheet.ownerNode.nodeName === 'STYLE')[0];
+
+    const fsaatSet = (current, dir) => {
+      const FSAAT_DIR_PREV = 'prev';
+      const FSAAT_DIR_NEXT = 'next';
+
+      const direction = dir || FSAAT_DIR_NEXT;
+      let currentIndex;
+
+      if (current instanceof HTMLElement) {
+        currentIndex = +current.id.split(fsaatPrefix)[1];
+      } else if (!Number.isNaN(Number(current))) {
+        currentIndex = current;
+      } else {
+        currentIndex = -1;
+      }
+
+      const newIndex = direction === FSAAT_DIR_NEXT ? currentIndex + 1 : currentIndex - 1;
+      const newHash = `#${fsaatPrefix}${newIndex}`;
+
+      formEl.setAttribute(localFragmentAttr, newHash);
+    };
+
+    const isCustomValid = (native, currentStep) => {
+      const step = currentStep || formEl;
+
+      form.submittable(false);
+
+      const currentValues = form.getValues();
+
+      const currentUnfilled = userConfig.requiredFields
+        .filter((fieldDesc) => step.contains(fieldDesc.refEl) && (!currentValues[fieldDesc.name] || (fieldDesc.refEl.type === 'checkbox' && currentValues[fieldDesc.name] === 'no')));
+
+      if (currentUnfilled.length) {
+        form.showErrorMessage(currentUnfilled[0].message, MktoForms2.$(currentUnfilled[0].refEl));
+        return false;
+      }
+      form.submittable(true);
+      return true;
+    };
 
     arrayify(fieldRows).forEach((row, rowIdx) => {
       const rowPos = {
@@ -107,7 +138,8 @@ const embedMarketoForm = async (block, formId) => {
       }
 
       if (prevEnabled) {
-        newButtonTmpl = newButtonAxis = navButtons.next || submitButton;
+        newButtonAxis = navButtons.next || submitButton;
+        newButtonTmpl = newButtonAxis;
         navButtons.prev = newButtonTmpl.cloneNode();
       }
 
@@ -136,50 +168,13 @@ const embedMarketoForm = async (block, formId) => {
 
       dynableSheet.insertRule(
         [
-          `.mktoForm[${localFragmentAttr}='#${row.id}']` + ' ' + `.mktoFormRow#${row.id},`,
-          `.mktoForm[${localFragmentAttr}='#${row.id}']` + ' ' + `.mktoFormRow#${row.id} + ` + '.mktoButtonRow',
+          `.mktoForm[${localFragmentAttr}='#${row.id}'] .mktoFormRow#${row.id},`,
+          `.mktoForm[${localFragmentAttr}='#${row.id}'] .mktoFormRow#${row.id} + .mktoButtonRow`,
           '{ display: block; }',
         ].join(' '),
         CSSOM_RULEPOS_FIRST,
       );
     });
-
-    const fsaatSet = (current, dir) => {
-      const FSAAT_DIR_PREV = 'prev';
-      const FSAAT_DIR_NEXT = 'next';
-
-      var dir = dir || FSAAT_DIR_NEXT;
-      let currentIndex;
-      let newHash;
-
-      if (current instanceof HTMLElement) {
-        currentIndex = +current.id.split(fsaatPrefix)[1];
-      } else if (!isNaN(current)) {
-        currentIndex = current;
-      } else {
-        currentIndex = -1;
-      }
-
-      newHash = `#${fsaatPrefix}${dir === FSAAT_DIR_NEXT ? ++currentIndex : --currentIndex}`;
-
-      formEl.setAttribute(localFragmentAttr, newHash);
-    };
-
-    const isCustomValid = (native, currentStep = formEl) => {
-      form.submittable(false);
-
-      const currentValues = form.getValues();
-
-      const currentUnfilled = userConfig.requiredFields
-        .filter((fieldDesc) => currentStep.contains(fieldDesc.refEl) && (!currentValues[fieldDesc.name] || (fieldDesc.refEl.type === 'checkbox' && currentValues[fieldDesc.name] === 'no')));
-
-      if (currentUnfilled.length) {
-        form.showErrorMessage(currentUnfilled[0].message, MktoForms2.$(currentUnfilled[0].refEl));
-        return false;
-      }
-      form.submittable(true);
-      return true;
-    };
 
     form.onValidate(isCustomValid);
     fsaatSet();
