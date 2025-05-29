@@ -147,21 +147,15 @@ const mainCopy = (video) => {
   }
 };
 
-const decorateVideo = async (video) => {
+export default async function decorate(block) {
+  const video = block.querySelector(':scope > div');
+  if (!video) return;
+
   const videoPath = getVideoURL(video);
-  if (!videoPath) {
-    return;
-  }
+  if (!videoPath) return;
 
   addPlayButton(video, videoPath);
   optimizeHero(video);
   mainCopy(video);
   await decorateIcons(video);
-};
-
-export default async function decorate(block) {
-  const video = block.querySelector(':scope > div');
-  if (video) {
-    await decorateVideo(video);
-  }
 }
