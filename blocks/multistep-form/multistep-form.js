@@ -1,3 +1,33 @@
+const userConfig = {
+  buttons: {
+    prev: {
+      label: 'Back',
+      disabled: false,
+    },
+    next: {
+      label: 'Next',
+    },
+  },
+  requiredFields: [
+    {
+      name: 'FirstName',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Last Name',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Work Email',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Email Opt-In',
+      message: 'This field is required.',
+    },
+  ],
+};
+
 const loadScript = (src, block) => new Promise((resolve, reject) => {
   const marketoScript = document.createElement('script');
   marketoScript.src = src;
@@ -15,11 +45,142 @@ const embedMarketoForm = async (block, formId) => {
 
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
-  window.MktoForms2.whenReady((form) => {
-    form.onSuccess((values, followUpUrl) => {
-      window.location.href = followUpUrl;
-      return false;
+  // window.MktoForms2.whenReady((form) => {
+  //   form.onSuccess((values, followUpUrl) => {
+  //     window.location.href = followUpUrl;
+  //     return false;
+  //   });
+  // });
+
+  MktoForms2.whenReady((form) => {
+    const formEl = form.getFormElem()[0];
+    const arrayify = getSelection.call.bind([].slice);
+
+    const fieldRowStor = '.mktoForm > .mktoFormRow';
+    const buttonRowStor = '.mktoForm > .mktoButtonRow';
+    const buttonStor = '.mktoButtonRow .mktoButton';
+    const fsaatPrefix = 'fsaat-';
+    const localFragmentAttr = 'data-form-local-fragment';
+
+    const CSSOM_RULEPOS_FIRST = 0;
+
+    const fieldRows = formEl.querySelectorAll(fieldRowStor);
+    const submitButtonRow = formEl.querySelector(buttonRowStor);
+    const submitButton = submitButtonRow.querySelector(buttonStor);
+
+    userConfig.requiredFields
+      .map((fieldDesc) => {
+        fieldDesc.label = formEl.querySelector(`[for='${fieldDesc.name}']`);
+        fieldDesc.refEl = formEl.querySelector(`[name='${fieldDesc.name}']`);
+        return fieldDesc;
+      })
+      .forEach((fieldDesc) => {
+        fieldDesc.label.parentNode.classList.add('mktoRequiredField');
+      });
+
+    const dynableSheet = arrayify(document.styleSheets)
+      .filter((sheet) => sheet.ownerNode.nodeName === 'STYLE')[0];
+
+    arrayify(fieldRows).forEach((row, rowIdx) => {
+      const rowPos = {
+        isFirst: rowIdx === 0,
+        isLast: rowIdx === fieldRows.length - 1,
+      };
+
+      row.id = fsaatPrefix + rowIdx;
+
+      const navButtonRow = rowPos.isLast
+        ? submitButtonRow
+        : submitButtonRow.cloneNode(true);
+      const newRowAxis = row.nextSibling;
+      const nextEnabled = !rowPos.isLast;
+      const prevEnabled = !rowPos.isFirst && !userConfig.buttons.prev.disabled;
+      let newButtonAxis;
+      let newButtonTmpl;
+      const navButtons = {};
+
+      if (nextEnabled) {
+        navButtons.next = navButtonRow.querySelector(buttonStor);
+      }
+
+      if (prevEnabled) {
+        newButtonTmpl = newButtonAxis = navButtons.next || submitButton;
+        navButtons.prev = newButtonTmpl.cloneNode();
+      }
+
+      Object.keys(navButtons).forEach((dir) => {
+        navButtons[dir].type = 'button';
+        navButtons[dir].setAttribute('data-dir', dir);
+        navButtons[dir].innerHTML = userConfig.buttons[dir].label;
+      });
+
+      if (nextEnabled) {
+        row.parentNode.insertBefore(navButtonRow, newRowAxis);
+      }
+
+      if (prevEnabled) {
+        newButtonAxis.parentNode.insertBefore(navButtons.prev, newButtonAxis);
+      }
+
+      navButtonRow.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' && e.target.type === 'button') {
+          if (e.target.getAttribute('data-dir') === 'next' && !isCustomValid(true, row)) {
+            return;
+          }
+          fsaatSet(row, e.target.getAttribute('data-dir'));
+        }
+      });
+
+      dynableSheet.insertRule(
+        [
+          `.mktoForm[${localFragmentAttr}='#${row.id}']` + ' ' + `.mktoFormRow#${row.id},`,
+          `.mktoForm[${localFragmentAttr}='#${row.id}']` + ' ' + `.mktoFormRow#${row.id} + ` + '.mktoButtonRow',
+          '{ display: block; }',
+        ].join(' '),
+        CSSOM_RULEPOS_FIRST,
+      );
     });
+
+    const fsaatSet = (current, dir) => {
+      const FSAAT_DIR_PREV = 'prev';
+      const FSAAT_DIR_NEXT = 'next';
+
+      var dir = dir || FSAAT_DIR_NEXT;
+      let currentIndex;
+      let newHash;
+
+      if (current instanceof HTMLElement) {
+        currentIndex = +current.id.split(fsaatPrefix)[1];
+      } else if (!isNaN(current)) {
+        currentIndex = current;
+      } else {
+        currentIndex = -1;
+      }
+
+      newHash = `#${fsaatPrefix}${dir === FSAAT_DIR_NEXT ? ++currentIndex : --currentIndex}`;
+
+      formEl.setAttribute(localFragmentAttr, newHash);
+    };
+
+    const isCustomValid = (native, currentStep) => {
+      form.submittable(false);
+
+      let currentStep = currentStep || formEl;
+      const currentValues = form.getValues();
+
+      const currentUnfilled = userConfig.requiredFields
+        .filter((fieldDesc) => currentStep.contains(fieldDesc.refEl) && (!currentValues[fieldDesc.name] || (fieldDesc.refEl.type === 'checkbox' && currentValues[fieldDesc.name] === 'no')));
+
+      if (currentUnfilled.length) {
+        form.showErrorMessage(currentUnfilled[0].message, MktoForms2.$(currentUnfilled[0].refEl));
+        return false;
+      }
+      form.submittable(true);
+      return true;
+    };
+
+    form.onValidate(isCustomValid);
+    fsaatSet();
   });
 };
 

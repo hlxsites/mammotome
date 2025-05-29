@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-@font-face {
+ @font-face {
   font-family: "robotoflex-regular-normal-300-fallback";
   font-style: normal;
   font-weight: 300;
@@ -378,6 +378,7 @@ a:hover {
 .align-left h4,
 .align-left h5 {
   text-align: left;
+  padding-top: 5%;
 }
 
 .header-uppercase h1,
@@ -436,12 +437,25 @@ blockquote {
   top: 0.8rem;
 }
 
+p {
+  font-size: var(--mt-body-font-size-s);
+  line-height: var(--mt-body-line-height);
+  font-weight: var(--mt-body-font-weight);
+  text-align: center;
+}
+
 sup {
   font-size: 75%;
   vertical-align: baseline;
   position: relative;
   top: -0.5em;
   line-height: 0;
+}
+
+h1[id*="gps-detect"] sup,
+h2[id*="gps-detect"] sup,
+h3[id*="gps-detect"] sup {
+  margin-left: 3px;
 }
 
 sup.tm {
@@ -454,13 +468,6 @@ sup > span.tm {
   letter-spacing: 0;
   font-size: 8px;
   top: 0.25rem;
-}
-
-p {
-  font-size: var(--mt-body-font-size-s);
-  line-height: var(--mt-body-line-height);
-  font-weight: var(--mt-body-font-weight);
-  text-align: center;
 }
 
 /* Section style for P */

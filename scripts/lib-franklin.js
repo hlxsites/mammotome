@@ -692,7 +692,7 @@ function readExactBlockConfig(block) {
           } else {
             value = ps.map((p) => p.textContent);
           }
-        } else value = row.children[1].innerHTML;
+        } else value = row.children[1].innerHTML.trim();
         config[name] = value;
       }
     }
@@ -788,6 +788,14 @@ export function decorateSections(main) {
     const wrappers = [];
     let defaultContent = false;
     [...section.children].forEach((e) => {
+      document.querySelectorAll('p, h1, h2, h3, li').forEach((el) => {
+        el.childNodes.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            if (node.nextSibling?.tagName === 'EM') node.textContent = node.textContent.trimEnd();
+            if (node.previousSibling?.tagName === 'EM') node.textContent = node.textContent.trimStart();
+          }
+        });
+      });
       if (e.tagName === 'DIV' || !defaultContent) {
         const wrapper = document.createElement('div');
         wrappers.push(wrapper);

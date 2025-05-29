@@ -1,3 +1,23 @@
-.mkto-form {
-    background-color: #fff;
+.mktoForm > .mktoFormRow fieldset {
+   border: none;
+}
+.mktoForm > .mktoFormRow,
+.mktoForm > .mktoButtonRow,
+.mktoForm > .mktoFormRow fieldset legend {
+   display: none;   
+}
+.mktoForm > .mktoButtonRow button[type="button"] {
+   margin-right: 10px;
+   margin-bottom: 10px;
+}
+.mktoForm .mktoCheckboxList > .mktoError {
+   right: auto !important;
+   bottom: -54px !important;
+}
+
+form.mktoForm {
+   font-size: 16px !important;
+}
+form.mktoForm .mktoButtonWrap {
+  margin-left: 160px !important;
 }
