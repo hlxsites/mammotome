@@ -19,8 +19,6 @@ const userConfig = {
     },
     {
       name: 'Email',
-      message: 'This field is required.',
-      // ADD EMAIL VALIDATION. IT MOVES FORWARD WHEN E-MAIL ISN'T VALID.
     },
     {
       name: 'Unsubscribed',
@@ -105,11 +103,30 @@ const embedMarketoForm = async (block, formId) => {
 
       const currentValues = form.getValues();
 
-      const currentUnfilled = userConfig.requiredFields
-        .filter((fieldDesc) => step.contains(fieldDesc.refEl) && (!currentValues[fieldDesc.name] || (fieldDesc.refEl.type === 'checkbox' && currentValues[fieldDesc.name] === 'no')));
+      const currentUnfilled = userConfig.requiredFields.filter((fieldDesc) => {
+        const value = currentValues[fieldDesc.name] || '';
+        if (fieldDesc.name === 'Email') {
+          const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          fieldDesc.refEl && fieldDesc.refEl.setCustomValidity('');
+          if (!value) {
+            fieldDesc.refEl && fieldDesc.refEl.setCustomValidity('This field is required.');
+            return true;
+          }
+          if (!valid) {
+            fieldDesc.refEl && fieldDesc.refEl.setCustomValidity('Please enter a valid email address.');
+            return true;
+          }
+        }
+        return step.contains(fieldDesc.refEl) &&
+          (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
+      });
 
       if (currentUnfilled.length) {
-        form.showErrorMessage(currentUnfilled[0].message, MktoForms2.$(currentUnfilled[0].refEl));
+        const field = currentUnfilled[0];
+        const message = field.refEl && field.refEl.validationMessage
+          ? field.refEl.validationMessage
+          : (field.message || 'This field is required.');
+        form.showErrorMessage(message, MktoForms2.$(field.refEl));
         return false;
       }
       form.submittable(true);
