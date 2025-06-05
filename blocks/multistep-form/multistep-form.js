@@ -21,7 +21,35 @@ const userConfig = {
       name: 'Email',
     },
     {
+      name: 'Company',
+      message: 'This field is required.',
+    },
+    {
+      name: 'PostalCode',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Phone',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Country',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Pardot_Form_Message__c',
+      message: 'This field is required.',
+    },
+    {
       name: 'Unsubscribed',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Phone_Opt_In__c',
+      message: 'This field is required.',
+    },
+    {
+      name: 'Text_Opt_In__c',
       message: 'This field is required.',
     },
   ],
@@ -117,8 +145,8 @@ const embedMarketoForm = async (block, formId) => {
             return true;
           }
         }
-        return step.contains(fieldDesc.refEl) &&
-          (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
+        return step.contains(fieldDesc.refEl)
+          && (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
       });
 
       if (currentUnfilled.length) {
@@ -197,8 +225,19 @@ const embedMarketoForm = async (block, formId) => {
     form.onValidate(isCustomValid);
     fsaatSet();
 
-    form.onSuccess((values, followUpUrl) => {
+    form.onSuccess((values, followUpUrl, submittingForm) => {
       window.location.href = followUpUrl;
+      const reducedLocationURL = new URL(document.location.href);
+      const keepParams = ['wanted_param_1', 'wanted_param_3'];
+      Array.from(reducedLocationURL.searchParams.keys()).forEach((key) => {
+        if (!keepParams.includes(key)) {
+          reducedLocationURL.searchParams.delete(key);
+        }
+      });
+
+      submittingForm.addHiddenFields({
+        LastFormURL: reducedLocationURL.href,
+      });
       return false;
     });
   });
