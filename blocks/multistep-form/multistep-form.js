@@ -66,6 +66,32 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
 const embedMarketoForm = async (block, formId) => {
   await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
 
+  // Remove Marketo's default CSS after it loads
+  const disableMarketoCSS = () => {
+    // Remove all Marketo CSS <link> tags from <head>
+    document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+      if (
+        link.href.includes('forms2-theme-simple.css')
+        || link.href.includes('forms2.css')
+      ) {
+        if (link.parentNode) {
+          link.parentNode.removeChild(link);
+          // eslint-disable-next-line no-console
+          console.log('Removed Marketo CSS:', link.href);
+        }
+      }
+    });
+  };
+
+  // Use MutationObserver to catch dynamically injected CSS
+  const observer = new MutationObserver(() => {
+    disableMarketoCSS();
+  });
+  observer.observe(document.head, { childList: true, subtree: true });
+
+  // Also run once after a short delay in case CSS is injected immediately
+  setTimeout(disableMarketoCSS, 500);
+
   const formElement = document.createElement('form');
   formElement.id = `mktoForm_${formId}`;
   block.appendChild(formElement);
@@ -135,13 +161,19 @@ const embedMarketoForm = async (block, formId) => {
         const value = currentValues[fieldDesc.name] || '';
         if (fieldDesc.name === 'Email') {
           const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-          fieldDesc.refEl && fieldDesc.refEl.setCustomValidity('');
+          if (fieldDesc.refEl) {
+            fieldDesc.refEl.setCustomValidity('');
+          }
           if (!value) {
-            fieldDesc.refEl && fieldDesc.refEl.setCustomValidity('This field is required.');
+            if (fieldDesc.refEl) {
+              fieldDesc.refEl.setCustomValidity('This field is required.');
+            }
             return true;
           }
           if (!valid) {
-            fieldDesc.refEl && fieldDesc.refEl.setCustomValidity('Please enter a valid email address.');
+            if (fieldDesc.refEl) {
+              fieldDesc.refEl.setCustomValidity('Please enter a valid email address.');
+            }
             return true;
           }
         }

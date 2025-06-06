@@ -1,23 +1,193 @@
-.mktoForm > .mktoFormRow fieldset {
-   border: none;
-}
-.mktoForm > .mktoFormRow,
-.mktoForm > .mktoButtonRow,
-.mktoForm > .mktoFormRow fieldset legend {
-   display: none;   
-}
-.mktoForm > .mktoButtonRow button[type="button"] {
-   margin-right: 10px;
-   margin-bottom: 10px;
-}
-.mktoForm .mktoCheckboxList > .mktoError {
-   right: auto !important;
-   bottom: -54px !important;
+main .multistep-form form {
+   width: 100% !important;
+   display: grid;
+   grid-template-columns: repeat(1, minmax(0, 1fr));
+   gap: 26px 32px;
+   padding: 16px 0 122px;
+   max-width: 100%;
 }
 
-form.mktoForm {
-   font-size: 16px !important;
+.mktoForm .mktoClear {
+    clear: both;
+    float: none;
 }
-form.mktoForm .mktoButtonWrap {
-  margin-left: 160px !important;
+
+main .section .default-content-wrapper {
+   margin: auto;
+   max-width: 740px;
+}
+/* 
+CHECK LATER IF RELEVANT */
+.mktoForm .mktoFieldWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.mktoField {
+   float: left;
+   line-height: 1.2em;
+}
+main .multistep-form-container .multistep-form-wrapper {
+   margin: auto;
+   padding: 0 77px;
+   background-color: #ffffff;
+   max-width: 740px;
+   border-bottom-right-radius: 3px;
+   border-bottom-left-radius: 3px;
+}
+
+
+.default-content-wrapper h2:only-child {
+   font-size: var(--mt-font-size-162);
+   color: var(--mt-global-color-base-primary);
+   font-weight: var(--mt-font-weight-regular);
+   padding: 5%;
+   scroll-margin-top: 150px;
+   margin-bottom: 0;
+   background-color: #ffffff;
+   border-top-right-radius: 3px;
+   border-top-left-radius: 3px;
+
+}
+
+.mktoForm>.mktoFormRow fieldset {
+    border: none;
+    display: grid;
+    align-content: flex-start;
+}
+
+.mktoForm>.mktoFormRow,
+.mktoForm>.mktoButtonRow,
+.mktoForm>.mktoFormRow fieldset legend {
+    display: none;
+}
+
+/* LABELS AND TEXT*/
+.mktoForm .mktoRequiredField .mktoAsterix {
+   display: none;
+}
+
+.mktoHtmlText {
+   font-family: var(--mt-body-font-family-regular);
+   width: 100% !important;
+}
+
+.mktoForm .mktoRequiredField label.mktoLabel {
+   font-family: var(--mt-body-font-family-regular);
+   font-size: var(--mt-body-font-size-s);
+   font-weight: var(--mt-font-weight-bold);
+   color: var(--mt-global-color-charcoal);
+   line-height: 1.2;
+   margin-bottom: 10px;
+   white-space: nowrap;
+}
+
+/* INPUTS  */
+input:not([type="radio"]) {
+   background-color: #F7F7F7;
+   border: solid 1px #ECECEC;
+   color: var(--mt-text-color);
+   border-radius: 4px;
+   height: 50px;
+   min-width: 100%; 
+   font-size: 1rem;
+   margin: 1rem 0 0;
+}
+
+main .multistep-form :is(select, textarea) {
+   background-color: #F7F7F7;
+   border: solid 1px #ECECEC;
+   color: var(--mt-text-color);
+   border-radius: 4px;
+   height: 50px;
+   min-width: 100%; 
+   font-size: 1rem;
+   margin: 1rem 0 0;
+   font-family: var(--mt-body-font-family-regular);
+}
+
+.mktoFormCol > .mktoFormRow:nth-child(5) {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap: 2rem;
+}
+
+.mktoRadioList {
+  display: block;
+   width: 0px !important;
+  padding-left: 0;
+}
+
+.mktoRadioList label {
+    margin-left: 1.5em;
+    margin-top: 0.1em;
+    margin-bottom: 0.3em;
+    line-height: 1.2em;
+    display: block;
+    min-height: 12px;
+}
+
+.mktoRadioList input[type="radio"] {
+  width: 1rem !important;
+margin: 0;
+  padding: 0;
+}
+
+.mktoErrorMsg::before {
+    content: '';
+    position: absolute;
+    left: 10%;
+    top: 0;
+    border: 6px solid transparent;
+    border-top: 0;
+    border-bottom: 6px solid #a50050;
+    transform: translate(-50%, calc(-100%));
+}
+
+.mktoErrorMsg {
+    background-color: #a50050;
+    border: 1px solid #a50050;
+    border-radius: 6px;
+    max-width: 16em;
+    padding: 0.4em 0.6em;
+    color: #f3f3f3;
+    font-size: var(--mt-font-size-80);
+    margin: 7px auto 0;
+    left: 45%;
+    position: absolute;
+}
+
+/* BUTTONS */
+.mktoButtonRow {
+   justify-content: center !important;
+   margin: auto !important;
+   text-align: center !important;
+}
+.mktoButtonWrap.mktoSimple {
+   margin: auto !important;
+   display: block !important;
+}
+
+.mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+   border: 0px !important;
+   font-weight: var(--mt-font-weight-regular);
+   font-size: var(--mt-font-size-100) !important; 
+   color: var(--mt-global-color-white);
+   text-transform: uppercase;
+   border-radius: 20px;
+   margin-top: -10px;
+   background-image: none !important;
+   padding: 10px 40px !important;
+}
+
+button[data-dir="prev"] {
+   background-color: var(--mt-global-color-accent-grey) !important;
+   margin-right: 15px !important;
+}
+
+button[data-dir="next"], .multistep-form button[type="submit"] {
+   background-color: var(--mt-global-color-accent-quinary) !important;
 }
