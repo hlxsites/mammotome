@@ -123,6 +123,8 @@ const addPlayButton = (video, videoPath) => {
 const optimizeHero = (video) => {
   const img = video.querySelector('img');
   if (img) {
+    // Use responsive widths for better quality on mobile and desktop
+    const widths = [375, 768, 1024, 1600, 1920];
     const imgHeight = Math.floor((img.height * 1024) / img.width);
     const accessHero = createOptimizedPicture(
       img.src,
@@ -130,6 +132,7 @@ const optimizeHero = (video) => {
       true,
       img.width,
       imgHeight,
+      { widths }
     );
     accessHero.classList.add('hero-image');
     img.closest('picture')?.replaceWith(accessHero);
@@ -137,6 +140,7 @@ const optimizeHero = (video) => {
   }
   return null;
 };
+
 const mainCopy = (video) => {
   const heroCopy = video.querySelectorAll('h1, h2');
   if (heroCopy.length > 0) {
@@ -155,7 +159,7 @@ export default async function decorate(block) {
   if (!videoPath) return;
 
   addPlayButton(video, videoPath);
-  optimizeHero(video);
   mainCopy(video);
+  optimizeHero(video);
   await decorateIcons(video);
 }

@@ -3,7 +3,6 @@ main .multistep-form form {
    display: grid;
    grid-template-columns: repeat(1, minmax(0, 1fr));
    padding: 16px 0 7%;
-   max-width: 100%;
 }
 
 .mktoForm .mktoClear {
@@ -18,13 +17,13 @@ main .section .default-content-wrapper {
 
 /* 
 CHECK LATER IF RELEVANT */
-.mktoForm .mktoFieldWrap {
+/* .mktoForm .mktoFieldWrap {
    display: flex;
    flex-direction: column;
    align-items: flex-start;
    width: 100%;
    margin-bottom: 1.5rem;
-}
+} */
 
 .mktoField {
    float: left;
@@ -197,9 +196,7 @@ button[data-dir="next"],
    background-color: var(--mt-global-color-accent-quinary) !important;
 }
 
-@media only screen and (max-width: 600px) {
-
-
+@media (width <= 600px) {
    main .multistep-form form {
       padding: 5%;
    }
@@ -218,3 +215,4 @@ button[data-dir="next"],
       padding: 0;
    }
 }
+
