@@ -81,7 +81,7 @@ main .multistep-form-container .multistep-form-wrapper {
    font-weight: var(--mt-font-weight-bold);
    color: var(--mt-global-color-charcoal);
    line-height: 1.2;
-   margin-bottom: 10px;
+   margin-bottom: 15px;
    white-space: nowrap;
 }
 
@@ -94,7 +94,6 @@ input:not([type="radio"]) {
    height: 50px;
    min-width: 100%; 
    font-size: 1rem;
-   margin: 1rem 0 0;
 }
 
 main .multistep-form :is(select, textarea) {
@@ -102,11 +101,14 @@ main .multistep-form :is(select, textarea) {
    border: solid 1px #ECECEC;
    color: var(--mt-text-color);
    border-radius: 4px;
-   height: 50px;
+   min-height: 50px;
    min-width: 100%; 
    font-size: 1rem;
-   margin: 1rem 0 0;
    font-family: var(--mt-body-font-family-regular);
+}
+
+main .multistep-form :is(textarea) {
+   min-height: 100px;
 }
 
 .mktoFormCol > .mktoFormRow:nth-child(5) {
@@ -124,7 +126,7 @@ main .multistep-form :is(select, textarea) {
 .mktoRadioList label {
     margin-left: 1.5em;
     margin-top: 0.1em;
-    margin-bottom: 0.3em;
+    margin-bottom: 1em;
     line-height: 1.2em;
     display: block;
     min-height: 12px;
