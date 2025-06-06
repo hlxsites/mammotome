@@ -123,7 +123,6 @@ const addPlayButton = (video, videoPath) => {
 const optimizeHero = (video) => {
   const img = video.querySelector('img');
   if (img) {
-    // Use responsive widths for better quality on mobile and desktop
     const widths = [375, 768, 1024, 1600, 1920];
     const imgHeight = Math.floor((img.height * 1024) / img.width);
     const accessHero = createOptimizedPicture(
@@ -132,7 +131,7 @@ const optimizeHero = (video) => {
       true,
       img.width,
       imgHeight,
-      { widths }
+      { widths },
     );
     accessHero.classList.add('hero-image');
     img.closest('picture')?.replaceWith(accessHero);
@@ -148,6 +147,10 @@ const mainCopy = (video) => {
     copyDiv.classList.add('hero-copy');
     heroCopy.forEach((el) => copyDiv.appendChild(el));
     video.appendChild(copyDiv);
+  }
+  const img = video.querySelector('picture img');
+  if (img) {
+    img.classList.add('hero-image');
   }
 };
 
