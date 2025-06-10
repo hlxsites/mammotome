@@ -15,16 +15,6 @@ main .section .default-content-wrapper {
    max-width: 740px;
 }
 
-/* 
-CHECK LATER IF RELEVANT */
-/* .mktoForm .mktoFieldWrap {
-   display: flex;
-   flex-direction: column;
-   align-items: flex-start;
-   width: 100%;
-   margin-bottom: 1.5rem;
-} */
-
 .mktoField {
    float: left;
    line-height: 1.2em;
