@@ -142,7 +142,8 @@ p>a.hero-video:nth-child(1) {
 
   .product-reference-container .product-reference-wrapper {
     text-align: center;
-    left: 0%;
+    left: 50%;
     top: 55%;
+    transform: translateX(-50%);
   }
 }
