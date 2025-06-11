@@ -131,7 +131,7 @@ const optimizeHero = (video) => {
       true,
       img.width,
       imgHeight,
-      { widths },
+      widths,
     );
     accessHero.classList.add('hero-image');
     img.closest('picture')?.replaceWith(accessHero);

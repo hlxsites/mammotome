@@ -1,60 +1,3 @@
-const userConfig = {
-  buttons: {
-    prev: {
-      label: 'Back',
-      disabled: false,
-    },
-    next: {
-      label: 'Next',
-    },
-  },
-  requiredFields: [
-    {
-      name: 'FirstName',
-      message: 'This field is required.',
-    },
-    {
-      name: 'LastName',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Email',
-    },
-    {
-      name: 'Company',
-      message: 'This field is required.',
-    },
-    {
-      name: 'PostalCode',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Phone',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Country',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Pardot_Form_Message__c',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Unsubscribed',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Phone_Opt_In__c',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Text_Opt_In__c',
-      message: 'This field is required.',
-    },
-  ],
-};
-
 const loadScript = (src, block) => new Promise((resolve, reject) => {
   const marketoScript = document.createElement('script');
   marketoScript.src = src;
@@ -259,24 +202,6 @@ const embedMarketoForm = async (block, formId) => {
         if (!keepParams.includes(key)) {
           reducedLocationURL.searchParams.delete(key);
         }
-      });
-
-      const userData = {
-        email: values.Email || '',
-        phone: values.Phone || '',
-        first_name: values.FirstName || '',
-        last_name: values.LastName || '',
-        address: values.Address || '',
-        city: values.City || '',
-        region: values.State || '',
-        postal_code: values.PostalCode || '',
-        country: values.Country || '',
-      };
-
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'enhanced_conversion',
-        user_data: userData,
       });
 
       submittingForm.addHiddenFields({
