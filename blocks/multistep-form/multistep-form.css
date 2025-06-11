@@ -186,7 +186,7 @@ button[data-dir="next"],
    background-color: var(--mt-global-color-accent-quinary) !important;
 }
 
-@media (width <= 600px) {
+@media (max-width: 787px) {
    main .multistep-form form {
       padding: 5%;
    }
@@ -206,3 +206,10 @@ button[data-dir="next"],
    }
 }
 
+@media (max-width: 480px) {
+   .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+      border-radius: 50px;
+      padding: 4% !important;
+      width: 175px;
+   }
+}
