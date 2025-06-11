@@ -74,8 +74,6 @@ const embedMarketoForm = async (block, formId) => {
       ) {
         if (link.parentNode) {
           link.parentNode.removeChild(link);
-          // eslint-disable-next-line no-console
-          console.log('Removed Marketo CSS:', link.href);
         }
       }
     });
@@ -254,13 +252,6 @@ const embedMarketoForm = async (block, formId) => {
     fsaatSet();
 
     form.onSuccess((values, followUpUrl, submittingForm) => {
-      // Change only the submit button text to "Please Wait"
-      // const submitBtn = formEl.querySelector('button[type="submit"], input[type="submit"]');
-      // if (submitBtn) {
-      //   submitBtn.disabled = true;
-      //   submitBtn.dataset.originalText = submitBtn.textContent;
-      //   submitBtn.textContent = 'Please Wait';
-      // }
       window.location.href = followUpUrl;
       const reducedLocationURL = new URL(document.location.href);
       const keepParams = ['wanted_param_1', 'wanted_param_3'];
