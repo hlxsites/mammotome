@@ -10,23 +10,23 @@ const userConfig = {
   },
   requiredFields: [
     {
-      name: 'Industry',
+      name: 'Products',
       message: 'This field is required.',
     },
     {
-      name: 'LeadSource',
+      name: 'Role',
       message: 'This field is required.',
     },
     {
-      name: 'FirstName',
-      message: 'This field is required.',
+      name: 'First Name',
     },
     {
-      name: 'LastName',
+      name: 'Last Name',
       message: 'This field is required.',
     },
     {
       name: 'Email',
+      message: 'This field is required.',
     },
     {
       name: 'Country',
@@ -49,13 +49,11 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
 
 const embedMarketoForm = async (block, formId) => {
   await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
-
   const formElement = document.createElement('form');
   formElement.id = `mktoForm_${formId}`;
   block.appendChild(formElement);
 
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
-
   window.MktoForms2.whenReady((form) => {
     const formEl = form.getFormElem()[0];
     const arrayify = getSelection.call.bind([].slice);
@@ -195,8 +193,14 @@ const embedMarketoForm = async (block, formId) => {
 
       navButtonRow.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON' && e.target.type === 'button') {
+          console.log('Next/Prev button clicked:', e.target.getAttribute('data-dir'), 'Row index:', rowIdx, 'Is last:', rowPos.isLast);
           if (e.target.getAttribute('data-dir') === 'next' && !isCustomValid(true, row)) {
-            // Validation failed, do not advance
+            return;
+          }
+          if (rowPos.isLast && e.target.getAttribute('data-dir') === 'next') {
+            console.log('Last step next button clicked. Form submit will be triggered.');
+            // FIX: Allow the form to submit by triggering the submit event
+            formEl.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             return;
           }
           fsaatSet(row, e.target.getAttribute('data-dir'));
@@ -216,6 +220,80 @@ const embedMarketoForm = async (block, formId) => {
     form.onValidate(isCustomValid);
     fsaatSet();
 
+    form.onSubmit(() => {
+      const data = form.getValues();
+      let score = 0;
+
+      const pointMap = {
+        Products: {
+          Autocore: 3,
+          BiomarC: 1,
+          HydroMARK: 5,
+        },
+        Role: {
+          'Breast Center Administrator': 1,
+          Radiologist: 5,
+          Fellow: 3,
+        },
+      };
+
+      Object.entries(pointMap).forEach(([field, answers]) => {
+        const answer = data[field];
+        const points = answers[answer];
+        if (points !== undefined) {
+          score += points;
+        }
+      });
+
+      let message;
+      if (score >= 10) {
+        message = 'HydroMARK is for you.';
+      } else if (score >= 8) {
+        message = 'You might like AutoCore';
+      } else {
+        message = 'You should check out BiomarC.';
+      }
+
+      form.setValues({ 'Product Result': message });
+
+      const formElem = form.getFormElem()[0];
+      let resultMsg = formElem.querySelector('.survey-result-message');
+      if (!resultMsg) {
+        resultMsg = document.createElement('div');
+        resultMsg.className = 'survey-result-message';
+        formElem.appendChild(resultMsg);
+      }
+      resultMsg.textContent = `Based on your choices, ${message}`;
+      // eslint-disable-next-line no-alert
+      const wantsMore = window.confirm('Would you like to find out more?');
+      const extraFields = [
+        'First Name',
+        'Last Name',
+        'Email',
+        'Country',
+        'Pardot_Form_Message__c',
+      ];
+
+      if (wantsMore) {
+        extraFields.forEach((fieldName) => {
+          const fieldRow = formElem.querySelector(`[name='${fieldName}']`)?.closest('.mktoFormRow');
+          if (fieldRow) fieldRow.style.display = '';
+          const fieldObj = formElem.querySelector(`[name='${fieldName}']`);
+          if (fieldObj) fieldObj.setAttribute('required', 'required');
+        });
+        // Prevent submit until extra fields are filled
+        return false;
+      }
+      // Hide extra fields and remove required
+      extraFields.forEach((fieldName) => {
+        const fieldRow = formElem.querySelector(`[name='${fieldName}']`)?.closest('.mktoFormRow');
+        if (fieldRow) fieldRow.style.display = 'none';
+        const fieldObj = formElem.querySelector(`[name='${fieldName}']`);
+        if (fieldObj) fieldObj.removeAttribute('required');
+      });
+      return true;
+    });
+
     form.onSuccess((values, followUpUrl, submittingForm) => {
       window.location.href = followUpUrl;
       const reducedLocationURL = new URL(document.location.href);
@@ -225,6 +303,7 @@ const embedMarketoForm = async (block, formId) => {
           reducedLocationURL.searchParams.delete(key);
         }
       });
+
       submittingForm.addHiddenFields({
         LastFormURL: reducedLocationURL.href,
       });

@@ -30,6 +30,7 @@
   position: absolute;
   left: 7%;
   top: 55%;
+
 }
 
 .product-ref-container:nth-child(1) {
@@ -49,9 +50,9 @@
   z-index: inherit;
 }
 
-.product-ref-container>div>a>button {
+.product-ref-container.product-ref-container>div>a>button {
   height: 35px;
-  width: 80%;
+  width: 55%;
   border-radius: 100px;
 }
 
@@ -60,10 +61,11 @@
   position: absolute;
   flex-direction: column;
   justify-content: center;
-  top: 0;
+  top: -5%;
   height: 65%;
   align-items: flex-start;
   padding: 7%;
+  padding-bottom: 0%;
   flex: 1;
 }
 
