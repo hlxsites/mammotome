@@ -10,11 +10,6 @@ main .multistep-form form {
    float: none;
 }
 
-main .section .default-content-wrapper {
-   margin: auto;
-   max-width: 740px;
-}
-
 h2.anchor-text{
    font-size: var(--mt-font-size-162);
    color: var(--mt-global-color-base-primary);
