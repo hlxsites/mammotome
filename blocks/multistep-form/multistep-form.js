@@ -66,6 +66,24 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
 const embedMarketoForm = async (block, formId) => {
   await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
 
+  const disableMarketoCSS = () => {
+    document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+      if (
+        link.href.includes('forms2-theme-simple.css')
+        || link.href.includes('forms2.css')
+      ) {
+        if (link.parentNode) {
+          link.parentNode.removeChild(link);
+        }
+      }
+    });
+  };
+
+  const observer = new MutationObserver(disableMarketoCSS);
+  observer.observe(document.head, { childList: true, subtree: true });
+
+  setTimeout(disableMarketoCSS, 500);
+
   const formElement = document.createElement('form');
   formElement.id = `mktoForm_${formId}`;
   block.appendChild(formElement);
@@ -268,7 +286,7 @@ const embedMarketoForm = async (block, formId) => {
 };
 
 const getFormId = (block) => {
-  const formIdDiv = block.querySelector(':scope > div div:nth-child(2)'); // Select nested div containing the ID
+  const formIdDiv = block.querySelector(':scope > div div:nth-child(2)');
   let formId = '';
   if (formIdDiv) {
     formId = formIdDiv.textContent.trim();
