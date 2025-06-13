@@ -144,44 +144,24 @@ const embedMarketoForm = async (block, formId) => {
 
     const isCustomValid = (native, currentStep) => {
       const step = currentStep || formEl;
-
       form.submittable(false);
-
       const currentValues = form.getValues();
-
       const currentUnfilled = userConfig.requiredFields.filter((fieldDesc) => {
         const value = currentValues[fieldDesc.name] || '';
         if (fieldDesc.name === 'Email') {
           const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-          if (fieldDesc.refEl) {
-            fieldDesc.refEl.setCustomValidity('');
-          }
-          if (!value) {
-            if (fieldDesc.refEl) {
-              fieldDesc.refEl.setCustomValidity('This field is required.');
-            }
-            return true;
-          }
-          if (!valid) {
-            if (fieldDesc.refEl) {
-              fieldDesc.refEl.setCustomValidity('Please enter a valid email address.');
-            }
-            return true;
-          }
+          fieldDesc.refEl?.setCustomValidity('');
+          if (!value) return fieldDesc.refEl?.setCustomValidity('This field is required.') || true;
+          if (!valid) return fieldDesc.refEl?.setCustomValidity('Please enter a valid email address.') || true;
         }
-        return step.contains(fieldDesc.refEl)
-          && (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
+        return step.contains(fieldDesc.refEl) && (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
       });
-
       if (currentUnfilled.length) {
         const field = currentUnfilled[0];
-        const message = field.refEl && field.refEl.validationMessage
-          ? field.refEl.validationMessage
-          : (field.message || 'This field is required.');
-        form.showErrorMessage(message, MktoForms2.$(field.refEl));
+        form.showErrorMessage(field.refEl?.validationMessage || field.message || 'This field is required.', MktoForms2.$(field.refEl));
         return false;
       }
-
+      form.submittable(true);
       return true;
     };
 
