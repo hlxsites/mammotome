@@ -231,12 +231,13 @@ const embedMarketoForm = async (block, formId) => {
 
     form.onSuccess((values, followUpUrl, submittingForm) => {
       window.location.href = followUpUrl;
-      const reducedLocationURL = new URL(document.location.href);
-      const keepParams = ['wanted_param_1', 'wanted_param_3'];
-      Array.from(reducedLocationURL.searchParams.keys()).forEach((key) => {
-        if (!keepParams.includes(key)) {
-          reducedLocationURL.searchParams.delete(key);
-        }
+      const url = new URL(document.location.href);
+      const pathParts = url.pathname.split('/');
+      const productPage = pathParts[4] || '';
+
+      // ADD FIELD IN MARKETO
+      submittingForm.addHiddenFields({
+        Product_Page: productPage,
       });
 
       const userData = {

@@ -10,11 +10,7 @@ const userConfig = {
   },
   requiredFields: [
     {
-      name: 'Industry',
-      message: 'This field is required.',
-    },
-    {
-      name: 'LeadSource',
+      name: 'Email',
       message: 'This field is required.',
     },
     {
@@ -23,17 +19,6 @@ const userConfig = {
     },
     {
       name: 'LastName',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Email',
-    },
-    {
-      name: 'Country',
-      message: 'This field is required.',
-    },
-    {
-      name: 'Pardot_Form_Message__c',
       message: 'This field is required.',
     },
   ],
@@ -65,7 +50,6 @@ const embedMarketoForm = async (block, formId) => {
     const buttonStor = '.mktoButtonRow .mktoButton';
     const fsaatPrefix = 'fsaat-';
     const localFragmentAttr = 'data-form-local-fragment';
-
     const CSSOM_RULEPOS_FIRST = 0;
 
     const fieldRows = formEl.querySelectorAll(fieldRowStor);
@@ -88,10 +72,7 @@ const embedMarketoForm = async (block, formId) => {
       .filter((sheet) => sheet.ownerNode.nodeName === 'STYLE')[0];
 
     const fsaatSet = (current, dir) => {
-      const FSAAT_DIR_PREV = 'prev';
-      const FSAAT_DIR_NEXT = 'next';
-
-      const direction = dir || FSAAT_DIR_NEXT;
+      const direction = dir || 'next';
       let currentIndex;
 
       if (current instanceof HTMLElement) {
@@ -102,41 +83,43 @@ const embedMarketoForm = async (block, formId) => {
         currentIndex = -1;
       }
 
-      const newIndex = direction === FSAAT_DIR_NEXT ? currentIndex + 1 : currentIndex - 1;
+      const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
       const newHash = `#${fsaatPrefix}${newIndex}`;
-
       formEl.setAttribute(localFragmentAttr, newHash);
     };
 
     const isCustomValid = (native, currentStep) => {
       const step = currentStep || formEl;
-
       form.submittable(false);
 
       const currentValues = form.getValues();
-
       const currentUnfilled = userConfig.requiredFields.filter((fieldDesc) => {
         const value = currentValues[fieldDesc.name] || '';
-        if (fieldDesc.name === 'Email') {
+        const isInCurrentStep = step.contains(fieldDesc.refEl);
+
+        if (fieldDesc.name === 'Email' && isInCurrentStep) {
           const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-          if (fieldDesc.refEl) {
-            fieldDesc.refEl.setCustomValidity('');
-          }
+          if (fieldDesc.refEl) fieldDesc.refEl.setCustomValidity('');
+
           if (!value) {
             if (fieldDesc.refEl) {
               fieldDesc.refEl.setCustomValidity('This field is required.');
             }
             return true;
           }
+
           if (!valid) {
             if (fieldDesc.refEl) {
               fieldDesc.refEl.setCustomValidity('Please enter a valid email address.');
             }
             return true;
           }
+
+          return false;
         }
-        return step.contains(fieldDesc.refEl)
-          && (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
+
+        return isInCurrentStep
+    && (!value || (fieldDesc.refEl.type === 'checkbox' && value === 'no'));
       });
 
       if (currentUnfilled.length) {
@@ -147,6 +130,7 @@ const embedMarketoForm = async (block, formId) => {
         form.showErrorMessage(message, MktoForms2.$(field.refEl));
         return false;
       }
+
       form.submittable(true);
       return true;
     };
@@ -158,13 +142,13 @@ const embedMarketoForm = async (block, formId) => {
       };
 
       row.id = fsaatPrefix + rowIdx;
-
       const navButtonRow = rowPos.isLast
         ? submitButtonRow
         : submitButtonRow.cloneNode(true);
-      const newRowAxis = row.nextSibling;
+
       const nextEnabled = !rowPos.isLast;
       const prevEnabled = !rowPos.isFirst && !userConfig.buttons.prev.disabled;
+      const newRowAxis = row.nextSibling;
       let newButtonAxis;
       let newButtonTmpl;
       const navButtons = {};
@@ -183,6 +167,7 @@ const embedMarketoForm = async (block, formId) => {
         navButtons[dir].type = 'button';
         navButtons[dir].setAttribute('data-dir', dir);
         navButtons[dir].innerHTML = userConfig.buttons[dir].label;
+        navButtons[dir].classList.add(`fsaat-${dir}-button`);
       });
 
       if (nextEnabled) {
@@ -195,10 +180,7 @@ const embedMarketoForm = async (block, formId) => {
 
       navButtonRow.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON' && e.target.type === 'button') {
-          if (e.target.getAttribute('data-dir') === 'next' && !isCustomValid(true, row)) {
-            // Validation failed, do not advance
-            return;
-          }
+          if (e.target.getAttribute('data-dir') === 'next' && !isCustomValid(true, row)) return;
           fsaatSet(row, e.target.getAttribute('data-dir'));
         }
       });
@@ -211,23 +193,74 @@ const embedMarketoForm = async (block, formId) => {
         ].join(' '),
         CSSOM_RULEPOS_FIRST,
       );
+
+      formEl.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach((input) => {
+        input.addEventListener('change', (e) => {
+          console.log('Selected input value:', e.target.value);
+        });
+      });
     });
 
-    form.onValidate(isCustomValid);
+    form.onValidate(() => {
+      const isValid = isCustomValid();
+      if (isValid) {
+        const letterToResultMap = {
+          A: 'HydroMARK',
+          B: 'HydroMARK Plus',
+          C: 'MammoMARK & CorMARK',
+          D: 'MammoSTAR',
+          E: 'BiomarC',
+          F: 'LumiMARK',
+        };
+
+        const resultsMap = Object.fromEntries(
+          Object.values(letterToResultMap).map((label) => [label, 0]),
+        );
+
+        const selectedInputs = formEl.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked');
+        selectedInputs.forEach((input) => {
+          const { value } = input;
+          if (value) {
+            value.split(';').forEach((letter) => {
+              const key = letter.trim().toUpperCase();
+              const resultName = letterToResultMap[key];
+              if (resultName) {
+                resultsMap[resultName] += resultsMap[resultName] + 1;
+                console.log(`Tallying: ${resultName} now has ${resultsMap[resultName]}`);
+              }
+            });
+          }
+        });
+
+        // update 'next steps' field to proper product result field once code is completed
+        const topResult = Object.entries(resultsMap).sort((a, b) => b[1] - a[1])[0][0];
+        const hiddenResultField = formEl.querySelector('[name="Next Steps"]');
+        if (hiddenResultField) {
+          hiddenResultField.value = topResult;
+          console.log(`Top result "${topResult}" stored in hidden field`);
+        }
+      }
+
+      return isValid;
+    });
+
     fsaatSet();
 
-    form.onSuccess((values, followUpUrl, submittingForm) => {
+    form.onSubmit(() => {
+      document.querySelectorAll('.fsaat-prev-button').forEach((btn) => {
+        btn.style.display = 'none';
+        btn.disabled = true;
+        btn.setAttribute('tabindex', '-1');
+        btn.setAttribute('aria-hidden', 'true');
+      });
+
+      document.querySelectorAll('.fsaat-next-button').forEach((btn) => {
+        btn.disabled = true;
+      });
+    });
+
+    form.onSuccess((values, followUpUrl) => {
       window.location.href = followUpUrl;
-      const reducedLocationURL = new URL(document.location.href);
-      const keepParams = ['wanted_param_1', 'wanted_param_3'];
-      Array.from(reducedLocationURL.searchParams.keys()).forEach((key) => {
-        if (!keepParams.includes(key)) {
-          reducedLocationURL.searchParams.delete(key);
-        }
-      });
-      submittingForm.addHiddenFields({
-        LastFormURL: reducedLocationURL.href,
-      });
       return false;
     });
   });
