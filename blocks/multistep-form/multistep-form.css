@@ -1,8 +1,13 @@
+.multistep-form-container {
+   width: 100%;
+}
 main .multistep-form form {
-   width: 100% !important;
    display: grid;
    grid-template-columns: repeat(1, minmax(0, 1fr));
-   padding: 16px 0 7%;
+   padding: 5% 3%;
+   width: 100% !important;
+   background-color: #fff;
+   border-radius: 25px;
 }
 
 .mktoForm .mktoClear {
@@ -10,14 +15,9 @@ main .multistep-form form {
    float: none;
 }
 
-h2.anchor-text{
-   font-size: var(--mt-font-size-162);
-   color: var(--mt-global-color-base-primary);
-   font-weight: var(--mt-font-weight-regular);
-   scroll-margin-top: 150px;
-   padding: 5%;
-   margin-bottom: 0;
-   background-color: #ffffff;
+.form-div {
+   padding: 8% 0;
+   margin-right: 10%;
 }
 
 .mktoField {
@@ -25,12 +25,28 @@ h2.anchor-text{
    line-height: 1.2em;
 }
 
+div.multistep-form.block {
+   display: grid;
+   grid-template-columns: 1.25fr 1.25fr; 
+}
+
+div.multistep-form.block > div {
+   display: flex;
+   align-items: center;
+   margin-left: 10%;
+}
+
+div.multistep-form.block > div h1 {
+   margin: 0;
+   padding: 0;
+}
+
+div.multistep-form.block > div h2 {
+   width: 60%;
+}
+
 main .multistep-form-container .multistep-form-wrapper {
    margin: auto;
-   padding: 0 77px;
-   background-color: #ffffff;
-   max-width: 740px;
-   border-radius: 3px;
 }
 
 .mktoForm>.mktoFormRow fieldset {
@@ -78,18 +94,18 @@ main .multistep-form-container .multistep-form-wrapper {
 
 /* INPUTS  */
 input:not([type="radio"]) {
-   background-color: #F7F7F7;
-   border: solid 1px #ECECEC;
+   background-color: #fff;
+   border: solid 1px #000;
    color: var(--mt-text-color);
-   border-radius: 4px;
+   border-radius: 8px;
    height: 50px;
 }
 
 main .multistep-form :is(select, textarea) {
-   background-color: #F7F7F7;
-   border: solid 1px #ECECEC;
+   background-color: #fff;
+   border: solid 1px #000;
    color: var(--mt-text-color);
-   border-radius: 4px;
+   border-radius: 8px;
    min-height: 50px;
    width: 100% !important;
    max-width: 50rem;
@@ -152,15 +168,11 @@ main .multistep-form :is(textarea) {
 
 /* BUTTONS */
 .mktoButtonRow {
-   justify-content: center !important;
-   margin: auto !important;
-   text-align: center !important;
+   padding-left: 7px;
 }
 
 .mktoButtonWrap.mktoSimple {
    margin: auto !important;
-   display: block !important;
-  padding-top: 3%;
 }
 
 .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {

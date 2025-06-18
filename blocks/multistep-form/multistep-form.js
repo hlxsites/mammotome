@@ -84,13 +84,24 @@ const embedMarketoForm = async (block, formId) => {
 
   setTimeout(disableMarketoCSS, 500);
 
+  const formDiv = document.createElement('div');
+  formDiv.className = 'form-div';
   const formElement = document.createElement('form');
   formElement.id = `mktoForm_${formId}`;
-  block.appendChild(formElement);
+  formDiv.appendChild(formElement);
+  block.appendChild(formDiv);
 
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
+    form.onSubmit(() => {
+      document.querySelectorAll('.fsaat-prev-button').forEach((btn) => {
+        btn.style.display = 'none';
+        btn.setAttribute('tabindex', '-1');
+        btn.setAttribute('aria-hidden', 'true');
+      });
+    });
+
     const formEl = form.getFormElem()[0];
     const arrayify = getSelection.call.bind([].slice);
 
@@ -197,6 +208,7 @@ const embedMarketoForm = async (block, formId) => {
         navButtons[dir].type = 'button';
         navButtons[dir].setAttribute('data-dir', dir);
         navButtons[dir].innerHTML = userConfig.buttons[dir].label;
+        navButtons[dir].classList.add(`fsaat-${dir}-button`);
       });
 
       if (nextEnabled) {
@@ -258,9 +270,6 @@ const embedMarketoForm = async (block, formId) => {
         user_data: userData,
       });
 
-      submittingForm.addHiddenFields({
-        LastFormURL: reducedLocationURL.href,
-      });
       return false;
     });
   });
@@ -275,25 +284,6 @@ const getFormId = (block) => {
   }
   return formId;
 };
-
-
-
-// const buildAnchor = (block) => {
-//   const anchorText = block.children[1].innerText;
-//   if (!anchorText) return false;
-
-//   const anchorValue = anchorText.innerText.trim().replace(/\s+/g, '-').toLowerCase();
-//   const anchorId = `#${anchorValue}`;
-//   anchorText.id = anchorValue;
-
-//   const anchorLink = document.createElement('a');
-//   anchorLink.href = anchorId;
-//   anchorLink.textContent = anchorText.innerText;
-//   anchorLink.className = 'anchor-link';
-//   anchorText.parentNode.insertBefore(anchorLink, anchorText.nextSibling);
-
-//   return true;
-// };
 
 export default async function decorate(block) {
   const formId = getFormId(block);
