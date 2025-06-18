@@ -64,8 +64,6 @@
   top: -5%;
   height: 65%;
   align-items: flex-start;
-  padding: 7%;
-  padding-bottom: 0%;
   flex: 1;
 }
 
@@ -87,7 +85,7 @@ p>a.hero-video:nth-child(1) {
   .hero-copy {
     width: 60%;
     padding: 0 7%;
-    z-index: 4;
+    z-index: 3;
   }
 
   .hero-copy h1 {
