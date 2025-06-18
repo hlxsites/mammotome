@@ -276,15 +276,26 @@ const getFormId = (block) => {
   return formId;
 };
 
-const anchorText = (block) => {
-  const anchorHeading = block.querySelector(':scope > div > div > h2');
-  if (anchorHeading) {
-    anchorHeading.classList.add('anchor-text');
-  }
-};
+
+
+// const buildAnchor = (block) => {
+//   const anchorText = block.children[1].innerText;
+//   if (!anchorText) return false;
+
+//   const anchorValue = anchorText.innerText.trim().replace(/\s+/g, '-').toLowerCase();
+//   const anchorId = `#${anchorValue}`;
+//   anchorText.id = anchorValue;
+
+//   const anchorLink = document.createElement('a');
+//   anchorLink.href = anchorId;
+//   anchorLink.textContent = anchorText.innerText;
+//   anchorLink.className = 'anchor-link';
+//   anchorText.parentNode.insertBefore(anchorLink, anchorText.nextSibling);
+
+//   return true;
+// };
 
 export default async function decorate(block) {
-  anchorText(block);
   const formId = getFormId(block);
   await embedMarketoForm(block, formId);
 }

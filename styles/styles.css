@@ -91,6 +91,7 @@
   --mt-global-color-base-primary: #84329B;
   --mt-global-color-base-primary-light: #a03ebb;
   --mt-global-color-base-primary-very-light: #f7dbff;
+  --mt-global-color-base-mmt-gray:#6D6E71;
   --mt-global-color-base-secondary: #3D3E40;
   --mt-global-color-base-tertiary: #6f6f6f;
   --mt-global-color-accent-primary: #5F8DDA;
@@ -140,6 +141,7 @@
   --mt-button-hover-color-secondary: var(--mt-global-color-base-primary-very-light);
   --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
+  --mt-heading-color-tertiary: var(--mt-global-color-base-mmt-gray);
   --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-header-colored-secondary: var(--mt-global-color-accent-primary);
   --mt-input-color: var(--mt-text-color);
@@ -371,6 +373,13 @@ a:hover {
   color: var(--mt-header-colored-secondary);
 }
 
+.header-colored-tertiary h1,
+.header-colored-tertiary h2,
+.header-colored-tertiary h3,
+.header-colored-tertiary h4,
+.header-colored-tertiary h5 {
+  color: var(--mt-heading-color-tertiary);
+}
 
 .align-left h1,
 .align-left h2,

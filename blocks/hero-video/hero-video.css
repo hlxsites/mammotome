@@ -15,6 +15,19 @@
   width: 100%;
 }
 
+.hero-copy h1,
+.hero-copy h2 {
+  text-align: left;
+}
+
+.hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+}
+
+.hero-copy h2 {
+  font-weight: var(--mt-font-weight-thin);
+}
+
 .icon-playvideo {
   position: absolute;
   top: 40%;
@@ -28,9 +41,8 @@
 
 .product-reference-container .product-reference-wrapper {
   position: absolute;
-  left: 7%;
-  top: 55%;
-
+  inset-inline-start: 7%;
+  inset-block-start: 47%;
 }
 
 .product-ref-container:nth-child(1) {
@@ -57,23 +69,9 @@
 }
 
 .hero-copy {
-  display: flex;
   position: absolute;
-  flex-direction: column;
-  justify-content: center;
-  top: -5%;
-  height: 65%;
-  align-items: flex-start;
-  padding: 0 5%;
-}
-
-.hero-copy h1 {
-  color: var(--mt-heading-color-primary);
-  text-align: left;
-}
-
-.hero-copy h2 {
-  font-weight: var(--mt-font-weight-thin);
+  inset-inline-start: 7%;
+  inset-block-start: 24%;
 }
 
 p>a.hero-video:nth-child(1) {
@@ -81,27 +79,25 @@ p>a.hero-video:nth-child(1) {
 }
 
 
-@media (max-width: 1024px) {
+@media (max-width: 1366px) {
   .hero-copy {
-    width: 60%;
-    padding: 0 7%;
-    z-index: 3;
+    position: absolute;
+    inset-inline-start: 7%;
+    inset-block-start: 24%;
   }
 
   .hero-copy h1 {
-    font-size: var(--mt-heading-font-size-mobile-xl);
+    font-size: var(--mt-heading-font-size-mobile-xxl);
   }
 
   .hero-copy h2 {
-    font-size: var(--mt-heading-font-size-mobile-l);
+    font-size: var(--mt-heading-font-size-mobile-xl);
   }
 
   .product-reference-container .product-reference-wrapper {
-    margin: auto;
     position: absolute;
-    z-index: 3;
-    top: 50%;
-    left: 7%;
+    inset-inline-start: 7%;
+    inset-block-start: 55%;
   }
 
   .product-ref-container.product-ref-container>div>a>button {
@@ -112,12 +108,14 @@ p>a.hero-video:nth-child(1) {
 
 @media (max-width: 480px) {
   .hero-video {
-    height: 425px;
+    height: 450px;
     margin-bottom: -30%;
   }
 
   .hero-copy {
-    top: -10%;
+    position: absolute;
+    inset-inline-start: 4%;
+    inset-block-start: 13%;
   }
 
   .hero-copy h1 {
@@ -126,7 +124,6 @@ p>a.hero-video:nth-child(1) {
 
   .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-m);
-    margin-top: 0;
   }
 
   .icon-playvideo {
@@ -141,9 +138,8 @@ p>a.hero-video:nth-child(1) {
   }
 
   .product-reference-container .product-reference-wrapper {
-    text-align: center;
-    left: 50%;
-    top: 60%;
-    transform: translateX(-50%);
+    inset-inline-start: 20%;
+    inset-block-start: 57%;
+    position: absolute;
   }
 }
