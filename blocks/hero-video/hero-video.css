@@ -45,10 +45,10 @@
   inset-block-start: 47%;
 }
 
-a.button {
+.button-row .button {
   width: 100%;
 }
-  
+
 .hero-copy {
   position: absolute;
   inset-inline-start: 7%;
