@@ -120,6 +120,39 @@ const addPlayButton = (video, videoPath) => {
   }
 };
 
+const createButtonRow = (video) => {
+  const links = Array.from(video.querySelectorAll('a')).filter((a, idx) => idx !== 0);
+
+  if (links.length > 0) {
+    const buttonRow = document.createElement('div');
+    buttonRow.classList.add('button-row');
+
+    links.forEach((link, i) => {
+      // Wrap each link in a button container if not already
+      let buttonContainer = link.closest('.button-container');
+      if (!buttonContainer) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        link.parentNode.insertBefore(buttonContainer, link);
+        buttonContainer.appendChild(link);
+      }
+      // Add button classes
+      link.classList.add('button');
+      if (i % 2 === 1) {
+        link.classList.add('secondary');
+      }
+      buttonRow.appendChild(buttonContainer);
+    });
+
+    // Insert the button row after the first child (usually the image/copy)
+    if (video.firstElementChild) {
+      video.firstElementChild.appendChild(buttonRow);
+    } else {
+      video.appendChild(buttonRow);
+    }
+  }
+};
+
 const optimizeHero = (video) => {
   const img = video.querySelector('img');
   if (img) {
@@ -162,6 +195,7 @@ export default async function decorate(block) {
   if (!videoPath) return;
 
   addPlayButton(video, videoPath);
+  createButtonRow(video);
   mainCopy(video);
   optimizeHero(video);
   await decorateIcons(video);
