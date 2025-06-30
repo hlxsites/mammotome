@@ -91,7 +91,6 @@ const embedMarketoForm = async (block, formId) => {
   formDiv.appendChild(formElement);
   block.appendChild(formDiv);
 
-  // eslint-disable-next-line no-undef
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
@@ -134,7 +133,7 @@ const embedMarketoForm = async (block, formId) => {
       .filter((sheet) => sheet.ownerNode.nodeName === 'STYLE')[0];
 
     const fsaatSet = (current, dir) => {
-      // eslint-disable-next-line no-undef
+      // eslint-disable-next-line no-unused-vars
       const FSAAT_DIR_PREV = 'prev';
       const FSAAT_DIR_NEXT = 'next';
 
@@ -171,6 +170,7 @@ const embedMarketoForm = async (block, formId) => {
       });
       if (currentUnfilled.length) {
         const field = currentUnfilled[0];
+        // eslint-disable-next-line no-undef
         form.showErrorMessage(field.refEl?.validationMessage || field.message || 'This field is required.', MktoForms2.$(field.refEl));
         return false;
       }
@@ -249,7 +249,6 @@ const embedMarketoForm = async (block, formId) => {
       const pathParts = url.pathname.split('/');
       const productPage = pathParts[4] || '';
 
-      // ADD FIELD IN MARKETO
       submittingForm.addHiddenFields({
         Product_Page: productPage,
       });
