@@ -91,6 +91,7 @@ const embedMarketoForm = async (block, formId) => {
   formDiv.appendChild(formElement);
   block.appendChild(formDiv);
 
+  // eslint-disable-next-line no-undef
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
@@ -133,6 +134,7 @@ const embedMarketoForm = async (block, formId) => {
       .filter((sheet) => sheet.ownerNode.nodeName === 'STYLE')[0];
 
     const fsaatSet = (current, dir) => {
+      // eslint-disable-next-line no-undef
       const FSAAT_DIR_PREV = 'prev';
       const FSAAT_DIR_NEXT = 'next';
 
