@@ -7,7 +7,7 @@ main .multistep-form form {
    grid-template-columns: repeat(1, minmax(0, 1fr));
    padding: 5% 3%;
    width: 100% !important;
-   background-color: #ffffff;
+   background-color: #fff;
    border-radius: 25px;
 }
 
@@ -42,8 +42,8 @@ main .multistep-form-container .multistep-form-wrapper {
 
 /* INPUTS  */
 main .multistep-form :is(select, textarea) {
-   background-color: #ffffff;
-   border: solid 1px #000000;
+   background-color: #fff;
+   border: solid 1px #000;
    color: var(--mt-text-color);
    border-radius: 8px;
    min-height: 50px;
