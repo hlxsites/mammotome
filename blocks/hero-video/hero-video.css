@@ -42,7 +42,7 @@
 .button-row {
   position: absolute;
   inset-inline-start: 7%;
-  inset-block-start: 47%;
+  inset-block-start: 50%;
 }
 
 .button-row .button {
@@ -82,6 +82,14 @@ p>a.hero-video:nth-child(1) {
   }
 }
 
+@media (max-width:715px) {
+.button-row {
+    position: absolute;
+    inset-inline-start: 7%;
+    inset-block-start: 64%;
+  }
+}
+
 @media (max-width: 480px) {
   .hero-video {
     height: 450px;
@@ -114,8 +122,8 @@ p>a.hero-video:nth-child(1) {
   }
 
   .button-row {
-    inset-inline-start: 20%;
-    inset-block-start: 57%;
+    inset-inline-start: 27%;
+    inset-block-start: 50%;
     position: absolute;
   }
 }
