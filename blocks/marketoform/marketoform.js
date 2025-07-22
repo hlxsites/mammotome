@@ -21,11 +21,15 @@ const embedMarketoForm = async (block, formId) => {
       const dataLayer = '';
 
       dataLayer.push({
-        event: 'marketo.success',
-        'marketo.timestamp': new Date().toLocaleTimeString(),
-        'marketo.form_id': formId,
-        'marketo.form_values': values,
-        'marketo.follow_up_url': followUpUrl,
+        event: 'enhanced_conversion',
+        user_data: {
+          email: values.Email,
+          phone_number: values.Phone,
+          first_name: values.FirstName,
+          last_name: values.LastName,
+          postal_code: values.PostalCode,
+          country: values.Country,
+        },
         eventCallback() {
           form.getFormElem().hide();
           document.location.href = followUpUrl;

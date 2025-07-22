@@ -1,0 +1,72 @@
+.multistep-form-container {
+   width: 100%;
+}
+
+main .multistep-form form {
+   display: grid;
+   grid-template-columns: repeat(1, minmax(0, 1fr));
+   padding: 5% 3%;
+   width: 100% !important;
+   background-color: #fff;
+   border-radius: 25px;
+}
+
+.form-div {
+   padding: 8% 0;
+   margin-right: 10%;
+} 
+
+div.multistep-form.block {
+   display: grid;
+   grid-template-columns: 1.25fr 1.25fr; 
+}
+
+div.multistep-form.block > div {
+   display: flex;
+   align-items: center;
+   margin-left: 10%;
+}
+
+div.multistep-form.block > div h1 {
+   margin: 0;
+   padding: 0;
+}
+
+div.multistep-form.block > div h2 {
+   width: 60%;
+}
+
+main .multistep-form-container .multistep-form-wrapper {
+   margin: auto;
+}
+
+/* INPUTS  */
+main .multistep-form :is(select, textarea) {
+   background-color: #fff;
+   border: solid 1px #000;
+   color: var(--mt-text-color);
+   border-radius: 8px;
+   min-height: 50px;
+   width: 100% !important;
+   max-width: 50rem;
+}
+
+main .multistep-form :is(textarea) {
+   min-height: 100px;
+}
+
+@media (max-width: 787px) {
+   main .multistep-form form {
+      padding: 5%;
+   }
+
+   main .section .default-content-wrapper {
+      margin: auto;
+      max-width: 100%;
+   }
+
+   main .multistep-form-container .multistep-form-wrapper {
+      padding: 0;
+      width: 100%;
+   }
+}
