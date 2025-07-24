@@ -1,128 +1,125 @@
 .section.hero-autoplay-container {
+  height: 100vh;
+  min-height: 100vh;
   padding: 0;
   margin: 0;
+  display: block; /* force layout instead of flex or grid */
+}
+.section.hero-autoplay-container,
+.hero-video-container,
+.video-hero-background,
+.video-hero-background iframe {
+  height: 100vh;
+  min-height: 100vh;
 }
 
-.hero-image,
-.hero-image picture {
-  object-fit: cover;
+.hero-video-container {
   position: relative;
-}
-
-.hero-image img {
-  align-items: center;
   width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 0 3rem;
 }
 
-.hero-copy h1,
-.hero-copy h2 {
-  text-align: left;
+/* Background Vimeo iframe */
+.video-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
 }
 
-.hero-copy h1 {
+.video-hero-background iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+/* Poster fallback image (if needed) */
+.fallback-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* Hero left content */
+.hero-overlay-content {
+  max-width: 50%;
+  color: var(--mt-heading-color-primary);
+  z-index: 1;
+}
+
+.hero-overlay-content h1,
+.hero-overlay-content h2 {
+  margin-top: 0;
+}
+
+.hero-overlay-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem;
   color: var(--mt-heading-color-primary);
 }
 
-.hero-copy h2 {
-  font-weight: var(--mt-font-weight-thin);
+.hero-overlay-content h2 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  margin: 0 0 2rem;
+  color: var(--mt-body-color-primary);
 }
 
-.icon-playvideo {
+/* Buttons */
+.button-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Right play icon overlay */
+.icon-playvideo .hero-video-play-button {
   position: absolute;
-  top: 40%;
-  left: 75%;
-  transform: translate(-50%, -50%);
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 2;
   cursor: pointer;
-  fill: var(--mt-background-color-primary);
-  filter: drop-shadow(0 0 1rem black);
+  fill: white;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 100%;
+  padding: 1rem;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
 }
 
-.button-row {
-  position: absolute;
-  inset-inline-start: 7%;
-  inset-block-start: 50%;
-}
-
-.button-row .button {
-  width: 100%;
-}
-
-.hero-copy {
-  position: absolute;
-  inset-inline-start: 7%;
-  inset-block-start: 24%;
-}
-
-p>a.hero-autoplay:nth-child(1) {
-  display: none;
-}
-
-
-@media (max-width: 1366px) {
-  .hero-copy {
-    position: absolute;
-    inset-inline-start: 7%;
-    inset-block-start: 24%;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-video-container {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
   }
 
-  .hero-copy h1 {
-    font-size: var(--mt-heading-font-size-mobile-xxl);
+  .hero-overlay-content {
+    max-width: 100%;
+    margin-bottom: 1.5rem;
   }
 
-  .hero-copy h2 {
-    font-size: var(--mt-heading-font-size-mobile-xl);
-  }
-
-  .button-row {
-    position: absolute;
-    inset-inline-start: 7%;
-    inset-block-start: 55%;
-  }
-}
-
-@media (max-width:715px) {
-.button-row {
-    position: absolute;
-    inset-inline-start: 7%;
-    inset-block-start: 64%;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-autoplay {
-    height: 450px;
-    margin-bottom: -30%;
-  }
-
-  .hero-copy {
-    position: absolute;
-    inset-inline-start: 4%;
-    inset-block-start: 13%;
-  }
-
-  .hero-copy h1 {
-    font-size: var(--mt-heading-font-size-mobile-l);
-  }
-
-  .hero-copy h2 {
-    font-size: var(--mt-heading-font-size-mobile-m);
-  }
-
-  .icon-playvideo {
-    position: absolute;
-    top: 22%;
-    left: 75%;
-  }
-
-  .icon-playvideo svg {
-    width: 50%;
-    height: auto;
-  }
-
-  .button-row {
-    inset-inline-start: 27%;
-    inset-block-start: 50%;
-    position: absolute;
+  .icon-playvideo .hero-video-play-button {{
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin: 1rem auto 0;
   }
 }
