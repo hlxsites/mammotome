@@ -1,0 +1,128 @@
+.section.hero-autoplay-container {
+  padding: 0;
+  margin: 0;
+}
+
+.hero-image,
+.hero-image picture {
+  object-fit: cover;
+  position: relative;
+}
+
+.hero-image img {
+  align-items: center;
+  width: 100%;
+}
+
+.hero-copy h1,
+.hero-copy h2 {
+  text-align: left;
+}
+
+.hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+}
+
+.hero-copy h2 {
+  font-weight: var(--mt-font-weight-thin);
+}
+
+.icon-playvideo {
+  position: absolute;
+  top: 40%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  cursor: pointer;
+  fill: var(--mt-background-color-primary);
+  filter: drop-shadow(0 0 1rem black);
+}
+
+.button-row {
+  position: absolute;
+  inset-inline-start: 7%;
+  inset-block-start: 50%;
+}
+
+.button-row .button {
+  width: 100%;
+}
+
+.hero-copy {
+  position: absolute;
+  inset-inline-start: 7%;
+  inset-block-start: 24%;
+}
+
+p>a.hero-autoplay:nth-child(1) {
+  display: none;
+}
+
+
+@media (max-width: 1366px) {
+  .hero-copy {
+    position: absolute;
+    inset-inline-start: 7%;
+    inset-block-start: 24%;
+  }
+
+  .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-mobile-xxl);
+  }
+
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-xl);
+  }
+
+  .button-row {
+    position: absolute;
+    inset-inline-start: 7%;
+    inset-block-start: 55%;
+  }
+}
+
+@media (max-width:715px) {
+.button-row {
+    position: absolute;
+    inset-inline-start: 7%;
+    inset-block-start: 64%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-autoplay {
+    height: 450px;
+    margin-bottom: -30%;
+  }
+
+  .hero-copy {
+    position: absolute;
+    inset-inline-start: 4%;
+    inset-block-start: 13%;
+  }
+
+  .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+  }
+
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-m);
+  }
+
+  .icon-playvideo {
+    position: absolute;
+    top: 22%;
+    left: 75%;
+  }
+
+  .icon-playvideo svg {
+    width: 50%;
+    height: auto;
+  }
+
+  .button-row {
+    inset-inline-start: 27%;
+    inset-block-start: 50%;
+    position: absolute;
+  }
+}
