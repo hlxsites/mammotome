@@ -66,17 +66,18 @@ main .section.hero-autoplay-container {
   gap: 1rem;
   flex-wrap: wrap;
 }
+*/
 
-.icon-playvideo .hero-video-play-button {
+.hero-autoplay .icon-playvideo {
   position: absolute;
-  top: 40%;
+  top:35%;
   left: 75%;
   transform: translate(-50%, -50%);
   z-index: 2;
   cursor: pointer;
   fill: var(--mt-background-color-primary);
   filter: drop-shadow(0 0 1rem black);
-} */
+} 
 
 @media (max-width: 1200px) {
   .video-hero-background iframe {
