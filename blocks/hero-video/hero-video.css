@@ -42,7 +42,7 @@
 .button-row {
   position: absolute;
   inset-inline-start: 7%;
-  inset-block-start: 50%;
+  inset-block-start: 55%;
 }
 
 .button-row .button {
@@ -120,7 +120,7 @@ p>a.hero-video:nth-child(1) {
     inset-inline-start: 10%;
     inset-block-start: 13%;
   }
-
+ç
   .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
