@@ -115,14 +115,14 @@ p>a.hero-video:nth-child(1) {
     width: 50%;
   }
 
-  .hero-copy h1 {
+  .hero-video.hero-copy h1 {
     font-size: var(--mt-heading-font-size-mobile-l);
     position: absolute;
     inset-inline-start: 10%;
     inset-block-start: 13%;
   }
 
-  .hero-copy h2 {
+  .hero-copy.hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
     padding: 5%;
