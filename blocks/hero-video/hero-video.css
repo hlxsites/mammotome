@@ -97,7 +97,7 @@ p>a.hero-video:nth-child(1) {
   }
 }
 
-@media (max-width: 460px) {    
+@media (max-width: 460px) {
   .hero-image img {
     object-fit: scale-down;
   }
@@ -114,6 +114,7 @@ p>a.hero-video:nth-child(1) {
   .hero-copy.hero-copy h1 {
     width: 50%;
   }
+
   .hero-copy h1 {
     font-size: var(--mt-heading-font-size-mobile-l);
     position: absolute;

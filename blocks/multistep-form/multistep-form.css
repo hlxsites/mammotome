@@ -70,3 +70,28 @@ main .multistep-form :is(textarea) {
       width: 100%;
    }
 }
+
+@media (max-width: 460px) {
+   main .section {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+   }
+
+   div.multistep-form.block {
+      width: 100%;
+      grid-template-columns: 1fr;
+      padding: 7% 0 7%;;
+   }
+
+   div.multistep-form.block > div {
+      margin: 0;
+      padding: 2%;
+   }
+
+   div.multistep-form.block div h1,
+   div.multistep-form.block div h2 {
+      width: 100%;
+      text-align: center;
+   }
+}
