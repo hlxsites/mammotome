@@ -7,6 +7,20 @@ main .section.hero-autoplay-container {
   overflow: hidden;
 }
 
+/* .video-hero-background iframe {
+position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(255 255 255 / 80%);
+  z-index: 2;
+  cursor: pointer;
+} */
+
 .video-hero-background {
   position: absolute;
   width: 100%;
@@ -26,9 +40,17 @@ main .section.hero-autoplay-container {
   filter: drop-shadow(0 0 1rem black);
 }
 
+.hero-copy {
+  position: absolute;
+  inset-inline-start: 7%;
+  inset-block-start: 17%;
+}
+
+.hero-copy .hero-copy,
 .hero-copy h1,
 .hero-copy h2 {
   text-align: left;
+  width: 50%;
 }
 
 .hero-copy h1 {

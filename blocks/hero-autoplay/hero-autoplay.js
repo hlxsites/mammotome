@@ -42,6 +42,7 @@ const buildVimeoBackground = (previewUrl) => {
 
   const container = document.createElement('div');
   container.className = 'video-hero-background';
+  container.appendChild(Object.assign(document.createElement('div'), { className: 'white-overlay' }));
   const pageTitle = document.title;
   container.innerHTML = `
     <iframe src="${fullSrc}"
@@ -111,6 +112,50 @@ const loadVideo = (block, videoLink) => {
   window.addEventListener('keydown', escHandler);
 };
 
+const mainCopy = (video) => {
+  const heroCopy = video.querySelectorAll('h1, h2');
+  if (heroCopy.length > 0) {
+    const copyDiv = document.createElement('div');
+    copyDiv.classList.add('hero-copy');
+    heroCopy.forEach((el) => copyDiv.appendChild(el));
+    video.appendChild(copyDiv);
+  }
+  const img = video.querySelector('picture img');
+  if (img) {
+    img.classList.add('hero-image');
+  }
+};
+
+const createButtonRow = (video) => {
+  const links = Array.from(video.querySelectorAll('a')).filter((a, idx) => idx !== 0);
+
+  if (links.length > 0) {
+    const buttonRow = document.createElement('div');
+    buttonRow.classList.add('button-row');
+
+    links.forEach((link, i) => {
+      let buttonContainer = link.closest('.button-container');
+      if (!buttonContainer) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        link.parentNode.insertBefore(buttonContainer, link);
+        buttonContainer.appendChild(link);
+      }
+      link.classList.add('button');
+      if (i % 2 === 1) {
+        link.classList.add('secondary');
+      }
+      buttonRow.appendChild(buttonContainer);
+    });
+
+    if (video.children.length >= 2) {
+      video.insertBefore(buttonRow, video.children[2]);
+    } else {
+      video.appendChild(buttonRow);
+    }
+  }
+};
+
 export default async function decorate(block) {
   const { previewLink, modalLink } = getVimeoLinks(block);
   if (!previewLink) return;
@@ -126,5 +171,7 @@ export default async function decorate(block) {
     block.append(playBtn);
   }
 
+  mainCopy(block);
+  createButtonRow(block);
   await decorateIcons(block);
 }
