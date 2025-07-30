@@ -1,4 +1,3 @@
-
 main .section.hero-autoplay-container {
   position: relative;
   width: 100vw;
@@ -7,96 +6,45 @@ main .section.hero-autoplay-container {
   margin: 0;
   overflow: hidden;
 }
+
 .video-hero-background {
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: -1;
-  top: 3%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 59%;
+  transform: translate(0%, -80%);
   pointer-events: none;
 }
 
-.video-hero-background iframe {
-  top: 30.5% !important;
-  left: 0 !important;
-  z-index: -1 !important;
-}
-
-
-.fallback-poster {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
-}
-
-/* 
-.hero-overlay-content {
-  max-width: 50%;
-  color: var(--mt-heading-color-primary);
-  z-index: 1;
-}
-
-.hero-overlay-content h1,
-.hero-overlay-content h2 {
-  margin-top: 0;
-}
-
-.hero-overlay-content h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin: 0 0 0.5rem;
-  color: var(--mt-heading-color-primary);
-}
-
-.hero-overlay-content h2 {
-  font-size: 1.5rem;
-  font-weight: normal;
-  margin: 0 0 2rem;
-  color: var(--mt-body-color-primary);
-}
-
-.button-row {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-*/
-
 .hero-autoplay .icon-playvideo {
   position: absolute;
-  top:35%;
-  left: 75%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
+  top: 24%;
+  left: 77%;
   cursor: pointer;
   fill: var(--mt-background-color-primary);
   filter: drop-shadow(0 0 1rem black);
-} 
+}
 
-@media (max-width: 1200px) {
-  .video-hero-background iframe {
-    top: 10% !important;
-    left: 0 !important;
-    z-index: -1 !important;
-    width: 100% !important;
-  }
+.hero-copy h1,
+.hero-copy h2 {
+  text-align: left;
+}
 
-  /* .hero-overlay-content {
-    max-width: 100%;
-    margin-bottom: 1.5rem;
-  } */
+.hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+}
 
-  /* .icon-playvideo .hero-video-play-button {
-    position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    margin: 1rem auto 0;
-  } */
-};
+.hero-copy h2 {
+  font-weight: var(--mt-font-weight-thin);
+}
+
+.button-row .button {
+  width: 100%;
+}
+
+.button-row {
+  position: absolute;
+  inset-inline-start: 7%;
+  inset-block-start: 37%;
+}
