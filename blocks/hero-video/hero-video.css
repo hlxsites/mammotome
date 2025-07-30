@@ -104,7 +104,7 @@ p>a.hero-video:nth-child(1) {
 
   .hero-video {
     height: auto;
-    margin-bottom: 30%;
+    margin-bottom: 5%;
   }
 
   .hero-copy {
@@ -120,10 +120,11 @@ p>a.hero-video:nth-child(1) {
     inset-inline-start: 10%;
     inset-block-start: 13%;
   }
-ç
+
   .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
+    padding: 5%;
   }
 
   .icon-playvideo {
