@@ -53,6 +53,7 @@
   position: absolute;
   inset-inline-start: 7%;
   inset-block-start: 24%;
+  width: 44%;
 }
 
 p>a.hero-video:nth-child(1) {
@@ -109,6 +110,7 @@ p>a.hero-video:nth-child(1) {
 
   .hero-copy {
     position: static;
+    width: 100%;
   }
 
   .hero-copy.hero-copy h1 {
