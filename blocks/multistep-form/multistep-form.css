@@ -40,7 +40,6 @@ main .multistep-form-container .multistep-form-wrapper {
    margin: auto;
 }
 
-/* INPUTS  */
 main .multistep-form :is(select, textarea) {
    background-color: #fff;
    border: solid 1px #000;
@@ -55,7 +54,7 @@ main .multistep-form :is(textarea) {
    min-height: 100px;
 }
 
-@media (max-width: 787px) {
+@media (max-width: 1024px) {
    main .multistep-form form {
       padding: 5%;
    }
@@ -67,6 +66,19 @@ main .multistep-form :is(textarea) {
 
    main .multistep-form-container .multistep-form-wrapper {
       padding: 0;
+      width: 100%;
+   }
+
+   div.multistep-form.block>div {
+      margin: 0;
+   }
+
+   .multistep-form.block h1 {
+      font-size: var(--mt-heading-font-size-mobile-xxl);
+   }
+
+   div.multistep-form.block div h2 {
+      font-size: var(--mt-heading-font-size-mobile-xl);
       width: 100%;
    }
 }
