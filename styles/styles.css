@@ -433,6 +433,11 @@ blockquote {
   font-size: var(--mt-body-font-size-l);
 }
 
+.text-medium ul {
+  font-size: var(--mt-body-font-size-m);
+  line-height: var(--mt-body-text-medium-line-height);
+}
+
 .text-small ul {
   font-size: var(--mt-body-font-size-xs);
 }
