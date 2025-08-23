@@ -95,7 +95,7 @@
   --mt-global-color-base-secondary: #3D3E40;
   --mt-global-color-base-tertiary: #6f6f6f;
   --mt-global-color-accent-primary: #5F8DDA;
-  --mt-global-color-accent-secondary: #487ED9;
+  --mt-global-color-accent-secondary: #5F8DDA;
   --mt-global-color-accent-tertiary: #78aaff24;
   --mt-global-color-accent-quaternary: #75787B;
   --mt-global-color-accent-quinary: #84329b;
@@ -219,7 +219,7 @@
   --mt-footer-line-height-s: 0.9rem;
   --mt-footer-line-height-m: 1rem;
   --mt-list-line-height: 1.95rem;
-  --mt-hero-line-height-title: 1;
+  --mt-hero-line-height-title: 1.3em;
   --mt-hero-line-height-subtitle: 1.5;
   --mt-nav-height: 100px;
   --mt-nav-height-narrow: 60px;
@@ -390,21 +390,13 @@ a:hover {
   padding-top: 5%;
 }
 
-.header-uppercase h1,
-.header-uppercase h2,
-.header-uppercase h3,
-.header-uppercase h4,
-.header-uppercase h5 {
-  text-transform: uppercase;
-}
-
-.header-wide h1,
+/* .header-wide h1,
 .header-wide h2,
 .header-wide h3,
 .header-wide h4,
 .header-wide h5 {
   letter-spacing: 4px;
-}
+} */
 
 .text-wide {
   letter-spacing: 4px;

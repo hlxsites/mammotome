@@ -29,7 +29,6 @@ main .hero-big::after {
 
 main .hero-light {
   background-color: var(--mt-global-color-accent-secondary);
-  opacity: 0.8;
   padding: 0 0 5%;
 }
 
