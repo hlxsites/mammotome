@@ -35,25 +35,25 @@ const buildVimeoBackground = (previewUrl) => {
   const params = new URLSearchParams(url.search);
   params.set('autoplay', '1');
   params.set('muted', '1');
-  params.set('loop', '1');
+  params.set('loop', '0');
   params.set('background', '1');
 
   const fullSrc = `${url.origin}${url.pathname}?${params.toString()}`;
 
   const container = document.createElement('div');
   container.className = 'video-hero-background';
-  container.appendChild(Object.assign(document.createElement('div'), { className: 'white-overlay' }));
-  const pageTitle = document.title;
-  container.innerHTML = `
-    <iframe src="${fullSrc}"
-      style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; object-fit: cover;"
-      frameborder="0"
-      allow="autoplay; fullscreen; picture-in-picture"
-      allowfullscreen
-      loading="lazy"
-      title="${pageTitle}"
-    ></iframe>
-  `;
+
+  const iframe = document.createElement('iframe');
+  iframe.src = fullSrc;
+  iframe.style.cssText = 'position:absolute;width:100%;height:100%;top:0;left:0;border:0;object-fit:cover;pointer-events:none;';
+  iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+  iframe.setAttribute('title', document.title);
+  iframe.setAttribute('loading', 'eager');
+  const overlayDiv = document.createElement('div');
+  overlayDiv.className = 'white-overlay';
+  overlayDiv.style.cssText = 'position:absolute;inset:0;pointer-events:none;';
+
+  container.append(iframe, overlayDiv);
   return container;
 };
 
@@ -64,15 +64,28 @@ const ensurePlayerCSSLoaded = () => {
     });
   }
 };
+// (optional) put this once near top to preload Vimeo API if you’ll use it later
+let vimeoApiReady;
+function ensureVimeoAPI() {
+  if (window.Vimeo?.Player) return Promise.resolve();
+  return (vimeoApiReady ||= new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://player.vimeo.com/api/player.js';
+    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  }));
+}
 
-const loadVideo = (block, videoLink) => {
+const loadVideo = async (block, videoLink) => {
   ensurePlayerCSSLoaded();
 
   const main = document.querySelector('main');
+
+  // Backdrop
   const overlay = document.createElement('div');
   overlay.classList.add('asset-viewer-overlay');
   main.prepend(overlay);
 
+  // Toolbar
   const toolbar = document.createElement('div');
   toolbar.classList.add('asset-viewer-toolbar');
   const close = document.createElement('div');
@@ -80,36 +93,107 @@ const loadVideo = (block, videoLink) => {
   toolbar.appendChild(close);
   main.prepend(toolbar);
 
+  // Frame (full-screen) that centers the video shell
+  const frame = document.createElement('div');
+  frame.className = 'asset-viewer-frame';         // styles below or keep inline
+  frame.style.position = 'fixed';
+  frame.style.inset = '0';
+  frame.style.zIndex = '10000';
+  frame.style.display = 'grid';
+  frame.style.placeItems = 'center';
+  frame.style.pointerEvents = 'none';             // clicks go to shell, not frame
+  main.prepend(frame);
+
+  // Video shell (the centered box the icon should sit on)
+  const shell = document.createElement('div');
+  shell.className = 'video-modal';
+  shell.style.position = 'relative';
+  shell.style.pointerEvents = 'auto';
+  shell.style.background = '#000';
+  shell.style.borderRadius = '12px';
+  shell.style.boxShadow = '0 12px 48px rgba(0,0,0,.35)';
+
+  // Size the shell to fit viewport, keep 16:9, centered
+  shell.style.width = 'min(92vw, 1280px)';
+  shell.style.aspectRatio = '16 / 9';
+  shell.style.maxHeight = '80vh';
+
+  // Build NON-autoplay URL; we’ll use the overlay to start playback
   const url = new URL(videoLink);
   const params = new URLSearchParams(url.search);
-  params.set('autoplay', '1');
+  params.set('autoplay', '0');
+  params.delete('background');
   const fullSrc = `${url.origin}${url.pathname}?${params.toString()}`;
 
-  const pageTitle = document.title;
+  // Iframe fills the shell
   const iframe = document.createElement('iframe');
   iframe.className = 'video-player-iframe';
   iframe.src = fullSrc;
-  iframe.setAttribute('allowfullscreen', '');
   iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
-  iframe.setAttribute('title', `${pageTitle}`);
-  main.prepend(iframe);
+  iframe.setAttribute('playsinline', '');
+  iframe.setAttribute('title', document.title);
+  iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+  iframe.style.position = 'absolute';
+  iframe.style.inset = '0';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = '0';
 
+  // Play overlay centered ON the video
+  const playOverlay = document.createElement('button');
+  playOverlay.className = 'video-play-overlay';
+  playOverlay.setAttribute('aria-label', 'Play video');
+  playOverlay.innerHTML = HTML_PLAY_ICON;
+  playOverlay.style.position = 'absolute';
+  playOverlay.style.inset = '0';
+  playOverlay.style.display = 'grid';
+  playOverlay.style.placeItems = 'center';
+  playOverlay.style.cursor = 'pointer';
+  playOverlay.style.background = 'transparent';
+  playOverlay.style.border = '0';
+  playOverlay.style.zIndex = '2';
+
+  // Compose
+  shell.append(iframe, playOverlay);
+  frame.appendChild(shell);
+
+  // Close handlers
   removeVideo = () => {
     overlay.removeEventListener('click', removeVideo);
     close.removeEventListener('click', removeVideo);
     window.removeEventListener('keydown', escHandler);
-    main.removeChild(overlay);
-    main.removeChild(toolbar);
-    main.removeChild(iframe);
+    frame.remove();
+    toolbar.remove();
+    overlay.remove();
   };
-
-  escHandler = (e) => {
-    if (e.key === 'Escape') removeVideo();
-  };
-
+  const escHandler = (e) => { if (e.key === 'Escape') removeVideo(); };
   overlay.addEventListener('click', removeVideo);
   close.addEventListener('click', removeVideo);
   window.addEventListener('keydown', escHandler);
+
+  // Optional: click-to-play with sound via API
+  await ensureVimeoAPI().catch(() => {});
+  const startPlayback = async () => {
+    try {
+      const player = window.Vimeo ? new window.Vimeo.Player(iframe) : null;
+      if (player) {
+        await player.setMuted(false);
+        await player.play();
+      }
+    } catch (_) {
+      try {
+        const player = new window.Vimeo.Player(iframe);
+        await player.setMuted(true);
+        await player.play();
+      } catch {}
+    } finally {
+      playOverlay.remove(); // hide overlay once playback begins / user clicks
+    }
+  };
+  playOverlay.addEventListener('click', startPlayback);
+  playOverlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startPlayback(); }
+  });
 };
 
 const mainCopy = (video) => {
@@ -167,11 +251,27 @@ export default async function decorate(block) {
     const playBtn = document.createElement('span');
     playBtn.className = CSS_CLASS_NAME_ICON_PLAY_VIDEO;
     playBtn.innerHTML = HTML_PLAY_ICON;
-    playBtn.addEventListener('click', () => loadVideo(block, modalLink));
+    playBtn.setAttribute('role', 'button');
+    playBtn.setAttribute('tabindex', '0');
     block.append(playBtn);
   }
+  const trigger = () => loadVideo(block, modalLink);
+  block.addEventListener('click', (e) => {
+    if (e.target.closest('.icon-playvideo')) trigger();
+  });
+  block.addEventListener('keydown', (e) => {
+    if (
+      (e.key === 'Enter' || e.key === ' ')
+      && e.target.closest('.icon-playvideo')
+    ) {
+      e.preventDefault();
+      trigger();
+    }
+  });
 
   mainCopy(block);
   createButtonRow(block);
   await decorateIcons(block);
+  const btn = block.querySelector('.icon-playvideo');
+  btn?.addEventListener('click', () => loadVideo(block, modalLink));
 }

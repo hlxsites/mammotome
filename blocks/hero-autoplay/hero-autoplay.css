@@ -6,20 +6,60 @@ main .section.hero-autoplay-container {
   margin: 0;
   overflow: hidden;
 }
+.asset-viewer-overlay {
+  /* your existing dim backdrop */
+}
 
-/* .video-hero-background iframe {
-position: fixed;
-  display: none;
+.asset-viewer-toolbar {
+  z-index: 10001;
+}
+
+/* above the video */
+
+.asset-viewer-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.asset-viewer-frame .video-modal {
+  position: relative;
+  pointer-events: auto;
+  width: min(92vw, 1280px);
+  aspect-ratio: 16 / 9;
+  max-height: 80vh;
+  background: #000;
+  border-radius: 12px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, .35);
+}
+
+.asset-viewer-frame .video-player-iframe {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgb(255 255 255 / 80%);
-  z-index: 2;
+  border: 0;
+}
+
+.asset-viewer-frame .video-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
   cursor: pointer;
-} */
+  z-index: 2;
+}
+
+.asset-viewer-frame .video-play-overlay svg {
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(0 0 1rem rgba(0, 0, 0, .7));
+}
 
 .video-hero-background {
   position: absolute;
@@ -31,13 +71,24 @@ position: fixed;
   pointer-events: none;
 }
 
-.hero-autoplay .icon-playvideo {
+.hero-autoplay-container .icon-playvideo {
   position: absolute;
   top: 24%;
   left: 77%;
+  z-index: 3;
+  /* ensure it’s on top */
   cursor: pointer;
+  display: inline-grid;
+  /* bigger hit area than inline */
+  place-items: center;
+  /* visual styles */
   fill: var(--mt-background-color-primary);
   filter: drop-shadow(0 0 1rem black);
+}
+
+.hero-copy,
+.button-row {
+  z-index: 1;
 }
 
 .hero-copy {
