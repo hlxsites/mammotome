@@ -1,234 +1,547 @@
 main .marker-quiz form {
-   width: 100% !important;
-   display: grid;
-   grid-template-columns: repeat(1, minmax(0, 1fr));
-   padding: 16px 0 7%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  padding: 16px 0 7%;
 }
 
 .mktoForm .mktoClear {
-   clear: both;
-   float: none;
+  clear: both;
+  float: none;
 }
 
-h2.anchor-text{
-   font-size: var(--mt-font-size-162);
-   color: var(--mt-global-color-base-primary);
-   font-weight: var(--mt-font-weight-regular);
-   scroll-margin-top: 150px;
-   padding: 5%;
-   margin-bottom: 0;
-   background-color: #ffffff;
+h2.anchor-text {
+  font-size: var(--mt-font-size-162);
+  color: var(--mt-global-color-base-primary);
+  font-weight: var(--mt-font-weight-regular);
+  scroll-margin-top: 150px;
+  padding: 5%;
+  margin-bottom: 0;
+  background-color: #ffffff;
 }
 
 .mktoField {
-   float: left;
-   line-height: 1.2em;
+  float: left;
+  line-height: 1.2em;
 }
 
 main .marker-quiz-container .marker-quiz-wrapper {
-   margin: auto;
-   padding: 0 77px;
-   background-color: #ffffff;
-   max-width: 740px;
-   border-radius: 3px;
+  margin: auto;
+  padding: 0 77px;
+  background-color: #ffffff;
+  max-width: 740px;
+  border-radius: 3px;
 }
 
 .mktoForm>.mktoFormRow fieldset {
-   border: none;
-   display: grid;
-   align-content: flex-start;
+  border: none;
+  display: grid;
+  align-content: flex-start;
 }
 
 .mktoForm>.mktoFormRow,
 .mktoForm>.mktoButtonRow,
 .mktoForm>.mktoFormRow fieldset legend {
-   display: none;
+  display: none;
 }
 
 /* LABELS AND TEXT*/
 .mktoForm .mktoRequiredField .mktoAsterix {
-   display: none;
+  display: none;
 }
 
 .mktoHtmlText {
-   font-family: var(--mt-body-font-family-regular);
-   line-height: 1rem;
-   padding: 2% 0;
-   width: 100% !important;
+  font-family: var(--mt-body-font-family-regular);
+  line-height: 1rem;
+  padding: 2% 0;
+  width: 100% !important;
 }
 
 .mktoHtmlText a {
-   color: var(--mt-link-color) !important;
-   text-decoration: none;
+  color: var(--mt-link-color) !important;
+  text-decoration: none;
 }
 
 .mktoForm .mktoLabel {
-   margin: 1rem 0;
-   display: block;
+  margin: 1rem 0;
+  display: block;
 }
 
 .mktoForm .mktoRequiredField label.mktoLabel {
-   font-family: var(--mt-body-font-family-regular);
-   font-size: var(--mt-body-font-size-s);
-   font-weight: var(--mt-font-weight-bold);
-   color: var(--mt-global-color-charcoal);
-   line-height: 1.2rem;
-   margin-bottom: 15px;
+  font-family: var(--mt-body-font-family-regular);
+  font-size: var(--mt-body-font-size-s);
+  font-weight: var(--mt-font-weight-bold);
+  color: var(--mt-global-color-charcoal);
+  line-height: 1.2rem;
+  margin-bottom: 15px;
 }
 
 /* INPUTS  */
 input:not([type="radio"]) {
-   background-color: #F7F7F7;
-   border: solid 1px #ECECEC;
-   color: var(--mt-text-color);
-   border-radius: 4px;
+  background-color: #F7F7F7;
+  border: solid 1px #ECECEC;
+  color: var(--mt-text-color);
+  border-radius: 4px;
 }
 
 main .marker-quiz :is(select, textarea) {
-   background-color: #F7F7F7;
-   border: solid 1px #ECECEC;
-   color: var(--mt-text-color);
-   border-radius: 4px;
-   min-height: 50px;
-   width: 100% !important;
-   max-width: 50rem;
+  background-color: #F7F7F7;
+  border: solid 1px #ECECEC;
+  color: var(--mt-text-color);
+  border-radius: 4px;
+  min-height: 50px;
+  width: 100% !important;
+  max-width: 50rem;
 }
 
 main .marker-quiz :is(textarea) {
-   min-height: 100px;
+  min-height: 100px;
 }
 
 .mktoFormCol>.mktoFormRow:nth-child(5) {
-   display: grid;
-   grid-template-columns: repeat(3, 1fr);
-   gap: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 2rem;
 }
 
 .mktoRadioList {
-   display: block;
-   width: 0px !important;
-   padding-left: 0;
+  display: block;
+  width: 0px !important;
+  padding-left: 0;
 }
 
 .mktoRadioList label {
-   margin-left: 1.5em;
-   margin-top: 0.1em;
-   margin-bottom: 1em;
-   line-height: 1.2em;
-   display: block;
-   min-height: 12px;
+  margin-left: 1.5em;
+  margin-top: 0.1em;
+  margin-bottom: 1em;
+  line-height: 1.2em;
+  display: block;
+  min-height: 12px;
 }
 
 .mktoRadioList input[type="radio"] {
-   width: 1rem !important;
-   margin: 0;
-   padding: 0;
+  width: 1rem !important;
+  margin: 0;
+  padding: 0;
 }
 
 .mktoErrorMsg::before {
-   content: '';
-   position: absolute;
-   left: 10%;
-   top: 0;
-   border: 6px solid transparent;
-   border-top: 0;
-   border-bottom: 6px solid #a50050;
-   transform: translate(-50%, calc(-100%));
+  content: '';
+  position: absolute;
+  left: 10%;
+  top: 0;
+  border: 6px solid transparent;
+  border-top: 0;
+  border-bottom: 6px solid #a50050;
+  transform: translate(-50%, calc(-100%));
 }
 
 .mktoErrorMsg {
-   background-color: #a50050;
-   border: 1px solid #a50050;
-   border-radius: 6px;
-   max-width: 16em;
-   padding: 0.4em 0.6em;
-   color: #f3f3f3;
-   font-size: var(--mt-font-size-80);
-   margin: 7px auto 0;
-   left: 45%;
-   position: absolute;
+  background-color: #a50050;
+  border: 1px solid #a50050;
+  border-radius: 6px;
+  max-width: 16em;
+  padding: 0.4em 0.6em;
+  color: #f3f3f3;
+  font-size: var(--mt-font-size-80);
+  margin: 7px auto 0;
+  left: 45%;
+  position: absolute;
 }
 
 /* BUTTONS */
-.mktoButtonRow {
-   justify-content: center !important;
-   margin: auto !important;
-   text-align: center !important;
+main .marker-quiz .mktoButtonRow {
+  justify-content: center;
+  margin: auto;
+  text-align: center;
 }
 
-.mktoButtonWrap.mktoSimple {
-   margin: auto !important;
-   display: block !important;
+main .marker-quiz .mktoButtonWrap.mktoSimple {
+  margin: auto;
+  display: block;
   padding-top: 3%;
 }
 
-.mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
-   border: 0px !important;
-   font-weight: var(--mt-font-weight-regular);
-   font-size: var(--mt-font-size-100) !important;
-   color: var(--mt-global-color-white);
-   text-transform: uppercase;
-   border-radius: 20px;
-   margin-top: -10px;
-   background-image: none !important;
-   padding: 10px 40px !important;
+main .marker-quiz .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+  border: 0px !important;
+  font-weight: var(--mt-font-weight-regular);
+  font-size: var(--mt-font-size-100);
+  color: var(--mt-global-color-white);
+  text-transform: uppercase;
+  border-radius: 20px;
+  margin-top: -10px;
+  background-image: none !important;
+  padding: 10px 40px;
 }
 
-button[data-dir="prev"] {
-   background-color: var(--mt-global-color-accent-grey) !important;
-   margin-right: 15px !important;
+main .marker-quiz button[data-dir="prev"] {
+  background-color: var(--mt-global-color-accent-grey);
+  margin-right: 15px;
 }
 
-button[data-dir="next"],
-.marker-quiz button[type="submit"] {
-   background-color: var(--mt-global-color-accent-quinary) !important;
+main .marker-quiz button[data-dir="next"],
+main .marker-quiz button[type="submit"] {
+  background-color: var(--mt-global-color-accent-quinary);
 }
 
-.mktoForm input[type=text], .mktoForm input[type=url], .mktoForm input[type=email], .mktoForm input[type=tel], .mktoForm input[type=number], .mktoForm input[type=date] {
-   font-family: var(--mt-body-font-family-regular);
-   width: 100% !important;
-}
-
-mktoForm div, .mktoForm span, .mktoForm label, .mktoForm p {
+main .marker-quiz .mktoForm input[type=text],
+main .marker-quiz .mktoForm input[type=url],
+main .marker-quiz .mktoForm input[type=email],
+main .marker-quiz .mktoForm input[type=tel],
+main .marker-quiz .mktoForm input[type=number],
+main .marker-quiz .mktoForm input[type=date] {
+  font-family: var(--mt-body-font-family-regular);
   width: 100% !important;
-} 
+}
+
+main .marker-quiz .mktoForm div,
+main .marker-quiz .mktoForm span,
+main .marker-quiz .mktoForm label,
+main .marker-quiz .mktoForm p {
+  width: 100%;
+}
 
 .mktoForm .mktoField {
-    margin: var(--form-input-margin);
-    font-size: var(--form-input-font-size);
-    font-family: var(--mt-form-font-family);
+  margin: var(--form-input-margin);
+  font-size: var(--form-input-font-size);
+  font-family: var(--mt-form-font-family);
+}
+
+/* Product Survey Styles */
+.product-survey-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.survey-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  margin: 20px 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.survey-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.question-container {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.question-text {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.option {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.option:hover {
+  background: #e9ecef;
+  border-color: #5F8DDA;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.option.selected {
+  background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
+  color: white;
+  border-color: #5F8DDA;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.btn {
+  background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #333;
+  border: 2px solid #e9ecef;
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.question-counter {
+  font-weight: 600;
+  color: #666;
+}
+
+.result-container {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.product-image {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin: 20px 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.product-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 20px 0;
+  color: #333;
+}
+
+.product-description {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 20px 0;
+  color: #666;
+}
+
+.product-features {
+  list-style: none;
+  padding: 0;
+  margin: 30px 0;
+}
+
+.product-features li {
+  background: #f8f9fa;
+  margin: 10px 0;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  border-left: 4px solid #5F8DDA;
+}
+
+.product-best-for {
+  font-style: italic;
+  color: #666;
+  margin: 20px 0;
+}
+
+.contact-question {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.contact-question h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.contact-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.contact-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.contact-form-container h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.contact-form-container p {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #5F8DDA;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.thank-you-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.thank-you-container h2 {
+  font-size: 32px;
+  color: #5F8DDA;
+  margin-bottom: 20px;
+}
+
+.thank-you-container p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .survey-card {
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .question-text {
+    font-size: 20px;
+  }
+
+  .product-title {
+    font-size: 24px;
+  }
+
+  .navigation {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 787px) {
-   main .marker-quiz form {
-      padding: 5%;
-   }
+  main .marker-quiz form {
+    padding: 5%;
+  }
 
-   main .section .default-content-wrapper {
-      margin: auto;
-      max-width: 100%;
-   }
+  main .section .default-content-wrapper {
+    margin: auto;
+    max-width: 100%;
+  }
 
-   main .marker-quiz-container .marker-quiz-wrapper {
-      padding: 0;
-      width: 100%;
-   }
+  main .marker-quiz-container .marker-quiz-wrapper {
+    padding: 0;
+    width: 100%;
+  }
 
-   .mktoForm>.mktoFormRow fieldset {
-      padding: 0;
-   }
+  .mktoForm>.mktoFormRow fieldset {
+    padding: 0;
+  }
 }
 
 @media (max-width: 480px) {
-   .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
-      border-radius: 50px;
-      padding: 4% !important;
-      width: 175px;
-      display: block;
-      margin-top: 10px;
-   }
+  main .marker-quiz .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+    border-radius: 50px;
+    padding: 4%;
+    width: 175px;
+    display: block;
+    margin-top: 10px;
+  }
 
-   .mktoFormCol>.mktoFormRow:nth-child(5) {
-      display: block;
-   }
+  .mktoFormCol>.mktoFormRow:nth-child(5) {
+    display: block;
+  }
 }

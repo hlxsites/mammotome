@@ -1,0 +1,21 @@
+var selectedColor = app.response("Choose a color (green, red, or black):", "Color Selection");
+
+if (selectedColor) {
+    switch (selectedColor.toLowerCase()) {
+        case "red":
+            event.target.textColor = ["RGB", 0.92, 0.33, 0.36]; // 234, 85, 92
+            break;
+        case "black":
+            event.target.textColor = color.black;
+            break;
+        case "green":
+            event.target.textColor = ["RGB", 0.22, 0.49, 0.13]; // 55, 126, 34
+            break;
+        default:
+            app.alert("Please select a valid color: green, red, or black.", 0);
+            break;
+    }
+} else {
+    // User cancelled the dialog
+    app.alert("Color selection was cancelled.", 0);
+}

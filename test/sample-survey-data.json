@@ -1,0 +1,158 @@
+{
+  "data": [
+    {
+      "Type": "config",
+      "Id": "ThankYouYes",
+      "Text": "Thank you for your interest! A sales representative will contact you within 24 hours to discuss how our solution can meet your needs."
+    },
+    {
+      "Type": "config",
+      "Id": "ThankYouNo",
+      "Text": "Thank you for taking our survey! We hope you found the product recommendation helpful. Feel free to reach out if you have any questions in the future."
+    },
+    {
+      "Type": "question",
+      "Id": "1",
+      "Text": "What is your primary goal for this product?",
+      "QuestionType": "single"
+    },
+    {
+      "Type": "option",
+      "Text": "Increase productivity",
+      "QuestionId": "1",
+      "Scores": "ProductA:3,ProductB:2,ProductC:1,ProductD:2,ProductE:2,ProductF:1"
+    },
+    {
+      "Type": "option",
+      "Text": "Cost savings",
+      "QuestionId": "1",
+      "Scores": "ProductA:1,ProductB:3,ProductC:2,ProductD:3,ProductE:3,ProductF:3"
+    },
+    {
+      "Type": "option",
+      "Text": "Improve user experience",
+      "QuestionId": "1",
+      "Scores": "ProductA:2,ProductB:1,ProductC:3,ProductD:2,ProductE:2,ProductF:2"
+    },
+    {
+      "Type": "option",
+      "Text": "Scalability",
+      "QuestionId": "1",
+      "Scores": "ProductA:3,ProductB:2,ProductC:2,ProductD:3,ProductE:3,ProductF:2"
+    },
+    {
+      "Type": "question",
+      "Id": "2",
+      "Text": "What is your company size?",
+      "QuestionType": "single"
+    },
+    {
+      "Type": "option",
+      "Text": "1-10 employees",
+      "QuestionId": "2",
+      "Scores": "ProductA:1,ProductB:3,ProductC:2,ProductD:1,ProductE:3,ProductF:2"
+    },
+    {
+      "Type": "option",
+      "Text": "11-50 employees",
+      "QuestionId": "2",
+      "Scores": "ProductA:2,ProductB:2,ProductC:3,ProductD:2,ProductE:3,ProductF:2"
+    },
+    {
+      "Type": "option",
+      "Text": "51-200 employees",
+      "QuestionId": "2",
+      "Scores": "ProductA:3,ProductB:2,ProductC:2,ProductD:3,ProductE:2,ProductF:3"
+    },
+    {
+      "Type": "option",
+      "Text": "200+ employees",
+      "QuestionId": "2",
+      "Scores": "ProductA:3,ProductB:1,ProductC:1,ProductD:3,ProductE:1,ProductF:3"
+    },
+    {
+      "Type": "question",
+      "Id": "3",
+      "Text": "What is your budget range?",
+      "QuestionType": "single"
+    },
+    {
+      "Type": "option",
+      "Text": "Under $1,000",
+      "QuestionId": "3",
+      "Scores": "ProductA:1,ProductB:3,ProductC:2,ProductD:1,ProductE:2,ProductF:1"
+    },
+    {
+      "Type": "option",
+      "Text": "$1,000 - $5,000",
+      "QuestionId": "3",
+      "Scores": "ProductA:2,ProductB:2,ProductC:3,ProductD:2,ProductE:3,ProductF:2"
+    },
+    {
+      "Type": "option",
+      "Text": "$5,000 - $20,000",
+      "QuestionId": "3",
+      "Scores": "ProductA:3,ProductB:2,ProductC:2,ProductD:3,ProductE:2,ProductF:3"
+    },
+    {
+      "Type": "option",
+      "Text": "$20,000+",
+      "QuestionId": "3",
+      "Scores": "ProductA:3,ProductB:1,ProductC:1,ProductD:3,ProductE:1,ProductF:2"
+    },
+    {
+      "Type": "product",
+      "Id": "ProductA",
+      "Name": "Enterprise Pro",
+      "Description": "Our most comprehensive solution for large enterprises requiring advanced features, customization, and dedicated support.",
+      "Image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
+      "Features": "Advanced analytics and reporting,24/7 dedicated support,Highly customizable,On-premises deployment,Enterprise-grade security",
+      "BestFor": "Large enterprises with complex needs"
+    },
+    {
+      "Type": "product",
+      "Id": "ProductB",
+      "Name": "Business Starter",
+      "Description": "Perfect for small to medium businesses looking for an affordable, easy-to-use solution with quick implementation.",
+      "Image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+      "Features": "Quick setup and implementation,Affordable pricing,Cloud-hosted solution,Basic reporting,Email support",
+      "BestFor": "Small to medium businesses"
+    },
+    {
+      "Type": "product",
+      "Id": "ProductC",
+      "Name": "Professional Plus",
+      "Description": "Ideal for growing companies that need a balance of features, flexibility, and reasonable pricing.",
+      "Image": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
+      "Features": "Moderate customization,Business hours support,Hybrid deployment options,Comprehensive reporting,Mobile web access",
+      "BestFor": "Growing companies"
+    },
+    {
+      "Type": "product",
+      "Id": "ProductD",
+      "Name": "Enterprise Elite",
+      "Description": "Our flagship solution for organizations requiring the highest level of security, compliance, and scalability.",
+      "Image": "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=300&fit=crop",
+      "Features": "Maximum security and compliance,Unlimited scalability,Custom integrations,Dedicated account manager,On-premises or hybrid deployment",
+      "BestFor": "Large organizations with strict compliance requirements"
+    },
+    {
+      "Type": "product",
+      "Id": "ProductE",
+      "Name": "Startup Accelerator",
+      "Description": "Designed specifically for startups and early-stage companies that need rapid growth and scalability.",
+      "Image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
+      "Features": "Rapid deployment and scaling,Startup-friendly pricing,Growth-focused features,Flexible payment terms,Dedicated startup support",
+      "BestFor": "Startups and early-stage companies"
+    },
+    {
+      "Type": "product",
+      "Id": "ProductF",
+      "Name": "Government & Non-Profit",
+      "Description": "Specialized solution for government agencies and non-profit organizations with compliance and budget requirements.",
+      "Image": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
+      "Features": "Government compliance,Non-profit pricing,Specialized reporting,Grant management tools,Dedicated compliance support",
+      "BestFor": "Government agencies and non-profits"
+    }
+  ]
+}
