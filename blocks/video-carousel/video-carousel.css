@@ -1,0 +1,220 @@
+:root {
+    --video-aspect-ratio: 16 / 9;
+}
+
+.section.video-carousel-container {
+    padding: 0;
+    margin: 0;
+}
+
+.video-carousel {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Slider Home */
+.video-carousel .slider {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 40px;
+    padding: 40px 60px;
+    overflow: hidden;
+    width: 100%;
+    margin-left: 0;
+    animation: fade-in 1s ease-in;
+    align-items: center;
+}
+
+@media (max-width: 999px) {
+    .video-carousel .slider {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .video-carousel .slider > div:nth-child(n+2) {
+        display: none;
+    }
+}
+
+/* slides 1 - n container */
+.video-carousel .slider > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    animation: fade-in 0.5s ease-in;
+    transition: all 0.3s ease;
+}
+
+/* Reorder content: thumbnail first, then title */
+.video-carousel .slider > div {
+    flex-direction: column;
+}
+
+/* Reorder the children so thumbnail appears first, then title */
+.video-carousel .slider > div > div:nth-child(1) {
+    order: 2; /* Title goes second (below thumbnail) */
+}
+
+.video-carousel .slider > div > div:nth-child(3) {
+    order: 1; /* Thumbnail goes first (above title) */
+}
+
+/* Hide the URL div */
+.video-carousel .slider > div > div:nth-child(2) {
+    display: none;
+}
+
+/* Dynamic styling is handled by JavaScript - no hardcoded CSS rules needed */
+
+/* Hide slide 4 - n */
+.video-carousel .slider > div:nth-child(n+4) {
+    display: none;
+}
+
+/* Thumbnail container (now order 1) */
+.video-carousel .slider > div > div:nth-child(3) {
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+
+.video-carousel .slider > div > div img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Thumbnail sizing is handled dynamically by JavaScript */
+
+.video-carousel .slider > div > div picture {
+    width: 100%
+}
+
+/* Video title format (now order 2 - below thumbnail) */
+.video-carousel .slider > div > div:nth-child(1) {
+    font-size: var(--mt-heading-font-size-l);
+    font-family: var(--mt-body-font-family-regular);
+    font-weight: var(--mt-font-weight-regular);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: var(--mt-heading-color-primary);
+    transition: all 0.3s ease;
+}
+
+/* Title styling is handled dynamically by JavaScript */
+
+.video-carousel .slider > div > div:nth-child(1) h3 {
+    font-size: var(--mt-heading-font-size-l);
+    font-weight: var(--mt-font-weight-bold);
+    text-transform: unset;
+    letter-spacing: unset;
+    margin-bottom: 15px;
+    color: var(--mt-heading-color-primary);
+}
+
+/* h3 styling is handled dynamically by JavaScript */
+
+.video-carousel .slider > div > div:nth-child(1) p {
+    font-size: initial;
+}
+
+
+/* Video play button styling */
+.video-carousel .slider > div > div:nth-child(3) span.icon-playvideo {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.video-carousel .slider > div > div:nth-child(3) span.icon-playvideo svg {
+    fill: var(--mt-background-color-primary);
+    filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
+}
+
+/* Arrow nav flex container */
+.video-carousel.slider-wrapper .arrow-nav {
+    position: absolute;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 10;
+    flex: 0 0 auto;
+    pointer-events: none;
+    padding: 0 20px;
+}
+
+.video-carousel.slider-wrapper .arrow-nav button {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 0;
+    padding: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: auto;
+    transition: all 0.3s ease;
+}
+
+.video-carousel.slider-wrapper .arrow-nav button:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.video-carousel.slider-wrapper .arrow-nav #slider-arrow-left,
+.video-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+    width: 56px;
+    height: 56px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-carousel.slider-wrapper .arrow-nav svg {
+    width: 28px;
+    height: 28px;
+    fill: #333;
+}
+
+/* Video player iframe styling */
+.video-player-iframe {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 103;
+    display: block;
+    width: 1280px;
+    max-width: 90%;
+    max-height: 90%;
+    aspect-ratio: 1280/720;
+    border: none;
+    box-shadow: 0 0 15px hsl(0deg 0% 0% / 80%);
+}
