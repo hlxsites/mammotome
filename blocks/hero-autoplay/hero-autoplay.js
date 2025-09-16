@@ -35,7 +35,7 @@ const buildVimeoBackground = (previewUrl) => {
   const params = new URLSearchParams(url.search);
   params.set('autoplay', '1');
   params.set('muted', '1');
-  params.set('loop', '0');
+  params.set('loop', '1');
   params.set('background', '1');
 
   const fullSrc = `${url.origin}${url.pathname}?${params.toString()}`;
@@ -95,49 +95,66 @@ const loadVideo = async (block, videoLink) => {
 
   // Frame (full-screen) that centers the video shell
   const frame = document.createElement('div');
-  frame.className = 'asset-viewer-frame';         // styles below or keep inline
-  frame.style.position = 'fixed';
-  frame.style.inset = '0';
-  frame.style.zIndex = '10000';
-  frame.style.display = 'grid';
-  frame.style.placeItems = 'center';
-  frame.style.pointerEvents = 'none';             // clicks go to shell, not frame
+  frame.className = 'asset-viewer-frame';
+  frame.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  `;
   main.prepend(frame);
 
   // Video shell (the centered box the icon should sit on)
   const shell = document.createElement('div');
   shell.className = 'video-modal';
-  shell.style.position = 'relative';
-  shell.style.pointerEvents = 'auto';
-  shell.style.background = '#000';
-  shell.style.borderRadius = '12px';
-  shell.style.boxShadow = '0 12px 48px rgba(0,0,0,.35)';
+  shell.style.cssText = `
+    position: relative;
+    pointer-events: auto;
+    background: #000;
+    border-radius: 12px;
+    box-shadow: 0 12px 48px rgba(0,0,0,.35);
+    width: min(92vw, 1280px);
+    aspect-ratio: 16 / 9;
+    max-height: 80vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  `;
 
-  // Size the shell to fit viewport, keep 16:9, centered
-  shell.style.width = 'min(92vw, 1280px)';
-  shell.style.aspectRatio = '16 / 9';
-  shell.style.maxHeight = '80vh';
-
-  // Build NON-autoplay URL; we’ll use the overlay to start playback
+  // Build NON-autoplay URL; we'll use the overlay to start playback
   const url = new URL(videoLink);
   const params = new URLSearchParams(url.search);
   params.set('autoplay', '0');
+  params.set('muted', '1');
+  params.set('loop', '0');
   params.delete('background');
   const fullSrc = `${url.origin}${url.pathname}?${params.toString()}`;
 
   // Iframe fills the shell
   const iframe = document.createElement('iframe');
-  iframe.className = 'video-player-iframe';
+  iframe.className = 'hero-autoplay-iframe';
   iframe.src = fullSrc;
   iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
   iframe.setAttribute('playsinline', '');
   iframe.setAttribute('title', document.title);
   iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-  iframe.style.position = 'absolute';
-  iframe.style.inset = '0';
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
-  iframe.style.border = '0';
+  iframe.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    border: 0;
+    border-radius: 12px;
+    object-fit: cover;
+  `;
 
   // Play overlay centered ON the video
   const playOverlay = document.createElement('button');
@@ -156,6 +173,19 @@ const loadVideo = async (block, videoLink) => {
   // Compose
   shell.append(iframe, playOverlay);
   frame.appendChild(shell);
+  
+  // Ensure iframe loads and is visible
+  iframe.onload = () => {
+    console.log('Iframe loaded successfully');
+    iframe.style.opacity = '1';
+  };
+  iframe.onerror = () => {
+    console.error('Iframe failed to load');
+  };
+  iframe.style.opacity = '0';
+  setTimeout(() => {
+    iframe.style.opacity = '1';
+  }, 100);
 
   // Close handlers
   removeVideo = () => {
@@ -171,21 +201,36 @@ const loadVideo = async (block, videoLink) => {
   close.addEventListener('click', removeVideo);
   window.addEventListener('keydown', escHandler);
 
-  // Optional: click-to-play with sound via API
+  // Click-to-play with sound via API
   await ensureVimeoAPI().catch(() => {});
   const startPlayback = async () => {
     try {
       const player = window.Vimeo ? new window.Vimeo.Player(iframe) : null;
       if (player) {
+        // First try to play with audio
         await player.setMuted(false);
         await player.play();
       }
-    } catch (_) {
+    } catch (error) {
+      console.warn('Could not play with audio, trying muted:', error);
       try {
-        const player = new window.Vimeo.Player(iframe);
-        await player.setMuted(true);
-        await player.play();
-      } catch {}
+        // Fallback: play muted if audio autoplay is blocked
+        const player = window.Vimeo ? new window.Vimeo.Player(iframe) : null;
+        if (player) {
+          await player.setMuted(true);
+          await player.play();
+          // Try to unmute after a short delay (some browsers allow this after user interaction)
+          setTimeout(async () => {
+            try {
+              await player.setMuted(false);
+            } catch (e) {
+              console.warn('Could not unmute video:', e);
+            }
+          }, 100);
+        }
+      } catch (fallbackError) {
+        console.error('Could not start video playback:', fallbackError);
+      }
     } finally {
       playOverlay.remove(); // hide overlay once playback begins / user clicks
     }
@@ -232,8 +277,12 @@ const createButtonRow = (video) => {
       buttonRow.appendChild(buttonContainer);
     });
 
-    if (video.children.length >= 2) {
-      video.insertBefore(buttonRow, video.children[2]);
+    // Insert button-row after hero-copy
+    const heroCopy = video.querySelector('.hero-copy');
+    if (heroCopy && heroCopy.nextSibling) {
+      video.insertBefore(buttonRow, heroCopy.nextSibling);
+    } else if (heroCopy) {
+      heroCopy.insertAdjacentElement('afterend', buttonRow);
     } else {
       video.appendChild(buttonRow);
     }

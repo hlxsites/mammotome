@@ -168,13 +168,24 @@ header nav .icon-search svg {
 }
 
 header nav .nav-brand .scrolling-logo {
+  display: flex;
+  align-items: center;
   height: 40px;
-  width: 40px;
+  min-width: 60px;
+  position: relative;
+}
+
+header nav .nav-brand .scrolling-logo img {
+  height: 40px;
+  width: auto;
+  max-width: 120px;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(48%) saturate(3185%) hue-rotate(270deg) brightness(88%) contrast(86%);;
 }
 
 header nav .nav-brand .scrolling-logo svg {
-  fill: currentcolor;
-  color: var(--mt-global-color-base-primary);
+  height: 40px;
+  width: auto;
+  max-width: 120px;
 }
 
 header nav .nav-brand .logo-hidden {
@@ -268,8 +279,6 @@ header nav .nav-sections ul>li.nav-multilevel>ul>li {
   letter-spacing: 3px;
   text-align: center;
 }
-
-
 
 header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
   display: none;
@@ -708,6 +717,17 @@ header nav.nav-mobile .nav-overflow {
     opacity: 1;
     top: 44px;
     z-index: 1000;
+    transition-delay: 0ms;
+  }
+  
+  /* Add delay when leaving hover state */
+  header nav .nav-sections>ul>li>ul {
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
+  }
+  
+  header nav .nav-sections>ul>li:hover>ul {
+    transition-delay: 0ms; /* Show immediately on hover */
   }
 
   header nav .nav-sections ul>li.nav-multilevel>ul {
@@ -812,6 +832,17 @@ header nav.nav-mobile .nav-overflow {
     visibility: visible;
     opacity: 1;
     top: -1em;
+    transition-delay: 0ms;
+  }
+  
+  /* Add delay for overflow dropdown menus */
+  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop>ul {
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
+  }
+  
+  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop:hover>ul {
+    transition-delay: 0ms; /* Show immediately on hover */
   }
 
   header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-button {
@@ -968,6 +999,17 @@ header nav.nav-mobile .nav-overflow {
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
    visibility: visible !important;
+   transition-delay: 0ms;
+  }
+  
+  /* Add delay for third-level navigation */
+  .nav-subitems-level2 {
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
+  }
+  
+  .nav-subitem:hover .nav-subitems-level2 {
+    transition-delay: 0ms; /* Show immediately on hover */
   }
 
   header nav .nav-tools {

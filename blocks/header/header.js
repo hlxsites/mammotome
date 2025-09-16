@@ -101,11 +101,52 @@ function addNavigationLogoForScrollingPage(nav) {
   const homePageLink = navBrandPrimary.querySelector('a');
   homePageLink.setAttribute('aria-label', 'Navigate to homepage');
 
-  const scrollingLogo = document.createElement('span');
-  scrollingLogo.className = 'logo-hidden scrolling-logo icon icon-logo-small';
-  scrollingLogo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><use href="#icons-sprite-logo-small"></use></svg>';
-
   const defaultLogo = homePageLink.firstChild;
+  
+  const scrollingLogo = document.createElement('span');
+  scrollingLogo.className = 'logo-hidden scrolling-logo';
+  
+  // Try to fetch the SVG and create an inline version with controlled color
+  fetch('https://www.mammotome.com/icons/logo-small.svg')
+    .then(response => response.text())
+    .then(svgText => {
+      // Create a div to hold the SVG
+      const svgContainer = document.createElement('div');
+      svgContainer.innerHTML = svgText;
+      const svg = svgContainer.querySelector('svg');
+      
+      if (svg) {
+        // Set size and color
+        svg.style.height = '40px';
+        svg.style.width = 'auto';
+        svg.style.fill = '#84329B';
+        
+        // Remove any existing fill attributes and add our color
+        svg.querySelectorAll('*').forEach(element => {
+          element.removeAttribute('fill');
+          element.style.fill = '#84329B';
+        });
+        
+        scrollingLogo.appendChild(svg);
+      } else {
+        // Fallback to img
+        const logoImg = document.createElement('img');
+        logoImg.src = 'https://www.mammotome.com/icons/logo-small.svg';
+        logoImg.alt = 'Mammotome';
+        logoImg.style.height = '40px';
+        logoImg.style.width = 'auto';
+        scrollingLogo.appendChild(logoImg);
+      }
+    })
+    .catch(() => {
+      // Fallback to img if fetch fails
+      const logoImg = document.createElement('img');
+      logoImg.src = 'https://www.mammotome.com/icons/logo-small.svg';
+      logoImg.alt = 'Mammotome';
+      logoImg.style.height = '40px';
+      logoImg.style.width = 'auto';
+      scrollingLogo.appendChild(logoImg);
+    });
 
   homePageLink.append(scrollingLogo);
 
@@ -120,8 +161,14 @@ function addNavigationLogoForScrollingPage(nav) {
     timeout = setTimeout(() => {
       const isScrolled = window.scrollY > 40;
       nav.classList.toggle('narrow', isScrolled);
-      defaultLogo.classList.toggle('logo-hidden', isScrolled);
-      scrollingLogo.classList.toggle('logo-hidden', !isScrolled);
+      
+      // Ensure logos exist before toggling
+      if (defaultLogo) {
+        defaultLogo.classList.toggle('logo-hidden', isScrolled);
+      }
+      if (scrollingLogo) {
+        scrollingLogo.classList.toggle('logo-hidden', !isScrolled);
+      }
       if (navBrandSecondary) {
         navBrandSecondary.classList.toggle('logo-hidden', isScrolled);
       }
