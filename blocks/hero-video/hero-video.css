@@ -15,23 +15,31 @@
   width: 100%;
 }
 
-.hero-copy h1,
-.hero-copy h2 {
-  text-align: left;
+/* Hero video container layout */
+.hero-video-container > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
 }
 
-.hero-copy h1 {
-  color: var(--mt-heading-color-primary);
+/* Hero section adjacent to video background */
+.hero-video-container .hero-image {
+  position: relative;
+  width: 100%;
+  order: 1;
 }
 
-.hero-copy h2 {
-  font-weight: var(--mt-font-weight-thin);
+.hero-video-container .hero-image img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .icon-playvideo {
   position: absolute;
   top: 50%;
-  left: 75%;
+  left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
   cursor: pointer;
@@ -39,21 +47,40 @@
   filter: drop-shadow(0 0 1rem black);
 }
 
+/* Hero copy h2 stacked beneath video */
+.hero-copy {
+  position: relative;
+  width: 100%;
+  order: 2;
+  padding: 0 2rem;
+}
+
+.hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.hero-copy h2 {
+  font-weight: var(--mt-font-weight-thin);
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+/* Buttons below h2 */
 .button-row {
-  position: absolute;
-  inset-inline-start: 7%;
-  inset-block-start: 55%;
+  position: relative;
+  width: 100%;
+  order: 3;
+  padding: 0 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .button-row .button {
-  width: 100%;
-}
-
-.hero-copy {
-  position: absolute;
-  inset-inline-start: 7%;
-  inset-block-start: 24%;
-  width: 44%;
+  flex: 1;
+  min-width: 200px;
 }
 
 p>a.hero-video:nth-child(1) {
@@ -62,25 +89,23 @@ p>a.hero-video:nth-child(1) {
 
 /* Laptops */
 @media (max-width: 1536px) {
+  .hero-video-container > div {
+    gap: 1.5rem;
+  }
+
   .hero-copy {
-    position: absolute;
-    inset-inline-start: 7%;
-    inset-block-start: 20%;
+    padding: 0 1.5rem;
   }
 
   .button-row {
-    position: absolute;
-    inset-inline-start: 7%;
-    inset-block-start: 55%;
+    padding: 0 1.5rem;
   }
 }
 
 /* Tablets iPad Pro and Smaller */
 @media (max-width:1024px) {
-  .hero-copy {
-    position: absolute;
-    inset-inline-start: 6%;
-    inset-block-start: 15%;
+  .hero-video-container > div {
+    gap: 1.25rem;
   }
 
   .hero-copy h1 {
@@ -91,46 +116,66 @@ p>a.hero-video:nth-child(1) {
     font-size: var(--mt-heading-font-size-mobile-xl);
   }
 
+  .hero-copy {
+    padding: 0 1.25rem;
+  }
+
   .button-row {
-    position: absolute;
-    inset-inline-start: 6%;
-    inset-block-start: 60%;
+    padding: 0 1.25rem;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .hero-video-container > div {
+    gap: 0.5rem;
+  }
+
+  .hero-copy {
+    padding: 0 1rem;
+    margin-top: -0.5rem;
+  }
+
+  .button-row {
+    padding: 0 1rem;
+    flex-direction: column;
+  }
+
+  .button-row .button {
+    min-width: unset;
   }
 }
 
 @media (max-width: 460px) {
+  .hero-video-container > div {
+    gap: 0.25rem;
+  }
+
   .hero-image img {
     object-fit: scale-down;
   }
 
   .hero-video {
     height: auto;
-    margin-bottom: 5%;
+    margin-bottom: 0;
   }
 
   .hero-copy {
-    position: static;
-    width: 100%;
+    padding: 0 1rem;
+    margin-top: -0.25rem;
   }
 
-  .hero-copy.hero-copy h1 {
-    font-size: var(--mt-heading-font-size-mobile-l);
-    position: absolute;
-    inset-inline-start: 10%;
-    inset-block-start: 13%;
-    width: 50%;
-  }
-
-  .hero-copy.hero-copy h2 {
+  .hero-copy h1 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
-    padding: 5%;
+    margin-bottom: 0.5rem;
   }
 
-  .icon-playvideo {
-    position: absolute;
-    inset-inline-start: 75%;
-    inset-block-start: 25%;
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+    text-align: center;
+    padding: 0;
+    margin-bottom: 1rem;
   }
 
   .icon-playvideo svg {
@@ -139,10 +184,8 @@ p>a.hero-video:nth-child(1) {
   }
 
   .button-row {
-    position: static;
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
-    display: block;
-    margin-top: 5%;
+    padding-top: 0.5rem;
   }
 }

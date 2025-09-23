@@ -247,7 +247,13 @@ const mainCopy = (video) => {
     const copyDiv = document.createElement('div');
     copyDiv.classList.add('hero-copy');
     heroCopy.forEach((el) => copyDiv.appendChild(el));
-    video.appendChild(copyDiv);
+    // Insert hero-copy after the video background but before any existing content
+    const videoBg = video.querySelector('.video-hero-background');
+    if (videoBg) {
+      videoBg.insertAdjacentElement('afterend', copyDiv);
+    } else {
+      video.appendChild(copyDiv);
+    }
   }
   const img = video.querySelector('picture img');
   if (img) {
@@ -277,11 +283,9 @@ const createButtonRow = (video) => {
       buttonRow.appendChild(buttonContainer);
     });
 
-    // Insert button-row after hero-copy
+    // Insert button-row after hero-copy to maintain proper order
     const heroCopy = video.querySelector('.hero-copy');
-    if (heroCopy && heroCopy.nextSibling) {
-      video.insertBefore(buttonRow, heroCopy.nextSibling);
-    } else if (heroCopy) {
+    if (heroCopy) {
       heroCopy.insertAdjacentElement('afterend', buttonRow);
     } else {
       video.appendChild(buttonRow);
@@ -292,6 +296,9 @@ const createButtonRow = (video) => {
 export default async function decorate(block) {
   const { previewLink, modalLink } = getVimeoLinks(block);
   if (!previewLink) return;
+
+  // Add container class for CSS targeting
+  block.classList.add('hero-autoplay-container');
 
   const previewBg = buildVimeoBackground(previewLink);
   block.prepend(previewBg);
