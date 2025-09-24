@@ -12,34 +12,19 @@ async function fetchSurveyData(url) {
 }
 
 function parseSurveyDataFromExcel(data) {
-  const surveyData = {
-    questions: [],
-    products: {},
-    thankYouYes: "",
-    thankYouNo: "",
-  };
+  const surveyData = { questions: [], products: {}, thankYouYes: "", thankYouNo: "" };
+  const [questions, products, options, config] = ["question", "product", "option", "config"].map(type => 
+    data.filter(row => row.Type === type));
 
-  const questions = data.filter((row) => row.Type === "question");
-  const products = data.filter((row) => row.Type === "product");
-  const options = data.filter((row) => row.Type === "option");
-  const config = data.filter((row) => row.Type === "config");
-
-  questions.forEach((question) => {
-    const questionOptions = options.filter(
-      (opt) => opt.QuestionId === question.Id
-    );
-    const processedOptions = questionOptions.map((opt) => {
+  questions.forEach(question => {
+    const questionOptions = options.filter(opt => opt.QuestionId === question.Id);
+    const processedOptions = questionOptions.map(opt => {
       const scores = {};
-      if (opt.Scores) {
-        opt.Scores.split(",").forEach((score) => {
-          const [product, value] = score.split(":");
-          scores[product.trim()] = parseInt(value.trim());
-        });
-      }
-      return {
-        text: opt.Text,
-        scores: scores,
-      };
+      opt.Scores?.split(",").forEach(score => {
+        const [product, value] = score.split(":");
+        scores[product.trim()] = parseInt(value.trim());
+      });
+      return { text: opt.Text, scores };
     });
 
     surveyData.questions.push({
@@ -50,25 +35,19 @@ function parseSurveyDataFromExcel(data) {
     });
   });
 
-  products.forEach((product) => {
-    const features = product.Features
-      ? product.Features.split(",").map((f) => f.trim())
-      : [];
+  products.forEach(product => {
     surveyData.products[product.Id] = {
       name: product.Name,
       description: product.Description,
       image: product.Image,
-      features: features,
+      features: product.Features?.split(",").map(f => f.trim()) || [],
       bestFor: product.BestFor,
     };
   });
 
-  config.forEach((configItem) => {
-    if (configItem.Name === "ThankYouYes") {
-      surveyData.thankYouYes = configItem.Text;
-    } else if (configItem.Name === "ThankYouNo") {
-      surveyData.thankYouNo = configItem.Text;
-    }
+  config.forEach(item => {
+    if (item.Name === "ThankYouYes") surveyData.thankYouYes = item.Text;
+    else if (item.Name === "ThankYouNo") surveyData.thankYouNo = item.Text;
   });
 
   return surveyData;
@@ -81,15 +60,16 @@ class ProductSurvey {
     this.currentQuestion = 0;
     this.answers = [];
     this.selectedOption = null;
+    this.selectedOptions = []; // For multi-choice questions
     this.loading = true;
+    this.showStartScreen = true;
     this.init();
   }
 
   async loadSurveyData() {
     const surveyLink = this.block.querySelector('a[href*=".json"]');
     if (surveyLink) {
-      const surveyURL = surveyLink.href;
-      const rawData = await fetchSurveyData(surveyURL);
+      const rawData = await fetchSurveyData(surveyLink.href);
       if (rawData) {
         this.surveyData = parseSurveyDataFromExcel(rawData);
         return;
@@ -98,10 +78,7 @@ class ProductSurvey {
 
     if (this.config.surveyData) {
       try {
-        this.surveyData =
-          typeof this.config.surveyData === "string"
-            ? JSON.parse(this.config.surveyData)
-            : this.config.surveyData;
+        this.surveyData = typeof this.config.surveyData === "string" ? JSON.parse(this.config.surveyData) : this.config.surveyData;
         return;
       } catch (e) {
         console.warn("Failed to parse survey data from config:", e);
@@ -133,6 +110,11 @@ class ProductSurvey {
       return;
     }
 
+    if (this.showStartScreen) {
+      this.renderStartScreen();
+      return;
+    }
+
     this.block.innerHTML = `
       <div class="product-survey-container">
         <div class="survey-card">
@@ -145,19 +127,15 @@ class ProductSurvey {
               ${this.getCurrentQuestion().text}
             </div>
             
-            <div class="options-container">
-              ${this.getCurrentQuestion()
-                .options.map(
-                  (option, index) => `
-                <div class="option ${
-                  this.selectedOption?.text === option.text ? "selected" : ""
-                }" 
-                     data-option-index="${index}">
-                  ${option.text}
-                </div>
-              `
-                )
-                .join("")}
+            <div class="options-container ${this.getCurrentQuestion().type === 'multi' ? 'multi-choice' : 'single-choice'}">
+              ${this.getCurrentQuestion().options.map((option, index) => {
+                const isMulti = this.getCurrentQuestion().type === 'multi';
+                const isSelected = isMulti ? this.selectedOptions.some(opt => opt.text === option.text) : this.selectedOption?.text === option.text;
+                return `<div class="option ${isSelected ? "selected" : ""}" data-option-index="${index}">
+                  <span class="${isMulti ? 'checkbox' : 'radio'} ${isSelected ? 'checked' : ''}"></span>
+                  <span class="option-text">${option.text}</span>
+                </div>`;
+              }).join("")}
             </div>
           </div>
 
@@ -175,7 +153,9 @@ class ProductSurvey {
             </div>
             
             <button class="btn" id="next-btn" ${
-              !this.selectedOption ? "disabled" : ""
+              this.getCurrentQuestion().type === 'multi' 
+                ? (this.selectedOptions.length === 0 ? "disabled" : "")
+                : (!this.selectedOption ? "disabled" : "")
             }>
               ${
                 this.currentQuestion === this.surveyData.questions.length - 1
@@ -189,14 +169,32 @@ class ProductSurvey {
     `;
   }
 
+  renderStartScreen() {
+    this.block.innerHTML = `
+      <div class="product-survey-container">
+        <div class="survey-card">
+          <div class="start-screen">
+            <h1>What Mammotome Marker is right for your patient?</h1>
+            <p>Take our quick assessment to find the perfect marker solution for your specific needs.</p>
+            <button class="btn btn-primary" id="start-survey-btn">Start Assessment</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.block.querySelector("#start-survey-btn").addEventListener("click", () => {
+      this.showStartScreen = false;
+      this.render();
+      this.attachEventListeners();
+    });
+  }
+
   getCurrentQuestion() {
     return this.surveyData.questions[this.currentQuestion];
   }
 
   getProgress() {
-    return (
-      ((this.currentQuestion + 1) / this.surveyData.questions.length) * 100
-    );
+    return ((this.currentQuestion + 1) / this.surveyData.questions.length) * 100;
   }
 
   attachEventListeners() {
@@ -217,89 +215,93 @@ class ProductSurvey {
 
   selectOption(optionIndex) {
     const option = this.getCurrentQuestion().options[optionIndex];
-    this.selectedOption = option;
+    const currentQuestion = this.getCurrentQuestion();
+    const isMulti = currentQuestion.type === 'multi';
+    
+    if (isMulti) {
+      const existingIndex = this.selectedOptions.findIndex(opt => opt.text === option.text);
+      existingIndex >= 0 ? this.selectedOptions.splice(existingIndex, 1) : this.selectedOptions.push(option);
+    } else {
+      this.selectedOption = option;
+      this.selectedOptions = [];
+    }
 
+    // Update UI for all options
     this.block.querySelectorAll(".option").forEach((opt, index) => {
-      opt.classList.toggle("selected", index === optionIndex);
+      const isSelected = isMulti 
+        ? this.selectedOptions.some(selectedOpt => selectedOpt.text === currentQuestion.options[index].text)
+        : index === optionIndex;
+      
+      opt.classList.toggle("selected", isSelected);
+      const indicator = opt.querySelector(isMulti ? '.checkbox' : '.radio');
+      if (indicator) indicator.classList.toggle('checked', isSelected);
     });
 
-    this.block.querySelector("#next-btn").disabled = false;
+    // Update next button state
+    this.block.querySelector("#next-btn").disabled = isMulti ? this.selectedOptions.length === 0 : !this.selectedOption;
   }
 
   previousQuestion() {
     if (this.currentQuestion > 0) {
       this.currentQuestion--;
       this.selectedOption = null;
+      this.selectedOptions = [];
       this.render();
       this.attachEventListeners();
     }
   }
 
   nextQuestion() {
-    if (!this.selectedOption) return;
+    const currentQuestion = this.getCurrentQuestion();
+    const isValidSelection = currentQuestion.type === 'multi' ? this.selectedOptions.length > 0 : this.selectedOption;
+    if (!isValidSelection) return;
 
-    const newAnswers = [...this.answers];
-    const existingAnswerIndex = newAnswers.findIndex(
-      (answer) => answer.questionId === this.getCurrentQuestion().id
-    );
+    const answerData = {
+      questionId: currentQuestion.id,
+      answer: currentQuestion.type === 'multi' ? this.selectedOptions.map(opt => opt.text) : this.selectedOption.text,
+      type: currentQuestion.type
+    };
 
-    if (existingAnswerIndex >= 0) {
-      newAnswers[existingAnswerIndex] = {
-        questionId: this.getCurrentQuestion().id,
-        answer: this.selectedOption.text,
-      };
+    const existingIndex = this.answers.findIndex(answer => answer.questionId === currentQuestion.id);
+    if (existingIndex >= 0) {
+      this.answers[existingIndex] = answerData;
     } else {
-      newAnswers.push({
-        questionId: this.getCurrentQuestion().id,
-        answer: this.selectedOption.text,
-      });
+      this.answers.push(answerData);
     }
-
-    this.answers = newAnswers;
 
     if (this.currentQuestion === this.surveyData.questions.length - 1) {
       this.showResults();
     } else {
       this.currentQuestion++;
       this.selectedOption = null;
+      this.selectedOptions = [];
       this.render();
       this.attachEventListeners();
     }
   }
 
   calculateResults() {
-    const scores = {};
+    const scores = Object.fromEntries(Object.keys(this.surveyData.products).map(product => [product, 0]));
 
-    Object.keys(this.surveyData.products).forEach((product) => {
-      scores[product] = 0;
-    });
+    this.answers.forEach(answer => {
+      const question = this.surveyData.questions.find(q => q.id === answer.questionId);
+      if (!question) return;
 
-    this.answers.forEach((answer) => {
-      const question = this.surveyData.questions.find(
-        (q) => q.id === answer.questionId
-      );
-      if (question) {
-        const selectedOption = question.options.find(
-          (opt) => opt.text === answer.answer
-        );
+      const answerTexts = Array.isArray(answer.answer) ? answer.answer : [answer.answer];
+      answerTexts.forEach(answerText => {
+        const selectedOption = question.options.find(opt => opt.text === answerText);
         if (selectedOption) {
-          Object.keys(selectedOption.scores).forEach((product) => {
-            scores[product] += selectedOption.scores[product];
+          Object.entries(selectedOption.scores).forEach(([product, score]) => {
+            scores[product] += score;
           });
         }
-      }
+      });
     });
 
     const maxScore = Math.max(...Object.values(scores));
-    const recommendedProduct = Object.keys(scores).find(
-      (product) => scores[product] === maxScore
-    );
+    const recommendedProduct = Object.keys(scores).find(product => scores[product] === maxScore);
 
-    return {
-      scores,
-      recommendedProduct,
-      productDetails: this.surveyData.products[recommendedProduct],
-    };
+    return { scores, recommendedProduct, productDetails: this.surveyData.products[recommendedProduct] };
   }
 
   showResults() {
@@ -440,56 +442,29 @@ class ProductSurvey {
     }
   }
 
-  showThankYouYes() {
-    const thankYouMessage =
-      this.surveyData.thankYouYes ||
-      "Thank you for your interest! A sales representative will contact you within 24 hours.";
-
-    this.block.innerHTML = `
-      <div class="product-survey-container">
-        <div class="survey-card">
-          <div class="thank-you-container">
-            <h2>Thank You!</h2>
-            <p>${thankYouMessage}</p>
-            <button class="btn" id="restart-btn">Take Survey Again</button>
-          </div>
+  showThankYou(isYes = true) {
+    const message = isYes ? this.surveyData.thankYouYes || "Thank you! A sales representative will contact you within 24 hours." 
+                          : this.surveyData.thankYouNo || "Thank you for taking our survey!";
+    
+    this.block.innerHTML = `<div class="product-survey-container">
+      <div class="survey-card">
+        <div class="thank-you-container">
+          <h2>Thank You!</h2>
+          <p>${message}</p>
+          <button class="btn" id="restart-btn">Take Survey Again</button>
         </div>
       </div>
-    `;
+    </div>`;
 
-    this.block.querySelector("#restart-btn").addEventListener("click", () => {
-      this.restart();
-    });
+    this.block.querySelector("#restart-btn").addEventListener("click", () => this.restart());
   }
 
-  showThankYouNo() {
-    const thankYouMessage =
-      this.surveyData.thankYouNo ||
-      "Thank you for taking our survey! We hope you found the product recommendation helpful.";
-
-    this.block.innerHTML = `
-      <div class="product-survey-container">
-        <div class="survey-card">
-          <div class="thank-you-container">
-            <h2>Thank You!</h2>
-            <p>${thankYouMessage}</p>
-            <button class="btn" id="restart-btn">Take Survey Again</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    this.block.querySelector("#restart-btn").addEventListener("click", () => {
-      this.restart();
-    });
-  }
+  showThankYouYes() { this.showThankYou(true); }
+  showThankYouNo() { this.showThankYou(false); }
 
   restart() {
-    this.currentQuestion = 0;
-    this.answers = [];
-    this.selectedOption = null;
+    Object.assign(this, { currentQuestion: 0, answers: [], selectedOption: null, selectedOptions: [], showStartScreen: true });
     this.render();
-    this.attachEventListeners();
   }
 }
 
