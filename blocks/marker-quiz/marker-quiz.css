@@ -290,6 +290,71 @@ main .marker-quiz .mktoForm p {
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
+/* Checkbox and Radio Button Styles */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.checkbox, .radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+  background: white;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.radio {
+  border-radius: 50%;
+}
+
+.checkbox.checked, .radio.checked {
+  background: white;
+  border-color: #5F8DDA;
+}
+
+.checkbox.checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #5F8DDA;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.radio.checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #5F8DDA;
+  border-radius: 50%;
+}
+
+.option-text {
+  flex: 1;
+}
+
+/* Multi-choice specific styling */
+.options-container.multi-choice .option:hover .checkbox,
+.options-container.multi-choice .option:hover .radio {
+  border-color: #5F8DDA;
+}
+
+.options-container.single-choice .option:hover .checkbox,
+.options-container.single-choice .option:hover .radio {
+  border-color: #5F8DDA;
+}
+
 .navigation {
   display: flex;
   justify-content: space-between;
