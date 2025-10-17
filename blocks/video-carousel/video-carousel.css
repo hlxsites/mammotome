@@ -96,7 +96,7 @@
 
 .video-carousel .slider > div > div img {
     width: 100%;
-    height: auto;
+    height: 280px;
     object-fit: cover;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);

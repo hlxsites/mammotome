@@ -146,12 +146,12 @@ const addClickHandler = (video, videoPath) => {
 };
 
 /**
- * Optimize thumbnails for carousel display
+ * Optimize thumbnails for carousel display with fixed height for uniform appearance
  * @param block
  */
 const optimizeThumbnails = (block) => {
+  const THUMBNAIL_HEIGHT = 280; // Fixed height for all thumbnails
   block.querySelectorAll("img").forEach((img) => {
-    const imgHeight = Math.floor((img.height * 1024) / img.width);
     img
       .closest("picture")
       ?.replaceWith(
@@ -159,8 +159,8 @@ const optimizeThumbnails = (block) => {
           img.src,
           'Video Thumbnail',
           true,
-          img.width,
-          imgHeight,
+          1024,
+          THUMBNAIL_HEIGHT,
         ),
       );
   });
@@ -193,67 +193,53 @@ function moveArrayElements(arr, numPositions) {
   return arr;
 }
 
-/**
- * Updates the style properties of a slide child element.
- * @param {HTMLElement} child - The slide child element.
- * @param {number} index - The index of the element.
- * @param {number} centerIndex - The index of the center video (0-based).
- * @returns {void}
- */
 const updateChildStyle = (child, index, centerIndex = 1) => {
   const showSlide = index < 3 ? 'flex' : 'none';
   const slideIndex = index === centerIndex ? 3 : 1;
-  
-  // Apply different styles based on position relative to center
+
   if (index === centerIndex) {
-    // Center slide - highlighted
     child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex}; transform: scale(1); opacity: 1; filter: none;`;
-    
-    // Update thumbnail size for center video
+
     const thumbnailImg = child.querySelector('img');
     if (thumbnailImg) {
       thumbnailImg.style.maxWidth = '500px';
       thumbnailImg.style.minWidth = '400px';
     }
-    
-    // Update title styling for center video
+
     const titleDiv = child.querySelector('div:first-child');
     if (titleDiv) {
       titleDiv.style.fontSize = 'var(--mt-heading-font-size-xl)';
       titleDiv.style.fontWeight = 'var(--mt-font-weight-bold)';
       titleDiv.style.opacity = '1';
     }
-    
+
     const titleH3 = child.querySelector('div:first-child h3');
     if (titleH3) {
       titleH3.style.fontSize = 'var(--mt-heading-font-size-xl)';
       titleH3.style.marginBottom = '20px';
     }
-    
+
   } else if (index < centerIndex || (index > centerIndex && index < 3)) {
-    // Side slides - cropped and blurred
     child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex}; transform: scale(0.8); opacity: 0.6; filter: blur(2px);`;
-    
-    // Update thumbnail size for side videos
+
     const thumbnailImg = child.querySelector('img');
     if (thumbnailImg) {
       thumbnailImg.style.maxWidth = '300px';
       thumbnailImg.style.minWidth = '250px';
     }
-    
-    // Update title styling for side videos
+
     const titleDiv = child.querySelector('div:first-child');
     if (titleDiv) {
       titleDiv.style.fontSize = 'var(--mt-heading-font-size-m)';
       titleDiv.style.opacity = '0.7';
     }
-    
+
     const titleH3 = child.querySelector('div:first-child h3');
     if (titleH3) {
       titleH3.style.fontSize = 'var(--mt-heading-font-size-l)';
       titleH3.style.marginBottom = '15px';
     }
-    
+
   } else {
     child.style.cssText = `order: ${index + 1}; display: none;`;
   }
@@ -286,7 +272,7 @@ const arrowNavigation = (videoCarousel, event) => {
   if (isLargeScreen) {
     const direction = event.currentTarget.id === 'slider-arrow-left' ? 1 : -1;
     moveArrayElements(sliderChildren, direction);
-    
+
     // Update styles with center index always being 1 (middle position)
     sliderChildren.forEach((child, index) => {
       updateChildStyle(child, index, 1);

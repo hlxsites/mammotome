@@ -1,0 +1,38 @@
+HERO VIDEO TEST - WORD DOCUMENT TEMPLATE
+
+Copy and paste this table structure into your Word document:
+
+┌─────────────────────────────────────────────────────────┐
+│                    Hero-video-test                      │
+├───────────────────────────┬─────────────────────────────┤
+│ https://player.vimeo.com/ │ Neoprobe® Gamma Detection   │
+│ video/1127342102          │ System                      │
+│                           │                             │
+│ [Insert your poster image]│ With over 20 years of       │
+│                           │ excellence, the Neoprobe®   │
+│ [Insert placeholder image]│ GDS is dependable, simple,  │
+│                           │ and accurate. 1,2            │
+│                           │                             │
+│                           │ **Learn More**              │
+│                           │ https://player.vimeo.com/   │
+│                           │ video/1127342102            │
+└───────────────────────────┴─────────────────────────────┘
+
+STEP-BY-STEP INSTRUCTIONS:
+
+1. In Word, go to Insert → Table → 2 columns, 2 rows
+2. Fill the table exactly as shown above
+3. Replace the Vimeo URLs with your actual video URLs
+4. Replace the image placeholders with your actual images
+5. Customize the text content as needed
+
+IMPORTANT:
+- Block name must be exactly "Hero-video-test" (case-sensitive)
+- Must be a 2-column table
+- Both Vimeo URLs must be valid
+- The "Learn More" text should be bold (**Learn More**)
+
+This structure will be detected by the JavaScript and create:
+- Background Vimeo video from first column
+- Overlay content with heading and description
+- "Learn More" button that opens fullscreen modal

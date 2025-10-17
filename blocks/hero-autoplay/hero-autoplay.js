@@ -44,8 +44,8 @@ const buildVimeoBackground = (previewUrl) => {
   container.className = 'video-hero-background';
 
   const iframe = document.createElement('iframe');
+  iframe.className = 'hero-autoplay-background-iframe';
   iframe.src = fullSrc;
-  iframe.style.cssText = 'position:absolute;width:100%;height:100%;top:0;left:0;border:0;object-fit:cover;pointer-events:none;';
   iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
   iframe.setAttribute('title', document.title);
   iframe.setAttribute('loading', 'eager');

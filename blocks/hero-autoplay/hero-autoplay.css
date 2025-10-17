@@ -5,7 +5,7 @@ main .section {
 main .section.hero-autoplay-container {
   position: relative;
   width: 100vw;
-  height: 700px;
+  height: 1200px;
   padding: 0;
   overflow: hidden;
 }
@@ -17,7 +17,8 @@ main .section.hero-autoplay-container::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(to right, rgba(255, 255, 255, 1),rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3), transparent);
   z-index: 1;
   pointer-events: none;
 }
@@ -47,18 +48,6 @@ main .section.hero-autoplay-container::before {
   display: grid;
   place-items: center;
   pointer-events: none;
-}
-
-.asset-viewer-frame .video-modal {
-  position: relative;
-  pointer-events: auto;
-  width: min(92vw, 1280px);
-  aspect-ratio: 16 / 9;
-  max-height: 80vh;
-  background: #000;
-  border-radius: 12px;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, .35);
-  overflow: hidden;
 }
 
 .asset-viewer-frame .hero-autoplay-iframe {
@@ -91,14 +80,25 @@ main .section.hero-autoplay-container::before {
 }
 
 .video-hero-background {
-  position: absolute;
   width: 100%;
   height: 100%;
   z-index: -1;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   pointer-events: none;
+}
+
+.hero-autoplay-background-iframe {
+  position: absolute;
+  top: -7%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 0;
+  object-fit: cover;
+  min-height: 1300px;
 }
 
 .hero-autoplay-container .icon-playvideo {
@@ -147,24 +147,73 @@ main .section.hero-autoplay-container::before {
 .button-row {
   position: absolute;
   inset-inline-start: 7%;
-  inset-block-start: 70%;
+  inset-block-start: 50%;
 }
 
-/* main .section.hero-autoplay-container + .section {
-  margin-top: 1% !important;
-} */
+@media (max-width: 1536px) {
+  .hero-autoplay-background-iframe {
+    top: -26%;  
+    min-height: 1000px;
+  }
+}
+
 
 @media (max-width: 1024px) {
-  .button-row {
-    top: 65%;
+  main .section.hero-autoplay-container {
+    height: 700px;
   }
 
-  .video-hero-background {
-    top: 35%;
+  .hero-autoplay-background-iframe {
+    top: -30%;
+  }
+
+  .hero-autoplay-container .icon-playvideo {
+    top: 30%;
+  }
+
+  .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-xl);
+    width: 60%;
+  }
+
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-l);
   }
 
   .hero-copy {
     inset-block-start: 10%;
+  }
+
+  .button-row {
+    top: 50%;
+  }
+}
+
+/* highest percentage of users in 2025 */
+@media (max-width: 800px) {
+  .hero-autoplay-background-iframe {
+    min-height: 1000px;
+    top: -32%;
+  }
+
+  .hero-autoplay-container .icon-playvideo { 
+    top: 14%;
+  }
+  
+  .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-mobile-xl);
+  }
+
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+  }
+
+  .hero-copy {
+    inset-block-start: 5%;
+  }
+
+  .button-row {
+    top: 23%;
   }
 }
 
@@ -174,15 +223,26 @@ main .section.hero-autoplay-container::before {
     margin-bottom: 5%;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 1rem;
   }
 
   .video-hero-background {
     position: relative;
     width: 100%;
-    height: auto;
-    min-height: 200px;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    min-height: unset;
     order: 1;
+    z-index: 1;
+  }
+
+  .hero-autoplay-background-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: unset;
   }
 
   .hero-copy {
@@ -191,7 +251,7 @@ main .section.hero-autoplay-container::before {
     inset-inline-start: unset;
     inset-block-start: unset;
     order: 2;
-    margin-top: -0.25rem;
+    margin-top: 0;
   }
 
   .hero-copy,
@@ -203,14 +263,14 @@ main .section.hero-autoplay-container::before {
   .hero-copy h1 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
-    padding: 5% 10%;
+    padding: 0 10%;
     margin-bottom: 0.5rem;
   }
 
   .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
-    padding: 0 5% 5% 5%;
+    padding: 0 5%;
     margin-bottom: 1rem;
   }
 
@@ -219,6 +279,7 @@ main .section.hero-autoplay-container::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 2;
   }
 
   .hero-autoplay-container .icon-playvideo svg {
@@ -231,7 +292,7 @@ main .section.hero-autoplay-container::before {
     width: 90%;
     margin: 0 auto;
     display: block;
-    margin-top: 0.5rem;
+    margin-top: 0;
     inset-inline-start: unset;
     inset-block-start: unset;
     order: 3;
