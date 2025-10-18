@@ -10,6 +10,39 @@ const HTML_PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 
   + '    <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>\n'
   + '</svg>';
 
+/**
+ * Converts a Vimeo URL to the embeddable format.
+ * Handles both regular Vimeo URLs (vimeo.com/{id}) and player URLs (player.vimeo.com/video/{id})
+ * @param {string} url - The Vimeo URL to normalize
+ * @returns {string} - The embeddable Vimeo URL
+ */
+const normalizeVimeoUrl = (url) => {
+  try {
+    const urlObj = new URL(url);
+
+    // Check if it's already in the correct format
+    if (urlObj.hostname === 'player.vimeo.com' && urlObj.pathname.startsWith('/video/')) {
+      return url;
+    }
+
+    // Handle regular vimeo.com URLs
+    if (urlObj.hostname === 'vimeo.com' || urlObj.hostname === 'www.vimeo.com') {
+      // Extract video ID from pathname (e.g., /1126943910 or /video/1126943910)
+      const pathMatch = urlObj.pathname.match(/\/(?:video\/)?(\d+)/);
+      if (pathMatch && pathMatch[1]) {
+        const videoId = pathMatch[1];
+        return `https://player.vimeo.com/video/${videoId}`;
+      }
+    }
+
+    // Return original URL if we can't parse it
+    return url;
+  } catch (e) {
+    console.warn('Failed to parse Vimeo URL:', url, e);
+    return url;
+  }
+};
+
 const getVimeoLinks = (block) => {
   const links = Array.from(block.querySelectorAll('a'));
   let previewLink = '';
@@ -17,9 +50,11 @@ const getVimeoLinks = (block) => {
 
   links.forEach((link) => {
     const { href } = link;
-    if (href.includes('vimeo.com/video/')) {
-      if (!previewLink) previewLink = href;
-      else if (!modalLink) modalLink = href;
+    // Check for any Vimeo URL
+    if (href.includes('vimeo.com')) {
+      const normalizedUrl = normalizeVimeoUrl(href);
+      if (!previewLink) previewLink = normalizedUrl;
+      else if (!modalLink) modalLink = normalizedUrl;
       // Hide the link and its preceding label (e.g., "Preview:", "Video:")
       const prev = link.previousSibling;
       if (prev && prev.nodeType === Node.TEXT_NODE) prev.textContent = '';
@@ -173,7 +208,7 @@ const loadVideo = async (block, videoLink) => {
   // Compose
   shell.append(iframe, playOverlay);
   frame.appendChild(shell);
-  
+
   // Ensure iframe loads and is visible
   iframe.onload = () => {
     console.log('Iframe loaded successfully');

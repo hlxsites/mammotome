@@ -193,11 +193,12 @@ main .section.hero-autoplay-container::before {
 @media (max-width: 800px) {
   .hero-autoplay-background-iframe {
     min-height: 1000px;
-    top: -32%;
+    top: -40%;
   }
 
   .hero-autoplay-container .icon-playvideo { 
-    top: 14%;
+    top: 24%;
+    left: 70%;
   }
   
   .hero-copy h1 {
@@ -209,11 +210,11 @@ main .section.hero-autoplay-container::before {
   }
 
   .hero-copy {
-    inset-block-start: 5%;
+    inset-block-start: 10%;
   }
 
   .button-row {
-    top: 23%;
+    top: 44%;
   }
 }
 
