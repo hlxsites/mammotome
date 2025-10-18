@@ -5,7 +5,7 @@ main .section {
 main .section.hero-autoplay-container {
   position: relative;
   width: 100vw;
-  height: 1200px;
+  height: 900px;
   padding: 0;
   overflow: hidden;
 }
@@ -88,7 +88,7 @@ main .section.hero-autoplay-container::before {
 
 .hero-autoplay-background-iframe {
   position: absolute;
-  top: -7%;
+  top: -10%;
   left: 0;
   width: 100%;
   height: 100%;
@@ -121,7 +121,7 @@ main .section.hero-autoplay-container::before {
 .hero-copy {
   position: absolute;
   inset-inline-start: 7%;
-  inset-block-start: 22%;
+  inset-block-start: 27%;
 }
 
 .hero-copy,
@@ -147,13 +147,28 @@ main .section.hero-autoplay-container::before {
 .button-row {
   position: absolute;
   inset-inline-start: 7%;
-  inset-block-start: 50%;
+  inset-block-start: 64%;
 }
 
 @media (max-width: 1536px) {
   .hero-autoplay-background-iframe {
     top: -26%;  
-    min-height: 1000px;
+  }
+
+  .hero-copy {
+    inset-block-start: 20%;
+  }
+
+  .hero-copy h1 {
+    width: 50%;
+  }
+
+  .button-row {
+    inset-block-start: 60%;
+  }
+
+  .hero-autoplay-container .icon-playvideo {
+    top: 38%;
   }
 }
 
@@ -164,7 +179,7 @@ main .section.hero-autoplay-container::before {
   }
 
   .hero-autoplay-background-iframe {
-    top: -30%;
+    top: -55%;
   }
 
   .hero-autoplay-container .icon-playvideo {
@@ -214,11 +229,17 @@ main .section.hero-autoplay-container::before {
   }
 
   .button-row {
-    top: 44%;
+    top: 40%;
   }
 }
 
 @media (max-width: 460px) {
+
+  main .section.hero-autoplay-container::before {
+     
+      background: none;
+    }
+
   main .section.hero-autoplay-container {
     height: auto;
     margin-bottom: 5%;
@@ -231,7 +252,7 @@ main .section.hero-autoplay-container::before {
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%; 
     min-height: unset;
     order: 1;
     z-index: 1;
@@ -252,7 +273,7 @@ main .section.hero-autoplay-container::before {
     inset-inline-start: unset;
     inset-block-start: unset;
     order: 2;
-    margin-top: 0;
+    margin: 10% 0;
   }
 
   .hero-copy,
@@ -277,7 +298,7 @@ main .section.hero-autoplay-container::before {
 
   .hero-autoplay-container .icon-playvideo {
     position: absolute;
-    top: 50%;
+    top: 23%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
