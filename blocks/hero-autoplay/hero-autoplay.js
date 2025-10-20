@@ -344,7 +344,8 @@ export default async function decorate(block) {
     playBtn.innerHTML = HTML_PLAY_ICON;
     playBtn.setAttribute('role', 'button');
     playBtn.setAttribute('tabindex', '0');
-    block.append(playBtn);
+    // Append to video background for proper mobile centering
+    previewBg.append(playBtn);
   }
   const trigger = () => loadVideo(block, modalLink);
   block.addEventListener('click', (e) => {
