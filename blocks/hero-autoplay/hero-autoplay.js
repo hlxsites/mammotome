@@ -2,7 +2,6 @@ import { loadCSS, decorateIcons } from '../../scripts/lib-franklin.js';
 
 let playerCssLoaded = false;
 let removeVideo;
-let escHandler;
 
 const CSS_CLASS_NAME_ICON_PLAY_VIDEO = 'icon-playvideo';
 const HTML_PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="99.2px" height="99.2px">\n'
@@ -21,12 +20,18 @@ const normalizeVimeoUrl = (url) => {
     const urlObj = new URL(url);
 
     // Check if it's already in the correct format
-    if (urlObj.hostname === 'player.vimeo.com' && urlObj.pathname.startsWith('/video/')) {
+    if (
+      urlObj.hostname === 'player.vimeo.com'
+      && urlObj.pathname.startsWith('/video/')
+    ) {
       return url;
     }
 
     // Handle regular vimeo.com URLs
-    if (urlObj.hostname === 'vimeo.com' || urlObj.hostname === 'www.vimeo.com') {
+    if (
+      urlObj.hostname === 'vimeo.com'
+      || urlObj.hostname === 'www.vimeo.com'
+    ) {
       // Extract video ID from pathname (e.g., /1126943910 or /video/1126943910)
       const pathMatch = urlObj.pathname.match(/\/(?:video\/)?(\d+)/);
       if (pathMatch && pathMatch[1]) {
@@ -38,6 +43,7 @@ const normalizeVimeoUrl = (url) => {
     // Return original URL if we can't parse it
     return url;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.warn('Failed to parse Vimeo URL:', url, e);
     return url;
   }
@@ -94,20 +100,26 @@ const buildVimeoBackground = (previewUrl) => {
 
 const ensurePlayerCSSLoaded = () => {
   if (!playerCssLoaded) {
-    loadCSS(`${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`, () => {
-      playerCssLoaded = true;
-    });
+    loadCSS(
+      `${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`,
+      () => {
+        playerCssLoaded = true;
+      },
+    );
   }
 };
-// (optional) put this once near top to preload Vimeo API if you’ll use it later
+// (optional) put this once near top to preload Vimeo API if you'll use it later
 let vimeoApiReady;
 function ensureVimeoAPI() {
   if (window.Vimeo?.Player) return Promise.resolve();
-  return (vimeoApiReady ||= new Promise((res, rej) => {
+  // eslint-disable-next-line no-return-assign
+  return vimeoApiReady ||= new Promise((res, rej) => {
     const s = document.createElement('script');
     s.src = 'https://player.vimeo.com/api/player.js';
-    s.onload = res; s.onerror = rej; document.head.appendChild(s);
-  }));
+    s.onload = res;
+    s.onerror = rej;
+    document.head.appendChild(s);
+  });
 }
 
 const loadVideo = async (block, videoLink) => {
@@ -211,10 +223,12 @@ const loadVideo = async (block, videoLink) => {
 
   // Ensure iframe loads and is visible
   iframe.onload = () => {
+    // eslint-disable-next-line no-console
     console.log('Iframe loaded successfully');
     iframe.style.opacity = '1';
   };
   iframe.onerror = () => {
+    // eslint-disable-next-line no-console
     console.error('Iframe failed to load');
   };
   iframe.style.opacity = '0';
@@ -223,6 +237,9 @@ const loadVideo = async (block, videoLink) => {
   }, 100);
 
   // Close handlers
+  const escHandler = (e) => {
+    if (e.key === 'Escape') removeVideo();
+  };
   removeVideo = () => {
     overlay.removeEventListener('click', removeVideo);
     close.removeEventListener('click', removeVideo);
@@ -231,7 +248,6 @@ const loadVideo = async (block, videoLink) => {
     toolbar.remove();
     overlay.remove();
   };
-  const escHandler = (e) => { if (e.key === 'Escape') removeVideo(); };
   overlay.addEventListener('click', removeVideo);
   close.addEventListener('click', removeVideo);
   window.addEventListener('keydown', escHandler);
@@ -247,6 +263,7 @@ const loadVideo = async (block, videoLink) => {
         await player.play();
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.warn('Could not play with audio, trying muted:', error);
       try {
         // Fallback: play muted if audio autoplay is blocked
@@ -259,11 +276,13 @@ const loadVideo = async (block, videoLink) => {
             try {
               await player.setMuted(false);
             } catch (e) {
+              // eslint-disable-next-line no-console
               console.warn('Could not unmute video:', e);
             }
           }, 100);
         }
       } catch (fallbackError) {
+        // eslint-disable-next-line no-console
         console.error('Could not start video playback:', fallbackError);
       }
     } finally {
@@ -272,7 +291,10 @@ const loadVideo = async (block, videoLink) => {
   };
   playOverlay.addEventListener('click', startPlayback);
   playOverlay.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startPlayback(); }
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      startPlayback();
+    }
   });
 };
 
@@ -297,7 +319,9 @@ const mainCopy = (video) => {
 };
 
 const createButtonRow = (video) => {
-  const links = Array.from(video.querySelectorAll('a')).filter((a, idx) => idx !== 0);
+  const links = Array.from(video.querySelectorAll('a')).filter(
+    (a, idx) => idx !== 0,
+  );
 
   if (links.length > 0) {
     const buttonRow = document.createElement('div');

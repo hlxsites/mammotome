@@ -1,4 +1,8 @@
-import { createOptimizedPicture, decorateIcons, loadCSS } from '../../scripts/lib-franklin.js';
+import {
+  createOptimizedPicture,
+  decorateIcons,
+  loadCSS,
+} from '../../scripts/lib-franklin.js';
 
 let playerCssLoaded = false;
 let removeVideo;
@@ -38,7 +42,10 @@ const onPlayerCssLoaded = () => {
 
 const ensurePlayerCSSLoaded = () => {
   if (!playerCssLoaded) {
-    loadCSS(`${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`, onPlayerCssLoaded);
+    loadCSS(
+      `${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`,
+      onPlayerCssLoaded,
+    );
   }
 };
 
@@ -155,7 +162,9 @@ const mainCopy = (video) => {
 };
 
 const createButtonRow = (video) => {
-  const links = Array.from(video.querySelectorAll('a')).filter((a, idx) => idx !== 0);
+  const links = Array.from(video.querySelectorAll('a')).filter(
+    (a, idx) => idx !== 0,
+  );
 
   if (links.length > 0) {
     const buttonRow = document.createElement('div');

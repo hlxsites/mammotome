@@ -6,7 +6,6 @@
 .hero-image,
 .hero-image picture {
   object-fit: cover;
-  -webkit-user-select: none;
   user-select: none;
   position: relative;
 }
@@ -17,7 +16,7 @@
 }
 
 /* Hero video container layout */
-.hero-video-container > div {
+.hero-video-container>div {
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -37,7 +36,7 @@
   display: block;
 }
 
-.hero-video-container .icon-playvideo {
+.icon-playvideo {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -49,27 +48,27 @@
 }
 
 /* Hero copy h2 stacked beneath video */
-.hero-video-container .hero-copy {
+.hero-copy {
   position: relative;
   width: 100%;
   order: 2;
   padding: 0 2rem;
 }
 
-.hero-video-container .hero-copy h1 {
+.hero-copy h1 {
   color: var(--mt-heading-color-primary);
   text-align: left;
   margin-bottom: 1rem;
 }
 
-.hero-video-container .hero-copy h2 {
+.hero-copy h2 {
   font-weight: var(--mt-font-weight-thin);
   text-align: left;
   margin-bottom: 1.5rem;
 }
 
 /* Buttons below h2 */
-.hero-video-container .button-row {
+.button-row {
   position: relative;
   width: 100%;
   order: 3;
@@ -79,7 +78,7 @@
   flex-wrap: wrap;
 }
 
-.hero-video-container .button-row .button {
+.button-row .button {
   flex: 1;
   min-width: 200px;
 }
@@ -90,65 +89,65 @@ p>a.hero-video:nth-child(1) {
 
 /* Laptops */
 @media (max-width: 1536px) {
-  .hero-video-container > div {
+  .hero-video-container>div {
     gap: 1.5rem;
   }
 
-  .hero-video-container .hero-copy {
+  .hero-copy {
     padding: 0 1.5rem;
   }
 
-  .hero-video-container .button-row {
+  .button-row {
     padding: 0 1.5rem;
   }
 }
 
 /* Tablets iPad Pro and Smaller */
 @media (max-width:1024px) {
-  .hero-video-container > div {
+  .hero-video-container>div {
     gap: 1.25rem;
   }
 
-  .hero-video-container .hero-copy h1 {
+  .hero-copy h1 {
     font-size: var(--mt-heading-font-size-xl);
   }
 
-  .hero-video-container .hero-copy h2 {
+  .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-xl);
   }
 
-  .hero-video-container .hero-copy {
+  .hero-copy {
     padding: 0 1.25rem;
   }
 
-  .hero-video-container .button-row {
+  .button-row {
     padding: 0 1.25rem;
   }
 }
 
 /* Mobile devices */
 @media (max-width: 768px) {
-  .hero-video-container > div {
+  .hero-video-container>div {
     gap: 0.5rem;
   }
 
-  .hero-video-container .hero-copy {
+  .hero-copy {
     padding: 0 1rem;
     margin-top: -0.5rem;
   }
 
-  .hero-video-container .button-row {
+  .button-row {
     padding: 0 1rem;
     flex-direction: column;
   }
 
-  .hero-video-container .button-row .button {
+  .button-row .button {
     min-width: unset;
   }
 }
 
 @media (max-width: 460px) {
-  .hero-video-container > div {
+  .hero-video-container>div {
     gap: 0.25rem;
   }
 
@@ -156,35 +155,35 @@ p>a.hero-video:nth-child(1) {
     object-fit: scale-down;
   }
 
-  .hero-video-container .hero-video {
+  .hero-video {
     height: auto;
     margin-bottom: 0;
   }
 
-  .hero-video-container .hero-copy {
+  .hero-copy {
     padding: 0 1rem;
     margin-top: -0.25rem;
   }
 
-  .hero-video-container .hero-copy h1 {
+  .hero-copy h1 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
     margin-bottom: 0.5rem;
   }
 
-  .hero-video-container .hero-copy h2 {
+  .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-l);
     text-align: center;
     padding: 0;
     margin-bottom: 1rem;
   }
 
-  .hero-video-container .icon-playvideo svg {
+  .icon-playvideo svg {
     width: 50%;
     height: auto;
   }
 
-  .hero-video-container .button-row {
+  .button-row {
     width: 90%;
     margin: 0 auto;
     padding-top: 0.5rem;
