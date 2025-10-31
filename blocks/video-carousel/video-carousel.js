@@ -202,36 +202,42 @@ const updateChildStyle = (child, index, centerIndex = 1) => {
 
     const thumbnailImg = child.querySelector('img');
     if (thumbnailImg) {
-      thumbnailImg.style.maxWidth = '500px';
+      thumbnailImg.style.maxWidth = '400px';
       thumbnailImg.style.minWidth = '400px';
     }
 
     const titleDiv = child.querySelector('div:first-child');
     if (titleDiv) {
-      titleDiv.style.fontSize = 'var(--mt-heading-font-size-xl)';
+      titleDiv.style.fontSize = 'var(--mt-heading-font-size-l)';
       titleDiv.style.fontWeight = 'var(--mt-font-weight-bold)';
       titleDiv.style.opacity = '1';
+      titleDiv.style.minHeight = '80px';
+      titleDiv.style.maxHeight = '80px';
+      titleDiv.style.overflow = 'hidden';
     }
 
     const titleH3 = child.querySelector('div:first-child h3');
     if (titleH3) {
-      titleH3.style.fontSize = 'var(--mt-heading-font-size-xl)';
-      titleH3.style.marginBottom = '20px';
+      titleH3.style.fontSize = 'var(--mt-heading-font-size-l)';
+      titleH3.style.marginBottom = '15px';
     }
 
   } else if (index < centerIndex || (index > centerIndex && index < 3)) {
-    child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex}; transform: scale(0.8); opacity: 0.6; filter: blur(2px);`;
+    child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex}; transform: scale(1); opacity: 1; filter: none;`;
 
     const thumbnailImg = child.querySelector('img');
     if (thumbnailImg) {
-      thumbnailImg.style.maxWidth = '300px';
-      thumbnailImg.style.minWidth = '250px';
+      thumbnailImg.style.maxWidth = '400px';
+      thumbnailImg.style.minWidth = '400px';
     }
 
     const titleDiv = child.querySelector('div:first-child');
     if (titleDiv) {
-      titleDiv.style.fontSize = 'var(--mt-heading-font-size-m)';
+      titleDiv.style.fontSize = 'var(--mt-heading-font-size-l)';
       titleDiv.style.opacity = '0.7';
+      titleDiv.style.minHeight = '80px';
+      titleDiv.style.maxHeight = '80px';
+      titleDiv.style.overflow = 'hidden';
     }
 
     const titleH3 = child.querySelector('div:first-child h3');
