@@ -193,76 +193,28 @@ function moveArrayElements(arr, numPositions) {
   return arr;
 }
 
-const updateChildStyle = (child, index, centerIndex = 1) => {
+/**
+ * Updates the style properties of a slide child element.
+ * @param {HTMLElement} child - The slide child element.
+ * @param {number} index - The index of the element.
+ * @returns {void}
+ */
+const updateChildStyle = (child, index) => {
   const showSlide = index < 3 ? 'flex' : 'none';
-  const slideIndex = index === centerIndex ? 3 : 1;
-
-  if (index === centerIndex) {
-    child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex}; transform: scale(1); opacity: 1; filter: none;`;
-
-    const thumbnailImg = child.querySelector('img');
-    if (thumbnailImg) {
-      thumbnailImg.style.maxWidth = '400px';
-      thumbnailImg.style.minWidth = '400px';
-    }
-
-    const titleDiv = child.querySelector('div:first-child');
-    if (titleDiv) {
-      titleDiv.style.fontSize = 'var(--mt-heading-font-size-l)';
-      titleDiv.style.fontWeight = 'var(--mt-font-weight-bold)';
-      titleDiv.style.opacity = '1';
-      titleDiv.style.minHeight = '80px';
-      titleDiv.style.maxHeight = '80px';
-      titleDiv.style.overflow = 'hidden';
-    }
-
-    const titleH3 = child.querySelector('div:first-child h3');
-    if (titleH3) {
-      titleH3.style.fontSize = 'var(--mt-heading-font-size-l)';
-      titleH3.style.marginBottom = '15px';
-    }
-
-  } else if (index < centerIndex || (index > centerIndex && index < 3)) {
-    child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex}; transform: scale(1); opacity: 1; filter: none;`;
-
-    const thumbnailImg = child.querySelector('img');
-    if (thumbnailImg) {
-      thumbnailImg.style.maxWidth = '400px';
-      thumbnailImg.style.minWidth = '400px';
-    }
-
-    const titleDiv = child.querySelector('div:first-child');
-    if (titleDiv) {
-      titleDiv.style.fontSize = 'var(--mt-heading-font-size-l)';
-      titleDiv.style.opacity = '0.7';
-      titleDiv.style.minHeight = '80px';
-      titleDiv.style.maxHeight = '80px';
-      titleDiv.style.overflow = 'hidden';
-    }
-
-    const titleH3 = child.querySelector('div:first-child h3');
-    if (titleH3) {
-      titleH3.style.fontSize = 'var(--mt-heading-font-size-l)';
-      titleH3.style.marginBottom = '15px';
-    }
-
-  } else {
-    child.style.cssText = `order: ${index + 1}; display: none;`;
-  }
+  const slideIndex = index === 1 ? 3 : 1;
+  child.style.cssText = `order: ${index + 1}; display: ${showSlide}; z-index: ${slideIndex};`;
 };
 
 /**
  * Reorder the children of the slider and remove empty children for mobile view
- * @param sliderChildren
+ * @param videoCarousel
  * @returns {slideChildren}
  */
 const reorderChildren = (videoCarousel) => {
   videoCarousel.sliderChildren = videoCarousel
     .sliderChildren.filter((child) => child.innerHTML.trim() !== '');
 
-  videoCarousel.sliderChildren.forEach((child, index) => {
-    updateChildStyle(child, index, 1); // Center index is always 1
-  });
+  videoCarousel.sliderChildren.forEach(updateChildStyle);
   return videoCarousel.sliderChildren;
 };
 
@@ -273,21 +225,14 @@ const reorderChildren = (videoCarousel) => {
  */
 const arrowNavigation = (videoCarousel, event) => {
   const isLargeScreen = window.innerWidth > LARGE_SCREEN;
-  const sliderChildren = videoCarousel.getSlides();
+  const sliderChildren = isLargeScreen
+    ? videoCarousel.getSlides()
+    : reorderChildren(videoCarousel);
 
-  if (isLargeScreen) {
-    const direction = event.currentTarget.id === 'slider-arrow-left' ? 1 : -1;
-    moveArrayElements(sliderChildren, direction);
+  const increment = isLargeScreen ? 1 : 1;
+  const direction = event.currentTarget.id === 'slider-arrow-left' ? increment : -increment;
 
-    // Update styles with center index always being 1 (middle position)
-    sliderChildren.forEach((child, index) => {
-      updateChildStyle(child, index, 1);
-    });
-  } else {
-    // On mobile, use standard carousel navigation
-    const direction = event.currentTarget.id === 'slider-arrow-left' ? 1 : -1;
-    videoCarousel.moveSlide(direction);
-  }
+  moveArrayElements(sliderChildren, direction).forEach(updateChildStyle);
 };
 
 /**
@@ -310,7 +255,7 @@ const arrowNavOnClickEvents = (videoCarousel) => {
  */
 const initSlideOrder = (sliderChildren) => {
   sliderChildren.forEach((child, index) => {
-    updateChildStyle(child, index, 1); // Center index is always 1
+    child.setAttribute('style', `order: ${index + 1};`);
   });
 };
 
@@ -354,12 +299,17 @@ export default async function decorate(block) {
   
   videoCarousel.createSlideSlider();
   videoCarousel.setSliderIds();
-  initSlideOrder(videoCarousel.getSlides());
+  
+  // Initialize slide order and apply initial styles
+  const slides = videoCarousel.getSlides();
+  initSlideOrder(slides);
+  slides.forEach(updateChildStyle);
+  
   videoCarousel.setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
   
-  if (videoCarousel.getSlides().length > 1) videoCarousel.createArrowNav();
+  if (slides.length > 1) videoCarousel.createArrowNav();
   
-  videoCarousel.initSlider(false, false, true);
+  videoCarousel.initSlider(false, false, false);
   
-  if (videoCarousel.getSlides().length > 1) arrowNavOnClickEvents(videoCarousel);
+  if (slides.length > 1) arrowNavOnClickEvents(videoCarousel);
 }
