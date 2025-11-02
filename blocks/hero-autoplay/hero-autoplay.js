@@ -356,9 +356,6 @@ export default async function decorate(block) {
   const { previewLink, modalLink } = getVimeoLinks(block);
   if (!previewLink) return;
 
-  // Add container class for CSS targeting
-  block.classList.add('hero-autoplay-container');
-
   const previewBg = buildVimeoBackground(previewLink);
   block.prepend(previewBg);
 
