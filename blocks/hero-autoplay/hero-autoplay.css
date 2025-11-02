@@ -140,7 +140,7 @@ main .section.hero-autoplay-container::before {
   }
 
   .hero-autoplay-container .hero-copy {
-    inset-block-start: 20%;
+    inset-block-start: 25%;
   }
 
   .hero-autoplay-container .hero-copy h1 {
@@ -152,7 +152,7 @@ main .section.hero-autoplay-container::before {
   }
 
   .hero-autoplay-container .icon-playvideo {
-    top: 38%;
+    top: 40%;
   }
 }
 

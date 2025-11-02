@@ -288,13 +288,28 @@
 
 @media (min-width: 1000px) and (max-width: 1280px) {
     .video-carousel .slider {
-        padding: 40px 30px;
-        gap: 15px;
+        padding: 40px 60px;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .video-carousel .slider > div > div img {
-        width: 350px;
-        height: 245px;
-        max-width: 350px;
+        width: 320px;
+        height: 224px;
+        max-width: 320px;
+    }
+
+    .video-carousel.slider-wrapper .arrow-nav {
+        width: calc(100% - 120px);
+        max-width: 1200px;
+    }
+
+    .video-carousel.slider-wrapper .arrow-nav #slider-arrow-left {
+        margin-left: 0;
+    }
+
+    .video-carousel.slider-wrapper .arrow-nav #slider-arrow-right {
+        margin-right: 0;
     }
 }

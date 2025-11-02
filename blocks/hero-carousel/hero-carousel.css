@@ -165,6 +165,10 @@ main .section.hero-carousel-container {
     padding-top: 4%;
 }
 
+.hero-carousel .slider > div .button-row .button {
+    min-width: 250px;
+}
+
 @media (width >= 860px) {
     .hero-carousel .slider > div .button-row {
         flex-direction: row;

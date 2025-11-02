@@ -858,6 +858,12 @@ main .section .default-content-wrapper {
   position: relative;
 }
 
+/* Bring button row up in hero-video and hero-autoplay metadata */
+.hero-video-container .button-row .rise,
+.hero-autoplay-container .button-row .rise {
+  inset-block-start: 50%;
+}
+
 /* Narrow content section metadata */
 main .section.narrow .default-content-wrapper {
   max-width: 610px;
