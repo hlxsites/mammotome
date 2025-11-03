@@ -246,11 +246,20 @@ const embedMarketoForm = async (block, formId) => {
     form.onSuccess((values, followUpUrl, submittingForm) => {
       window.location.href = followUpUrl;
       const url = new URL(document.location.href);
-      const pathParts = url.pathname.split('/');
-      const productPage = pathParts[4] || '';
+      const pathParts = url.pathname.split('/').filter((part) => part !== '');
+      const pageSlug = pathParts[pathParts.length - 1] || document.title || 'homepage';
+
+      // eslint-disable-next-line no-console
+      console.log('Current URL:', document.location.href);
+      // eslint-disable-next-line no-console
+      console.log('Path parts:', pathParts);
+      // eslint-disable-next-line no-console
+      console.log('Page slug:', pageSlug);
+      // eslint-disable-next-line no-console
+      console.log('Document title:', document.title);
 
       submittingForm.addHiddenFields({
-        Product_Page: productPage,
+        Product_Page: pageSlug,
       });
 
       const userData = {
