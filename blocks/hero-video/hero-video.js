@@ -36,17 +36,19 @@ const getVideoURL = (video) => {
   return new URL(videoURLString).pathname;
 };
 
-const onPlayerCssLoaded = () => {
-  playerCssLoaded = true;
-};
-
 const ensurePlayerCSSLoaded = () => {
   if (!playerCssLoaded) {
-    loadCSS(
-      `${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`,
-      onPlayerCssLoaded,
-    );
+    return new Promise((resolve) => {
+      loadCSS(
+        `${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`,
+        () => {
+          playerCssLoaded = true;
+          resolve();
+        },
+      );
+    });
   }
+  return Promise.resolve();
 };
 
 const createVideoOverlays = (main) => {
@@ -92,8 +94,8 @@ const registerEventListeners = (main, overlays, videoIframe) => {
   window.addEventListener('keydown', escHandler);
 };
 
-const loadVideo = (video, videoPath) => {
-  ensurePlayerCSSLoaded();
+const loadVideo = async (video, videoPath) => {
+  await ensurePlayerCSSLoaded();
 
   const main = document.querySelector('main');
 
