@@ -858,9 +858,9 @@ main .section .default-content-wrapper {
   position: relative;
 }
 
-/* Bring button row up in hero-video and hero-autoplay */
-.hero-video-container .button-row.rise,
-.hero-autoplay-container .button-row.rise {
+/* Bring button row up in hero-video and hero-autoplay metadata */
+.section.hero-video-container.rise .button-row,
+.section.hero-autoplay-container.rise .button-row {
   inset-block-start: 50%;
 }
 
