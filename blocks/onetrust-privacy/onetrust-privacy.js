@@ -1,15 +1,51 @@
-import { readExactBlockConfig } from '../../scripts/lib-franklin.js';
+import { readExactBlockConfig, getInfo } from '../../scripts/lib-franklin.js';
 
 export default function decorate(block) {
   const blockConfig = readExactBlockConfig(block.cloneNode(true));
   block.innerHTML = '';
+
+  // Get the current page's language and country
+  const { country, language } = getInfo();
+
+  // Construct the notice URL based on language
+  const baseNoticeId = 'afca6a13-75db-4fd7-b522-74a5a9d459de';
+  const baseUrl = 'https://privacyportalde-cdn.onetrust.com/c579c0d0-360f-49c0-bccc-f7b7cded31cd/privacy-notices';
+
+  // Build locale suffix (e.g., 'pl-pl' for Polish Poland)
+  // For default English, no suffix is needed
+  const locale = (language && country && language !== 'en') ? `-${language}-${country}` : '';
+  const localizedNoticeUrl = `${baseUrl}/${baseNoticeId}${locale}.json`;
+  const englishNoticeUrl = `${baseUrl}/${baseNoticeId}.json`;
+
   const initializeOneTrust = async () => {
     await OneTrust.NoticeApi.Initialized.then(async () => { // eslint-disable-line
-      await OneTrust.NoticeApi.LoadNotices([ // eslint-disable-line
-        'https://privacyportalde-cdn.onetrust.com/c579c0d0-360f-49c0-bccc-f7b7cded31cd/privacy-notices/afca6a13-75db-4fd7-b522-74a5a9d459de.json',
-      ], false);
+      // Try loading the localized version first
+      const noticeUrl = locale ? localizedNoticeUrl : englishNoticeUrl;
+      // eslint-disable-next-line no-console
+      console.log('OneTrust Privacy Notice URL (attempting):', noticeUrl);
+
+      try {
+        await OneTrust.NoticeApi.LoadNotices([noticeUrl], false); // eslint-disable-line
+        // eslint-disable-next-line no-console
+        console.log('OneTrust Privacy Notice loaded successfully');
+      } catch (error) {
+        // If localized version fails and we have a locale, try English fallback
+        if (locale) {
+          // eslint-disable-next-line no-console
+          console.log('Localized notice not found, falling back to English:', englishNoticeUrl);
+          try {
+            await OneTrust.NoticeApi.LoadNotices([englishNoticeUrl], false); // eslint-disable-line
+            // eslint-disable-next-line no-console
+            console.log('OneTrust Privacy Notice loaded successfully (English fallback)');
+          } catch (fallbackError) {
+            console.error("Error loading English fallback: ", fallbackError); // eslint-disable-line
+          }
+        } else {
+          console.error("Error initializing OneTrust: ", error); // eslint-disable-line
+        }
+      }
     }).catch((error) => {
-      console.error("Error initializing OneTrust: ", error); // eslint-disable-line
+      console.error("Error initializing OneTrust API: ", error); // eslint-disable-line
     });
   };
 
@@ -82,7 +118,7 @@ export default function decorate(block) {
     containerDiv.className = 'container';
 
     const innerDiv = document.createElement('div');
-    innerDiv.id = 'otnotice-afca6a13-75db-4fd7-b522-74a5a9d459de';
+    innerDiv.id = `otnotice-${baseNoticeId}`;
     innerDiv.className = 'otnotice';
 
     containerDiv.appendChild(innerDiv);
