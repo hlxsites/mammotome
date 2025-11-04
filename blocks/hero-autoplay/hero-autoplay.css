@@ -74,8 +74,8 @@ main .section.hero-autoplay-container::before {
 
 .hero-autoplay-container .hero-autoplay-background-iframe {
   position: absolute;
-  top: -12%;
   left: 0;
+  top: -13%;
   width: 100%;
   height: 100%;
   min-height: 1300px;
@@ -136,7 +136,7 @@ main .section.hero-autoplay-container::before {
 
 @media (max-width: 1536px) {
   .hero-autoplay-container .hero-autoplay-background-iframe {
-    top: -30%;
+    top: -23%;
   }
 
   .hero-autoplay-container .hero-copy {

@@ -864,6 +864,11 @@ main .section .default-content-wrapper {
   inset-block-start: 50%;
 }
 
+/* Remove icon play video fro hero-video */ 
+.section.hero-video-container.hide-icon .icon-playvideo {
+  display: none;
+}
+
 /* Narrow content section metadata */
 main .section.narrow .default-content-wrapper {
   max-width: 610px;
