@@ -123,51 +123,20 @@ const embedMarketoForm = async (block, formId) => {
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
-    // Calculate productPage value
     const url = new URL(document.location.href);
     const pathParts = url.pathname.split('/').filter((part) => part !== '');
     const pageSlug = pathParts[pathParts.length - 1] || document.title || 'homepage';
 
-    // eslint-disable-next-line no-console
-    console.log('=== Form Ready - Setting productPage ===');
-    // eslint-disable-next-line no-console
-    console.log('Current URL:', document.location.href);
-    // eslint-disable-next-line no-console
-    console.log('Path parts:', pathParts);
-    // eslint-disable-next-line no-console
-    console.log('Page slug:', pageSlug);
-    // eslint-disable-next-line no-console
-    console.log('Document title:', document.title);
-
-    // Check if productPage field exists in the form
     const formEl = form.getFormElem()[0];
-    const productPageField = formEl.querySelector('[name="productPage"]');
-    // eslint-disable-next-line no-console
-    console.log('productPage field exists in form:', !!productPageField);
 
-    // Try to add the hidden field
     form.addHiddenFields({
       productPage: pageSlug,
     });
 
-    // Verify it was added
-    const allValues = form.getValues();
-    // eslint-disable-next-line no-console
-    console.log('productPage value after addHiddenFields:', allValues.productPage);
-    // eslint-disable-next-line no-console
-    console.log('All form values:', allValues);
-
     form.onSubmit(() => {
-      // Set productPage again right before submission
       form.addHiddenFields({
         productPage: pageSlug,
       });
-
-      // eslint-disable-next-line no-console
-      console.log('=== Form Submit - productPage value ===');
-      const submitValues = form.getValues();
-      // eslint-disable-next-line no-console
-      console.log('productPage at submit:', submitValues.productPage);
 
       document.querySelectorAll('.fsaat-prev-button').forEach((btn) => {
         btn.style.display = 'none';
@@ -344,9 +313,6 @@ const embedMarketoForm = async (block, formId) => {
         event: 'enhanced_conversion',
         user_data: userData,
       });
-
-      // eslint-disable-next-line no-console
-      console.log('Enhanced Conversion data sent to dataLayer');
 
       window.location.href = followUpUrl;
       return false;
