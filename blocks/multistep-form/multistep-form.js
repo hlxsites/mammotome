@@ -123,6 +123,24 @@ const embedMarketoForm = async (block, formId) => {
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
+    // Add productPage hidden field before form submission
+    const url = new URL(document.location.href);
+    const pathParts = url.pathname.split('/').filter((part) => part !== '');
+    const pageSlug = pathParts[pathParts.length - 1] || document.title || 'homepage';
+
+    // eslint-disable-next-line no-console
+    console.log('Current URL:', document.location.href);
+    // eslint-disable-next-line no-console
+    console.log('Path parts:', pathParts);
+    // eslint-disable-next-line no-console
+    console.log('Page slug:', pageSlug);
+    // eslint-disable-next-line no-console
+    console.log('Document title:', document.title);
+
+    form.addHiddenFields({
+      productPage: pageSlug,
+    });
+
     form.onSubmit(() => {
       document.querySelectorAll('.fsaat-prev-button').forEach((btn) => {
         btn.style.display = 'none';
@@ -272,24 +290,7 @@ const embedMarketoForm = async (block, formId) => {
     form.onValidate(isCustomValid);
     fsaatSet();
 
-    form.onSuccess(async (values, followUpUrl, submittingForm) => {
-      const url = new URL(document.location.href);
-      const pathParts = url.pathname.split('/').filter((part) => part !== '');
-      const pageSlug = pathParts[pathParts.length - 1] || document.title || 'homepage';
-
-      // eslint-disable-next-line no-console
-      console.log('Current URL:', document.location.href);
-      // eslint-disable-next-line no-console
-      console.log('Path parts:', pathParts);
-      // eslint-disable-next-line no-console
-      console.log('Page slug:', pageSlug);
-      // eslint-disable-next-line no-console
-      console.log('Document title:', document.title);
-
-      submittingForm.addHiddenFields({
-        productPage: pageSlug,
-      });
-
+    form.onSuccess(async (values, followUpUrl) => {
       // Normalize and hash user data for Enhanced Conversions
       const normalizedEmail = normalizeEmail(values.Email);
       const normalizedPhone = normalizePhone(values.Phone);
