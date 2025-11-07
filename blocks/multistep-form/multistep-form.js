@@ -93,7 +93,13 @@ const normalizeText = (text) => {
 };
 
 const embedMarketoForm = async (block, formId) => {
-  await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js', block);
+  // Show loading state immediately
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'form-loading';
+  loadingDiv.innerHTML = '<p>Loading form...</p>';
+  block.appendChild(loadingDiv);
+
+  await loadScript('https://www2.mammotome.com/js/forms2/js/forms2.min.js', block);
 
   const disableMarketoCSS = () => {
     document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
@@ -111,7 +117,13 @@ const embedMarketoForm = async (block, formId) => {
   const observer = new MutationObserver(disableMarketoCSS);
   observer.observe(document.head, { childList: true, subtree: true });
 
-  setTimeout(disableMarketoCSS, 500);
+  // Remove Marketo CSS immediately and let observer handle any future additions
+  disableMarketoCSS();
+
+  // Remove loading state
+  if (loadingDiv) {
+    loadingDiv.remove();
+  }
 
   const formDiv = document.createElement('div');
   formDiv.className = 'form-div';
@@ -120,7 +132,7 @@ const embedMarketoForm = async (block, formId) => {
   formDiv.appendChild(formElement);
   block.appendChild(formDiv);
 
-  window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
+  window.MktoForms2.loadForm('https://www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
     const url = new URL(document.location.href);

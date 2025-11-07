@@ -272,6 +272,11 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Offset anchor links to account for fixed header */
+  scroll-padding-top: 100px;
+}
+
 body {
   margin: 0;
   font-size: var(--mt-body-font-size-s);
