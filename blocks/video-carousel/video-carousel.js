@@ -307,6 +307,16 @@ export default async function decorate(block) {
   initSlideOrder(slides);
   slides.forEach(updateChildStyle);
 
+  // Center videos when there are only 1 or 2 videos
+  if (slides.length <= 2) {
+    block.classList.add('video-carousel-centered');
+    const slider = block.querySelector('.video-carousel-slider');
+    if (slider) {
+      slider.style.justifyContent = 'center';
+      slider.style.gap = '20px';
+    }
+  }
+
   videoCarousel.setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
 
   if (slides.length > 1) videoCarousel.createArrowNav();

@@ -869,6 +869,12 @@ main .section .default-content-wrapper {
   inset-block-start: 50%;
 }
 
+/* Bring button row up in hero-video and hero-autoplay metadata */
+.section.hero-video-container.lower .button-row,
+.section.hero-autoplay-container.lower .button-row {
+  inset-block-start: 70%;
+}
+
 /* Remove icon play video fro hero-video */ 
 .section.hero-video-container.hide-icon .icon-playvideo {
   display: none;
