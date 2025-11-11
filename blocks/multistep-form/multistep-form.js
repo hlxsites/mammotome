@@ -63,35 +63,6 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
   block.appendChild(marketoScript);
 });
 
-// SHA-256 hashing function for Enhanced Conversions
-const sha256 = async (message) => {
-  if (!message) return '';
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-};
-
-const normalizeEmail = (email) => {
-  if (!email) return '';
-  return email.toLowerCase().trim();
-};
-
-const normalizePhone = (phone) => {
-  if (!phone) return '';
-  let cleaned = phone.replace(/\D/g, '');
-  if (!cleaned.startsWith('1') && cleaned.length === 10) {
-    cleaned = `1${cleaned}`;
-  }
-  return `+${cleaned}`;
-};
-
-const normalizeText = (text) => {
-  if (!text) return '';
-  return text.toLowerCase().trim();
-};
-
 const embedMarketoForm = async (block, formId) => {
   // Show loading state immediately
   const loadingDiv = document.createElement('div');
@@ -297,35 +268,8 @@ const embedMarketoForm = async (block, formId) => {
     form.onValidate(isCustomValid);
     fsaatSet();
 
-    form.onSuccess(async (values, followUpUrl) => {
-      // Normalize and hash user data for Enhanced Conversions
-      const normalizedEmail = normalizeEmail(values.Email);
-      const normalizedPhone = normalizePhone(values.Phone);
-      const normalizedFirstName = normalizeText(values.FirstName);
-      const normalizedLastName = normalizeText(values.LastName);
-      const normalizedAddress = normalizeText(values.Address);
-      const normalizedCity = normalizeText(values.City);
-
-      const userData = {
-        email: await sha256(normalizedEmail),
-        phone_number: await sha256(normalizedPhone),
-        address: {
-          first_name: await sha256(normalizedFirstName),
-          last_name: await sha256(normalizedLastName),
-          street: await sha256(normalizedAddress),
-          city: normalizedCity, // City is not hashed per Google specs
-          region: values.State || '', // State/Region is not hashed
-          postal_code: values.PostalCode || '', // Postal code is not hashed
-          country: values.Country || '', // Country is not hashed
-        },
-      };
-
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'enhanced_conversion',
-        user_data: userData,
-      });
-
+    form.onSuccess((values, followUpUrl) => {
+      // Enhanced conversions tracking is handled globally in scripts.js
       window.location.href = followUpUrl;
       return false;
     });
