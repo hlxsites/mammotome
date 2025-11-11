@@ -64,13 +64,37 @@ const loadScript = (src, block) => new Promise((resolve, reject) => {
 });
 
 const embedMarketoForm = async (block, formId) => {
+  // Validate formId first
+  if (!formId) {
+    // eslint-disable-next-line no-console
+    console.error('Marketo form ID is missing. Please check the block structure.');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'form-error';
+    errorDiv.innerHTML = '<p style="color: red; padding: 20px; background: #ffebee; border-radius: 8px;">Error: Form ID is missing. Please configure the form ID in the block.</p>';
+    block.appendChild(errorDiv);
+    return;
+  }
+
   // Show loading state immediately
   const loadingDiv = document.createElement('div');
   loadingDiv.className = 'form-loading';
   loadingDiv.innerHTML = '<p>Loading form...</p>';
   block.appendChild(loadingDiv);
 
-  await loadScript('https://www2.mammotome.com/js/forms2/js/forms2.min.js', block);
+  try {
+    await loadScript('https://www2.mammotome.com/js/forms2/js/forms2.min.js', block);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load Marketo script:', error);
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'form-error';
+    errorDiv.innerHTML = `<p style="color: red; padding: 20px; background: #ffebee; border-radius: 8px;">Error: Failed to load Marketo form script. ${error.message}</p>`;
+    block.appendChild(errorDiv);
+    return;
+  }
 
   const disableMarketoCSS = () => {
     document.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
@@ -96,6 +120,20 @@ const embedMarketoForm = async (block, formId) => {
     loadingDiv.remove();
   }
 
+  // Check if MktoForms2 is available
+  if (typeof window.MktoForms2 === 'undefined') {
+    // eslint-disable-next-line no-console
+    console.error('MktoForms2 is not defined. Marketo script may have failed to load.');
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'form-error';
+    errorDiv.innerHTML = '<p style="color: red; padding: 20px; background: #ffebee; border-radius: 8px;">Error: Marketo Forms library is not available.</p>';
+    block.appendChild(errorDiv);
+    return;
+  }
+
   const formDiv = document.createElement('div');
   formDiv.className = 'form-div';
   const formElement = document.createElement('form');
@@ -103,6 +141,8 @@ const embedMarketoForm = async (block, formId) => {
   formDiv.appendChild(formElement);
   block.appendChild(formDiv);
 
+  // eslint-disable-next-line no-console
+  console.log('Loading Marketo form with ID:', formId);
   window.MktoForms2.loadForm('https://www2.mammotome.com', '435-TDP-284', formId);
 
   window.MktoForms2.whenReady((form) => {
@@ -277,11 +317,24 @@ const embedMarketoForm = async (block, formId) => {
 };
 
 const getFormId = (block) => {
+  // eslint-disable-next-line no-console
+  console.log('Block structure:', block);
+  // eslint-disable-next-line no-console
+  console.log('Block children:', block.children);
+
   const formIdDiv = block.querySelector(':scope > div div:nth-child(2)');
+  // eslint-disable-next-line no-console
+  console.log('Found formIdDiv:', formIdDiv);
+
   let formId = '';
   if (formIdDiv) {
     formId = formIdDiv.textContent.trim();
+    // eslint-disable-next-line no-console
+    console.log('Extracted formId:', formId);
     formIdDiv.textContent = '';
+  } else {
+    // eslint-disable-next-line no-console
+    console.warn('Form ID div not found. Expected structure: block > div > div:nth-child(2)');
   }
   return formId;
 };
