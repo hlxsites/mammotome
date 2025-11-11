@@ -187,9 +187,8 @@
 }
 
 .video-carousel.slider-wrapper .arrow-nav svg {
-    width: 28px;
-    height: 28px;
-    fill: #333;
+    width: 24px;
+    height: 24px;
 }
 
 .video-player-iframe {
