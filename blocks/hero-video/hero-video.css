@@ -92,7 +92,7 @@ p>a.hero-video:nth-child(1) {
 }
 
 /* Tablets iPad Pro and Smaller */
-@media (max-width:1024px) {
+@media (max-width:1280px) {
   .hero-copy {
     position: absolute;
     inset-inline-start: 6%;
@@ -110,8 +110,22 @@ p>a.hero-video:nth-child(1) {
   .hero-video-container .button-row {
     position: absolute;
     inset-inline-start: 6%;
-    inset-block-start: 60%;
+    inset-block-start: 50%;
   }
+}
+
+/* For tablets in portrait mode */
+@media (max-width: 850px) {
+  .hero-video-container .button-row {
+    inset-block-start: 65%;
+  }
+
+  .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-l);
+  }
+
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
 }
 
 @media (max-width: 460px) {

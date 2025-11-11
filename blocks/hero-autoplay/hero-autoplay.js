@@ -19,7 +19,6 @@ const normalizeVimeoUrl = (url) => {
   try {
     const urlObj = new URL(url);
 
-    // Check if it's already in the correct format
     if (
       urlObj.hostname === 'player.vimeo.com'
       && urlObj.pathname.startsWith('/video/')
@@ -27,12 +26,10 @@ const normalizeVimeoUrl = (url) => {
       return url;
     }
 
-    // Handle regular vimeo.com URLs
     if (
       urlObj.hostname === 'vimeo.com'
       || urlObj.hostname === 'www.vimeo.com'
     ) {
-      // Extract video ID from pathname (e.g., /1126943910 or /video/1126943910)
       const pathMatch = urlObj.pathname.match(/\/(?:video\/)?(\d+)/);
       if (pathMatch && pathMatch[1]) {
         const videoId = pathMatch[1];
@@ -40,7 +37,6 @@ const normalizeVimeoUrl = (url) => {
       }
     }
 
-    // Return original URL if we can't parse it
     return url;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -56,7 +52,6 @@ const getVimeoLinks = (block) => {
 
   links.forEach((link) => {
     const { href } = link;
-    // Check for any Vimeo URL
     if (href.includes('vimeo.com')) {
       const normalizedUrl = normalizeVimeoUrl(href);
       if (!previewLink) previewLink = normalizedUrl;
@@ -108,7 +103,6 @@ const ensurePlayerCSSLoaded = () => {
     );
   }
 };
-// (optional) put this once near top to preload Vimeo API if you'll use it later
 let vimeoApiReady;
 function ensureVimeoAPI() {
   if (window.Vimeo?.Player) return Promise.resolve();
@@ -217,11 +211,9 @@ const loadVideo = async (block, videoLink) => {
   playOverlay.style.border = '0';
   playOverlay.style.zIndex = '2';
 
-  // Compose
   shell.append(iframe, playOverlay);
   frame.appendChild(shell);
 
-  // Ensure iframe loads and is visible
   iframe.onload = () => {
     // eslint-disable-next-line no-console
     console.log('Iframe loaded successfully');
@@ -236,7 +228,6 @@ const loadVideo = async (block, videoLink) => {
     iframe.style.opacity = '1';
   }, 100);
 
-  // Close handlers
   const escHandler = (e) => {
     if (e.key === 'Escape') removeVideo();
   };
@@ -286,7 +277,7 @@ const loadVideo = async (block, videoLink) => {
         console.error('Could not start video playback:', fallbackError);
       }
     } finally {
-      playOverlay.remove(); // hide overlay once playback begins / user clicks
+      playOverlay.remove();
     }
   };
   playOverlay.addEventListener('click', startPlayback);
@@ -304,7 +295,6 @@ const mainCopy = (video) => {
     const copyDiv = document.createElement('div');
     copyDiv.classList.add('hero-copy');
     heroCopy.forEach((el) => copyDiv.appendChild(el));
-    // Insert hero-copy after the video background but before any existing content
     const videoBg = video.querySelector('.video-hero-background');
     if (videoBg) {
       videoBg.insertAdjacentElement('afterend', copyDiv);
@@ -342,7 +332,6 @@ const createButtonRow = (video) => {
       buttonRow.appendChild(buttonContainer);
     });
 
-    // Insert button-row after hero-copy to maintain proper order
     const heroCopy = video.querySelector('.hero-copy');
     if (heroCopy) {
       heroCopy.insertAdjacentElement('afterend', buttonRow);

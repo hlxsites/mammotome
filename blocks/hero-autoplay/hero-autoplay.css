@@ -188,7 +188,7 @@ main .section.hero-autoplay-container::before {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 850px) {
   main .section.hero-autoplay-container {
     height: 475px;
   }
