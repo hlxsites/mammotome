@@ -4,6 +4,13 @@
     position: relative;
 }
 
+.flex-carousel .flex-slide-text > p,
+.flex-carousel .flex-slide-text > h1, 
+.flex-carousel .flex-slide-text > h2, 
+.flex-carousel .flex-slide-text > h3 {
+    text-align: left;
+}
+
 .flex-carousel.narrow {
     max-width: 800px;
     margin: auto;
@@ -156,7 +163,7 @@
 .flex-carousel .arrow-nav #slider-arrow-right {
     width: 24px;
     height: 24px;
-    text-align: center;
+    text-align: left;
 }
 
 @media (width < 768px) {
