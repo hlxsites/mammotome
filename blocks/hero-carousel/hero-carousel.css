@@ -13,6 +13,7 @@ main .section.hero-carousel-container {
     min-height: 500px;
 }
 
+
 /* sliders */
 .hero-carousel .slider {
     display: flex;
@@ -34,7 +35,9 @@ main .section.hero-carousel-container {
     height: 100%;
 }
 
-/* .text-align-left uses default justify-content: flex-start from parent */
+.hero-carousel .slider>div.text-align-left {
+    justify-content: flex-start;
+}
 
 .hero-carousel .slider>div.text-align-center {
     justify-content: center;
@@ -54,6 +57,14 @@ main .section.hero-carousel-container {
     top: 0;
 }
 
+@media (width >=768px) {
+    .hero-carousel .slider>div>div.white-overlay {
+        all: unset;
+    }
+}
+
+
+
 /* text with link buttons */
 .hero-carousel .slider>div>div:first-child {
     display: flex;
@@ -68,9 +79,31 @@ main .section.hero-carousel-container {
     flex: 1;
 }
 
+
+
+@media (width >=768px) {
+    .hero-carousel .slider>div>div:first-child {
+        width: 50%;
+        padding: 5%;
+    }
+
+    .hero-carousel .slider>div.text-align-center>div {
+        align-items: center;
+    }
+
+    .hero-carousel .slider>div.text-align-center>div h1,
+    .hero-carousel .slider>div.text-align-center>div p {
+        text-align: center;
+    }
+
+    .hero-carousel .slider>div.text-align-center .button-row {
+        align-items: center;
+    }
+}
+
 /* BG IMAGE Container */
 .hero-carousel .slider>div>div:last-child {
-    z-index: 1;
+    z-index: 1
 }
 
 .hero-carousel .slider>div>div picture {
@@ -95,14 +128,28 @@ main .section.hero-carousel-container {
     object-position: right;
 }
 
+@media (width >=768px) {
+    .hero-carousel .slider>div>div picture img.position-left {
+        object-position: unset;
+    }
+
+    .hero-carousel .slider>div>div picture img.position-right {
+        object-position: unset;
+    }
+}
+
+
+
 .hero-carousel .slider>div>div>h1 {
     color: var(--mt-heading-color-primary);
 }
+
 
 .hero-carousel .slider>div>div>h1,
 .hero-carousel .slider>div>div>p {
     text-align: left;
 }
+
 
 .hero-carousel .slider>div>div>p {
     font-size: var(--mt-body-font-size-m);
@@ -116,6 +163,13 @@ main .section.hero-carousel-container {
     justify-content: flex-start;
     align-items: flex-start;
     padding-top: 4%;
+}
+
+@media (width >=860px) {
+    .hero-carousel .slider>div .button-row {
+        flex-direction: row;
+        gap: 5%;
+    }
 }
 
 /* hide slide */
@@ -157,6 +211,13 @@ main .section.hero-carousel-container {
     pointer-events: none;
 }
 
+@media (width >=768px) {
+    .hero-carousel .dotted-nav .dot {
+        cursor: pointer;
+        pointer-events: all;
+    }
+}
+
 /* active for dotted nav */
 .hero-carousel .dotted-nav .active {
     border-color: var(--mt-hero-carousel-active-dot-color);
@@ -165,82 +226,4 @@ main .section.hero-carousel-container {
 /* inactive for dotted nav */
 .hero-carousel .dotted-nav .inactive {
     border-color: var(--mt-hero-carousel-inactive-dot-color);
-}
-
-/* Tablet (800px) */
-@media (width >= 800px) {
-    /* Reduce height for tablet view */
-    .hero-carousel.slider-wrapper,
-    .hero-carousel .slider,
-    .hero-carousel .slider>div>div picture img {
-        height: 10vh;
-        min-height: 300px;
-    }
-
-    .hero-carousel .slider>div>div>h1 {
-        font-size: var(--mt-heading-font-size-mobile-xl);
-    }
-
-    .hero-carousel .slider>div>div>p {
-        font-size: var(--mt-body-font-size-s);
-        line-height: 1.25rem;
-    }
-
-    .hero-carousel .slider>div>div picture img.position-left {
-        object-position: unset;
-    }
-
-    .hero-carousel .slider>div>div picture img.position-right {
-        object-position: 90% center;
-    } 
-
-    /* Remove white overlay on larger screens */
-    .hero-carousel .slider>div>div.white-overlay {
-        all: unset;
-    }
-
-    /* Text container takes half width */
-    .hero-carousel .slider>div>div:first-child {
-        width: 50%;
-        padding: 0 3%;
-    }
-
-    /* Center alignment adjustments */
-    .hero-carousel .slider>div.text-align-center>div {
-        align-items: center;
-    }
-
-    .hero-carousel .slider>div.text-align-center .button-row {
-        align-items: center;
-    }
-
-    /* Button row horizontal layout */
-    .hero-carousel .slider>div .button-row {
-        flex-direction: row;
-        gap: 5%;
-    }
-
-    /* Dots become clickable */
-    .hero-carousel .dotted-nav .dot {
-        cursor: pointer;
-        pointer-events: all;
-    }
-}
-
-/* Desktop (1280px) */
-@media (width >= 1280px) {
-    .hero-carousel.slider-wrapper,
-    .hero-carousel .slider,
-    .hero-carousel .slider>div>div picture img {
-        height: 20vh;
-        min-height: 475px;
-    }
-
-    .hero-carousel .slider>div>div picture img.position-left {
-        object-position: unset;
-    }
-
-    .hero-carousel .slider>div>div picture img.position-right {
-        object-position: 99% center;
-    }
 }

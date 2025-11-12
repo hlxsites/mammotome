@@ -65,7 +65,7 @@
 
 .video.block img {
   width: 70%;
-  min-width: 400px;
+  min-width: 350px;
   box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
   border: 0 solid transparent;
   border-radius: 5px;
