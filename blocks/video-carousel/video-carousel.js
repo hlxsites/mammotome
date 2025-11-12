@@ -19,22 +19,14 @@ const HTML_PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 
 const YOUTUBE_URL_REGEX = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
 
 /**
- * Arrow template for navigation
- * @param path
- * @returns HTML for left/right arrow
+ * Arrow SVGs for navigation (matching flex-carousel shape with video-carousel color)
  */
-const ARROW_TEMPLATE = (path) => `
-  <svg fill="rgb(88,127,194)" width="24px" height="24px" viewBox="0 0 1024 1024" class="icon" xmlns="http://www.w3.org/2000/svg">
-    <path d="${path}"/>
-  </svg>
-`;
-
-const HTML_LEFT_ARROW = ARROW_TEMPLATE(
-  'M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z',
-);
-const HTML_RIGHT_ARROW = ARROW_TEMPLATE(
-  'M256 120.768L306.432 64 768 512l-461.568 448L256 903.232 659.072 512z',
-);
+const HTML_LEFT_ARROW = '<svg fill="rgb(88,127,194)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
+  + '<path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"/>\n'
+  + '</svg>';
+const HTML_RIGHT_ARROW = '<svg fill="rgb(88,127,194)" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 600 600">\n'
+  + '<path d="M194.287,9.27c12.359-12.359,32.391-12.359,44.75,0l194.287,194.284c6.177,6.18,9.262,14.271,9.262,22.366c0,8.095-3.091,16.192-9.259,22.366L239.037,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744L366.201,225.92L194.287,54.017C181.933,41.658,181.933,21.623,194.287,9.27z"/>\n'
+  + '</svg>\n';
 
 const getVideoPathFromVideo = (video) => {
   const videoURLElement = video.querySelector(':scope > div:nth-child(2) a');
