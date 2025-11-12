@@ -35,16 +35,22 @@
     width: 100%;
 }
 
+/* Mobile: reverse order for image-right so image is always on top */
+.flex-carousel .flex-slide.image-right {
+    flex-direction: column-reverse;
+}
+
 @media (width >= 1024px) {
-    .flex-carousel .flex-slide {
+    .flex-carousel .flex-slide,
+    .flex-carousel .flex-slide.image-right {
         flex-direction: row;
         align-items: center;
         gap: 50px;
     }
 
-    .flex-carousel .flex-slide.align-right {
-        flex-direction: row-reverse;
-    }
+    /* Desktop: DOM order handles left/right positioning */
+    /* image-left: image, then text */
+    /* image-right: text, then image */
 }
 
 /* Image container in slide */

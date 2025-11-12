@@ -13,8 +13,8 @@ export function optimizeImage(img) {
 }
 
 /**
- * Create a slide element from a row (image, text, alignment)
- * @param row - table row with 3 columns
+ * Create a slide element from a row (image and text in any order)
+ * @param row - table row with 2 columns
  * @returns {HTMLDivElement} - slide element
  */
 function createSlide(row) {
@@ -24,12 +24,29 @@ function createSlide(row) {
     return null;
   }
 
-  const imageCell = cells[0];
-  const textCell = cells[1];
-  const alignmentCell = cells[2];
+  const firstCell = cells[0];
+  const secondCell = cells[1];
 
-  // Get alignment (default to 'left' if not specified)
-  const alignment = alignmentCell?.textContent?.trim().toLowerCase() || 'left';
+  // Determine which cell has the image
+  const firstCellHasImage = firstCell.querySelector('img') || firstCell.querySelector('picture');
+  const secondCellHasImage = secondCell.querySelector('img') || secondCell.querySelector('picture');
+
+  let imageCell;
+  let textCell;
+  let imageOnLeft = true;
+
+  if (firstCellHasImage) {
+    imageCell = firstCell;
+    textCell = secondCell;
+    imageOnLeft = true;
+  } else if (secondCellHasImage) {
+    imageCell = secondCell;
+    textCell = firstCell;
+    imageOnLeft = false;
+  } else {
+    // No image found, skip this slide
+    return null;
+  }
 
   // Create slide container
   const slide = document.createElement('div');
@@ -55,15 +72,17 @@ function createSlide(row) {
   textContainer.classList.add('flex-slide-text');
   textContainer.innerHTML = textCell.innerHTML;
 
-  // Apply alignment
-  if (alignment === 'right') {
-    slide.classList.add('align-right');
-    slide.appendChild(textContainer);
+  // Append elements in DOM order based on column position
+  // Image in left column → image renders left, text renders right
+  // Image in right column → text renders left, image renders right
+  if (imageOnLeft) {
+    slide.classList.add('image-left');
     slide.appendChild(imageContainer);
+    slide.appendChild(textContainer);
   } else {
-    slide.classList.add('align-left');
-    slide.appendChild(imageContainer);
+    slide.classList.add('image-right');
     slide.appendChild(textContainer);
+    slide.appendChild(imageContainer);
   }
 
   return slide;
