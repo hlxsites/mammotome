@@ -92,6 +92,9 @@ main .section.product-carousel-container {
 /* Initial row height for image to prevent CLS */
 .product-carousel .slider>div>div:nth-child(1) {
     height: 200px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
 }
 
 /* Hide image on small mobile devices */
@@ -145,8 +148,9 @@ main .section.product-carousel-container {
 .product-carousel .slider>div>div:last-child {
     display: flex;
     flex-direction: column;
-    height: 200px;
-    max-width: 400px;
+    height: 225px;
+    max-width: 380px;
+    margin-top: 20px;
 }
 
 .product-carousel .slider>div:not([style*="order: 2;"])>div:last-child::after {
