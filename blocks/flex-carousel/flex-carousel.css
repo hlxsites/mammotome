@@ -9,25 +9,21 @@
     margin: auto;
 }
 
-/* Carousel wrapper - contains slider and navigation */
 .flex-carousel .flex-carousel-wrapper {
     position: relative;
     width: 100%;
     margin-top: 5%;
 }
 
-/* Slider container wrapper */
 .flex-carousel .flex-slider-container {
     position: relative;
 }
 
-/* Slide container */
 .flex-carousel .slider-wrapper .slider {
     position: relative;
     overflow: hidden;
 }
 
-/* Individual slide */
 .flex-carousel .flex-slide {
     display: flex;
     flex-direction: column;
@@ -35,7 +31,6 @@
     width: 100%;
 }
 
-/* Mobile: reverse order for image-right so image is always on top */
 .flex-carousel .flex-slide.image-right {
     flex-direction: column-reverse;
 }
@@ -53,7 +48,6 @@
     /* image-right: text, then image */
 }
 
-/* Image container in slide */
 .flex-carousel .flex-slide-image {
     width: 100%;
     flex-shrink: 0;
@@ -83,7 +77,6 @@
     }
 }
 
-/* Text container in slide */
 .flex-carousel .flex-slide-text {
     width: 100%;
     flex: 1;
@@ -112,14 +105,12 @@
     padding-bottom: 0;
 }
 
-/* First slide in slider */
 .flex-carousel .slider-wrapper .slider .flex-slide:first-child {
     position: relative;
     z-index: 0;
     display: flex;
 }
 
-/* Second to n slide in slider */
 .flex-carousel .slider-wrapper .slider .flex-slide:nth-child(n+2) {
     position: absolute;
     left: 0;
@@ -128,28 +119,25 @@
     display: flex;
 }
 
-/* hide slide */
 .flex-carousel .hide {
     opacity: 0;
     transition-property: opacity;
 }
 
-/* show slide */
 .flex-carousel .show {
     opacity: 1;
     transition-duration: 500ms;
     transition-property: opacity;
 }
 
-/* Arrow nav flex container - positioned on the entire wrapper */
 .flex-carousel .flex-carousel-wrapper .arrow-nav {
     position: absolute;
     align-items: center;
     display: flex;
-    width: 100%;
+    width: calc(100% + 80px);
     justify-content: space-between;
     top: 50%;
-    left: 0;
+    left: -40px;
     transform: translateY(-50%);
     z-index: 3;
     pointer-events: none;
@@ -157,6 +145,11 @@
 
 .flex-carousel .flex-carousel-wrapper .arrow-nav button {
     pointer-events: all;
+    transition: opacity 0.3s ease;
+}
+
+.flex-carousel .flex-carousel-wrapper .arrow-nav button:hover {
+    opacity: 0.7;
 }
 
 .flex-carousel .arrow-nav #slider-arrow-left,
@@ -166,7 +159,13 @@
     text-align: center;
 }
 
-/* bottom nav container */
+@media (width < 768px) {
+    .flex-carousel .flex-carousel-wrapper .arrow-nav {
+        width: calc(100% + 40px);
+        left: -20px;
+    }
+}
+
 .flex-carousel .slider-wrapper .dotted-nav {
     display: flex;
     justify-content: center;
@@ -178,7 +177,6 @@
     height: 20px;
 }
 
-/* Bottom Nav */
 .flex-carousel .dotted-nav .dot {
     margin: 6px;
     border-radius: 50%;
@@ -194,7 +192,6 @@
     }
 }
 
-/* dotted Nav Buttons */
 .flex-carousel .dotted-nav button,
 .flex-carousel .arrow-nav button {
     background: none;
@@ -204,12 +201,10 @@
     cursor: pointer;
 }
 
-/* active for bottom nav */
 .flex-carousel .dotted-nav .active {
     background-color: #000;
 }
 
-/* inactive for bottom nav */
 .flex-carousel .dotted-nav .inactive {
     background-color: #000;
     opacity: 0.2;
