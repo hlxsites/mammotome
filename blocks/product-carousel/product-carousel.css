@@ -49,15 +49,8 @@ main .section.product-carousel-container {
     width: 100%;
     height: 100%;
     z-index: 2;
-    background-color: rgb(255 255 255 / 50%);
-    backdrop-filter: blur(2px);
     pointer-events: auto;
-}
-
-@media (width >= 1000px) {
-    .product-carousel .slider::before {
-        display: none;
-    }
+    display: none;
 }
 
 /* slides 1 - n container */
