@@ -83,7 +83,7 @@ main .section.hero-carousel-container {
 
 @media (width >=768px) {
     .hero-carousel .slider>div>div:first-child {
-        width: 50%;
+        width: 46%;
         padding: 5%;
     }
 
@@ -128,7 +128,7 @@ main .section.hero-carousel-container {
     object-position: right;
 }
 
-@media (width >=768px) {
+/* @media (width >=768px) {
     .hero-carousel .slider>div>div picture img.position-left {
         object-position: unset;
     }
@@ -136,7 +136,7 @@ main .section.hero-carousel-container {
     .hero-carousel .slider>div>div picture img.position-right {
         object-position: unset;
     }
-}
+} */
 
 
 
@@ -226,4 +226,78 @@ main .section.hero-carousel-container {
 /* inactive for dotted nav */
 .hero-carousel .dotted-nav .inactive {
     border-color: var(--mt-hero-carousel-inactive-dot-color);
+}
+
+@media (width <= 1280px) {
+    /* Reduce height for tablet view */
+    .hero-carousel.slider-wrapper,
+    .hero-carousel .slider,
+    .hero-carousel .slider>div>div picture img {
+        height: 10vh;
+        min-height: 400px;
+    }
+
+    .hero-carousel .slider>div>div>h1 {
+        font-size: var(--mt-heading-font-size-mobile-xxl);
+    }
+
+    .hero-carousel .slider>div>div>p {
+        font-size: var(--mt-body-font-size-m);
+    }
+
+    .hero-carousel .slider>div>div picture img.position-left {
+        object-position: 10% center;
+    }
+
+    .hero-carousel .slider>div>div picture img.position-right {
+        object-position: 75% center;
+    }
+
+    /* Text container takes half width */
+    .hero-carousel .slider>div>div:first-child {
+        width: 50%;
+        padding: 5%;
+    }
+}
+
+@media (width <=800px) {
+    .hero-carousel.slider-wrapper,
+    .hero-carousel .slider,
+    .hero-carousel .slider>div>div picture img {
+        height: 7vh;
+        min-height: 350px;
+    }
+
+    .hero-carousel .slider>div>div>h1 {
+        font-size: var(--mt-heading-font-size-mobile-xl);
+    }
+
+    .hero-carousel .slider>div>div>p {
+        font-size: var(--mt-body-font-size-xs);
+        line-height: 1.05rem;
+    }
+
+    .hero-carousel .slider>div>div picture img.position-left {
+        object-position: 45% center;
+    }
+
+    .hero-carousel .slider>div>div picture img.position-right {
+        object-position: 95% center;
+    }
+
+    /* Text container takes half width */
+    .hero-carousel .slider>div>div:first-child {
+        width: 38%;
+        padding: 0 3%;
+    }
+
+    .hero-carousel .slider>div .button-row > .button-container > a.button.primary {
+        max-width: 300px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        border-radius: 34px;
+        padding: 8px 15px;
+        font-size: var(--mt-body-font-size-xs);
+    }
 }
