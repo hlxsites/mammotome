@@ -50,7 +50,7 @@ main .section.hero-carousel-container {
     align-items: flex-start;
     height: 100%;
     z-index: 3;
-    padding: 0 3%;
+    padding: 5%;
     flex: 1;
 }
 
@@ -100,18 +100,15 @@ main .section.hero-carousel-container {
 }
 
 @media (width <= 460px) {
-    .hero-carousel.slider-wrapper {
-        height: 60vh;
-    }
-
-    .hero-carousel .slider>div>div picture img {
+    .hero-carousel .slider>div>div.white-overlay {
         position: absolute;
-        top: -80%;
-    }
-
-    .hero-carousel .dotted-nav .dot {
-        cursor: pointer;
-        pointer-events: all;
+        background-color: rgb(255 255 255 / 80%);
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+        top: 0;
     }
 }
 
@@ -178,6 +175,7 @@ main .section.hero-carousel-container {
 
     .hero-carousel .slider>div>div:first-child {
         padding: 3%;
+        width: 37%;
     }
 
     .hero-carousel .slider>div.text-align-center>div {

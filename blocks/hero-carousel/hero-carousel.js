@@ -13,7 +13,12 @@ export function optimizeThumbnails(picture) {
   picture
     .querySelectorAll('img')
     .forEach((img) => {
-      const imgHeight = Math.floor((img.height * 1024) / img.width);
+      // Use high-resolution breakpoints for crisp images on all devices including mobile
+      const breakpoints = [
+        { media: '(min-width: 1200px)', width: '2400' },
+        { media: '(min-width: 768px)', width: '1800' },
+        { width: '1200' }, // Mobile - higher res for vertical positioning
+      ];
       img
         .closest('picture')
         .replaceWith(
@@ -21,8 +26,9 @@ export function optimizeThumbnails(picture) {
             img.src,
             'Slider Image',
             true,
-            img.width,
-            imgHeight,
+            null,
+            null,
+            breakpoints,
           ),
         );
     });
