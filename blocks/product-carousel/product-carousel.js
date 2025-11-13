@@ -201,7 +201,7 @@ export default function decorate(block) {
   productCarousel.setSliderIds();
   initSlideOrder(productCarousel.getSlides());
   productCarousel.setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
-  if (productCarousel.getSlides().length > 3) productCarousel.createArrowNav();
+  if (productCarousel.getSlides().length > 1) productCarousel.createArrowNav();
   productCarousel.initSlider(false, false, false);
-  if (productCarousel.getSlides().length > 3) arrowNavOnClickEvents(productCarousel);
+  if (productCarousel.getSlides().length > 1) arrowNavOnClickEvents(productCarousel);
 }
