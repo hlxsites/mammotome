@@ -236,7 +236,7 @@ main .section.hero-carousel-container {
     }
 }
 
-@media (width >=1025px) {
+@media (width >=1280px) {
     .hero-carousel.slider-wrapper,
     .hero-carousel .slider,
     .hero-carousel .slider>div>div picture img {
