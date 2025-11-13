@@ -49,7 +49,6 @@ main .section.hero-carousel-container {
     justify-content: center;
     align-items: flex-start;
     height: 100%;
-    width: 37%;
     z-index: 3;
     padding: 0 3%;
     flex: 1;
@@ -102,53 +101,17 @@ main .section.hero-carousel-container {
 
 @media (width <= 460px) {
     .hero-carousel.slider-wrapper {
-        height: auto;
-    }
-
-    .hero-carousel .slider {
-        position: relative;
-        height: auto;
-        flex-direction: column;
-    }
-
-    .hero-carousel .slider>div {
-        position: relative;
-        flex-direction: column;
-        height: auto;
-    }
-
-    .hero-carousel .slider>div>div:last-child {
-        order: -1;
-        width: 100%;
-    }
-
-    .hero-carousel .slider>div>div picture {
-        width: 100%;
+        height: 60vh;
     }
 
     .hero-carousel .slider>div>div picture img {
-        width: 100%;
-        height: auto;
+        position: absolute;
+        top: -80%;
     }
 
-    .hero-carousel .slider>div>div:first-child {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 3%;
-        flex: none;
-    }
-
-    .hero-carousel .slider>div.text-align-center>div,
-    .hero-carousel .slider>div.text-align-right>div {
-        align-items: flex-start;
-    }
-
-    .hero-carousel .slider>div.text-align-center>div h1,
-    .hero-carousel .slider>div.text-align-center>div p,
-    .hero-carousel .slider>div.text-align-right>div h1,
-    .hero-carousel .slider>div.text-align-right>div p {
-        text-align: left;
+    .hero-carousel .dotted-nav .dot {
+        cursor: pointer;
+        pointer-events: all;
     }
 }
 
