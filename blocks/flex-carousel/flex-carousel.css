@@ -134,7 +134,7 @@
 
 .flex-carousel .show {
     opacity: 1;
-    transition-duration: 500ms;
+    transition-duration: 1500ms;
     transition-property: opacity;
     pointer-events: all;
 }
