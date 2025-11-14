@@ -129,12 +129,14 @@
 .flex-carousel .hide {
     opacity: 0;
     transition-property: opacity;
+    pointer-events: none;
 }
 
 .flex-carousel .show {
     opacity: 1;
     transition-duration: 500ms;
     transition-property: opacity;
+    pointer-events: all;
 }
 
 .flex-carousel .flex-carousel-wrapper .arrow-nav {
