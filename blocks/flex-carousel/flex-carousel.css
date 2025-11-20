@@ -218,23 +218,7 @@
     gap: 15px;
 }
 
-.flex-carousel .flex-slide-text .button-row .button-container {
-    width: 100%;
-}
-
-.flex-carousel .flex-slide-text .button-row .button-container > a.button.primary,
-.flex-carousel .flex-slide-text .button-row .button-container > a.button {
-    width: 100%;
-    max-width: 300px;
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-    border-radius: 34px;
-    padding: 8px 15px;
-    font-size: var(--mt-body-font-size-xs);
-}
-
-/* Button containers (not in button-row) */
+/* Button containers */
 .flex-carousel .flex-slide-text > .button-container,
 .flex-carousel .flex-slide-text .button-container {
     width: 100%;
@@ -246,6 +230,9 @@
     margin-bottom: 0;
 }
 
+/* Button link styles - shared for all button containers */
+.flex-carousel .flex-slide-text .button-row .button-container > a.button.primary,
+.flex-carousel .flex-slide-text .button-row .button-container > a.button,
 .flex-carousel .flex-slide-text > .button-container > a.button.primary,
 .flex-carousel .flex-slide-text > .button-container > a.button,
 .flex-carousel .flex-slide-text .button-container > a.button.primary,
@@ -302,26 +289,23 @@
 
 @media (width < 768px) {
     /* Auto-adjust heights to show all content including buttons */
-    .flex-carousel .slider-wrapper .slider {
-        overflow: visible;
-        height: auto;
-        min-height: 0;
-        flex: 0 1 auto;
-    }
-
+    .flex-carousel .slider-wrapper .slider,
     .flex-carousel .flex-slider-container {
         overflow: visible;
         height: auto;
         min-height: 0;
     }
 
-    /* Only the visible slide affects container height */
+    .flex-carousel .slider-wrapper .slider {
+        flex: 0 1 auto;
+    }
+
+    /* Slide positioning */
     .flex-carousel .slider-wrapper .slider .flex-slide:first-child {
         height: auto;
         min-height: 0;
     }
 
-    /* Absolute slides don't affect container height */
     .flex-carousel .slider-wrapper .slider .flex-slide:nth-child(n+2) {
         height: auto;
         min-height: 0;
@@ -333,12 +317,13 @@
         min-height: 0;
     }
 
-    .flex-carousel .flex-slide-image picture {
+    /* Image adjustments */
+    .flex-carousel .flex-slide-image picture,
+    .flex-carousel .flex-slide-image picture img {
         height: auto;
     }
 
     .flex-carousel .flex-slide-image picture img {
-        height: auto;
         max-height: none;
     }
 
@@ -349,17 +334,6 @@
         padding: 3%;
     }
 
-    /* Center buttons */
-    .flex-carousel .flex-slide-text .button-row {
-        align-items: center;
-    }
-
-    .flex-carousel .flex-slide-text>.button-container,
-    .flex-carousel .flex-slide-text .button-container {
-        display: flex;
-        justify-content: center;
-    }
-    
     /* Arrow navigation adjustments */
     .flex-carousel .flex-carousel-wrapper .arrow-nav {
         width: calc(100% + 40px);
@@ -373,26 +347,23 @@
 
 @media (width >= 768px) and (width < 1024px) {
     /* Auto-adjust heights to show all content including buttons */
-    .flex-carousel .slider-wrapper .slider {
-        overflow: visible;
-        height: auto;
-        min-height: 0;
-        flex: 0 1 auto;
-    }
-
+    .flex-carousel .slider-wrapper .slider,
     .flex-carousel .flex-slider-container {
         overflow: visible;
         height: auto;
         min-height: 0;
     }
 
-    /* Only the visible slide affects container height */
+    .flex-carousel .slider-wrapper .slider {
+        flex: 0 1 auto;
+    }
+
+    /* Slide positioning */
     .flex-carousel .slider-wrapper .slider .flex-slide:first-child {
         height: auto;
         min-height: 0;
     }
 
-    /* Absolute slides don't affect container height */
     .flex-carousel .slider-wrapper .slider .flex-slide:nth-child(n+2) {
         height: auto;
         min-height: 0;
@@ -403,6 +374,7 @@
         display: flex;
     }
 
+    /* Image adjustments */
     .flex-carousel .flex-slide-image picture {
         height: auto;
     }
@@ -424,23 +396,6 @@
         top: 27%;
         transform: translateY(-50%);
     }
-
-    /* Dotted navigation - enable pointer events */
-    .flex-carousel .dotted-nav .dot {
-        pointer-events: all;
-        cursor: pointer;
-    }
-
-    /* Center buttons */
-    .flex-carousel .flex-slide-text .button-row {
-        align-items: center;
-    }
-
-    .flex-carousel .flex-slide-text > .button-container,
-    .flex-carousel .flex-slide-text .button-container {
-        display: flex;
-        justify-content: center;
-    }
 }
 
 /* ==========================================================================
@@ -449,21 +404,15 @@
 
 @media (width >= 1024px) and (width <= 1075px) {
     /* Keep desktop layout but ensure heights auto-adjust to prevent button cutoff */
-    .flex-carousel .slider-wrapper .slider {
-        overflow: visible;
-        height: auto;
-        min-height: fit-content;
-        flex: 1 1 auto;
-    }
-
+    .flex-carousel .slider-wrapper .slider,
     .flex-carousel .flex-slider-container {
         overflow: visible;
         height: auto;
         min-height: fit-content;
     }
 
-    .flex-carousel .flex-slide {
-        min-height: 350px;
+    .flex-carousel .slider-wrapper .slider {
+        flex: 1 1 auto;
     }
 
     .flex-carousel .flex-slide-text {
@@ -477,12 +426,9 @@
    ========================================================================== */
 
 @media (width >= 1024px) {
-    .flex-carousel .flex-slide {
-        min-height: 350px;
-    }
-
     .flex-carousel .flex-slide,
     .flex-carousel .flex-slide.image-right {
+        min-height: 350px;
         flex-direction: row;
         align-items: center;
         gap: 50px;
@@ -513,5 +459,16 @@
     .flex-carousel .dotted-nav .dot {
         pointer-events: all;
         cursor: pointer;
+    }
+
+    /* Center buttons */
+    .flex-carousel .flex-slide-text .button-row {
+        align-items: center;
+    }
+
+    .flex-carousel .flex-slide-text > .button-container,
+    .flex-carousel .flex-slide-text .button-container {
+        display: flex;
+        justify-content: center;
     }
 }
