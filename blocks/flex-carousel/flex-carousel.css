@@ -96,7 +96,9 @@
 /* Text styles */
 .flex-carousel .flex-slide-text {
     width: 100%;
-    flex: 0 1 auto;
+    height: auto;
+    overflow: visible;
+    flex: 1 1 0;
 }
 
 .flex-carousel .flex-slide-text > p,
@@ -342,10 +344,22 @@
 
     .flex-carousel .flex-slide-text {
         height: auto;
-        min-height: 0;
+        min-height: 350px;
         flex: 0 1 auto;
+        padding: 3%;
     }
 
+    /* Center buttons */
+    .flex-carousel .flex-slide-text .button-row {
+        align-items: center;
+    }
+
+    .flex-carousel .flex-slide-text>.button-container,
+    .flex-carousel .flex-slide-text .button-container {
+        display: flex;
+        justify-content: center;
+    }
+    
     /* Arrow navigation adjustments */
     .flex-carousel .flex-carousel-wrapper .arrow-nav {
         width: calc(100% + 40px);
@@ -386,8 +400,7 @@
     }
 
     .flex-carousel .flex-slide {
-        height: auto;
-        min-height: 0;
+        display: flex;
     }
 
     .flex-carousel .flex-slide-image picture {
@@ -401,9 +414,9 @@
     }
 
     .flex-carousel .flex-slide-text {
-        height: auto;
-        min-height: 0;
-        flex: 0 1 auto;
+        flex: 1 1 auto;
+        overflow: visible;
+        min-height: 300px;
     }
 
     /* Arrow navigation - align with image in portrait mode */
