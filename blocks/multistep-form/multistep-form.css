@@ -76,6 +76,7 @@ main .multistep-form :is(textarea) {
 
    div.multistep-form.block>div {
       margin: 0;
+      padding-right: 2%;
    }
 
    .multistep-form.block h1 {

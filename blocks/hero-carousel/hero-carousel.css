@@ -11,7 +11,7 @@ main .section.hero-carousel-container {
     align-items: center;
     width: 100%;
     height: 7vh;
-    min-height: 350px;
+    min-height: 375px;
 }
 
 .hero-carousel .slider {
@@ -79,22 +79,19 @@ main .section.hero-carousel-container {
     object-position: 95% center;
 }
 
-.hero-carousel .slider>div>div>h1,
-.hero-carousel .slider>div>div>h2 {
+.hero-carousel .slider>div>div>h1 {
     color: var(--mt-heading-color-primary);
     font-size: var(--mt-heading-font-size-mobile-xl);
     text-align: left;
 }
 
-.hero-carousel .slider>div>div.text-left-of-image p,
-.hero-carousel .slider>div>div.text-right-of-image p {
-    font-size: var(--mt-body-font-size-xs);
-    line-height: 1.05rem;
+.hero-carousel .slider>div>div>h2 {
+    font-size: var(--mt-heading-font-size-mobile-xl);
     text-align: left;
 }
 
-.hero-carousel .slider>div>div>ul li {
-    font-size: var(--mt-body-font-size-s);
+.hero-carousel .slider>div>div>p {
+    text-align: left;
 }
 
 .hero-carousel .slider>div>div.text-left-of-image ul {
@@ -118,19 +115,38 @@ main .section.hero-carousel-container {
         height: 85%;
         -webkit-backdrop-filter: blur(2px);
         backdrop-filter: blur(2px);
-        top: 9%;
+        top: 26px;
+}
+
+    .hero-carousel .slider>div>div.text-left-of-image p,
+    .hero-carousel .slider>div>div.text-right-of-image p {
+        font-size: var(--mt-body-font-size-xs);
+        line-height: 1.05rem;
+        text-align: left;
     }
 }
 
-@media (width <= 1024px) {
+@media (width <= 1025px) {
+
+    .hero-carousel .slider>div>div.text-left-of-image p,
+    .hero-carousel .slider>div>div.text-right-of-image p {
+        font-size: var(--mt-body-font-size-xs);
+        line-height: 1.05rem;
+        text-align: left;
+    }
+
     .hero-carousel .slider>div .button-row > .button-container > a.button.primary {
         max-width: 300px;
         white-space: normal;
         overflow: visible;
-        text-overflow: clip
+        text-overflow: clip;
         border-radius: 34px;
         padding: 8px 15px;
         font-size: var(--mt-body-font-size-xs);
+    }
+
+    .hero-carousel .slider>div>div>ul li {
+        font-size: var(--mt-body-font-size-s);
     }
 }
 
@@ -264,7 +280,7 @@ main .section.hero-carousel-container {
 
     .hero-carousel .slider>div>div:first-child {
         padding: 4%;
-        width: 42%;
+        width: 50%;
     }
 }
 
@@ -278,7 +294,7 @@ main .section.hero-carousel-container {
 
     .hero-carousel .slider>div>div:first-child {
         padding: 4%;
-        width: 41%;
+        width: 50%;
     }
 
     .hero-carousel .slider>div>div picture img.position-left {
