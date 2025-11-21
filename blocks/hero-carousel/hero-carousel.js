@@ -115,6 +115,18 @@ export default function decorate(block) {
   const heroCarousel = new Carousel(block);
   heroCarousel.createSlideSlider();
   heroCarousel.setSliderIds();
+
+  // Add class to text container based on image position
+  heroCarousel.getSlides().forEach((slide, i) => {
+    const textContainer = slide.querySelector('div:first-child');
+    if (textContainer) {
+      if (config[i].imgAlign === 'left') {
+        textContainer.classList.add('text-right-of-image');
+      } else {
+        textContainer.classList.add('text-left-of-image');
+      }
+    }
+  });
   // createButtonRow(heroCarousel.sliderChildren);
   createButtonRow(heroCarousel.getSlides());
   if (heroCarousel.getSlides().length > 1) {
