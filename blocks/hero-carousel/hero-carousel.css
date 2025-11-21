@@ -178,14 +178,14 @@ main .section.hero-carousel-container {
         width: 37%;
     }
 
-    .hero-carousel .slider>div.text-align-center>div {
+    /* .hero-carousel .slider>div.text-align-center>div {
         align-items: center;
     }
 
     .hero-carousel .slider>div.text-align-center>div h1,
     .hero-carousel .slider>div.text-align-center>div p {
         text-align: center;
-    }
+    } */
 
     .hero-carousel .slider>div.text-align-center .button-row {
         align-items: center;
