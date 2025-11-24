@@ -113,6 +113,18 @@ export default function decorate(block) {
     });
   }
 
+  function updateKoreanDetails() {
+    const koreanAddr = document.getElementsByClassName('korean_address');
+    for (let i = 0; i < koreanAddr.length; i += 1) {
+      koreanAddr[i].innerHTML = '02-2138-2878\n9F, 16 Maeheon-ro, Seocho-gu, Seoul, 06771, Korea\nkoreaprivacy@mammotome.com';
+    }
+
+    const koreanTitles = document.getElementsByClassName('korean-title');
+    for (let i = 0; i < koreanTitles.length; i += 1) {
+      koreanTitles[i].innerHTML = 'Eunyoung (Shirley) Chung\nCountry Manager\nMMT Korea';
+    }
+  }
+
   const createAndAppendDiv = () => {
     const containerDiv = document.createElement('div');
     containerDiv.className = 'container';
@@ -146,6 +158,7 @@ export default function decorate(block) {
       await createAndAppendDiv();
       await initializeOneTrust();
       await updateOpCoDetails(blockConfig);
+      await updateKoreanDetails();
     //   await removeVersionElements();
     })
     .catch((error) => {
