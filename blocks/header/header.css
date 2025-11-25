@@ -338,6 +338,10 @@ header nav .nav-tools .icon-search {
   height: 24px;
 }
 
+header nav .nav-email {
+  display: none;
+}
+
 header nav .nav-tools {
   display: flex;
   justify-content: center;
@@ -662,8 +666,37 @@ header nav.nav-mobile .nav-overflow .globe-icon {
   stroke: var(--mt-global-color-white);
 }
 
+header nav.nav-mobile .nav-email {
+  display: flex;
+}
+
+header nav.nav-mobile .nav-email .icon-email {
+  width: 24px;
+  height: 24px;
+}
+
+header nav.nav-mobile .nav-email .icon-email svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  color: var(--mt-global-color-white);
+}
+
 /* Add dropdown arrow to mobile overflow/globe icon */
 header nav.nav-mobile .nav-overflow::after {
+  content: '';
+  display: inline-block;
+  color: var(--mt-header-color-nav-icons);
+  transform: rotate(45deg);
+  width: 7px;
+  height: 7px;
+  border-style: solid;
+  border-radius: 0 2px 0 0;
+  border-width: 3px 3px 0 0;
+}
+
+/* Add dropdown arrow to mobile email icon */
+header nav.nav-mobile .nav-email::after {
   content: '';
   display: inline-block;
   color: var(--mt-header-color-nav-icons);
@@ -678,6 +711,12 @@ header nav.nav-mobile .nav-overflow::after {
 /* Hide overflow list by default in mobile */
 header nav.nav-mobile .nav-overflow[aria-expanded="false"] > ul,
 header nav.nav-mobile .nav-overflow:not([aria-expanded]) > ul {
+  display: none;
+}
+
+/* Hide email list by default in mobile */
+header nav.nav-mobile .nav-email[aria-expanded="false"] > ul,
+header nav.nav-mobile .nav-email:not([aria-expanded]) > ul {
   display: none;
 }
 
@@ -696,8 +735,28 @@ header nav.nav-mobile .nav-overflow[aria-expanded="true"] > ul {
   background-color: var(--mt-global-color-base-primary);
 }
 
+/* Show email list when expanded in mobile */
+header nav.nav-mobile .nav-email[aria-expanded="true"] > ul {
+  position: absolute;
+  width: var(--mt-nav-width);
+  left: calc(var(--mt-nav-width) - var(--mt-nav-padding-m));
+  top: 0;
+  height: 100%;
+  font-size: var(--mt-font-size-100);
+  padding: var(--mt-nav-padding-m);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  background-color: var(--mt-global-color-base-primary);
+}
+
 /* Style the overflow dropdown list in mobile */
 header nav.nav-mobile .nav-overflow-list {
+  padding-left: 0;
+}
+
+/* Style the email dropdown list in mobile */
+header nav.nav-mobile .nav-email-list {
   padding-left: 0;
 }
 
@@ -770,7 +829,8 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   }
 
   header nav .nav-sections>ul>li[aria-expanded="true"]>ul>li:hover,
-  header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover {
+  header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover,
+  header nav .nav-sections>ul>li.nav-email>ul>li.nav-drop:hover {
     background-color: var(--mt-header-menu-item-selected-color);
   }
 
@@ -825,7 +885,8 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   /* disabling next line due to specificity incompatibility between the two selectors */
   /* stylelint-disable-next-line */
   header nav .nav-sections>ul>li>ul,
-  header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul {
+  header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul,
+  header nav .nav-sections>ul>li>ul.nav-email-list {
     display: block;
     visibility: hidden;
     opacity: 0;
@@ -850,6 +911,14 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     display: none;
   }
 
+  /* Flat email items - no dropdown arrows */
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item {
+    display: block;
+    height: auto;
+    text-align: left;
+    padding-left: 15px;
+  }
+
   /* Flat overflow items - no dropdown arrows */
   header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-overflow-item {
     display: block;
@@ -869,6 +938,47 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     width: 24px;
     height: 24px;
     stroke: currentColor;
+  }
+
+  header nav .nav-email {
+    display: flex;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a {
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a .icon-email {
+    width: 24px;
+    height: 24px;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a .icon-email svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    color: var(--mt-header-color-nav-icons);
+  }
+
+  /* Flat email item links */
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item a {
+    color: white;
+    font-size: var(--mt-font-size-90);
+    font-family: var(--mt-body-font-family-bold);
+    font-weight: var(--mt-font-weight-bold);
+    text-transform: none;
+    letter-spacing: normal;
+    margin: 0;
+    padding: var(--mt-nav-padding) 0;
+    border: none;
+    display: block;
+  }
+
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item:hover {
+    background-color: var(--mt-header-menu-item-selected-color);
   }
 
   /* Flat overflow item links */
@@ -1106,6 +1216,7 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
 
 }
 
+
 @media (min-width: 1300px) {
   header nav .nav-sections ul {
     padding-left: revert;
@@ -1116,6 +1227,10 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
 
   header nav .nav-sections>ul>li:hover>ul {
     left: revert;
+  }
+
+  header nav .nav-email {
+    display: none;
   }
 }
 

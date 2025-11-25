@@ -379,7 +379,7 @@ async function searchInput(event) {
     // Debounce the actual search to avoid excessive fetching
     searchDebounceTimer = setTimeout(async () => {
       aside.innerHTML = '';
-      
+
       const title = document.createElement('h1');
       title.classList.add('nav-search-result-title');
       title.textContent = `${await translate(
@@ -569,6 +569,8 @@ export default async function decorate(block) {
   if (resp.ok) {
     const html = await resp.text();
 
+    // Check if the fetched document contains "contact" and apply the class
+
     // decorate nav DOM
     const nav = document.createElement('nav');
     nav.id = 'nav';
@@ -595,10 +597,14 @@ export default async function decorate(block) {
               navSectionList.appendChild(li);
               if (config.style) {
                 li.classList.add(`${config.style}`);
+                const link = li.querySelector('a');
                 if (config.style === 'nav-button' && j % 2) {
-                  li.querySelector('a').classList.add('button', 'secondary');
+                  link.classList.add('button', 'secondary');
                 } else {
-                  li.querySelector('a').classList.add('button', 'primary');
+                  link.classList.add('button', 'primary');
+                }
+                if (link && /\bcontact\b/i.test(link.textContent)) {
+                  link.classList.add('contact');
                 }
               }
             },
