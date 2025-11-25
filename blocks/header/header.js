@@ -605,6 +605,18 @@ export default async function decorate(block) {
                 }
                 if (link && /\bcontact\b/i.test(link.textContent)) {
                   link.classList.add('contact');
+                  // Wrap text content in a span so we can hide it
+                  const textContent = link.textContent.trim();
+                  const textSpan = document.createElement('span');
+                  textSpan.classList.add('contact-text');
+                  textSpan.textContent = textContent;
+                  // Clear existing content and add text span and icon
+                  link.innerHTML = '';
+                  link.appendChild(textSpan);
+                  // Add icon span for email icon (will be processed by decorateIcons)
+                  const iconSpan = document.createElement('span');
+                  iconSpan.classList.add('icon', 'icon-email');
+                  link.appendChild(iconSpan);
                 }
               }
             },

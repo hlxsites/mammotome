@@ -1194,10 +1194,57 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     top: -25px;
   }
 
-        header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
-        header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
-          display: none;
-        }
+  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
+  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
+    display: none;
+  }
+}
+
+/* Replace .contact button text with email icon ONLY for screens between 1080px and 1199px */
+@media (min-width: 1080px) and (max-width: 1199px) {
+  header nav .nav-sections .nav-button a.contact {
+    position: relative;
+    overflow: visible;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide text content but keep it for accessibility */
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: none;
+  }
+
+  /* Style the email icon - ensure it's visible */
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    width: 24px;
+    height: 24px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+    fill: currentColor;
+    color: var(--mt-header-color-nav-icons);
+  }
+}
+
+/* Hide icon below 1080px - show text normally */
+@media (max-width: 1079px) {
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    display: none !important;
+  }
+
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: inline;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -1212,7 +1259,26 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
 
   header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
     display: flex;
-  } 
+  }
+
+  /* Ensure .contact button text is visible at 1200px and above */
+  header nav .nav-sections .nav-button a.contact {
+    font-size: var(--mt-nav-tool-button-font-size);
+    line-height: normal;
+    overflow: visible;
+    width: auto;
+    height: auto;
+    padding: 5px 20px;
+  }
+
+  /* Show text and hide icon at 1200px+ */
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: inline;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    display: none;
+  }
 
 }
 
