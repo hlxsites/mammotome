@@ -1083,6 +1083,11 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   header nav.narrow input[type='search'].nav-search-input {
     top: -25px;
   }
+
+        header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
+        header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
+          display: none;
+        }
 }
 
 @media (min-width: 1200px) {
@@ -1099,10 +1104,6 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     display: flex;
   } 
 
-  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
-  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
-    display: none;
-  }
 }
 
 @media (min-width: 1300px) {
