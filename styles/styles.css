@@ -91,6 +91,7 @@
   --mt-global-color-base-primary: #84329B;
   --mt-global-color-base-primary-light: #a03ebb;
   --mt-global-color-base-primary-very-light: #f7dbff;
+  --mt-global-color-base-mmt-gray:#6D6E71;
   --mt-global-color-base-secondary: #3D3E40;
   --mt-global-color-base-tertiary: #6f6f6f;
   --mt-global-color-accent-primary: #5F8DDA;
@@ -140,6 +141,7 @@
   --mt-button-hover-color-secondary: var(--mt-global-color-base-primary-very-light);
   --mt-heading-color-primary: var(--mt-global-color-accent-quinary);
   --mt-heading-color-secondary: var(--mt-global-color-base-primary);
+  --mt-heading-color-tertiary: var(--mt-global-color-base-mmt-gray);
   --mt-heading-color-inverted: var(--mt-global-color-white);
   --mt-header-colored-secondary: var(--mt-global-color-accent-primary);
   --mt-input-color: var(--mt-text-color);
@@ -270,6 +272,11 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Offset anchor links to account for fixed header */
+  scroll-padding-top: 100px;
+}
+
 body {
   margin: 0;
   font-size: var(--mt-body-font-size-s);
@@ -371,6 +378,13 @@ a:hover {
   color: var(--mt-header-colored-secondary);
 }
 
+.header-colored-tertiary h1,
+.header-colored-tertiary h2,
+.header-colored-tertiary h3,
+.header-colored-tertiary h4,
+.header-colored-tertiary h5 {
+  color: var(--mt-heading-color-tertiary);
+}
 
 .align-left h1,
 .align-left h2,
@@ -422,6 +436,11 @@ blockquote {
 
 .text-large ul {
   font-size: var(--mt-body-font-size-l);
+}
+
+.text-medium ul {
+  font-size: var(--mt-body-font-size-m);
+  line-height: var(--mt-body-text-medium-line-height);
 }
 
 .text-small ul {
@@ -842,6 +861,23 @@ main .section .default-content-wrapper {
 .section.accent-secondary-blur-overlay > .default-content-wrapper,
 .section.base-primary-blur-overlay > .default-content-wrapper {
   position: relative;
+}
+
+/* Bring button row up in hero-video and hero-autoplay metadata */
+.section.hero-video-container.rise .button-row,
+.section.hero-autoplay-container.rise .button-row {
+  inset-block-start: 50%;
+}
+
+/* Bring button row up in hero-video and hero-autoplay metadata */
+.section.hero-video-container.lower .button-row,
+.section.hero-autoplay-container.lower .button-row {
+  inset-block-start: 70%;
+}
+
+/* Remove icon play video fro hero-video */ 
+.section.hero-video-container.hide-icon .icon-playvideo {
+  display: none;
 }
 
 /* Narrow content section metadata */

@@ -1,4 +1,4 @@
-import { readBlockConfig } from "../../scripts/lib-franklin.js";
+import { readBlockConfig } from '../../scripts/lib-franklin.js';
 
 async function fetchSurveyData(url) {
   try {
@@ -6,52 +6,72 @@ async function fetchSurveyData(url) {
     const json = await resp.json();
     return json.data || json;
   } catch (error) {
-    console.error("Failed to fetch survey data:", error);
+    // eslint-disable-next-line no-console
+    console.error('Failed to fetch survey data:', error);
     return null;
   }
 }
 
 function parseSurveyDataFromExcel(data) {
-  const surveyData = { questions: [], products: {}, thankYouYes: "", thankYouNo: "" };
-  const [questions, products, options, config] = ["question", "product", "option", "config"].map(type => 
-    data.filter(row => row.Type === type));
+  const surveyData = {
+    questions: [],
+    products: {},
+    thankYouYes: '',
+    thankYouNo: '',
+  };
+  const [questions, products, options, config] = [
+    'question',
+    'product',
+    'option',
+    'config',
+  ].map((type) => data.filter((row) => row.Type === type));
 
-  questions.forEach(question => {
-    const questionOptions = options.filter(opt => opt.QuestionId === question.Id);
-    const processedOptions = questionOptions.map(opt => {
+  questions.forEach((question) => {
+    const questionOptions = options.filter(
+      (opt) => opt.QuestionId === question.Id,
+    );
+    const processedOptions = questionOptions.map((opt) => {
       const scores = {};
-      opt.Scores?.split(",").forEach(score => {
-        const [product, value] = score.split(":");
-        scores[product.trim()] = parseInt(value.trim());
+      opt.Scores?.split(',').forEach((score) => {
+        const [product, value] = score.split(':');
+        scores[product.trim()] = parseInt(value.trim(), 10);
       });
       return { text: opt.Text, scores };
     });
 
     surveyData.questions.push({
-      id: parseInt(question.Id),
+      id: parseInt(question.Id, 10),
       text: question.Text,
-      type: question.QuestionType || "single",
+      type: question.QuestionType || 'single',
       options: processedOptions,
     });
   });
 
-  products.forEach(product => {
+  products.forEach((product) => {
     surveyData.products[product.Id] = {
       name: product.Name,
       description: product.Description,
       image: product.Image,
-      features: product.Features?.split(",").map(f => f.trim()) || [],
+      features: product.Features?.split(',').map((f) => f.trim()) || [],
       bestFor: product.BestFor,
     };
   });
 
-  config.forEach(item => {
-    if (item.Name === "ThankYouYes") surveyData.thankYouYes = item.Text;
-    else if (item.Name === "ThankYouNo") surveyData.thankYouNo = item.Text;
+  config.forEach((item) => {
+    if (item.Name === 'ThankYouYes') surveyData.thankYouYes = item.Text;
+    else if (item.Name === 'ThankYouNo') surveyData.thankYouNo = item.Text;
   });
 
   return surveyData;
 }
+
+const defaultSurveyData = {
+  questions: [],
+  products: {},
+  thankYouYes: 'Thank you for your interest!',
+  thankYouNo: 'Thank you for taking our survey!',
+};
+
 class ProductSurvey {
   constructor(block, config) {
     this.block = block;
@@ -78,10 +98,13 @@ class ProductSurvey {
 
     if (this.config.surveyData) {
       try {
-        this.surveyData = typeof this.config.surveyData === "string" ? JSON.parse(this.config.surveyData) : this.config.surveyData;
+        this.surveyData = typeof this.config.surveyData === 'string'
+          ? JSON.parse(this.config.surveyData)
+          : this.config.surveyData;
         return;
       } catch (e) {
-        console.warn("Failed to parse survey data from config:", e);
+        // eslint-disable-next-line no-console
+        console.warn('Failed to parse survey data from config:', e);
       }
     }
 
@@ -127,41 +150,37 @@ class ProductSurvey {
               ${this.getCurrentQuestion().text}
             </div>
             
-            <div class="options-container ${this.getCurrentQuestion().type === 'multi' ? 'multi-choice' : 'single-choice'}">
-              ${this.getCurrentQuestion().options.map((option, index) => {
-                const isMulti = this.getCurrentQuestion().type === 'multi';
-                const isSelected = isMulti ? this.selectedOptions.some(opt => opt.text === option.text) : this.selectedOption?.text === option.text;
-                return `<div class="option ${isSelected ? "selected" : ""}" data-option-index="${index}">
+            <div class="options-container ${this.getCurrentQuestion().type === 'multi'
+    ? 'multi-choice'
+    : 'single-choice'}">
+              ${this.getCurrentQuestion()
+    .options.map((option, index) => {
+      const isMulti = this.getCurrentQuestion().type === 'multi';
+      const isSelected = isMulti
+        ? this.selectedOptions.some(
+          (opt) => opt.text === option.text,
+        )
+        : this.selectedOption?.text === option.text;
+      return `<div class="option ${isSelected ? 'selected' : ''}" data-option-index="${index}">
                   <span class="${isMulti ? 'checkbox' : 'radio'} ${isSelected ? 'checked' : ''}"></span>
                   <span class="option-text">${option.text}</span>
                 </div>`;
-              }).join("")}
+    })
+    .join('')}
             </div>
           </div>
 
           <div class="navigation">
-            <button class="btn btn-secondary" id="prev-btn" ${
-              this.currentQuestion === 0 ? "disabled" : ""
-            }>
+            <button class="btn btn-secondary" id="prev-btn" ${this.currentQuestion === 0 ? 'disabled' : ''}>
               ← Previous
             </button>
             
             <div class="question-counter">
-              Question ${this.currentQuestion + 1} of ${
-      this.surveyData.questions.length
-    }
+              Question ${this.currentQuestion + 1} of ${this.surveyData.questions.length}
             </div>
             
-            <button class="btn" id="next-btn" ${
-              this.getCurrentQuestion().type === 'multi' 
-                ? (this.selectedOptions.length === 0 ? "disabled" : "")
-                : (!this.selectedOption ? "disabled" : "")
-            }>
-              ${
-                this.currentQuestion === this.surveyData.questions.length - 1
-                  ? "Get Results"
-                  : "Next"
-              } →
+            <button class="btn" id="next-btn" ${this.getCurrentQuestion().type === 'multi' && this.selectedOptions.length === 0 ? 'disabled' : ''}${this.getCurrentQuestion().type !== 'multi' && !this.selectedOption ? 'disabled' : ''}>
+              ${this.currentQuestion === this.surveyData.questions.length - 1 ? 'Get Results' : 'Next'} →
             </button>
           </div>
         </div>
@@ -182,11 +201,13 @@ class ProductSurvey {
       </div>
     `;
 
-    this.block.querySelector("#start-survey-btn").addEventListener("click", () => {
-      this.showStartScreen = false;
-      this.render();
-      this.attachEventListeners();
-    });
+    this.block
+      .querySelector('#start-survey-btn')
+      .addEventListener('click', () => {
+        this.showStartScreen = false;
+        this.render();
+        this.attachEventListeners();
+      });
   }
 
   getCurrentQuestion() {
@@ -194,21 +215,23 @@ class ProductSurvey {
   }
 
   getProgress() {
-    return ((this.currentQuestion + 1) / this.surveyData.questions.length) * 100;
+    return (
+      ((this.currentQuestion + 1) / this.surveyData.questions.length) * 100
+    );
   }
 
   attachEventListeners() {
-    this.block.querySelectorAll(".option").forEach((option) => {
-      option.addEventListener("click", () => {
-        this.selectOption(parseInt(option.dataset.optionIndex));
+    this.block.querySelectorAll('.option').forEach((option) => {
+      option.addEventListener('click', () => {
+        this.selectOption(parseInt(option.dataset.optionIndex, 10));
       });
     });
 
-    this.block.querySelector("#prev-btn").addEventListener("click", () => {
+    this.block.querySelector('#prev-btn').addEventListener('click', () => {
       this.previousQuestion();
     });
 
-    this.block.querySelector("#next-btn").addEventListener("click", () => {
+    this.block.querySelector('#next-btn').addEventListener('click', () => {
       this.nextQuestion();
     });
   }
@@ -217,33 +240,43 @@ class ProductSurvey {
     const option = this.getCurrentQuestion().options[optionIndex];
     const currentQuestion = this.getCurrentQuestion();
     const isMulti = currentQuestion.type === 'multi';
-    
+
     if (isMulti) {
-      const existingIndex = this.selectedOptions.findIndex(opt => opt.text === option.text);
-      existingIndex >= 0 ? this.selectedOptions.splice(existingIndex, 1) : this.selectedOptions.push(option);
+      const existingIndex = this.selectedOptions.findIndex(
+        (opt) => opt.text === option.text,
+      );
+      if (existingIndex >= 0) {
+        this.selectedOptions.splice(existingIndex, 1);
+      } else {
+        this.selectedOptions.push(option);
+      }
     } else {
       this.selectedOption = option;
       this.selectedOptions = [];
     }
 
     // Update UI for all options
-    this.block.querySelectorAll(".option").forEach((opt, index) => {
-      const isSelected = isMulti 
-        ? this.selectedOptions.some(selectedOpt => selectedOpt.text === currentQuestion.options[index].text)
+    this.block.querySelectorAll('.option').forEach((opt, index) => {
+      const isSelected = isMulti
+        ? this.selectedOptions.some(
+          (selectedOpt) => selectedOpt.text === currentQuestion.options[index].text,
+        )
         : index === optionIndex;
-      
-      opt.classList.toggle("selected", isSelected);
+
+      opt.classList.toggle('selected', isSelected);
       const indicator = opt.querySelector(isMulti ? '.checkbox' : '.radio');
       if (indicator) indicator.classList.toggle('checked', isSelected);
     });
 
     // Update next button state
-    this.block.querySelector("#next-btn").disabled = isMulti ? this.selectedOptions.length === 0 : !this.selectedOption;
+    this.block.querySelector('#next-btn').disabled = isMulti
+      ? this.selectedOptions.length === 0
+      : !this.selectedOption;
   }
 
   previousQuestion() {
     if (this.currentQuestion > 0) {
-      this.currentQuestion--;
+      this.currentQuestion -= 1;
       this.selectedOption = null;
       this.selectedOptions = [];
       this.render();
@@ -253,16 +286,22 @@ class ProductSurvey {
 
   nextQuestion() {
     const currentQuestion = this.getCurrentQuestion();
-    const isValidSelection = currentQuestion.type === 'multi' ? this.selectedOptions.length > 0 : this.selectedOption;
+    const isValidSelection = currentQuestion.type === 'multi'
+      ? this.selectedOptions.length > 0
+      : this.selectedOption;
     if (!isValidSelection) return;
 
     const answerData = {
       questionId: currentQuestion.id,
-      answer: currentQuestion.type === 'multi' ? this.selectedOptions.map(opt => opt.text) : this.selectedOption.text,
-      type: currentQuestion.type
+      answer: currentQuestion.type === 'multi'
+        ? this.selectedOptions.map((opt) => opt.text)
+        : this.selectedOption.text,
+      type: currentQuestion.type,
     };
 
-    const existingIndex = this.answers.findIndex(answer => answer.questionId === currentQuestion.id);
+    const existingIndex = this.answers.findIndex(
+      (answer) => answer.questionId === currentQuestion.id,
+    );
     if (existingIndex >= 0) {
       this.answers[existingIndex] = answerData;
     } else {
@@ -272,7 +311,7 @@ class ProductSurvey {
     if (this.currentQuestion === this.surveyData.questions.length - 1) {
       this.showResults();
     } else {
-      this.currentQuestion++;
+      this.currentQuestion += 1;
       this.selectedOption = null;
       this.selectedOptions = [];
       this.render();
@@ -281,15 +320,23 @@ class ProductSurvey {
   }
 
   calculateResults() {
-    const scores = Object.fromEntries(Object.keys(this.surveyData.products).map(product => [product, 0]));
+    const scores = Object.fromEntries(
+      Object.keys(this.surveyData.products).map((product) => [product, 0]),
+    );
 
-    this.answers.forEach(answer => {
-      const question = this.surveyData.questions.find(q => q.id === answer.questionId);
+    this.answers.forEach((answer) => {
+      const question = this.surveyData.questions.find(
+        (q) => q.id === answer.questionId,
+      );
       if (!question) return;
 
-      const answerTexts = Array.isArray(answer.answer) ? answer.answer : [answer.answer];
-      answerTexts.forEach(answerText => {
-        const selectedOption = question.options.find(opt => opt.text === answerText);
+      const answerTexts = Array.isArray(answer.answer)
+        ? answer.answer
+        : [answer.answer];
+      answerTexts.forEach((answerText) => {
+        const selectedOption = question.options.find(
+          (opt) => opt.text === answerText,
+        );
         if (selectedOption) {
           Object.entries(selectedOption.scores).forEach(([product, score]) => {
             scores[product] += score;
@@ -299,9 +346,15 @@ class ProductSurvey {
     });
 
     const maxScore = Math.max(...Object.values(scores));
-    const recommendedProduct = Object.keys(scores).find(product => scores[product] === maxScore);
+    const recommendedProduct = Object.keys(scores).find(
+      (product) => scores[product] === maxScore,
+    );
 
-    return { scores, recommendedProduct, productDetails: this.surveyData.products[recommendedProduct] };
+    return {
+      scores,
+      recommendedProduct,
+      productDetails: this.surveyData.products[recommendedProduct],
+    };
   }
 
   showResults() {
@@ -313,23 +366,17 @@ class ProductSurvey {
           <div class="result-container">
             <h2 class="product-title">${results.productDetails.name}</h2>
             
-            <img src="${results.productDetails.image}" alt="${
-      results.productDetails.name
-    }" class="product-image">
+            <img src="${results.productDetails.image}" alt="${results.productDetails.name}" class="product-image">
             
-            <p class="product-description">${
-              results.productDetails.description
-            }</p>
+            <p class="product-description">${results.productDetails.description}</p>
             
             <ul class="product-features">
               ${results.productDetails.features
-                .map((feature) => `<li>${feature}</li>`)
-                .join("")}
+    .map((feature) => `<li>${feature}</li>`)
+    .join('')}
             </ul>
             
-            <div class="product-best-for">Best for: ${
-              results.productDetails.bestFor
-            }</div>
+            <div class="product-best-for">Best for: ${results.productDetails.bestFor}</div>
             
             <div class="contact-question">
               <h3>Would you like to be contacted by a sales rep to learn more?</h3>
@@ -344,14 +391,14 @@ class ProductSurvey {
     `;
 
     this.block
-      .querySelector("#contact-yes-btn")
-      .addEventListener("click", () => {
+      .querySelector('#contact-yes-btn')
+      .addEventListener('click', () => {
         this.showContactForm();
       });
 
     this.block
-      .querySelector("#contact-no-btn")
-      .addEventListener("click", () => {
+      .querySelector('#contact-no-btn')
+      .addEventListener('click', () => {
         this.showThankYouNo();
       });
   }
@@ -407,21 +454,21 @@ class ProductSurvey {
     `;
 
     this.block
-      .querySelector("#contact-form")
-      .addEventListener("submit", (e) => {
+      .querySelector('#contact-form')
+      .addEventListener('submit', (e) => {
         e.preventDefault();
         this.submitContactForm();
       });
 
     this.block
-      .querySelector("#back-to-results")
-      .addEventListener("click", () => {
+      .querySelector('#back-to-results')
+      .addEventListener('click', () => {
         this.showResults();
       });
   }
 
   async submitContactForm() {
-    const form = this.block.querySelector("#contact-form");
+    const form = this.block.querySelector('#contact-form');
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
@@ -431,21 +478,26 @@ class ProductSurvey {
 
     try {
       // simulated submission. need to update it with actual submission.
-      console.log("Contact form submitted:", data);
+      // eslint-disable-next-line no-console
+      console.log('Contact form submitted:', data);
 
       this.showThankYouYes();
     } catch (error) {
-      console.error("Error submitting form:", error);
+      // eslint-disable-next-line no-console
+      console.error('Error submitting form:', error);
+      // eslint-disable-next-line no-alert
       alert(
-        "There was an error submitting your information. Please try again."
+        'There was an error submitting your information. Please try again.',
       );
     }
   }
 
   showThankYou(isYes = true) {
-    const message = isYes ? this.surveyData.thankYouYes || "Thank you! A sales representative will contact you within 24 hours." 
-                          : this.surveyData.thankYouNo || "Thank you for taking our survey!";
-    
+    const message = isYes
+      ? this.surveyData.thankYouYes
+        || 'Thank you! A sales representative will contact you within 24 hours.'
+      : this.surveyData.thankYouNo || 'Thank you for taking our survey!';
+
     this.block.innerHTML = `<div class="product-survey-container">
       <div class="survey-card">
         <div class="thank-you-container">
@@ -456,19 +508,32 @@ class ProductSurvey {
       </div>
     </div>`;
 
-    this.block.querySelector("#restart-btn").addEventListener("click", () => this.restart());
+    this.block
+      .querySelector('#restart-btn')
+      .addEventListener('click', () => this.restart());
   }
 
-  showThankYouYes() { this.showThankYou(true); }
-  showThankYouNo() { this.showThankYou(false); }
+  showThankYouYes() {
+    this.showThankYou(true);
+  }
+
+  showThankYouNo() {
+    this.showThankYou(false);
+  }
 
   restart() {
-    Object.assign(this, { currentQuestion: 0, answers: [], selectedOption: null, selectedOptions: [], showStartScreen: true });
+    Object.assign(this, {
+      currentQuestion: 0,
+      answers: [],
+      selectedOption: null,
+      selectedOptions: [],
+      showStartScreen: true,
+    });
     this.render();
   }
 }
 
 export default async function decorate(block) {
   const config = readBlockConfig(block);
-  new ProductSurvey(block, config);
+  return new ProductSurvey(block, config);
 }

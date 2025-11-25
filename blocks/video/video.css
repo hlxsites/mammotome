@@ -48,6 +48,7 @@
 .video.block > div > div:nth-child(3) {
   position: relative;
   cursor: pointer;
+  text-align: center;
 }
 
 .video.block > div > div:nth-child(3) span.icon-playvideo {
@@ -60,11 +61,11 @@
 
 .video.block > div > div:nth-child(3) span.icon-playvideo svg {
   fill: var(--mt-background-color-primary);
-  filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
 }
 
 .video.block img {
-  width: 100%;
+  width: 70%;
+  min-width: 350px;
   box-shadow: 2px 4px 12px 0 rgb(28 28 73 / 39%);
   border: 0 solid transparent;
   border-radius: 5px;

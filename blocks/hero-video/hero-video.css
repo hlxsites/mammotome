@@ -15,9 +15,22 @@
   width: 100%;
 }
 
+.hero-copy h1,
+.hero-copy h2 {
+  text-align: left;
+}
+
+.hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+}
+
+.hero-copy h2 {
+  font-weight: var(--mt-font-weight-thin);
+}
+
 .icon-playvideo {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 75%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -26,113 +39,128 @@
   filter: drop-shadow(0 0 1rem black);
 }
 
-.product-reference-container .product-reference-wrapper {
+.hero-video-container .button-row {
   position: absolute;
-  left: 7%;
-  top: 55%;
-
+  inset-inline-start: 7%;
+  inset-block-start: 55%;
 }
 
-.product-ref-container:nth-child(1) {
-  display: none;
-}
-
-.product-ref-container:nth-child(2) {
-  position: sticky;
-  top: 0px;
-  height: 50%;
-  pointer-events: auto;
-  z-index: 3;
-}
-
-.product-ref-container div>a:nth-child(3) {
-  display: none;
-  z-index: inherit;
-}
-
-.product-ref-container.product-ref-container>div>a>button {
-  height: 35px;
-  width: 55%;
-  border-radius: 100px;
+.hero-video-container .button-row .button {
+  width: 100%;
 }
 
 .hero-copy {
-  display: flex;
   position: absolute;
-  flex-direction: column;
-  justify-content: center;
-  top: -5%;
-  height: 65%;
-  align-items: flex-start;
-  flex: 1;
-}
-
-.hero-copy h1 {
-  color: var(--mt-heading-color-primary);
-  text-align: left;
-}
-
-.hero-copy h2 {
-  font-weight: var(--mt-font-weight-thin);
+  inset-inline-start: 7%;
+  inset-block-start: 24%;
+  width: 44%;
 }
 
 p>a.hero-video:nth-child(1) {
   display: none;
 }
 
+/* Video Player Iframe Styling */
+.video-player-iframe {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 103;
+  display: block;
+  width: 1280px;
+  max-width: 90%;
+  max-height: 90%;
+  aspect-ratio: 1280/720;
+  border: none;
+  box-shadow: 0 0 15px hsl(0deg 0% 0% / 80%);
+}
 
-@media (max-width: 1024px) {
+/* Laptops */
+@media (max-width: 1536px) {
   .hero-copy {
-    width: 60%;
-    padding: 0 7%;
-    z-index: 3;
-  }
-
-  .hero-copy h1 {
-    font-size: var(--mt-heading-font-size-mobile-xl);
-  }
-
-  .hero-copy h2 {
-    font-size: var(--mt-heading-font-size-mobile-l);
-  }
-
-  .product-reference-container .product-reference-wrapper {
-    margin: auto;
     position: absolute;
-    z-index: 3;
-    top: 50%;
-    left: 7%;
+    inset-inline-start: 7%;
+    inset-block-start: 20%;
   }
 
-  .product-ref-container.product-ref-container>div>a>button {
-    width: 60%;
-    height: 30px;
+  .hero-video-container .button-row {
+    position: absolute;
+    inset-inline-start: 7%;
+    inset-block-start: 55%;
   }
 }
 
-@media (max-width: 480px) {
-  .hero-video {
-    height: 425px;
-    margin-bottom: -30%;
-  }
-
+/* Tablets iPad Pro and Smaller */
+@media (max-width:1280px) {
   .hero-copy {
-    top: -10%;
+    position: absolute;
+    inset-inline-start: 6%;
+    inset-block-start: 15%;
   }
 
   .hero-copy h1 {
-    font-size: var(--mt-heading-font-size-mobile-l);
+    font-size: var(--mt-heading-font-size-xl);
   }
 
   .hero-copy h2 {
-    font-size: var(--mt-heading-font-size-mobile-m);
-    margin-top: 0;
+    font-size: var(--mt-heading-font-size-mobile-xl);
+  }
+
+  .hero-video-container .button-row {
+    position: absolute;
+    inset-inline-start: 6%;
+    inset-block-start: 50%;
+  }
+}
+
+/* For tablets in portrait mode */
+@media (max-width: 850px) {
+  .hero-video-container .button-row {
+    inset-block-start: 65%;
+  }
+
+  .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-l);
+  }
+
+  .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+}
+
+@media (max-width: 460px) {
+  .hero-image img {
+    object-fit: scale-down;
+  }
+
+  .hero-video {
+    height: auto;
+    margin-bottom: 5%;
+  }
+
+  .hero-copy {
+    position: static;
+    width: 100%;
+  }
+
+  .hero-copy.hero-copy h1 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+    position: absolute;
+    inset-inline-start: 5%;
+    inset-block-start: 19%;
+    width: 48%;
+  }
+
+  .hero-copy.hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+    text-align: center;
+    padding: 5%;
   }
 
   .icon-playvideo {
     position: absolute;
-    top: 22%;
-    left: 75%;
+    inset-inline-start: 75%;
+    inset-block-start: 25%;
   }
 
   .icon-playvideo svg {
@@ -140,10 +168,11 @@ p>a.hero-video:nth-child(1) {
     height: auto;
   }
 
-  .product-reference-container .product-reference-wrapper {
-    text-align: center;
-    left: 50%;
-    top: 60%;
-    transform: translateX(-50%);
+.hero-video-container  .button-row {
+    position: static;
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+    margin-top: 5%;
   }
 }

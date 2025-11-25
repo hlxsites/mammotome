@@ -1,0 +1,73 @@
+HERO VIDEO TEST BLOCK - AUTHORING EXAMPLE
+
+This document shows how to properly author the hero-video-test block in document-based AEM.
+
+STRUCTURE:
+The block must be created as a 2-column table with the block name in the first row.
+
+STEP-BY-STEP INSTRUCTIONS:
+
+1. Insert a Table with 2 columns and 2 rows
+2. In the first row, first cell, type: "Hero-video-test"
+3. Leave the first row, second cell empty
+4. In the second row, first cell, add your video content
+5. In the second row, second cell, add your overlay content
+
+EXAMPLE TABLE STRUCTURE:
+
+┌─────────────────────────────────────────────────────────┐
+│                    Hero-video-test                      │
+├───────────────────────────┬─────────────────────────────┤
+│ [VIDEO CONTENT]          │ [OVERLAY CONTENT]           │
+└───────────────────────────┴─────────────────────────────┘
+
+DETAILED EXAMPLE:
+
+┌─────────────────────────────────────────────────────────┐
+│                    Hero-video-test                      │
+├───────────────────────────┬─────────────────────────────┤
+│ https://player.vimeo.com/ │ Neoprobe® Gamma Detection   │
+│ video/1127342102          │ System                      │
+│                           │                             │
+│ [Image: hero-poster.jpg]  │ With over 20 years of       │
+│                           │ excellence, the Neoprobe®   │
+│ [Image: placeholder.jpg]  │ GDS is dependable, simple,  │
+│                           │ and accurate. 1,2            │
+│                           │                             │
+│                           │ **Learn More**              │
+│                           │ https://player.vimeo.com/   │
+│                           │ video/1127342102            │
+└───────────────────────────┴─────────────────────────────┘
+
+COLUMN 1 - VIDEO CONTENT:
+- First element: Vimeo URL (required)
+- Optional: Poster image
+- Optional: Placeholder image
+
+COLUMN 2 - OVERLAY CONTENT:
+- Heading text
+- Description text
+- Call-to-action button with Vimeo URL
+
+IMPORTANT NOTES:
+- Both Vimeo URLs must be valid (contain video IDs)
+- The block name must be exactly "Hero-video-test"
+- Use a 2x2 table structure
+- The "Learn More" link should be formatted as a button (bold text)
+
+VALID VIMEO URL FORMATS:
+✅ https://player.vimeo.com/video/1127342102
+✅ https://vimeo.com/1127342102
+✅ https://vimeo.com/video/1127342102
+
+INVALID FORMATS:
+❌ YouTube URLs
+❌ Direct MP4 files
+❌ Invalid Vimeo URLs
+
+TROUBLESHOOTING:
+If the console shows "No overlay section found":
+1. Ensure you're using a 2-column table
+2. Check that the block name is "Hero-video-test"
+3. Verify both columns have content
+4. Make sure Vimeo URLs are valid

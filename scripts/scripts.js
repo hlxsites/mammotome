@@ -325,6 +325,93 @@ async function loadLazy(doc) {
   document.dispatchEvent(new Event('franklin.loadLazy_completed'));
 }
 
+/**
+ * SHA-256 hashing function for Enhanced Conversions
+ */
+async function sha256(message) {
+  if (!message) return '';
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+/**
+ * Normalize functions for Enhanced Conversions
+ */
+function normalizeEmail(email) {
+  if (!email) return '';
+  return email.toLowerCase().trim();
+}
+
+function normalizePhone(phone) {
+  if (!phone) return '';
+  let cleaned = phone.replace(/\D/g, '');
+  if (!cleaned.startsWith('1') && cleaned.length === 10) {
+    cleaned = `1${cleaned}`;
+  }
+  return `+${cleaned}`;
+}
+
+function normalizeText(text) {
+  if (!text) return '';
+  return text.toLowerCase().trim();
+}
+
+/**
+ * Global Marketo form handler for Enhanced Conversions tracking
+ * This attaches to all Marketo forms on the page
+ */
+function initMarketoEnhancedConversions() {
+  // Only run if MktoForms2 is available
+  if (typeof window.MktoForms2 === 'undefined') {
+    return;
+  }
+
+  window.MktoForms2.whenReady(async (form) => {
+    // Store reference to original onSuccess handler if it exists
+    const originalOnSuccess = form.onSuccess;
+
+    form.onSuccess(async (values, followUpUrl) => {
+      // Normalize and hash user data for Enhanced Conversions
+      const normalizedEmail = normalizeEmail(values.Email);
+      const normalizedPhone = normalizePhone(values.Phone);
+      const normalizedFirstName = normalizeText(values.FirstName);
+      const normalizedLastName = normalizeText(values.LastName);
+      const normalizedAddress = normalizeText(values.Address);
+      const normalizedCity = normalizeText(values.City);
+
+      const userData = {
+        email: await sha256(normalizedEmail),
+        phone_number: await sha256(normalizedPhone),
+        address: {
+          first_name: await sha256(normalizedFirstName),
+          last_name: await sha256(normalizedLastName),
+          street: await sha256(normalizedAddress),
+          city: normalizedCity,
+          region: values.State || '',
+          postal_code: values.PostalCode || '',
+          country: values.Country || '',
+        },
+      };
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'enhanced_conversion',
+        user_data: userData,
+      });
+
+      // If there was an original handler, call it, otherwise allow default behavior
+      if (originalOnSuccess && typeof originalOnSuccess === 'function') {
+        return originalOnSuccess.call(form, values, followUpUrl);
+      }
+
+      return true;
+    });
+  });
+}
+
 // google tag manager
 function loadGTM() {
   if (window.location.hostname.includes('localhost') || document.location.hostname.includes('.hlx.page') || document.location.hostname.includes('.aem.page')) {
@@ -365,6 +452,8 @@ function loadDelayed() {
   window.setTimeout(() => {
     window.hlx.plugins.load('delayed');
     window.hlx.plugins.run('loadDelayed');
+    // Initialize Enhanced Conversions for all Marketo forms
+    initMarketoEnhancedConversions();
     // eslint-disable-next-line import/no-cycle
     return import('./delayed.js');
   }, 3000);
