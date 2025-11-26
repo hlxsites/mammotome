@@ -36,7 +36,6 @@
     inset: 0;
     z-index: 2;
     background-color: rgb(255 255 255 / 50%);
-    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
     pointer-events: auto;
 }
@@ -85,8 +84,17 @@
     display: block;
 }
 
-.video-carousel .slider > div > div:nth-child(1) h3 sup,
 .video-carousel .slider > div > div:nth-child(1) sup {
+    font-size: 0.5em;
+    line-height: 1;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.5em;
+    display: inline-block;
+    margin-left: 1px;
+}
+
+.video-carousel .slider > div > div:nth-child(1) h3 sup {
     font-size: 0.5em;
     line-height: 1;
     vertical-align: baseline;
@@ -115,7 +123,7 @@
     width: 100%;
     object-fit: cover;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 15%);
 }
 
 .video-carousel .slider > div > div picture {
@@ -132,21 +140,6 @@
 .video-carousel .slider > div[style*="order: 1;"] > div picture,
 .video-carousel .slider > div[style*="order: 3;"] > div picture {
     margin-top: 10px;
-}
-
-.video-carousel .slider > div > div:nth-child(3) span.icon-playvideo {
-    position: absolute;
-    display: block;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.video-carousel .slider > div > div:nth-child(3) span.icon-playvideo svg {
-    width: 60%;
-    height: 60%;
-    fill: var(--mt-background-color-primary);
-    filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
 }
 
 .video-carousel.slider-wrapper .arrow-nav {
@@ -195,6 +188,21 @@
 .video-carousel.slider-wrapper .arrow-nav svg {
     width: 24px;
     height: 24px;
+}
+
+.video-carousel .slider > div > div:nth-child(3) span.icon-playvideo {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.video-carousel .slider > div > div:nth-child(3) span.icon-playvideo svg {
+    width: 60%;
+    height: 60%;
+    fill: var(--mt-background-color-primary);
+    filter: drop-shadow(1px 0 1px rgba(0 0 0 / 40%));
 }
 
 .video-player-iframe {

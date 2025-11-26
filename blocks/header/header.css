@@ -191,7 +191,7 @@ header nav .nav-brand .scrolling-logo img {
   height: 40px;
   width: auto;
   max-width: 120px;
-  filter: brightness(0) saturate(100%) invert(22%) sepia(48%) saturate(3185%) hue-rotate(270deg) brightness(88%) contrast(86%);;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(48%) saturate(3185%) hue-rotate(270deg) brightness(88%) contrast(86%);
 }
 
 header nav .nav-brand .scrolling-logo svg {
@@ -292,10 +292,6 @@ header nav .nav-sections ul>li.nav-multilevel>ul>li {
   text-align: center;
 }
 
-header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
-  display: none;
-}
-
 header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(3) {
   display: none;
 }
@@ -336,6 +332,10 @@ header nav:not(.nav-mobile) .nav-sections ul>li.nav-multilevel>ul>li:hover {
 header nav .nav-tools .icon-search {
   width: 24px;
   height: 24px;
+}
+
+header nav .nav-email {
+  display: none;
 }
 
 header nav .nav-tools {
@@ -510,7 +510,6 @@ li.nav-drop {
 header nav.nav-mobile li.nav-drop::after {
   content: '';
   display: inline-block;
-  content: '';
   color: var(--mt-global-color-white);
   transform: rotate(45deg);
   width: 6.5px;
@@ -649,6 +648,7 @@ header nav.nav-mobile .nav-overflow {
   padding-bottom: var(--mt-nav-padding);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow a {
   display: flex;
   align-items: center;
@@ -660,6 +660,22 @@ header nav.nav-mobile .nav-overflow .globe-icon {
   width: 24px;
   height: 24px;
   stroke: var(--mt-global-color-white);
+}
+
+header nav.nav-mobile .nav-email {
+  display: flex;
+}
+
+header nav.nav-mobile .nav-email .icon-email {
+  width: 24px;
+  height: 24px;
+}
+
+header nav.nav-mobile .nav-email .icon-email svg {
+  width: 24px;
+  height: 24px;
+  fill: currentcolor;
+  color: var(--mt-global-color-white);
 }
 
 /* Add dropdown arrow to mobile overflow/globe icon */
@@ -675,14 +691,54 @@ header nav.nav-mobile .nav-overflow::after {
   border-width: 3px 3px 0 0;
 }
 
+/* Add dropdown arrow to mobile email icon */
+header nav.nav-mobile .nav-email::after {
+  content: '';
+  display: inline-block;
+  color: var(--mt-header-color-nav-icons);
+  transform: rotate(45deg);
+  width: 7px;
+  height: 7px;
+  border-style: solid;
+  border-radius: 0 2px 0 0;
+  border-width: 3px 3px 0 0;
+}
+
 /* Hide overflow list by default in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow[aria-expanded="false"] > ul,
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow:not([aria-expanded]) > ul {
   display: none;
 }
 
+/* Hide email list by default in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-email[aria-expanded="false"] > ul,
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-email:not([aria-expanded]) > ul {
+  display: none;
+}
+
 /* Show overflow list when expanded in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow[aria-expanded="true"] > ul {
+  position: absolute;
+  width: var(--mt-nav-width);
+  left: calc(var(--mt-nav-width) - var(--mt-nav-padding-m));
+  top: 0;
+  height: 100%;
+  font-size: var(--mt-font-size-100);
+  padding: var(--mt-nav-padding-m);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  background-color: var(--mt-global-color-base-primary);
+}
+
+/* Show email list when expanded in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-email[aria-expanded="true"] > ul {
   position: absolute;
   width: var(--mt-nav-width);
   left: calc(var(--mt-nav-width) - var(--mt-nav-padding-m));
@@ -701,7 +757,13 @@ header nav.nav-mobile .nav-overflow-list {
   padding-left: 0;
 }
 
+/* Style the email dropdown list in mobile */
+header nav.nav-mobile .nav-email-list {
+  padding-left: 0;
+}
+
 /* Hide the last language nav item in mobile since we're showing the globe icon */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-sections>ul>li:nth-last-child(2) {
   display: none;
 }
@@ -770,7 +832,8 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   }
 
   header nav .nav-sections>ul>li[aria-expanded="true"]>ul>li:hover,
-  header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover {
+  header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover,
+  header nav .nav-sections>ul>li.nav-email>ul>li.nav-drop:hover {
     background-color: var(--mt-header-menu-item-selected-color);
   }
 
@@ -794,21 +857,18 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     display: block;
   }
 
+  /* Add delay when leaving hover state */
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections>ul>li>ul {
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
+  }
+
   header nav .nav-sections>ul>li:hover>ul {
     visibility: visible;
     opacity: 1;
     top: 47px;
     z-index: 1000;
-    transition-delay: 0ms;
-  }
-  
-  /* Add delay when leaving hover state */
-  header nav .nav-sections>ul>li>ul {
-    transition: opacity 200ms ease-out, visibility 200ms ease-out;
-    transition-delay: 300ms; /* 300ms delay before hiding */
-  }
-  
-  header nav .nav-sections>ul>li:hover>ul {
     transition-delay: 0ms; /* Show immediately on hover */
   }
 
@@ -825,7 +885,8 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   /* disabling next line due to specificity incompatibility between the two selectors */
   /* stylelint-disable-next-line */
   header nav .nav-sections>ul>li>ul,
-  header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul {
+  header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul,
+  header nav .nav-sections>ul>li>ul.nav-email-list {
     display: block;
     visibility: hidden;
     opacity: 0;
@@ -850,6 +911,14 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     display: none;
   }
 
+  /* Flat email items - no dropdown arrows */
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item {
+    display: block;
+    height: auto;
+    text-align: left;
+    padding-left: 15px;
+  }
+
   /* Flat overflow items - no dropdown arrows */
   header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-overflow-item {
     display: block;
@@ -868,7 +937,48 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   header nav .nav-sections .nav-button.nav-overflow a .globe-icon {
     width: 24px;
     height: 24px;
-    stroke: currentColor;
+    stroke: currentcolor;
+  }
+
+  header nav .nav-email {
+    display: flex;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a {
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a .icon-email {
+    width: 24px;
+    height: 24px;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a .icon-email svg {
+    width: 24px;
+    height: 24px;
+    fill: currentcolor;
+    color: var(--mt-header-color-nav-icons);
+  }
+
+  /* Flat email item links */
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item a {
+    color: white;
+    font-size: var(--mt-font-size-90);
+    font-family: var(--mt-body-font-family-bold);
+    font-weight: var(--mt-font-weight-bold);
+    text-transform: none;
+    letter-spacing: normal;
+    margin: 0;
+    padding: var(--mt-nav-padding) 0;
+    border: none;
+    display: block;
+  }
+
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item:hover {
+    background-color: var(--mt-header-menu-item-selected-color);
   }
 
   /* Flat overflow item links */
@@ -1051,21 +1161,13 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     position: absolute;
     left: 100%;
     top: 0;
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
   }
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
-   visibility: visible !important;
-   transition-delay: 0ms;
-  }
-  
-  /* Add delay for third-level navigation */
-  .nav-subitems-level2 {
-    transition: opacity 200ms ease-out, visibility 200ms ease-out;
-    transition-delay: 300ms; /* 300ms delay before hiding */
-  }
-  
-  .nav-subitem:hover .nav-subitems-level2 {
+    visibility: visible !important;
     transition-delay: 0ms; /* Show immediately on hover */
   }
 
@@ -1083,10 +1185,63 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   header nav.narrow input[type='search'].nav-search-input {
     top: -25px;
   }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
+    display: none;
+  }
+}
+
+/* Replace .contact button text with email icon ONLY for screens between 1080px and 1199px */
+@media (min-width: 1080px) and (max-width: 1199px) {
+  a.button.primary.contact {
+    background-color: var(--mt-global-color-white);
+    border: none;
+  }
+
+  header nav .nav-sections .nav-button a.contact {
+    height: 33px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Hide text content but keep it for accessibility */
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: none;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+    fill: currentcolor;
+    color: var(--mt-header-color-nav-icons);
+  }
+}
+
+/* Hide icon below 1080px - show text normally */
+@media (max-width: 1079px) {
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    display: none !important;
+  }
+
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: inline;
+  }
 }
 
 @media (min-width: 1200px) {
-
   header nav .nav-sections>ul>li:hover>ul {
     left: -115px;
   }
@@ -1097,24 +1252,45 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
 
   header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
     display: flex;
-  } 
+  }
 
-  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
-  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
+  /* Ensure .contact button text is visible at 1200px and above */
+  header nav .nav-sections .nav-button a.contact {
+    font-size: var(--mt-nav-tool-button-font-size);
+    line-height: normal;
+    overflow: visible;
+    width: auto;
+    height: auto;
+    padding: 5px 20px;
+  }
+
+  /* Show text and hide icon at 1200px+ */
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: inline;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email {
     display: none;
   }
+
 }
+
 
 @media (min-width: 1300px) {
   header nav .nav-sections ul {
     padding-left: revert;
   }
+
   header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2) {
     display: none;
   }
 
   header nav .nav-sections>ul>li:hover>ul {
     left: revert;
+  }
+
+  header nav .nav-email {
+    display: none;
   }
 }
 

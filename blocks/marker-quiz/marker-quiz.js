@@ -1,9 +1,22 @@
 import { readBlockConfig } from '../../scripts/lib-franklin.js';
 
+const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
+
 async function fetchSurveyData(url) {
   try {
     const resp = await fetch(url);
-    const json = await resp.json();
+    if (!resp.ok) {
+      // eslint-disable-next-line no-console
+      console.error(`Failed to fetch survey data: ${resp.status} ${resp.statusText}`);
+      return null;
+    }
+    const text = await resp.text();
+    if (!text || text.trim().length === 0) {
+      // eslint-disable-next-line no-console
+      console.error('Empty response received from survey data URL');
+      return null;
+    }
+    const json = JSON.parse(text);
     return json.data || json;
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -13,30 +26,46 @@ async function fetchSurveyData(url) {
 }
 
 function parseSurveyDataFromExcel(data) {
+  if (!data || !Array.isArray(data)) {
+    return null;
+  }
   const surveyData = {
     questions: [],
     products: {},
     thankYouYes: '',
     thankYouNo: '',
   };
-  const [questions, products, options, config] = [
+  const [questions, products, options, config, otherOptions] = [
     'question',
     'product',
     'option',
     'config',
+    'other',
   ].map((type) => data.filter((row) => row.Type === type));
 
   questions.forEach((question) => {
+    // Combine regular options and "other" options
     const questionOptions = options.filter(
       (opt) => opt.QuestionId === question.Id,
     );
-    const processedOptions = questionOptions.map((opt) => {
+    const questionOtherOptions = otherOptions.filter(
+      (opt) => opt.QuestionId === question.Id,
+    );
+    const allQuestionOptions = [...questionOptions, ...questionOtherOptions];
+
+    const processedOptions = allQuestionOptions.map((opt) => {
       const scores = {};
       opt.Scores?.split(',').forEach((score) => {
         const [product, value] = score.split(':');
-        scores[product.trim()] = parseInt(value.trim(), 10);
+        if (product && value) {
+          scores[product.trim()] = parseInt(value.trim(), 10);
+        }
       });
-      return { text: opt.Text, scores };
+      return {
+        text: opt.Text,
+        scores,
+        isOther: opt.Type === 'other',
+      };
     });
 
     surveyData.questions.push({
@@ -77,37 +106,52 @@ class ProductSurvey {
     this.block = block;
     this.config = config;
     this.surveyData = null;
+    this.surveyJsonUrl = null; // Store the survey JSON URL for submission
     this.currentQuestion = 0;
     this.answers = [];
     this.selectedOption = null;
     this.selectedOptions = []; // For multi-choice questions
+    this.otherText = null; // For single-choice "Other" responses
+    this.otherTexts = {}; // For multi-choice "Other" responses (keyed by option text)
     this.loading = true;
     this.showStartScreen = true;
+    this.submissionSent = false; // Track if quiz submission has been sent
     this.init();
   }
 
   async loadSurveyData() {
-    const surveyLink = this.block.querySelector('a[href*=".json"]');
-    if (surveyLink) {
+    // Look for any link with .json extension in the block
+    const surveyLink = this.block.querySelector('a[href$=".json"], a[href*=".json"]');
+    if (surveyLink && surveyLink.href) {
+      this.surveyJsonUrl = surveyLink.href;
       const rawData = await fetchSurveyData(surveyLink.href);
       if (rawData) {
-        this.surveyData = parseSurveyDataFromExcel(rawData);
-        return;
+        const parsedData = parseSurveyDataFromExcel(rawData);
+        if (parsedData && parsedData.questions && parsedData.questions.length > 0) {
+          this.surveyData = parsedData;
+          return;
+        }
       }
     }
 
+    // Try config.surveyData as fallback
     if (this.config.surveyData) {
       try {
-        this.surveyData = typeof this.config.surveyData === 'string'
+        const configData = typeof this.config.surveyData === 'string'
           ? JSON.parse(this.config.surveyData)
           : this.config.surveyData;
-        return;
+        if (configData && configData.questions && configData.questions.length > 0) {
+          this.surveyData = configData;
+          return;
+        }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.warn('Failed to parse survey data from config:', e);
       }
     }
 
+    // eslint-disable-next-line no-console
+    console.error('No valid survey data found. Please provide a JSON file link in the block.');
     this.surveyData = defaultSurveyData;
   }
 
@@ -133,9 +177,84 @@ class ProductSurvey {
       return;
     }
 
+    if (!this.surveyData || !this.surveyData.questions || this.surveyData.questions.length === 0) {
+      this.block.innerHTML = `
+        <div class="product-survey-container">
+          <div class="survey-card">
+            <div class="error-message">
+              <p>Survey data not available. Please check the JSON file configuration.</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     if (this.showStartScreen) {
       this.renderStartScreen();
       return;
+    }
+
+    const currentQuestion = this.getCurrentQuestion();
+    if (!currentQuestion) {
+      this.block.innerHTML = `
+        <div class="product-survey-container">
+          <div class="survey-card">
+            <div class="error-message">
+              <p>Invalid question index. Please restart the survey.</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // Restore previous answer if it exists
+    const previousAnswer = this.answers.find(
+      (answer) => answer.questionId === currentQuestion.id,
+    );
+    if (previousAnswer) {
+      if (currentQuestion.type === 'multi') {
+        // Restore multi-choice selections
+        const answerArray = Array.isArray(previousAnswer.answer)
+          ? previousAnswer.answer
+          : [previousAnswer.answer];
+        this.selectedOptions = currentQuestion.options.filter((opt) => answerArray.some((ans) => {
+          if (typeof ans === 'string' && ans.includes(': ')) {
+            const [optionText] = ans.split(': ');
+            return optionText === opt.text;
+          }
+          return ans === opt.text;
+        }));
+        // Restore "Other" text values
+        answerArray.forEach((ans) => {
+          if (typeof ans === 'string' && ans.includes(': ')) {
+            const [optionText, otherText] = ans.split(': ');
+            const matchingOption = currentQuestion.options.find(
+              (opt) => opt.text === optionText && opt.isOther,
+            );
+            if (matchingOption) {
+              this.otherTexts[optionText] = otherText;
+            }
+          }
+        });
+      } else {
+        // Restore single-choice selection
+        const answerValue = previousAnswer.answer;
+        if (typeof answerValue === 'string' && answerValue.includes(': ')) {
+          const [optionText, otherText] = answerValue.split(': ');
+          this.selectedOption = currentQuestion.options.find(
+            (opt) => opt.text === optionText,
+          );
+          if (this.selectedOption?.isOther) {
+            this.otherText = otherText;
+          }
+        } else {
+          this.selectedOption = currentQuestion.options.find(
+            (opt) => opt.text === answerValue,
+          );
+        }
+      }
     }
 
     this.block.innerHTML = `
@@ -147,23 +266,29 @@ class ProductSurvey {
           
           <div class="question-container">
             <div class="question-text">
-              ${this.getCurrentQuestion().text}
+              ${currentQuestion.text}
             </div>
             
-            <div class="options-container ${this.getCurrentQuestion().type === 'multi'
+            <div class="options-container ${currentQuestion.type === 'multi'
     ? 'multi-choice'
     : 'single-choice'}">
-              ${this.getCurrentQuestion()
+              ${currentQuestion
     .options.map((option, index) => {
-      const isMulti = this.getCurrentQuestion().type === 'multi';
+      const isMulti = currentQuestion.type === 'multi';
       const isSelected = isMulti
         ? this.selectedOptions.some(
           (opt) => opt.text === option.text,
         )
         : this.selectedOption?.text === option.text;
+      const isOther = option.isOther === true;
+      const showOtherInput = isOther && isSelected;
+      const otherValue = isMulti
+        ? (this.otherTexts[option.text] || '')
+        : (this.otherText || '');
       return `<div class="option ${isSelected ? 'selected' : ''}" data-option-index="${index}">
                   <span class="${isMulti ? 'checkbox' : 'radio'} ${isSelected ? 'checked' : ''}"></span>
                   <span class="option-text">${option.text}</span>
+                  ${showOtherInput ? `<input type="text" class="other-input" data-option-text="${option.text}" placeholder="Please specify..." value="${otherValue}" />` : ''}
                 </div>`;
     })
     .join('')}
@@ -179,13 +304,18 @@ class ProductSurvey {
               Question ${this.currentQuestion + 1} of ${this.surveyData.questions.length}
             </div>
             
-            <button class="btn" id="next-btn" ${this.getCurrentQuestion().type === 'multi' && this.selectedOptions.length === 0 ? 'disabled' : ''}${this.getCurrentQuestion().type !== 'multi' && !this.selectedOption ? 'disabled' : ''}>
+            <button class="btn" id="next-btn" disabled>
               ${this.currentQuestion === this.surveyData.questions.length - 1 ? 'Get Results' : 'Next'} →
             </button>
           </div>
         </div>
       </div>
     `;
+
+    // Update next button state after rendering
+    setTimeout(() => {
+      this.updateNextButtonState();
+    }, 0);
   }
 
   renderStartScreen() {
@@ -201,20 +331,29 @@ class ProductSurvey {
       </div>
     `;
 
-    this.block
-      .querySelector('#start-survey-btn')
-      .addEventListener('click', () => {
+    const startBtn = this.block.querySelector('#start-survey-btn');
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
         this.showStartScreen = false;
         this.render();
         this.attachEventListeners();
+        // Update next button state after initial render
+        this.updateNextButtonState();
       });
+    }
   }
 
   getCurrentQuestion() {
-    return this.surveyData.questions[this.currentQuestion];
+    if (!this.surveyData || !this.surveyData.questions) {
+      return null;
+    }
+    return this.surveyData.questions[this.currentQuestion] || null;
   }
 
   getProgress() {
+    if (!this.surveyData || !this.surveyData.questions || this.surveyData.questions.length === 0) {
+      return 0;
+    }
     return (
       ((this.currentQuestion + 1) / this.surveyData.questions.length) * 100
     );
@@ -222,24 +361,58 @@ class ProductSurvey {
 
   attachEventListeners() {
     this.block.querySelectorAll('.option').forEach((option) => {
-      option.addEventListener('click', () => {
+      option.addEventListener('click', (e) => {
+        // Don't trigger option selection when clicking on the text input
+        if (e.target.classList.contains('other-input')) {
+          return;
+        }
         this.selectOption(parseInt(option.dataset.optionIndex, 10));
       });
     });
 
-    this.block.querySelector('#prev-btn').addEventListener('click', () => {
-      this.previousQuestion();
+    // Add event listeners for "Other" text inputs
+    this.block.querySelectorAll('.other-input').forEach((input) => {
+      input.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent option selection when clicking input
+      });
+      input.addEventListener('input', (e) => {
+        const { optionText } = e.target.dataset;
+        const { value } = e.target;
+        const currentQuestion = this.getCurrentQuestion();
+        const isMulti = currentQuestion.type === 'multi';
+        if (isMulti) {
+          this.otherTexts[optionText] = value;
+        } else {
+          this.otherText = value;
+        }
+        // Update next button state based on whether "Other" text is filled
+        this.updateNextButtonState();
+      });
     });
 
-    this.block.querySelector('#next-btn').addEventListener('click', () => {
-      this.nextQuestion();
-    });
+    const prevBtn = this.block.querySelector('#prev-btn');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        this.previousQuestion();
+      });
+    }
+
+    const nextBtn = this.block.querySelector('#next-btn');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', async () => {
+        await this.nextQuestion();
+      });
+    }
   }
 
   selectOption(optionIndex) {
-    const option = this.getCurrentQuestion().options[optionIndex];
     const currentQuestion = this.getCurrentQuestion();
+    if (!currentQuestion || !currentQuestion.options || !currentQuestion.options[optionIndex]) {
+      return;
+    }
+    const option = currentQuestion.options[optionIndex];
     const isMulti = currentQuestion.type === 'multi';
+    const isOther = option.isOther === true;
 
     if (isMulti) {
       const existingIndex = this.selectedOptions.findIndex(
@@ -247,31 +420,60 @@ class ProductSurvey {
       );
       if (existingIndex >= 0) {
         this.selectedOptions.splice(existingIndex, 1);
+        // Clear "Other" text if deselecting
+        if (isOther) {
+          delete this.otherTexts[option.text];
+        }
       } else {
         this.selectedOptions.push(option);
       }
     } else {
+      const wasOther = this.selectedOption?.isOther === true;
       this.selectedOption = option;
       this.selectedOptions = [];
+      // Clear "Other" text if switching away from "Other"
+      if (!isOther && wasOther) {
+        this.otherText = null;
+      }
     }
 
-    // Update UI for all options
-    this.block.querySelectorAll('.option').forEach((opt, index) => {
-      const isSelected = isMulti
-        ? this.selectedOptions.some(
-          (selectedOpt) => selectedOpt.text === currentQuestion.options[index].text,
-        )
-        : index === optionIndex;
+    // Re-render to show/hide "Other" input field
+    this.render();
+    this.attachEventListeners();
+    // Update next button state after re-render
+    setTimeout(() => {
+      this.updateNextButtonState();
+    }, 0);
+  }
 
-      opt.classList.toggle('selected', isSelected);
-      const indicator = opt.querySelector(isMulti ? '.checkbox' : '.radio');
-      if (indicator) indicator.classList.toggle('checked', isSelected);
-    });
+  updateNextButtonState() {
+    const currentQuestion = this.getCurrentQuestion();
+    if (!currentQuestion) return;
 
-    // Update next button state
-    this.block.querySelector('#next-btn').disabled = isMulti
-      ? this.selectedOptions.length === 0
-      : !this.selectedOption;
+    const nextButton = this.block.querySelector('#next-btn');
+    if (!nextButton) return;
+
+    const isMulti = currentQuestion.type === 'multi';
+    let isValid = false;
+
+    if (isMulti) {
+      isValid = this.selectedOptions.length > 0;
+      // Check if any selected option is "Other" and has text
+      const hasOtherWithoutText = this.selectedOptions.some(
+        (opt) => opt.isOther === true && (!this.otherTexts[opt.text] || this.otherTexts[opt.text].trim() === ''),
+      );
+      if (hasOtherWithoutText) {
+        isValid = false;
+      }
+    } else {
+      isValid = !!this.selectedOption;
+      // If "Other" is selected, require text input
+      if (this.selectedOption?.isOther === true) {
+        isValid = !!(this.otherText && this.otherText.trim() !== '');
+      }
+    }
+
+    nextButton.disabled = !isValid;
   }
 
   previousQuestion() {
@@ -279,23 +481,51 @@ class ProductSurvey {
       this.currentQuestion -= 1;
       this.selectedOption = null;
       this.selectedOptions = [];
+      this.otherText = null;
+      this.otherTexts = {};
       this.render();
       this.attachEventListeners();
     }
   }
 
-  nextQuestion() {
+  async nextQuestion() {
     const currentQuestion = this.getCurrentQuestion();
-    const isValidSelection = currentQuestion.type === 'multi'
+    if (!currentQuestion) return;
+
+    const isMulti = currentQuestion.type === 'multi';
+    const isValidSelection = isMulti
       ? this.selectedOptions.length > 0
       : this.selectedOption;
     if (!isValidSelection) return;
 
+    // Validate "Other" options have text
+    if (isMulti) {
+      const hasOtherWithoutText = this.selectedOptions.some(
+        (opt) => opt.isOther === true && (!this.otherTexts[opt.text] || this.otherTexts[opt.text].trim() === ''),
+      );
+      if (hasOtherWithoutText) return;
+    } else if (this.selectedOption?.isOther === true && (!this.otherText || this.otherText.trim() === '')) {
+      return;
+    }
+
+    // Build answer data with "Other" text if applicable
+    let answerValue;
+    if (isMulti) {
+      answerValue = this.selectedOptions.map((opt) => {
+        if (opt.isOther === true && this.otherTexts[opt.text]) {
+          return `${opt.text}: ${this.otherTexts[opt.text]}`;
+        }
+        return opt.text;
+      });
+    } else if (this.selectedOption.isOther === true && this.otherText) {
+      answerValue = `${this.selectedOption.text}: ${this.otherText}`;
+    } else {
+      answerValue = this.selectedOption.text;
+    }
+
     const answerData = {
       questionId: currentQuestion.id,
-      answer: currentQuestion.type === 'multi'
-        ? this.selectedOptions.map((opt) => opt.text)
-        : this.selectedOption.text,
+      answer: answerValue,
       type: currentQuestion.type,
     };
 
@@ -309,11 +539,18 @@ class ProductSurvey {
     }
 
     if (this.currentQuestion === this.surveyData.questions.length - 1) {
+      // Last question - submit and show results
+      // Submit quiz data immediately when "Get Results" is clicked
+      if (!this.submissionSent) {
+        await this.submitQuizData();
+      }
       this.showResults();
     } else {
       this.currentQuestion += 1;
       this.selectedOption = null;
       this.selectedOptions = [];
+      this.otherText = null;
+      this.otherTexts = {};
       this.render();
       this.attachEventListeners();
     }
@@ -337,7 +574,7 @@ class ProductSurvey {
         const selectedOption = question.options.find(
           (opt) => opt.text === answerText,
         );
-        if (selectedOption) {
+        if (selectedOption && selectedOption.scores) {
           Object.entries(selectedOption.scores).forEach(([product, score]) => {
             scores[product] += score;
           });
@@ -359,6 +596,18 @@ class ProductSurvey {
 
   showResults() {
     const results = this.calculateResults();
+    if (!results.productDetails) {
+      this.block.innerHTML = `
+        <div class="product-survey-container">
+          <div class="survey-card">
+            <div class="error-message">
+              <p>Unable to calculate results. Please try again.</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     this.block.innerHTML = `
       <div class="product-survey-container">
@@ -390,17 +639,19 @@ class ProductSurvey {
       </div>
     `;
 
-    this.block
-      .querySelector('#contact-yes-btn')
-      .addEventListener('click', () => {
+    const contactYesBtn = this.block.querySelector('#contact-yes-btn');
+    if (contactYesBtn) {
+      contactYesBtn.addEventListener('click', () => {
         this.showContactForm();
       });
+    }
 
-    this.block
-      .querySelector('#contact-no-btn')
-      .addEventListener('click', () => {
+    const contactNoBtn = this.block.querySelector('#contact-no-btn');
+    if (contactNoBtn) {
+      contactNoBtn.addEventListener('click', () => {
         this.showThankYouNo();
       });
+    }
   }
 
   // placeholder form. need to add marketo form here instead.
@@ -453,33 +704,96 @@ class ProductSurvey {
       </div>
     `;
 
-    this.block
-      .querySelector('#contact-form')
-      .addEventListener('submit', (e) => {
+    const contactForm = this.block.querySelector('#contact-form');
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
         this.submitContactForm();
       });
+    }
 
-    this.block
-      .querySelector('#back-to-results')
-      .addEventListener('click', () => {
+    const backBtn = this.block.querySelector('#back-to-results');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
         this.showResults();
       });
+    }
+  }
+
+  constructQuizPayload(contactData = {}) {
+    const results = this.calculateResults();
+    const payload = {
+      Last_Form_Date__c: (new Date()).toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: 'EST',
+      }),
+      Recommended_Product: results.recommendedProduct,
+      Product_Name: results.productDetails?.name || '',
+      Product_Description: results.productDetails?.description || '',
+      Survey_Answers: JSON.stringify(this.answers),
+      ...contactData,
+    };
+    return payload;
+  }
+
+  async submitQuizData(contactData = {}) {
+    if (!this.surveyJsonUrl) {
+      // eslint-disable-next-line no-console
+      console.warn('No survey JSON URL available for submission');
+      return false;
+    }
+
+    try {
+      const payload = this.constructQuizPayload(contactData);
+      const { pathname } = new URL(this.surveyJsonUrl);
+      // Extract the base path similar to form.js: /forms/marker-quiz.json -> /forms/marker-quiz
+      const basePath = pathname.split('.json')[0];
+      // Submit to the 'incoming' sheet
+      const url = `${FORM_SUBMIT_ENDPOINT}${basePath}?sheet=incoming`;
+
+      // eslint-disable-next-line no-console
+      console.log('Submitting quiz data to:', url);
+      // eslint-disable-next-line no-console
+      console.log('Payload:', payload);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: payload }),
+      });
+
+      if (response.ok) {
+        this.submissionSent = true;
+        const responseText = await response.text();
+        // eslint-disable-next-line no-console
+        console.log('Quiz data submitted successfully', responseText);
+        return true;
+      }
+      const errorText = await response.text();
+      // eslint-disable-next-line no-console
+      console.error(`Failed to submit quiz data: ${response.status} ${response.statusText}`, errorText);
+      return false;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error submitting quiz data:', error);
+      return false;
+    }
   }
 
   async submitContactForm() {
     const form = this.block.querySelector('#contact-form');
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    if (!form) return;
 
-    const results = this.calculateResults();
-    data.recommendedProduct = results.recommendedProduct;
-    data.surveyAnswers = JSON.stringify(this.answers);
+    const formData = new FormData(form);
+    const contactData = Object.fromEntries(formData.entries());
 
     try {
-      // simulated submission. need to update it with actual submission.
-      // eslint-disable-next-line no-console
-      console.log('Contact form submitted:', data);
+      // Submit quiz data with contact information
+      await this.submitQuizData(contactData);
 
       this.showThankYouYes();
     } catch (error) {
@@ -508,9 +822,10 @@ class ProductSurvey {
       </div>
     </div>`;
 
-    this.block
-      .querySelector('#restart-btn')
-      .addEventListener('click', () => this.restart());
+    const restartBtn = this.block.querySelector('#restart-btn');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => this.restart());
+    }
   }
 
   showThankYouYes() {
@@ -527,6 +842,8 @@ class ProductSurvey {
       answers: [],
       selectedOption: null,
       selectedOptions: [],
+      otherText: null,
+      otherTexts: {},
       showStartScreen: true,
     });
     this.render();

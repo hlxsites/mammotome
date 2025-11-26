@@ -1,8 +1,7 @@
 import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
-// import { addEnclosingDiv, initSlider } from '../../scripts/lib-carousel';
 
-// Large sreen bigger than px
+// Large screen bigger than px
 const LARGE_SCREEN = 1000;
 
 // Number of required column and rows in table

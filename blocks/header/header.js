@@ -166,9 +166,17 @@ function addNavigationLogoForScrollingPage(nav) {
   const scrollingLogo = document.createElement('span');
   scrollingLogo.className = 'logo-hidden scrolling-logo';
 
-  fetch('https://www.mammotome.com/icons/logo-small.svg')
-    .then(response => response.text())
-    .then(svgText => {
+  // Use relative path to avoid CORS issues
+  const logoPath = `${window.hlx?.codeBasePath || ''}/icons/logo-small.svg`;
+
+  fetch(logoPath)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch logo');
+      }
+      return response.text();
+    })
+    .then((svgText) => {
       const svgContainer = document.createElement('div');
       svgContainer.innerHTML = svgText;
       const svg = svgContainer.querySelector('svg');
@@ -179,17 +187,15 @@ function addNavigationLogoForScrollingPage(nav) {
         svg.style.width = 'auto';
         svg.style.fill = '#84329B';
 
-        // Remove any existing fill attributes and add our color
-        svg.querySelectorAll('*').forEach(element => {
+        svg.querySelectorAll('*').forEach((element) => {
           element.removeAttribute('fill');
           element.style.fill = '#84329B';
         });
 
         scrollingLogo.appendChild(svg);
       } else {
-        // Fallback to img
         const logoImg = document.createElement('img');
-        logoImg.src = 'https://www.mammotome.com/icons/logo-small.svg';
+        logoImg.src = logoPath;
         logoImg.alt = 'Mammotome';
         logoImg.style.height = '40px';
         logoImg.style.width = 'auto';
@@ -197,9 +203,9 @@ function addNavigationLogoForScrollingPage(nav) {
       }
     })
     .catch(() => {
-      // Fallback to img if fetch fails
+      // Fallback to img if fetch fails (silently handle CORS/network errors)
       const logoImg = document.createElement('img');
-      logoImg.src = 'https://www.mammotome.com/icons/logo-small.svg';
+      logoImg.src = logoPath;
       logoImg.alt = 'Mammotome';
       logoImg.style.height = '40px';
       logoImg.style.width = 'auto';
@@ -379,7 +385,7 @@ async function searchInput(event) {
     // Debounce the actual search to avoid excessive fetching
     searchDebounceTimer = setTimeout(async () => {
       aside.innerHTML = '';
-      
+
       const title = document.createElement('h1');
       title.classList.add('nav-search-result-title');
       title.textContent = `${await translate(
@@ -569,7 +575,6 @@ export default async function decorate(block) {
   if (resp.ok) {
     const html = await resp.text();
 
-    // decorate nav DOM
     const nav = document.createElement('nav');
     nav.id = 'nav';
     nav.innerHTML = html;
@@ -595,10 +600,24 @@ export default async function decorate(block) {
               navSectionList.appendChild(li);
               if (config.style) {
                 li.classList.add(`${config.style}`);
+                const link = li.querySelector('a');
                 if (config.style === 'nav-button' && j % 2) {
-                  li.querySelector('a').classList.add('button', 'secondary');
+                  link.classList.add('button', 'secondary');
                 } else {
-                  li.querySelector('a').classList.add('button', 'primary');
+                  link.classList.add('button', 'primary');
+                }
+                if (link && /\bcontact\b/i.test(link.textContent)) {
+                  link.classList.add('contact');
+                  // Wrap text content in a span so we can hide it
+                  const textContent = link.textContent.trim();
+                  const textSpan = document.createElement('span');
+                  textSpan.classList.add('contact-text');
+                  textSpan.textContent = textContent;
+                  link.innerHTML = '';
+                  link.appendChild(textSpan);
+                  const iconSpan = document.createElement('span');
+                  iconSpan.classList.add('icon', 'icon-email');
+                  link.appendChild(iconSpan);
                 }
               }
             },
