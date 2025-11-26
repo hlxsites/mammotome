@@ -247,6 +247,25 @@
     font-size: var(--mt-body-font-size-xs);
 }
 
+/* Odd buttons remain primary (default) */
+/* stylelint-disable no-descending-specificity */
+.flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary,
+.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary {
+    color: var(--mt-button-color-primary);
+    background-color: var(--mt-button-background-color-primary);
+    border-color: var(--mt-button-border-color-primary);
+}
+
+.flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary:hover,
+.flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary:focus,
+.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:hover,
+.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:focus,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:hover,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:focus {
+    background-color: var(--mt-button-hover-color-primary);
+}
+
 /* Alternate button colors - even buttons are secondary */
 .flex-carousel .flex-slide-text > .button-container:nth-child(even) > a.button.primary,
 .flex-carousel .flex-slide-text .button-container:nth-child(even) > a.button.primary,
@@ -264,24 +283,7 @@
 .flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary:focus {
     background-color: var(--mt-button-hover-color-secondary);
 }
-
-/* Odd buttons remain primary (default) */
-.flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary,
-.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary,
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary {
-    color: var(--mt-button-color-primary);
-    background-color: var(--mt-button-background-color-primary);
-    border-color: var(--mt-button-border-color-primary);
-}
-
-.flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary:hover,
-.flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary:focus,
-.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:hover,
-.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:focus,
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:hover,
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:focus {
-    background-color: var(--mt-button-hover-color-primary);
-}
+/* stylelint-enable no-descending-specificity */
 
 /* ==========================================================================
    MOBILE STYLES (< 768px)
@@ -449,6 +451,7 @@
     /* Desktop: DOM order handles left/right positioning */
 
     /* image-left: image, then text */
+
     /* image-right: text, then image */
 }
 
