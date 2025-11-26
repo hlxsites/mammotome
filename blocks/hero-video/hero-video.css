@@ -126,6 +126,7 @@ p>a.hero-video:nth-child(1) {
 
   .hero-copy h2 {
     font-size: var(--mt-heading-font-size-mobile-l);
+  }
 }
 
 @media (max-width: 460px) {
@@ -168,7 +169,7 @@ p>a.hero-video:nth-child(1) {
     height: auto;
   }
 
-.hero-video-container  .button-row {
+  .hero-video-container .button-row {
     position: static;
     width: 80%;
     margin: 0 auto;

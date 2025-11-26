@@ -166,9 +166,17 @@ function addNavigationLogoForScrollingPage(nav) {
   const scrollingLogo = document.createElement('span');
   scrollingLogo.className = 'logo-hidden scrolling-logo';
 
-  fetch('https://www.mammotome.com/icons/logo-small.svg')
-    .then(response => response.text())
-    .then(svgText => {
+  // Use relative path to avoid CORS issues
+  const logoPath = `${window.hlx?.codeBasePath || ''}/icons/logo-small.svg`;
+
+  fetch(logoPath)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch logo');
+      }
+      return response.text();
+    })
+    .then((svgText) => {
       const svgContainer = document.createElement('div');
       svgContainer.innerHTML = svgText;
       const svg = svgContainer.querySelector('svg');
@@ -179,17 +187,15 @@ function addNavigationLogoForScrollingPage(nav) {
         svg.style.width = 'auto';
         svg.style.fill = '#84329B';
 
-        // Remove any existing fill attributes and add our color
-        svg.querySelectorAll('*').forEach(element => {
+        svg.querySelectorAll('*').forEach((element) => {
           element.removeAttribute('fill');
           element.style.fill = '#84329B';
         });
 
         scrollingLogo.appendChild(svg);
       } else {
-        // Fallback to img
         const logoImg = document.createElement('img');
-        logoImg.src = 'https://www.mammotome.com/icons/logo-small.svg';
+        logoImg.src = logoPath;
         logoImg.alt = 'Mammotome';
         logoImg.style.height = '40px';
         logoImg.style.width = 'auto';
@@ -197,9 +203,9 @@ function addNavigationLogoForScrollingPage(nav) {
       }
     })
     .catch(() => {
-      // Fallback to img if fetch fails
+      // Fallback to img if fetch fails (silently handle CORS/network errors)
       const logoImg = document.createElement('img');
-      logoImg.src = 'https://www.mammotome.com/icons/logo-small.svg';
+      logoImg.src = logoPath;
       logoImg.alt = 'Mammotome';
       logoImg.style.height = '40px';
       logoImg.style.width = 'auto';
@@ -569,9 +575,6 @@ export default async function decorate(block) {
   if (resp.ok) {
     const html = await resp.text();
 
-    // Check if the fetched document contains "contact" and apply the class
-
-    // decorate nav DOM
     const nav = document.createElement('nav');
     nav.id = 'nav';
     nav.innerHTML = html;
@@ -610,10 +613,8 @@ export default async function decorate(block) {
                   const textSpan = document.createElement('span');
                   textSpan.classList.add('contact-text');
                   textSpan.textContent = textContent;
-                  // Clear existing content and add text span and icon
                   link.innerHTML = '';
                   link.appendChild(textSpan);
-                  // Add icon span for email icon (will be processed by decorateIcons)
                   const iconSpan = document.createElement('span');
                   iconSpan.classList.add('icon', 'icon-email');
                   link.appendChild(iconSpan);

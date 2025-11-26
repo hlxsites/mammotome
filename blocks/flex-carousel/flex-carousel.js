@@ -127,7 +127,7 @@ export default function decorate(block) {
     carousel.createArrowNav(carouselWrapper);
     carousel.createDottedNav();
     carousel.initSlider();
-    
+
     // Add pause-on-hover functionality to the carousel wrapper
     // This ensures hovering anywhere over the carousel (including arrows) pauses it
     // Similar to hero-carousel behavior

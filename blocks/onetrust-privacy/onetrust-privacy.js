@@ -159,7 +159,6 @@ export default function decorate(block) {
       await initializeOneTrust();
       await updateOpCoDetails(blockConfig);
       await updateKoreanDetails();
-    //   await removeVersionElements();
     })
     .catch((error) => {
       console.error('Error loading OneTrust script: ', error);  // eslint-disable-line

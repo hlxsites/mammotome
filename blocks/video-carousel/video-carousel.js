@@ -230,7 +230,7 @@ const arrowNavigation = (videoCarousel, event) => {
     ? videoCarousel.getSlides()
     : reorderChildren(videoCarousel);
 
-  const increment = isLargeScreen ? 1 : 1;
+  const increment = 1;
   const direction = event.currentTarget.id === 'slider-arrow-left' ? increment : -increment;
 
   moveArrayElements(sliderChildren, direction).forEach(updateChildStyle);
@@ -261,6 +261,7 @@ const initSlideOrder = (sliderChildren) => {
 };
 
 const fillSlideGrid = () => {
+  // Empty function - placeholder for future implementation if needed
 };
 
 const decorateVideo = async (video) => {
