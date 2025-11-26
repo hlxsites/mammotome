@@ -648,6 +648,7 @@ header nav.nav-mobile .nav-overflow {
   padding-bottom: var(--mt-nav-padding);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow a {
   display: flex;
   align-items: center;
@@ -673,7 +674,7 @@ header nav.nav-mobile .nav-email .icon-email {
 header nav.nav-mobile .nav-email .icon-email svg {
   width: 24px;
   height: 24px;
-  fill: currentColor;
+  fill: currentcolor;
   color: var(--mt-global-color-white);
 }
 
@@ -704,18 +705,23 @@ header nav.nav-mobile .nav-email::after {
 }
 
 /* Hide overflow list by default in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow[aria-expanded="false"] > ul,
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow:not([aria-expanded]) > ul {
   display: none;
 }
 
 /* Hide email list by default in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-email[aria-expanded="false"] > ul,
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-email:not([aria-expanded]) > ul {
   display: none;
 }
 
 /* Show overflow list when expanded in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-overflow[aria-expanded="true"] > ul {
   position: absolute;
   width: var(--mt-nav-width);
@@ -731,6 +737,7 @@ header nav.nav-mobile .nav-overflow[aria-expanded="true"] > ul {
 }
 
 /* Show email list when expanded in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-email[aria-expanded="true"] > ul {
   position: absolute;
   width: var(--mt-nav-width);
@@ -756,6 +763,7 @@ header nav.nav-mobile .nav-email-list {
 }
 
 /* Hide the last language nav item in mobile since we're showing the globe icon */
+/* stylelint-disable-next-line no-descending-specificity */
 header nav.nav-mobile .nav-sections>ul>li:nth-last-child(2) {
   display: none;
 }
@@ -849,21 +857,18 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     display: block;
   }
 
-  header nav .nav-sections>ul>li:hover>ul {
-    visibility: visible;
-    opacity: 1;
-    top: 47px;
-    z-index: 1000;
-    transition-delay: 0ms;
-  }
-
   /* Add delay when leaving hover state */
+  /* stylelint-disable-next-line no-descending-specificity */
   header nav .nav-sections>ul>li>ul {
     transition: opacity 200ms ease-out, visibility 200ms ease-out;
     transition-delay: 300ms; /* 300ms delay before hiding */
   }
 
   header nav .nav-sections>ul>li:hover>ul {
+    visibility: visible;
+    opacity: 1;
+    top: 47px;
+    z-index: 1000;
     transition-delay: 0ms; /* Show immediately on hover */
   }
 
@@ -932,7 +937,7 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   header nav .nav-sections .nav-button.nav-overflow a .globe-icon {
     width: 24px;
     height: 24px;
-    stroke: currentColor;
+    stroke: currentcolor;
   }
 
   header nav .nav-email {
@@ -954,7 +959,7 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   header nav .nav-sections .nav-button.nav-email a .icon-email svg {
     width: 24px;
     height: 24px;
-    fill: currentColor;
+    fill: currentcolor;
     color: var(--mt-header-color-nav-icons);
   }
 
@@ -1156,21 +1161,13 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     position: absolute;
     left: 100%;
     top: 0;
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
   }
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
     visibility: visible !important;
-    transition-delay: 0ms;
-  }
-
-  /* Add delay for third-level navigation */
-  .nav-subitems-level2 {
-    transition: opacity 200ms ease-out, visibility 200ms ease-out;
-    transition-delay: 300ms; /* 300ms delay before hiding */
-  }
-
-  .nav-subitem:hover .nav-subitems-level2 {
     transition-delay: 0ms; /* Show immediately on hover */
   }
 
@@ -1189,7 +1186,9 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     top: -25px;
   }
 
+  /* stylelint-disable-next-line no-descending-specificity */
   header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
+  /* stylelint-disable-next-line no-descending-specificity */
   header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
     display: none;
   }
@@ -1226,7 +1225,7 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     width: 24px;
     height: 24px;
     display: block;
-    fill: currentColor;
+    fill: currentcolor;
     color: var(--mt-header-color-nav-icons);
   }
 }
@@ -1243,7 +1242,6 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
 }
 
 @media (min-width: 1200px) {
-
   header nav .nav-sections>ul>li:hover>ul {
     left: -115px;
   }
@@ -1282,6 +1280,7 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
   header nav .nav-sections ul {
     padding-left: revert;
   }
+
   header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2) {
     display: none;
   }

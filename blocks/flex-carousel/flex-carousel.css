@@ -142,6 +142,14 @@
     pointer-events: none;
 }
 
+.flex-carousel .dotted-nav button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
 .flex-carousel .flex-carousel-wrapper .arrow-nav button {
     pointer-events: all;
     transition: opacity 0.3s ease;
@@ -187,14 +195,6 @@
     pointer-events: none;
 }
 
-.flex-carousel .dotted-nav button {
-    background: none;
-    border: none;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-}
-
 .flex-carousel .dotted-nav .active {
     background-color: #000;
 }
@@ -231,12 +231,12 @@
 }
 
 /* Button link styles - shared for all button containers */
-.flex-carousel .flex-slide-text .button-row .button-container > a.button.primary,
-.flex-carousel .flex-slide-text .button-row .button-container > a.button,
 .flex-carousel .flex-slide-text > .button-container > a.button.primary,
 .flex-carousel .flex-slide-text > .button-container > a.button,
 .flex-carousel .flex-slide-text .button-container > a.button.primary,
-.flex-carousel .flex-slide-text .button-container > a.button {
+.flex-carousel .flex-slide-text .button-container > a.button,
+.flex-carousel .flex-slide-text .button-row .button-container > a.button.primary,
+.flex-carousel .flex-slide-text .button-row .button-container > a.button {
     width: 100%;
     max-width: 300px;
     white-space: normal;
@@ -248,38 +248,38 @@
 }
 
 /* Alternate button colors - even buttons are secondary */
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary,
 .flex-carousel .flex-slide-text > .button-container:nth-child(even) > a.button.primary,
-.flex-carousel .flex-slide-text .button-container:nth-child(even) > a.button.primary {
+.flex-carousel .flex-slide-text .button-container:nth-child(even) > a.button.primary,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary {
     background-color: var(--mt-button-background-color-secondary);
     border-color: var(--mt-button-border-color-secondary);
     color: var(--mt-button-color-secondary);
 }
 
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary:hover,
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary:focus,
 .flex-carousel .flex-slide-text > .button-container:nth-child(even) > a.button.primary:hover,
 .flex-carousel .flex-slide-text > .button-container:nth-child(even) > a.button.primary:focus,
 .flex-carousel .flex-slide-text .button-container:nth-child(even) > a.button.primary:hover,
-.flex-carousel .flex-slide-text .button-container:nth-child(even) > a.button.primary:focus {
+.flex-carousel .flex-slide-text .button-container:nth-child(even) > a.button.primary:focus,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary:hover,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(even) > a.button.primary:focus {
     background-color: var(--mt-button-hover-color-secondary);
 }
 
 /* Odd buttons remain primary (default) */
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary,
 .flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary,
-.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary {
+.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary {
     color: var(--mt-button-color-primary);
     background-color: var(--mt-button-background-color-primary);
     border-color: var(--mt-button-border-color-primary);
 }
 
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:hover,
-.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:focus,
 .flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary:hover,
 .flex-carousel .flex-slide-text > .button-container:nth-child(odd) > a.button.primary:focus,
 .flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:hover,
-.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:focus {
+.flex-carousel .flex-slide-text .button-container:nth-child(odd) > a.button.primary:focus,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:hover,
+.flex-carousel .flex-slide-text .button-row .button-container:nth-child(odd) > a.button.primary:focus {
     background-color: var(--mt-button-hover-color-primary);
 }
 
@@ -301,6 +301,11 @@
     }
 
     /* Slide positioning */
+    .flex-carousel .flex-slide {
+        height: auto;
+        min-height: 0;
+    }
+
     .flex-carousel .slider-wrapper .slider .flex-slide:first-child {
         height: auto;
         min-height: 0;
@@ -310,11 +315,6 @@
         height: auto;
         min-height: 0;
         position: absolute;
-    }
-
-    .flex-carousel .flex-slide {
-        height: auto;
-        min-height: 0;
     }
 
     /* Image adjustments */
@@ -359,6 +359,10 @@
     }
 
     /* Slide positioning */
+    .flex-carousel .flex-slide {
+        display: flex;
+    }
+
     .flex-carousel .slider-wrapper .slider .flex-slide:first-child {
         height: auto;
         min-height: 0;
@@ -368,10 +372,6 @@
         height: auto;
         min-height: 0;
         position: absolute;
-    }
-
-    .flex-carousel .flex-slide {
-        display: flex;
     }
 
     /* Image adjustments */
@@ -447,6 +447,7 @@
     }
 
     /* Desktop: DOM order handles left/right positioning */
+
     /* image-left: image, then text */
     /* image-right: text, then image */
 }
