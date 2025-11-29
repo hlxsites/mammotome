@@ -213,6 +213,79 @@ main .marker-quiz .mktoForm p {
   padding: 20px;
 }
 
+/* Fullscreen overlay mode */
+.survey-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  margin: 0;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.survey-fullscreen-active {
+  overflow: hidden;
+}
+
+body.survey-fullscreen-active header,
+body.survey-fullscreen-active footer,
+body.survey-fullscreen-active .header,
+body.survey-fullscreen-active .footer {
+  display: none !important;
+}
+
+.survey-close-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 10000;
+  padding: 10px;
+}
+
+.survey-close-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.survey-close-btn:active {
+  transform: scale(0.95);
+}
+
+.survey-close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.survey-fullscreen .survey-card {
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+}
+
 .survey-card {
   background: white;
   border-radius: 20px;
@@ -243,12 +316,14 @@ main .marker-quiz .mktoForm p {
   position: relative;
 }
 
-.progress-segment.completed {
+.progress-segment.completed,
+.progress-segment.active {
   background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
+  background-size: calc(var(--total-segments) * 100% + (var(--total-segments) - 1) * 8px) 100%;
+  background-position: calc(var(--gradient-position) * -1) 0;
 }
 
 .progress-segment.active {
-  background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
   box-shadow: 0 0 8px rgba(95, 141, 218, 0.6);
 }
 
@@ -675,6 +750,22 @@ main .marker-quiz .mktoForm p {
 
   .progress-segment {
     height: 6px;
+  }
+
+  /* Fullscreen overlay on mobile */
+  .survey-fullscreen {
+    padding: 20px;
+  }
+
+  .survey-close-btn {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .survey-fullscreen .survey-card {
+    max-height: 95vh;
   }
 }
 

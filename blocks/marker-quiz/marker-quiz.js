@@ -232,6 +232,9 @@ class ProductSurvey {
       return;
     }
 
+    // Add fullscreen overlay class to body
+    document.body.classList.add('survey-fullscreen-active');
+
     const currentQuestion = this.getCurrentQuestion();
     if (!currentQuestion) {
       this.block.innerHTML = `
@@ -292,7 +295,15 @@ class ProductSurvey {
     }
 
     this.block.innerHTML = `
-      <div class="product-survey-container">
+      <div class="product-survey-container survey-fullscreen">
+        <button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 7 7" width="24" height="24">
+            <g id="cross">
+              <line stroke="#333" x1="14.1213" y1="9.87866" x2="9.8787" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+              <line stroke="#333" x1="9.87866" y1="9.87866" x2="14.1213" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+            </g>
+          </svg>
+        </button>
         <div class="survey-card">
           <div class="progress-bar">
             ${this.renderProgressSegments()}
@@ -424,6 +435,14 @@ class ProductSurvey {
   }
 
   attachEventListeners() {
+    // Close button event listener
+    const closeBtn = this.block.querySelector('#close-survey-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.exitFullscreen();
+      });
+    }
+
     this.block.querySelectorAll('.option').forEach((option) => {
       option.addEventListener('click', (e) => {
         // Don't trigger option selection when clicking on the text input
@@ -657,7 +676,13 @@ class ProductSurvey {
     const results = this.calculateResults();
     if (!results.productDetails) {
       this.block.innerHTML = `
-        <div class="product-survey-container">
+        <div class="product-survey-container survey-fullscreen">
+          <button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
           <div class="survey-card">
             <div class="error-message">
               <p>Unable to calculate results. Please try again.</p>
@@ -665,11 +690,25 @@ class ProductSurvey {
           </div>
         </div>
       `;
+      const closeBtn = this.block.querySelector('#close-survey-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          this.exitFullscreen();
+        });
+      }
       return;
     }
 
     this.block.innerHTML = `
-      <div class="product-survey-container">
+      <div class="product-survey-container survey-fullscreen">
+        <button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 7 7" width="24" height="24">
+            <g id="cross">
+              <line stroke="white" x1="14.1213" y1="9.87866" x2="9.8787" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+              <line stroke="white" x1="9.87866" y1="9.87866" x2="14.1213" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+            </g>
+          </svg>
+        </button>
         <div class="survey-card">
           <div class="result-container">
             <h2 class="product-title">${results.productDetails.name}</h2>
@@ -698,6 +737,13 @@ class ProductSurvey {
       </div>
     `;
 
+    const closeBtn = this.block.querySelector('#close-survey-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.exitFullscreen();
+      });
+    }
+
     const contactYesBtn = this.block.querySelector('#contact-yes-btn');
     if (contactYesBtn) {
       contactYesBtn.addEventListener('click', () => {
@@ -717,7 +763,15 @@ class ProductSurvey {
     const marketoFormId = this.config.marketoformid || this.config['marketo-form-id'];
 
     this.block.innerHTML = `
-      <div class="product-survey-container">
+      <div class="product-survey-container survey-fullscreen">
+        <button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 7 7" width="24" height="24">
+            <g id="cross">
+              <line stroke="white" x1="14.1213" y1="9.87866" x2="9.8787" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+              <line stroke="white" x1="9.87866" y1="9.87866" x2="14.1213" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+            </g>
+          </svg>
+        </button>
         <div class="survey-card">
           <div class="contact-form-container">
             <h2>Contact Information</h2>
@@ -732,6 +786,13 @@ class ProductSurvey {
         </div>
       </div>
     `;
+
+    const closeBtn = this.block.querySelector('#close-survey-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.exitFullscreen();
+      });
+    }
 
     if (marketoFormId) {
       const formWrapper = this.block.querySelector('#marketo-form-wrapper');
@@ -853,7 +914,13 @@ class ProductSurvey {
         || 'Thank you! A sales representative will contact you within 24 hours.'
       : this.surveyData.thankYouNo || 'Thank you for taking our survey!';
 
-    this.block.innerHTML = `<div class="product-survey-container">
+    this.block.innerHTML = `<div class="product-survey-container survey-fullscreen">
+      <button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
       <div class="survey-card">
         <div class="thank-you-container">
           <h2>Thank You!</h2>
@@ -862,6 +929,13 @@ class ProductSurvey {
         </div>
       </div>
     </div>`;
+
+    const closeBtn = this.block.querySelector('#close-survey-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.exitFullscreen();
+      });
+    }
 
     const restartBtn = this.block.querySelector('#restart-btn');
     if (restartBtn) {
@@ -887,6 +961,13 @@ class ProductSurvey {
       otherTexts: {},
       showStartScreen: true,
     });
+    this.exitFullscreen();
+    this.render();
+  }
+
+  exitFullscreen() {
+    document.body.classList.remove('survey-fullscreen-active');
+    this.showStartScreen = true;
     this.render();
   }
 }
