@@ -295,7 +295,7 @@ class ProductSurvey {
       <div class="product-survey-container">
         <div class="survey-card">
           <div class="progress-bar">
-            <div class="progress-fill" style="width: ${this.getProgress()}%"></div>
+            ${this.renderProgressSegments()}
           </div>
           
           <div class="question-container">
@@ -393,6 +393,34 @@ class ProductSurvey {
     return (
       ((this.currentQuestion + 1) / this.surveyData.questions.length) * 100
     );
+  }
+
+  renderProgressSegments() {
+    if (!this.surveyData || !this.surveyData.questions || this.surveyData.questions.length === 0) {
+      return '';
+    }
+
+    const totalQuestions = this.surveyData.questions.length;
+    const segments = [];
+
+    for (let i = 0; i < totalQuestions; i += 1) {
+      const isCompleted = this.answers.some(
+        (answer) => answer.questionId === this.surveyData.questions[i].id,
+      );
+      const isActive = i === this.currentQuestion;
+      const classes = ['progress-segment'];
+
+      if (isCompleted) {
+        classes.push('completed');
+      }
+      if (isActive) {
+        classes.push('active');
+      }
+
+      segments.push(`<div class="${classes.join(' ')}"></div>`);
+    }
+
+    return segments.join('');
   }
 
   attachEventListeners() {

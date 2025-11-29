@@ -229,11 +229,27 @@ main .marker-quiz .mktoForm p {
 
 .progress-bar {
   width: 100%;
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.progress-segment {
+  flex: 1;
   height: 8px;
   background: #e9ecef;
   border-radius: 4px;
-  overflow: hidden;
-  margin: 20px 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.progress-segment.completed {
+  background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
+}
+
+.progress-segment.active {
+  background: linear-gradient(135deg, #5F8DDA 0%, #84329B 100%);
+  box-shadow: 0 0 8px rgba(95, 141, 218, 0.6);
 }
 
 .progress-fill {
@@ -650,6 +666,15 @@ main .marker-quiz .mktoForm p {
   .options-container.layout-horizontal .option {
     max-width: 100%;
     width: 100%;
+  }
+
+  /* Progress bar segments on mobile */
+  .progress-bar {
+    gap: 4px;
+  }
+
+  .progress-segment {
+    height: 6px;
   }
 }
 
