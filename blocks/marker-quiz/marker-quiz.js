@@ -754,11 +754,24 @@ class ProductSurvey {
         timeZone: 'EST',
       }),
       Recommended_Product: results.recommendedProduct,
-      Product_Name: results.productDetails?.name || '',
-      Product_Description: results.productDetails?.description || '',
-      Survey_Answers: JSON.stringify(this.answers),
       ...contactData,
     };
+
+    // Add individual question answers as separate fields
+    this.answers.forEach((answer) => {
+      const question = this.surveyData.questions.find(
+        (q) => q.id === answer.questionId,
+      );
+      if (question) {
+        // Use question text as field name (sanitized)
+        const fieldName = `Q${answer.questionId}`;
+        // Handle array answers (multi-choice) vs single answers
+        payload[fieldName] = Array.isArray(answer.answer)
+          ? answer.answer.join('; ')
+          : answer.answer;
+      }
+    });
+
     return payload;
   }
 
@@ -772,9 +785,9 @@ class ProductSurvey {
     try {
       const payload = this.constructQuizPayload(contactData);
       const { pathname } = new URL(this.surveyJsonUrl);
-      // Extract the base path similar to form.js: /forms/marker-quiz.json -> /forms/marker-quiz
+      // Extract the base path and add ?sheet=incoming to the URL
+      // Example: /forms/marker-quiz.json -> /forms/marker-quiz?sheet=incoming
       const basePath = pathname.split('.json')[0];
-      // Submit to the 'incoming' sheet
       const url = `${FORM_SUBMIT_ENDPOINT}${basePath}?sheet=incoming`;
 
       const response = await fetch(url, {
@@ -789,8 +802,12 @@ class ProductSurvey {
         this.submissionSent = true;
         return true;
       }
+      // eslint-disable-next-line no-console
+      console.error(`Quiz submission failed: ${response.status} ${response.statusText}`);
       return false;
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Quiz submission error:', error);
       return false;
     }
   }
