@@ -264,6 +264,28 @@ main .marker-quiz .mktoForm p {
   margin-bottom: 30px;
 }
 
+/* Horizontal Layout */
+.options-container.layout-horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.options-container.layout-horizontal .option {
+  flex: 1 1 200px;
+  max-width: 300px;
+  min-width: 180px;
+}
+
+/* Vertical Layout (default) */
+.options-container.layout-vertical {
+  flex-direction: column;
+}
+
+.options-container.layout-vertical .option {
+  width: 100%;
+}
+
 .option {
   background: #f8f9fa;
   border: 2px solid #e9ecef;
@@ -292,6 +314,26 @@ main .marker-quiz .mktoForm p {
 
 /* Checkbox and Radio Button Styles */
 .option {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 15px;
+}
+
+.option.has-image {
+  text-align: center;
+}
+
+.option-image {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.option-content {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -342,6 +384,7 @@ main .marker-quiz .mktoForm p {
 
 .option-text {
   flex: 1;
+  text-align: left;
 }
 
 /* Multi-choice specific styling */
@@ -553,6 +596,28 @@ main .marker-quiz .mktoForm p {
   margin-bottom: 30px;
 }
 
+/* "Other" input field styling */
+.option .other-input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.option.selected .other-input {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.option:not(.selected) .other-input {
+  background: #f8f9fa;
+  border-color: #e9ecef;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .survey-card {
@@ -574,6 +639,16 @@ main .marker-quiz .mktoForm p {
   }
 
   .btn {
+    width: 100%;
+  }
+
+  /* Force vertical layout on mobile */
+  .options-container.layout-horizontal {
+    flex-direction: column;
+  }
+
+  .options-container.layout-horizontal .option {
+    max-width: 100%;
     width: 100%;
   }
 }

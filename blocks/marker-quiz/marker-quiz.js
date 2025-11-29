@@ -101,6 +101,7 @@ function parseSurveyDataFromExcel(data) {
         text: opt.Text,
         scores,
         isOther: opt.Type === 'other',
+        image: opt.Image || null, // Add image support
       };
     });
 
@@ -108,6 +109,7 @@ function parseSurveyDataFromExcel(data) {
       id: parseInt(question.Id, 10),
       text: question.Text,
       type: question.QuestionType || 'single',
+      layout: question.Layout?.toLowerCase() || 'vertical',
       options: processedOptions,
     });
   });
@@ -142,7 +144,7 @@ class ProductSurvey {
     this.block = block;
     this.config = config;
     this.surveyData = null;
-    this.surveyJsonUrl = null; 
+    this.surveyJsonUrl = null;
     this.currentQuestion = 0;
     this.answers = [];
     this.selectedOption = null;
@@ -151,7 +153,7 @@ class ProductSurvey {
     this.otherTexts = {}; // For multi-choice "Other" responses (keyed by option text)
     this.loading = true;
     this.showStartScreen = true;
-    this.submissionSent = false; // Track if quiz submission has been sent
+    this.submissionSent = false;
     this.init();
   }
 
@@ -303,7 +305,7 @@ class ProductSurvey {
             
             <div class="options-container ${currentQuestion.type === 'multi'
     ? 'multi-choice'
-    : 'single-choice'}">
+    : 'single-choice'} ${currentQuestion.layout === 'horizontal' ? 'layout-horizontal' : 'layout-vertical'}">
               ${currentQuestion
     .options.map((option, index) => {
       const isMulti = currentQuestion.type === 'multi';
@@ -317,9 +319,13 @@ class ProductSurvey {
       const otherValue = isMulti
         ? (this.otherTexts[option.text] || '')
         : (this.otherText || '');
-      return `<div class="option ${isSelected ? 'selected' : ''}" data-option-index="${index}">
-                  <span class="${isMulti ? 'checkbox' : 'radio'} ${isSelected ? 'checked' : ''}"></span>
-                  <span class="option-text">${option.text}</span>
+      const imageHtml = option.image ? `<img src="${option.image}" alt="${option.text}" class="option-image" />` : '';
+      return `<div class="option ${isSelected ? 'selected' : ''} ${option.image ? 'has-image' : ''}" data-option-index="${index}">
+                  ${imageHtml}
+                  <div class="option-content">
+                    <span class="${isMulti ? 'checkbox' : 'radio'} ${isSelected ? 'checked' : ''}"></span>
+                    <span class="option-text">${option.text}</span>
+                  </div>
                   ${showOtherInput ? `<input type="text" class="other-input" data-option-text="${option.text}" placeholder="Please specify..." value="${otherValue}" />` : ''}
                 </div>`;
     })
@@ -785,6 +791,7 @@ class ProductSurvey {
     try {
       const payload = this.constructQuizPayload(contactData);
       const { pathname } = new URL(this.surveyJsonUrl);
+      // 11/28/25 - This still needs work
       // Extract the base path and add ?sheet=incoming to the URL
       // Example: /forms/marker-quiz.json -> /forms/marker-quiz?sheet=incoming
       const basePath = pathname.split('.json')[0];
