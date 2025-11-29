@@ -373,6 +373,8 @@ main .marker-quiz .mktoForm p {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  display: block;
+  margin: 0 auto;
 }
 
 .btn:hover {
