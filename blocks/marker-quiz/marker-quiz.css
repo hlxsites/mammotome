@@ -224,15 +224,26 @@ main .marker-quiz .mktoForm p {
   height: 100vh;
   max-width: 100vw;
   margin: 0;
-  padding: 40px;
-  background: rgba(0, 0, 0, 0.5);
+  padding: 0;
+  background: rgba(255, 255, 255, 0.75);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   z-index: 9999;
   overflow-y: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.survey-fullscreen > * {
+  flex-shrink: 0;
+}
+
+.survey-fullscreen .survey-card {
+  flex: 0 1 auto;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 40px;
 }
 
 body.survey-fullscreen-active {
@@ -248,7 +259,7 @@ body.survey-fullscreen-active .footer {
 
 .survey-close-btn {
   position: fixed;
-  top: 20px;
+  top: 5px;
   right: 20px;
   width: 50px;
   height: 50px;
@@ -258,15 +269,16 @@ body.survey-fullscreen-active .footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   z-index: 10000;
   padding: 10px;
+  background: var(--mt-global-color-white);
 }
 
 .survey-close-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 50px;
 }
 
 .survey-close-btn:active {
@@ -281,9 +293,7 @@ body.survey-fullscreen-active .footer {
 .survey-fullscreen .survey-card {
   max-width: 800px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  margin: auto;
+  overflow-y: visible;
 }
 
 .survey-card {
@@ -300,11 +310,23 @@ body.survey-fullscreen-active .footer {
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
 }
 
+.progress-bar-container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+
 .progress-bar {
   width: 100%;
   display: flex;
   gap: 8px;
-  margin: 20px 0;
 }
 
 .progress-segment {
@@ -360,12 +382,78 @@ body.survey-fullscreen-active .footer {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 20px;
 }
 
 .options-container.layout-horizontal .option {
-  flex: 1 1 200px;
-  max-width: 300px;
-  min-width: 180px;
+  flex: 0 0 calc(50% - 10px);
+  max-width: calc(50% - 10px);
+  min-width: calc(50% - 10px);
+  width: calc(50% - 10px);
+  min-height: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* For 3+ items, adjust to show 2 per row */
+@media (min-width: 768px) {
+  .options-container.layout-horizontal .option {
+    flex: 0 0 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    min-width: calc(50% - 10px);
+  }
+}
+
+/* Horizontal layout with images - use image as background */
+.options-container.layout-horizontal .option.has-image {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  justify-content: flex-start;
+}
+
+.options-container.layout-horizontal .option.has-image .option-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  border-radius: 0;
+  margin-bottom: 0;
+  z-index: 0;
+}
+
+.options-container.layout-horizontal .option.has-image .option-content {
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+  min-height: 250px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.options-container.layout-horizontal .option.has-image .option-text {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+}
+
+.options-container.layout-horizontal .option.has-image .checkbox,
+.options-container.layout-horizontal .option.has-image .radio {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.options-container.layout-horizontal .option.has-image.selected .option-content {
+  background: linear-gradient(to top, rgba(95, 141, 218, 0.9) 0%, rgba(132, 50, 155, 0.7) 50%, rgba(95, 141, 218, 0.4) 100%);
 }
 
 /* Vertical Layout (default) */

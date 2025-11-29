@@ -304,11 +304,12 @@ class ProductSurvey {
             </g>
           </svg>
         </button>
-        <div class="survey-card">
+        <div class="progress-bar-container">
           <div class="progress-bar">
             ${this.renderProgressSegments()}
           </div>
-          
+        </div>
+        <div class="survey-card">
           <div class="question-container">
             <div class="question-text">
               ${currentQuestion.text}
