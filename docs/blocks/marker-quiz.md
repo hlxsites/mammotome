@@ -72,6 +72,22 @@ You can customize the survey by providing configuration data:
 
 ## Configuration Options
 
+### Block Configuration
+
+The marker-quiz block can be configured using block metadata:
+
+| Property | Description | Example |
+|----------|-------------|---------|
+| `Marketo Form ID` or `marketoformid` | The Marketo form ID to embed in the contact form | `1234` |
+
+Example in document:
+
+```
+| marker-quiz |  |
+|-------------|--|
+| Marketo Form ID | 1234 |
+```
+
 ### Survey Data Structure
 
 The `surveyData` object contains:
@@ -102,6 +118,30 @@ The survey uses a scoring system where:
 1. Each answer option has scores for different products
 2. User responses accumulate scores for each product
 3. The product with the highest total score is recommended
+
+## Contact Form Integration
+
+When a user completes the survey and is interested in the recommended product, they can proceed to a contact form. The block supports embedding Marketo forms for lead capture:
+
+### Setup
+
+1. Create a Marketo form with the necessary fields (FirstName, LastName, Email, Phone, Company, Comments/Message)
+2. Add the Marketo Form ID to the block configuration (see Block Configuration above)
+3. The form will automatically be embedded and handle submission
+
+### Form Submission Flow
+
+1. User completes the survey and clicks "Yes, I'm interested!"
+2. Marketo form is displayed with the contact information fields
+3. Upon submission:
+   - Form data is captured
+   - Quiz results and contact information are submitted to the backend
+   - User sees a thank you message
+   - Marketo can trigger follow-up workflows
+
+### Required Configuration
+
+The block requires a Marketo Form ID to be configured. If no form ID is provided, an error message will be displayed instead of the form.
 
 ## Default Survey
 

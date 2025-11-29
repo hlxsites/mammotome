@@ -2,6 +2,42 @@ import { readBlockConfig } from '../../scripts/lib-franklin.js';
 
 const FORM_SUBMIT_ENDPOINT = 'https://franklin-submit-wrapper.mammotome.workers.dev';
 
+const loadScript = (src) => new Promise((resolve, reject) => {
+  const existingScript = document.querySelector(`script[src="${src}"]`);
+  if (existingScript) {
+    resolve();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = src;
+  script.onload = () => resolve();
+  script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+  document.head.appendChild(script);
+});
+
+const embedMarketoForm = async (container, formId) => {
+  try {
+    await loadScript('//www2.mammotome.com/js/forms2/js/forms2.min.js');
+
+    const formElement = document.createElement('form');
+    formElement.id = `mktoForm_${formId}`;
+    container.appendChild(formElement);
+
+    window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
+
+    return new Promise((resolve) => {
+      window.MktoForms2.whenReady((form) => {
+        resolve(form);
+      });
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load Marketo form:', error);
+    throw error;
+  }
+};
+
 async function fetchSurveyData(url) {
   try {
     const resp = await fetch(url);
@@ -106,7 +142,7 @@ class ProductSurvey {
     this.block = block;
     this.config = config;
     this.surveyData = null;
-    this.surveyJsonUrl = null; // Store the survey JSON URL for submission
+    this.surveyJsonUrl = null; 
     this.currentQuestion = 0;
     this.answers = [];
     this.selectedOption = null;
@@ -120,7 +156,6 @@ class ProductSurvey {
   }
 
   async loadSurveyData() {
-    // Look for any link with .json extension in the block
     const surveyLink = this.block.querySelector('a[href$=".json"], a[href*=".json"]');
     if (surveyLink && surveyLink.href) {
       this.surveyJsonUrl = surveyLink.href;
@@ -215,7 +250,6 @@ class ProductSurvey {
     );
     if (previousAnswer) {
       if (currentQuestion.type === 'multi') {
-        // Restore multi-choice selections
         const answerArray = Array.isArray(previousAnswer.answer)
           ? previousAnswer.answer
           : [previousAnswer.answer];
@@ -226,7 +260,6 @@ class ProductSurvey {
           }
           return ans === opt.text;
         }));
-        // Restore "Other" text values
         answerArray.forEach((ans) => {
           if (typeof ans === 'string' && ans.includes(': ')) {
             const [optionText, otherText] = ans.split(': ');
@@ -239,7 +272,6 @@ class ProductSurvey {
           }
         });
       } else {
-        // Restore single-choice selection
         const answerValue = previousAnswer.answer;
         if (typeof answerValue === 'string' && answerValue.includes(': ')) {
           const [optionText, otherText] = answerValue.split(': ');
@@ -312,7 +344,6 @@ class ProductSurvey {
       </div>
     `;
 
-    // Update next button state after rendering
     setTimeout(() => {
       this.updateNextButtonState();
     }, 0);
@@ -337,7 +368,6 @@ class ProductSurvey {
         this.showStartScreen = false;
         this.render();
         this.attachEventListeners();
-        // Update next button state after initial render
         this.updateNextButtonState();
       });
     }
@@ -437,10 +467,8 @@ class ProductSurvey {
       }
     }
 
-    // Re-render to show/hide "Other" input field
     this.render();
     this.attachEventListeners();
-    // Update next button state after re-render
     setTimeout(() => {
       this.updateNextButtonState();
     }, 0);
@@ -458,7 +486,6 @@ class ProductSurvey {
 
     if (isMulti) {
       isValid = this.selectedOptions.length > 0;
-      // Check if any selected option is "Other" and has text
       const hasOtherWithoutText = this.selectedOptions.some(
         (opt) => opt.isOther === true && (!this.otherTexts[opt.text] || this.otherTexts[opt.text].trim() === ''),
       );
@@ -539,8 +566,6 @@ class ProductSurvey {
     }
 
     if (this.currentQuestion === this.surveyData.questions.length - 1) {
-      // Last question - submit and show results
-      // Submit quiz data immediately when "Get Results" is clicked
       if (!this.submissionSent) {
         await this.submitQuizData();
       }
@@ -654,62 +679,61 @@ class ProductSurvey {
     }
   }
 
-  // placeholder form. need to add marketo form here instead.
-  showContactForm() {
+  async showContactForm() {
+    const marketoFormId = this.config.marketoformid || this.config['marketo-form-id'];
+
     this.block.innerHTML = `
       <div class="product-survey-container">
         <div class="survey-card">
           <div class="contact-form-container">
             <h2>Contact Information</h2>
             <p>Please provide your contact information and we'll have a sales representative reach out to you.</p>
-            
-            <form id="contact-form" class="contact-form">
-              <div class="form-group">
-                <label for="firstName">First Name *</label>
-                <input type="text" id="firstName" name="firstName" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="lastName">Last Name *</label>
-                <input type="text" id="lastName" name="lastName" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="email">Email Address *</label>
-                <input type="email" id="email" name="email" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone">
-              </div>
-              
-              <div class="form-group">
-                <label for="company">Company</label>
-                <input type="text" id="company" name="company">
-              </div>
-              
-              <div class="form-group">
-                <label for="message">Additional Information</label>
-                <textarea id="message" name="message" rows="4" placeholder="Tell us more about your needs..."></textarea>
-              </div>
-              
-              <div class="form-actions">
-                <button type="submit" class="btn">Submit</button>
-                <button type="button" class="btn btn-secondary" id="back-to-results">Back to Results</button>
-              </div>
-            </form>
+
+            <div id="marketo-form-wrapper" class="marketo-form-wrapper"></div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="back-to-results">Back to Results</button>
+            </div>
           </div>
         </div>
       </div>
     `;
 
-    const contactForm = this.block.querySelector('#contact-form');
-    if (contactForm) {
-      contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        this.submitContactForm();
+    if (marketoFormId) {
+      const formWrapper = this.block.querySelector('#marketo-form-wrapper');
+
+      embedMarketoForm(formWrapper, marketoFormId).then((form) => {
+        form.onSuccess((values) => {
+          // Prevent default Marketo redirect
+          // Submit quiz data with contact information from Marketo form
+          const contactData = {
+            firstName: values.FirstName || '',
+            lastName: values.LastName || '',
+            email: values.Email || '',
+            phone: values.Phone || '',
+            company: values.Company || '',
+            pardot_form_message__c: values.Comments || values.Message || '',
+          };
+
+          this.submitQuizData(contactData).then(() => {
+            this.showThankYouYes();
+          }).catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('Error submitting quiz data:', error);
+          });
+
+          return false;
+        });
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Error loading Marketo form:', error);
+        formWrapper.innerHTML = '<p class="error">Unable to load contact form. Please try again later.</p>';
       });
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('No Marketo form ID provided. Please add "Marketo Form ID" to the block configuration.');
+      const formWrapper = this.block.querySelector('#marketo-form-wrapper');
+      formWrapper.innerHTML = '<p class="error">Contact form not configured. Please contact the site administrator.</p>';
     }
 
     const backBtn = this.block.querySelector('#back-to-results');
@@ -753,11 +777,6 @@ class ProductSurvey {
       // Submit to the 'incoming' sheet
       const url = `${FORM_SUBMIT_ENDPOINT}${basePath}?sheet=incoming`;
 
-      // eslint-disable-next-line no-console
-      console.log('Submitting quiz data to:', url);
-      // eslint-disable-next-line no-console
-      console.log('Payload:', payload);
-
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -768,41 +787,11 @@ class ProductSurvey {
 
       if (response.ok) {
         this.submissionSent = true;
-        const responseText = await response.text();
-        // eslint-disable-next-line no-console
-        console.log('Quiz data submitted successfully', responseText);
         return true;
       }
-      const errorText = await response.text();
-      // eslint-disable-next-line no-console
-      console.error(`Failed to submit quiz data: ${response.status} ${response.statusText}`, errorText);
       return false;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error submitting quiz data:', error);
       return false;
-    }
-  }
-
-  async submitContactForm() {
-    const form = this.block.querySelector('#contact-form');
-    if (!form) return;
-
-    const formData = new FormData(form);
-    const contactData = Object.fromEntries(formData.entries());
-
-    try {
-      // Submit quiz data with contact information
-      await this.submitQuizData(contactData);
-
-      this.showThankYouYes();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error submitting form:', error);
-      // eslint-disable-next-line no-alert
-      alert(
-        'There was an error submitting your information. Please try again.',
-      );
     }
   }
 
