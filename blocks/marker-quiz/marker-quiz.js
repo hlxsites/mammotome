@@ -338,7 +338,8 @@ class ProductSurvey {
                     <span class="${isMulti ? 'checkbox' : 'radio'} ${isSelected ? 'checked' : ''}"></span>
                     <span class="option-text">${option.text}</span>
                   </div>
-                  ${showOtherInput ? `<input type="text" class="other-input" data-option-text="${option.text}" placeholder="Please specify..." value="${otherValue}" />` : ''}
+                  ${showOtherInput ? `<input type="text" class="other-input" data-option-text="${option.text}" placeholder="Please specify..." value="${otherValue}" />
+                  <span class="other-input-required">This field is required</span>` : ''}
                 </div>`;
     })
     .join('')}
@@ -511,6 +512,51 @@ class ProductSurvey {
       } else {
         this.selectedOptions.push(option);
       }
+
+      // For multiselect, just update the DOM directly without re-rendering
+      const optionElement = this.block.querySelector(`.option[data-option-index="${optionIndex}"]`);
+      if (optionElement) {
+        const checkbox = optionElement.querySelector('.checkbox');
+        if (existingIndex >= 0) {
+          // Was selected, now deselected
+          optionElement.classList.remove('selected');
+          if (checkbox) checkbox.classList.remove('checked');
+          // Remove "Other" input and label if they exist
+          const existingInput = optionElement.querySelector('.other-input');
+          const existingLabel = optionElement.querySelector('.other-input-required');
+          if (existingInput) {
+            existingInput.remove();
+          }
+          if (existingLabel) {
+            existingLabel.remove();
+          }
+        } else {
+          // Was not selected, now selected
+          optionElement.classList.add('selected');
+          if (checkbox) checkbox.classList.add('checked');
+          // Add "Other" input if this is an "Other" option
+          if (isOther) {
+            const otherValue = this.otherTexts[option.text] || '';
+            const inputHtml = `<input type="text" class="other-input" data-option-text="${option.text}" placeholder="Please specify..." value="${otherValue}" />
+                              <span class="other-input-required">This field is required</span>`;
+            optionElement.insertAdjacentHTML('beforeend', inputHtml);
+            // Attach event listener to the new input
+            const newInput = optionElement.querySelector('.other-input');
+            if (newInput) {
+              newInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+              });
+              newInput.addEventListener('input', (e) => {
+                const { optionText } = e.target.dataset;
+                const { value } = e.target;
+                this.otherTexts[optionText] = value;
+                this.updateNextButtonState();
+              });
+            }
+          }
+        }
+      }
+      this.updateNextButtonState();
     } else {
       const wasOther = this.selectedOption?.isOther === true;
       this.selectedOption = option;
@@ -519,13 +565,14 @@ class ProductSurvey {
       if (!isOther && wasOther) {
         this.otherText = null;
       }
-    }
 
-    this.render();
-    this.attachEventListeners();
-    setTimeout(() => {
-      this.updateNextButtonState();
-    }, 0);
+      // For single select, re-render to show only one selected
+      this.render();
+      this.attachEventListeners();
+      setTimeout(() => {
+        this.updateNextButtonState();
+      }, 0);
+    }
   }
 
   updateNextButtonState() {
