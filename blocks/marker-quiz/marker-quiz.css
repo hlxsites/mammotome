@@ -213,6 +213,22 @@ main .marker-quiz .mktoForm p {
   padding: 20px;
 }
 
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-survey {
+  animation: fadeIn 1.5s ease-out forwards;
+}
+
 /* Fullscreen overlay mode */
 .survey-fullscreen {
   position: fixed;
@@ -356,18 +372,48 @@ body.survey-fullscreen-active .footer {
   border-radius: 4px;
 }
 
-.question-container {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 .question-text {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 30px;
   color: #333;
   line-height: 1.4;
+  text-align: center;
+}
+
+.question-content {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.question-image-container {
+  flex-shrink: 0;
+}
+
+.question-image {
+  width: 200px;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 15px;
+  animation: slideUpFade 1s ease-out forwards;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.question-container {
+  text-align: center;
+  flex: 1;
 }
 
 .options-container {
@@ -819,6 +865,17 @@ body.survey-fullscreen-active .footer {
 
   .question-text {
     font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .question-content {
+    flex-direction: column;
+  }
+
+  .question-image {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
   }
 
   .product-title {

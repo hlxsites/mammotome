@@ -101,7 +101,7 @@ function parseSurveyDataFromExcel(data) {
         text: opt.Text,
         scores,
         isOther: opt.Type === 'other',
-        image: opt.Image || null, // Add image support
+        image: opt.Image || null,
       };
     });
 
@@ -110,6 +110,7 @@ function parseSurveyDataFromExcel(data) {
       text: question.Text,
       type: question.QuestionType || 'single',
       layout: question.Layout?.toLowerCase() || 'vertical',
+      image: question.Image || null,
       options: processedOptions,
     });
   });
@@ -310,15 +311,20 @@ class ProductSurvey {
           </div>
         </div>
         <div class="survey-card">
-          <div class="question-container">
-            <div class="question-text">
-              ${currentQuestion.text}
-            </div>
+          <div class="question-text">
+            ${currentQuestion.text}
+          </div>
+          
+          <div class="question-content">
+            ${currentQuestion.image ? `<div class="question-image-container">
+              <img src="${currentQuestion.image}" alt="Question image" class="question-image" />
+            </div>` : ''}
             
-            <div class="options-container ${currentQuestion.type === 'multi'
+            <div class="question-container">
+              <div class="options-container ${currentQuestion.type === 'multi'
     ? 'multi-choice'
     : 'single-choice'} ${currentQuestion.layout === 'horizontal' ? 'layout-horizontal' : 'layout-vertical'}">
-              ${currentQuestion
+                ${currentQuestion
     .options.map((option, index) => {
       const isMulti = currentQuestion.type === 'multi';
       const isSelected = isMulti
@@ -343,6 +349,7 @@ class ProductSurvey {
                 </div>`;
     })
     .join('')}
+              </div>
             </div>
           </div>
 
@@ -388,6 +395,11 @@ class ProductSurvey {
         this.render();
         this.attachEventListeners();
         this.updateNextButtonState();
+        // Add fade-in animation class
+        const surveyContainer = this.block.querySelector('.product-survey-container');
+        if (surveyContainer) {
+          surveyContainer.classList.add('fade-in-survey');
+        }
       });
     }
   }
