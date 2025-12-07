@@ -663,7 +663,7 @@ export default async function decorate(block) {
           const clickedLink = e.target.closest('a');
           const isDropdownTrigger = clickedLink && !clickedLink.closest('.nav-overflow-list');
           const expanded = overflowDropdown.getAttribute('aria-expanded') === 'true';
-          
+
           // Only toggle and prevent default if clicking the globe icon trigger
           if (isDropdownTrigger) {
             toggleAllNavSections(navSections);
