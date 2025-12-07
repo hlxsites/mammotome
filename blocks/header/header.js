@@ -12,7 +12,6 @@ import {
   sampleRUM,
 } from '../../scripts/lib-franklin.js';
 
-// media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 1025px)');
 
 function closeOnEscape(e) {
@@ -123,7 +122,6 @@ function createOverflowDropdown(navSections) {
   const overflowDropdownList = document.createElement('ul');
   overflowDropdownList.classList.add('nav-overflow-list');
 
-  // Add mobile menu controls to the overflow list
   overflowDropdownList.prepend(createMobileMenuControlsBlock());
 
   overflowDropdown.append(overflowDropdownList);
@@ -166,7 +164,6 @@ function addNavigationLogoForScrollingPage(nav) {
   const scrollingLogo = document.createElement('span');
   scrollingLogo.className = 'logo-hidden scrolling-logo';
 
-  // Use relative path to avoid CORS issues
   const logoPath = `${window.hlx?.codeBasePath || ''}/icons/logo-small.svg`;
 
   fetch(logoPath)
@@ -182,7 +179,6 @@ function addNavigationLogoForScrollingPage(nav) {
       const svg = svgContainer.querySelector('svg');
 
       if (svg) {
-        // Set size and color
         svg.style.height = '40px';
         svg.style.width = 'auto';
         svg.style.fill = '#84329B';
@@ -203,7 +199,6 @@ function addNavigationLogoForScrollingPage(nav) {
       }
     })
     .catch(() => {
-      // Fallback to img if fetch fails (silently handle CORS/network errors)
       const logoImg = document.createElement('img');
       logoImg.src = logoPath;
       logoImg.alt = 'Mammotome';
@@ -218,7 +213,6 @@ function addNavigationLogoForScrollingPage(nav) {
     navBrandSecondary.classList.add('nav-brand-text');
   }
 
-  // Simple debounce function to improve scroll performance
   let timeout;
   window.addEventListener('scroll', () => {
     clearTimeout(timeout);
@@ -226,7 +220,6 @@ function addNavigationLogoForScrollingPage(nav) {
       const isScrolled = window.scrollY > 40;
       nav.classList.toggle('narrow', isScrolled);
 
-      // Ensure logos exist before toggling
       if (defaultLogo) {
         defaultLogo.classList.toggle('logo-hidden', isScrolled);
       }
@@ -240,11 +233,6 @@ function addNavigationLogoForScrollingPage(nav) {
   });
 }
 
-/**
- * Toggles all nav sections
- * @param {Element} sections The container element
- * @param {Boolean} expanded Whether the element should be expanded or collapsed
- */
 function toggleAllNavSections(sections, expanded = false) {
   sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
     if (!section.classList.contains('mobile-menu-controls')) {
@@ -257,12 +245,6 @@ function toggleAllNavSections(sections, expanded = false) {
   }
 }
 
-/**
- * Toggles the entire nav
- * @param {Element} nav The container element
- * @param {Element} navSections The nav sections within the container element
- * @param {*} forceExpanded Optional param to force nav expand behavior when not null
- */
 function toggleMenu(nav, navSections, forceExpanded = null) {
   const expanded = forceExpanded !== null
     ? !forceExpanded
@@ -276,7 +258,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
     expanded ? 'Open navigation' : 'Close navigation',
   );
 
-  // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
   if (isDesktop.matches) {
     nav.classList.remove('nav-mobile');
@@ -295,9 +276,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
       drop.removeEventListener('focus', focusNavSection);
     });
   }
-  // enable menu collapse on escape keypress
   if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
     window.addEventListener('keydown', closeOnEscape);
   } else {
     window.removeEventListener('keydown', closeOnEscape);
@@ -355,7 +334,6 @@ async function search(value) {
   return [...searchData, ...productSupportData].filter((e) => `${e.title} ${e.description}`.toLowerCase().includes(value.toLowerCase()));
 }
 
-// Debounce timer for search input
 let searchDebounceTimer;
 
 async function searchInput(event) {
@@ -370,19 +348,16 @@ async function searchInput(event) {
     url.searchParams.delete('ee_search_query');
   }
 
-  // Clear any existing debounce timer
   if (searchDebounceTimer) {
     clearTimeout(searchDebounceTimer);
   }
 
   if (searchTerm.length >= 3) {
-    // Show loading state
     const loadingTitle = document.createElement('h3');
     loadingTitle.classList.add('nav-search-title');
     loadingTitle.textContent = 'Searching...';
     aside.appendChild(loadingTitle);
 
-    // Debounce the actual search to avoid excessive fetching
     searchDebounceTimer = setTimeout(async () => {
       aside.innerHTML = '';
 
@@ -450,7 +425,7 @@ async function searchInput(event) {
         'beforeend',
         '<div class="nav-search-result-title-divider"><span class="nav-search-result-title-divider-separator"/></div>',
       );
-    }, 300); // Wait 300ms after user stops typing before fetching
+    }, 300);
   }
   // eslint-disable-next-line no-restricted-globals
   history.replaceState(null, '', url);
@@ -458,7 +433,7 @@ async function searchInput(event) {
 
 async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
-  if (!input.active) {
+  if (input.active) {
     input.placeholder = await translate(
       'navSearchPlaceholder',
       'What are you looking for?',
@@ -530,16 +505,9 @@ async function decorateSearch(block) {
     );
     searchElement.prepend(input);
     searchElement.append(aside);
-    // Don't trigger search on initial load - only when user types
-    // This prevents unnecessary data fetching during navigation initialization
-    // input.dispatchEvent(new Event('input', { bubbles: true }));
   }
 }
 
-/**
- * decorate Language to include flag image in href
- * @param navSections
- */
 function decorateLanguageNav(navSections) {
   const listItems = navSections.querySelectorAll('.nav-drop > ul > li');
 
@@ -563,12 +531,7 @@ function decorateLanguageNav(navSections) {
   });
 }
 
-/**
- * decorates the header, mainly the nav
- * @param {Element} block The header block element
- */
 export default async function decorate(block) {
-  // fetch nav content
   const navPath = getMetadata('nav') || '/nav';
   const resp = await fetch(`${navPath}.plain.html`);
 
@@ -581,7 +544,6 @@ export default async function decorate(block) {
 
     const classes = ['brand', 'sections', 'tools'];
     Array.from(nav.children).forEach((section, i) => {
-      // first section is assigned to brand, last to tools
       if (i === 0) {
         section.classList.add(`nav-${classes[0]}`);
       } else if (i === nav.children.length - 1) {
@@ -608,7 +570,6 @@ export default async function decorate(block) {
                 }
                 if (link && /\bcontact\b/i.test(link.textContent)) {
                   link.classList.add('contact');
-                  // Wrap text content in a span so we can hide it
                   const textContent = link.textContent.trim();
                   const textSpan = document.createElement('span');
                   textSpan.classList.add('contact-text');
@@ -651,14 +612,11 @@ export default async function decorate(block) {
           .querySelectorAll('ul > li > ul > li > ul > li > ul')
           .forEach((element) => {
             element.classList.add('nav-subitems-level2');
-            // Get the parent `li` of the current `ul.nav-subitems-level2`
             const closestLi = element.closest('li');
             if (closestLi) {
               closestLi.classList.add('second-level-mobile');
             }
           });
-
-        // Get the parent `li` of the current `ul.nav-subitems-level2`
 
         const navList = navSection.querySelector('ul');
         if (navList) navList.prepend(createMobileMenuControlsBlock());
@@ -681,7 +639,6 @@ export default async function decorate(block) {
         });
       });
 
-      // not using :has selector because it's not supported in FF (fixes https://github.com/hlxsites/mammotome/issues/499)
       const firstLevelLis = Array.from(
         nav.querySelectorAll('.nav-sections > ul > li'),
       );
@@ -701,7 +658,6 @@ export default async function decorate(block) {
       const overflowDropdown = createOverflowDropdown(navSections);
       navSections.querySelector('ul').append(overflowDropdown);
 
-      // Add mobile click handler for overflow dropdown
       overflowDropdown.addEventListener('click', (e) => {
         if (!isDesktop.matches && e.target.closest('a')) {
           const expanded = overflowDropdown.getAttribute('aria-expanded') === 'true';
@@ -723,7 +679,6 @@ export default async function decorate(block) {
       setActiveLink(multiLevelNav, 'active');
     }
 
-    // hamburger for mobile
     const hamburger = document.createElement('div');
     hamburger.classList.add('nav-hamburger');
     hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
@@ -736,7 +691,6 @@ export default async function decorate(block) {
     nav.insertBefore(hamburger, nav.querySelector('.nav-tools'));
 
     nav.setAttribute('aria-expanded', 'false');
-    // prevent mobile nav behavior on window resize
     toggleMenu(nav, navSections, isDesktop.matches);
     isDesktop.addEventListener('change', () => {
       toggleMenu(nav, navSections, isDesktop.matches);
@@ -755,10 +709,8 @@ export default async function decorate(block) {
     await decorateIcons(nav);
     await decorateSearch(nav);
     decorateSupScriptInTextBelow(nav);
-    // add logo for scrolling page
     addNavigationLogoForScrollingPage(nav);
 
-    // remove empty sections
     Array.from(nav.children).forEach((section) => {
       if (
         section.children.length === 1
