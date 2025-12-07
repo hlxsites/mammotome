@@ -1,4 +1,4 @@
-﻿import Carousel from '../../scripts/lib-carousel.js';
+import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 /**
@@ -145,19 +145,22 @@ export default function decorate(block) {
   }
 
   // Use Intersection Observer to initialize carousel when it enters viewport
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        // Block is now visible, initialize the carousel
-        initializeCarousel(block, rows);
-        // Stop observing after initialization
-        observer.unobserve(block);
-      }
-    });
-  }, {
-    // Trigger when block is 0% visible (as soon as it enters viewport)
-    threshold: 0,
-  });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Block is now visible, initialize the carousel
+          initializeCarousel(block, rows);
+          // Stop observing after initialization
+          observer.unobserve(block);
+        }
+      });
+    },
+    {
+      // Trigger when block is 0% visible (as soon as it enters viewport)
+      threshold: 0,
+    },
+  );
 
   observer.observe(block);
 }
