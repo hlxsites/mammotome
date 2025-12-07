@@ -659,16 +659,23 @@ export default async function decorate(block) {
       navSections.querySelector('ul').append(overflowDropdown);
 
       overflowDropdown.addEventListener('click', (e) => {
-        if (!isDesktop.matches && e.target.closest('a')) {
+        if (!isDesktop.matches) {
+          const clickedLink = e.target.closest('a');
+          const isDropdownTrigger = clickedLink && !clickedLink.closest('.nav-overflow-list');
           const expanded = overflowDropdown.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          overflowDropdown.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-          if (expanded) {
-            overflowDropdown.parentElement.classList.remove('nav-expanded');
-          } else {
-            overflowDropdown.parentElement.classList.add('nav-expanded');
+          
+          // Only toggle and prevent default if clicking the globe icon trigger
+          if (isDropdownTrigger) {
+            toggleAllNavSections(navSections);
+            overflowDropdown.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            if (expanded) {
+              overflowDropdown.parentElement.classList.remove('nav-expanded');
+            } else {
+              overflowDropdown.parentElement.classList.add('nav-expanded');
+            }
+            e.preventDefault();
           }
-          e.preventDefault();
+          // If clicking a link inside the dropdown list, allow navigation (don't prevent default)
         }
       });
 
