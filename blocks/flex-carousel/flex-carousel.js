@@ -1,4 +1,4 @@
-import Carousel from '../../scripts/lib-carousel.js';
+﻿import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 /**
@@ -73,8 +73,8 @@ function createSlide(row) {
   textContainer.innerHTML = textCell.innerHTML;
 
   // Append elements in DOM order based on column position
-  // Image in left column → image renders left, text renders right
-  // Image in right column → text renders left, image renders right
+  // Image in left column â†’ image renders left, text renders right
+  // Image in right column â†’ text renders left, image renders right
   if (imageOnLeft) {
     slide.classList.add('image-left');
     slide.appendChild(imageContainer);
@@ -88,14 +88,12 @@ function createSlide(row) {
   return slide;
 }
 
-export default function decorate(block) {
-  // Get all rows from the block
-  const rows = Array.from(block.children);
-
-  if (rows.length === 0) {
-    return;
-  }
-
+/**
+ * Initialize the carousel when it enters the viewport
+ * @param block - the carousel block
+ * @param rows - array of carousel rows
+ */
+function initializeCarousel(block, rows) {
   // Create wrapper for carousel
   const carouselWrapper = document.createElement('div');
   carouselWrapper.classList.add('flex-carousel-wrapper');
@@ -136,4 +134,30 @@ export default function decorate(block) {
       carouselWrapper.addEventListener('mouseleave', () => carousel.startSlideShow());
     }
   }
+}
+
+export default function decorate(block) {
+  // Get all rows from the block
+  const rows = Array.from(block.children);
+
+  if (rows.length === 0) {
+    return;
+  }
+
+  // Use Intersection Observer to initialize carousel when it enters viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        // Block is now visible, initialize the carousel
+        initializeCarousel(block, rows);
+        // Stop observing after initialization
+        observer.unobserve(block);
+      }
+    });
+  }, {
+    // Trigger when block is 0% visible (as soon as it enters viewport)
+    threshold: 0,
+  });
+
+  observer.observe(block);
 }
