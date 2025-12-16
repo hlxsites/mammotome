@@ -82,7 +82,6 @@ function parseSurveyDataFromExcel(data) {
   ].map((type) => data.filter((row) => row.Type === type));
 
   questions.forEach((question) => {
-    // Combine regular options and "other" options
     const questionOptions = options.filter(
       (opt) => opt.QuestionId === question.Id,
     );
@@ -116,6 +115,8 @@ function parseSurveyDataFromExcel(data) {
       options: processedOptions,
       sortType: question.SortType || 'normal',
       sortWeight: question.SortWeight ? parseFloat(question.SortWeight) : 1,
+      sortable: question.Sortable === 'true' || question.Sortable === true,
+      rankScores: question.RankScores ? JSON.parse(question.RankScores) : {},
     });
   });
 
@@ -156,6 +157,7 @@ class ProductSurvey {
     this.selectedOptions = []; // For multi-choice questions
     this.otherText = null; // For single-choice "Other" responses
     this.otherTexts = {}; // For multi-choice "Other" responses (keyed by option text)
+    this.sortedOptions = {}; // For tracking sorted option order (keyed by question ID)
     this.loading = true;
     this.showStartScreen = true;
     this.submissionSent = false;
@@ -370,11 +372,20 @@ class ProductSurvey {
       const imageHtml = option.image
         ? `<img src="${option.image}" alt="${option.text}" class="option-image" />`
         : '';
+      const isSortable = currentQuestion.sortable === true;
+      const dragHandle = isSortable
+        ? '<span class="drag-handle" title="Drag to sort">⋮⋮</span>'
+        : '';
       return `<div class="option ${
         isSelected ? 'selected' : ''
       } ${
         option.image ? 'has-image' : ''
-      }" data-option-index="${index}">
+      } ${
+        isSortable ? 'sortable' : ''
+      }" data-option-index="${index}" ${
+        isSortable ? 'draggable="true"' : ''
+      }>
+                  ${dragHandle}
                   ${imageHtml}
                   <div class="option-content">
                     <span class="${isMulti ? 'checkbox' : 'radio'} ${
@@ -519,12 +530,46 @@ class ProductSurvey {
 
     this.block.querySelectorAll('.option').forEach((option) => {
       option.addEventListener('click', (e) => {
-        // Don't trigger option selection when clicking on the text input
-        if (e.target.classList.contains('other-input')) {
+        // Don't trigger option selection when clicking on the text input or drag handle
+        if (e.target.classList.contains('other-input') || e.target.classList.contains('drag-handle')) {
           return;
         }
         this.selectOption(parseInt(option.dataset.optionIndex, 10));
       });
+
+      // Add drag event listeners for sortable options
+      if (option.draggable) {
+        option.addEventListener('dragstart', (e) => {
+          this.draggedElement = option;
+          option.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        option.addEventListener('dragend', () => {
+          option.classList.remove('dragging');
+          this.draggedElement = null;
+        });
+
+        option.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (this.draggedElement && this.draggedElement !== option) {
+            option.classList.add('drag-over');
+          }
+        });
+
+        option.addEventListener('dragleave', () => {
+          option.classList.remove('drag-over');
+        });
+
+        option.addEventListener('drop', (e) => {
+          e.preventDefault();
+          option.classList.remove('drag-over');
+          if (this.draggedElement && this.draggedElement !== option) {
+            this.swapOptions(this.draggedElement, option);
+          }
+        });
+      }
     });
 
     // Add event listeners for "Other" text inputs
@@ -769,6 +814,31 @@ class ProductSurvey {
     }
   }
 
+  swapOptions(element1, element2) {
+    const container = element1.parentNode;
+    const allOptions = Array.from(container.querySelectorAll('.option'));
+    const index1 = allOptions.indexOf(element1);
+    const index2 = allOptions.indexOf(element2);
+
+    if (index1 < index2) {
+      element1.parentNode.insertBefore(element2, element1);
+    } else {
+      element2.parentNode.insertBefore(element1, element2);
+    }
+
+    // Update data-option-index for all options
+    Array.from(container.querySelectorAll('.option')).forEach((opt, newIndex) => {
+      opt.dataset.optionIndex = newIndex;
+    });
+
+    // Store the sorted order
+    const currentQuestion = this.getCurrentQuestion();
+    const sortedTexts = Array.from(container.querySelectorAll('.option-text')).map(
+      (textEl) => textEl.textContent,
+    );
+    this.sortedOptions[currentQuestion.id] = sortedTexts;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getScoreWeight(question, answerText) {
     if (!question.sortType || question.sortType === 'normal') {
@@ -796,26 +866,41 @@ class ProductSurvey {
       Object.keys(this.surveyData.products).map((product) => [product, 0]),
     );
 
-    this.answers.forEach((answer) => {
-      const question = this.surveyData.questions.find(
-        (q) => q.id === answer.questionId,
-      );
-      if (!question) return;
+    this.surveyData.questions.forEach((question) => {
+      // Check if this question uses ranking/sorting
+      if (question.sortable && this.sortedOptions[question.id]) {
+        // Use ranking-based scores
+        const sortedOptionTexts = this.sortedOptions[question.id];
+        const rankScores = question.rankScores || {};
 
-      const answerTexts = Array.isArray(answer.answer)
-        ? answer.answer
-        : [answer.answer];
-      answerTexts.forEach((answerText) => {
-        const selectedOption = question.options.find(
-          (opt) => opt.text === answerText,
-        );
-        if (selectedOption && selectedOption.scores) {
-          const weight = this.getScoreWeight(question, answerText);
-          Object.entries(selectedOption.scores).forEach(([product, score]) => {
-            scores[product] += score * weight;
+        sortedOptionTexts.forEach((optionText, rank) => {
+          const rankKey = `rank_${rank + 1}`;
+          const rankProductScores = rankScores[rankKey] || {};
+
+          Object.entries(rankProductScores).forEach(([product, score]) => {
+            scores[product] += score;
           });
-        }
-      });
+        });
+      } else {
+        // Use traditional answer-based scores
+        const answer = this.answers.find((a) => a.questionId === question.id);
+        if (!answer) return;
+
+        const answerTexts = Array.isArray(answer.answer)
+          ? answer.answer
+          : [answer.answer];
+        answerTexts.forEach((answerText) => {
+          const selectedOption = question.options.find(
+            (opt) => opt.text === answerText,
+          );
+          if (selectedOption && selectedOption.scores) {
+            const weight = this.getScoreWeight(question, answerText);
+            Object.entries(selectedOption.scores).forEach(([product, score]) => {
+              scores[product] += score * weight;
+            });
+          }
+        });
+      }
     });
 
     const maxScore = Math.max(...Object.values(scores));
