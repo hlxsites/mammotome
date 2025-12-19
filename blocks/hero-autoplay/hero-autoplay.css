@@ -1,0 +1,298 @@
+main .section.hero-autoplay-container {
+  position: relative;
+  width: 100vw;
+  height: 900px;
+  padding: 0;
+  margin: 0;
+  margin-top: calc(-1 * var(--mt-nav-height));
+  overflow: hidden;
+}
+
+main .section.hero-autoplay-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(255 255 255 / 100%), rgb(255 255 255 / 90%),
+      rgb(255 255 255 / 50%), rgb(255 255 255 / 30%), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.asset-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  opacity: 0.9;
+  background: var(--mt-background-color-highlight);
+  z-index: 100;
+}
+
+.asset-viewer-toolbar {
+  z-index: 10001;
+}
+
+.asset-viewer-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.asset-viewer-frame .hero-autoplay-iframe {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.asset-viewer-frame .video-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.asset-viewer-frame .video-play-overlay svg {
+  width: 96px;
+  height: 96px;
+  fill: var(--mt-global-color-white);
+  filter: drop-shadow(0 0 1rem rgb(0 0 0 / 70%));
+}
+
+.hero-autoplay-container .video-hero-background {
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-autoplay-container .hero-autoplay-background-iframe {
+  position: absolute;
+  left: 0;
+  top: -13%;
+  width: 100%;
+  height: 100%;
+  min-height: 1300px;
+  pointer-events: none;
+  background: center / cover no-repeat;
+  border: 0;
+  object-fit: cover;
+}
+
+.hero-autoplay-container .icon-playvideo {
+  position: absolute;
+  top: 44%;
+  left: 77%;
+  z-index: 4;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  fill: var(--mt-background-color-primary);
+  filter: drop-shadow(0 0 1rem rgb(0 0 0 / 42.5%));
+  pointer-events: auto;
+}
+
+.hero-autoplay-container .hero-copy,
+.hero-autoplay-container .button-row {
+  z-index: 3;
+}
+
+.hero-autoplay-container .hero-copy {
+  position: absolute;
+  inset-inline-start: 7%;
+  inset-block-start: 27%;
+}
+
+.hero-autoplay-container .hero-copy,
+.hero-autoplay-container .hero-copy h1,
+.hero-autoplay-container .hero-copy h2 {
+  text-align: left;
+  width: 70%;
+}
+
+.hero-autoplay-container .hero-copy h1 {
+  color: var(--mt-heading-color-primary);
+}
+
+.hero-autoplay-container .hero-copy h2 {
+  font-weight: var(--mt-font-weight-thin);
+}
+
+.hero-autoplay-container .button-row .button {
+  width: 100%;
+}
+
+.hero-autoplay-container .button-row {
+  position: absolute;
+  inset-inline-start: 7%;
+  inset-block-start: 64%;
+}
+
+@media (max-width: 1536px) {
+  .hero-autoplay-container .hero-autoplay-background-iframe {
+    top: -23%;
+  }
+
+  .hero-autoplay-container .hero-copy {
+    inset-block-start: 25%;
+  }
+
+  .hero-autoplay-container .hero-copy h1 {
+    width: 50%;
+  }
+
+  .hero-autoplay-container .button-row {
+    inset-block-start: 60%;
+  }
+
+  .hero-autoplay-container .icon-playvideo {
+    top: 40%;
+  }
+}
+
+@media (max-width: 1280px) {
+  main .section.hero-autoplay-container {
+    height: 500px;
+    margin-top: 0;
+  }
+
+  .hero-autoplay-container .hero-autoplay-background-iframe {
+    top: -73%;
+  }
+
+  .hero-autoplay-container .icon-playvideo {
+    top: 37%;
+  }
+
+  .hero-autoplay-container .hero-copy {
+    inset-block-start: 13%;
+  }
+
+  .hero-autoplay-container .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-xl);
+    width: 60%;
+  }
+
+  .hero-autoplay-container .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-l);
+  }
+
+  .hero-autoplay-container .button-row {
+    top: 65%;
+  }
+}
+
+@media (max-width: 850px) {
+  main .section.hero-autoplay-container {
+    height: 475px;
+  }
+
+  .hero-autoplay-container .hero-autoplay-background-iframe {
+    top: -60%;
+    min-height: 1000px;
+  }
+
+  .hero-autoplay-container .icon-playvideo {
+    top: 34%;
+    left: 70%;
+  }
+
+  .hero-autoplay-container .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-mobile-xl);
+  }
+
+  .hero-autoplay-container .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+  }
+
+  .hero-autoplay-container .button-row {
+    top: 60%;
+  }
+}
+
+@media (max-width: 460px) {
+  main .section.hero-autoplay-container {
+    height: auto;
+    margin-bottom: 5%;  
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  main .section.hero-autoplay-container::before {
+    background: none;
+  }
+
+  .hero-autoplay-container .video-hero-background {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    min-height: unset;
+    order: 1;
+    z-index: 1;
+  }
+
+  .hero-autoplay-container .hero-autoplay-background-iframe {
+    position: absolute;
+    inset: 0;
+    min-height: unset;
+  }
+
+  .hero-autoplay-container .video-hero-background .icon-playvideo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: auto;
+  }
+
+  .hero-autoplay-container .hero-copy {
+    position: static;
+    width: 100%;
+    inset-inline-start: unset;
+    inset-block-start: unset;
+    order: 2;
+    margin: 10% 0;
+  }
+
+  .hero-autoplay-container .hero-copy,
+  .hero-autoplay-container .hero-copy h1,
+  .hero-autoplay-container .hero-copy h2 {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-autoplay-container .hero-copy h1 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+    padding: 0 10%;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-autoplay-container .hero-copy h2 {
+    font-size: var(--mt-heading-font-size-mobile-l);
+    padding: 0 5%;
+    margin-bottom: 1rem;
+  }
+
+  .hero-autoplay-container .icon-playvideo svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .hero-autoplay-container .button-row {
+    position: static;
+    width: 90%;
+    margin: 0 auto;
+    inset-inline-start: unset;
+    inset-block-start: unset;
+    order: 3;
+  }
+}

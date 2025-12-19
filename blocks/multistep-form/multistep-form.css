@@ -1,3 +1,7 @@
+html {
+   scroll-behavior: smooth;
+}
+
 .multistep-form-container {
    width: 100%;
 }
@@ -14,7 +18,7 @@ main .multistep-form form {
 .form-div {
    padding: 8% 0;
    margin-right: 10%;
-} 
+}
 
 div.multistep-form.block {
    display: grid;
@@ -33,7 +37,8 @@ div.multistep-form.block > div h1 {
 }
 
 div.multistep-form.block > div h2 {
-   width: 60%;
+   width: 100%;
+   padding-right: 2%;
 }
 
 main .multistep-form-container .multistep-form-wrapper {
@@ -71,6 +76,7 @@ main .multistep-form :is(textarea) {
 
    div.multistep-form.block>div {
       margin: 0;
+      padding-right: 2%;
    }
 
    .multistep-form.block h1 {

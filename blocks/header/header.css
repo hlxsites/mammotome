@@ -59,7 +59,7 @@ header nav {
   padding: 15px var(--mt-nav-padding);
   height: var(--mt-nav-height);
   font-family: var(--mt-nav-nav-item-font-family);
-  max-width: 1300px;
+  max-width: 1400px;
 }
 
 header nav.narrow {
@@ -104,6 +104,18 @@ header nav .nav-hamburger {
 @media (min-width: 340px) {
   header nav .nav-hamburger {
     padding: var(--mt-nav-padding);
+  }
+}
+
+@media (min-width: 393px) and (max-width: 1024px) {
+  ul>li.nav-button:nth-child(8)>a, 
+  ul>li.nav-button:nth-child(9)>a {
+    background-color: var(--mt-global-color-white);
+    color: var(--mt-heading-color-secondary);
+    width: 75%;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
   }
 }
 
@@ -168,13 +180,24 @@ header nav .icon-search svg {
 }
 
 header nav .nav-brand .scrolling-logo {
+  display: flex;
+  align-items: center;
   height: 40px;
-  width: 40px;
+  min-width: 60px;
+  position: relative;
+}
+
+header nav .nav-brand .scrolling-logo img {
+  height: 40px;
+  width: auto;
+  max-width: 120px;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(48%) saturate(3185%) hue-rotate(270deg) brightness(88%) contrast(86%);
 }
 
 header nav .nav-brand .scrolling-logo svg {
-  fill: currentcolor;
-  color: var(--mt-global-color-base-primary);
+  height: 40px;
+  width: auto;
+  max-width: 120px;
 }
 
 header nav .nav-brand .logo-hidden {
@@ -269,12 +292,6 @@ header nav .nav-sections ul>li.nav-multilevel>ul>li {
   text-align: center;
 }
 
-
-
-header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
-  display: none;
-}
-
 header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(3) {
   display: none;
 }
@@ -313,8 +330,12 @@ header nav:not(.nav-mobile) .nav-sections ul>li.nav-multilevel>ul>li:hover {
 }
 
 header nav .nav-tools .icon-search {
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
+}
+
+header nav .nav-email {
+  display: none;
 }
 
 header nav .nav-tools {
@@ -327,7 +348,6 @@ header nav .nav-tools {
   header nav .nav-tools {
     padding: var(--mt-nav-padding);
   }
-
 }
 
 header nav .nav-hamburger-icon,
@@ -464,6 +484,7 @@ header nav .nav-sections>ul>li.nav-multilevel[aria-expanded="true"]>ul>li>ul {
   transform: rotate(45deg);
   border-radius: 2px;
   cursor: pointer;
+  margin-right: 15px;
 }
 
 .mobile-menu-controls>.mobile-menu-back::after {
@@ -475,6 +496,7 @@ header nav .nav-sections>ul>li.nav-multilevel[aria-expanded="true"]>ul>li>ul {
   top: 5px;
   border-radius: 2px;
   width: 13px;
+  margin-right: 15px;
 }
 
 li.nav-drop {
@@ -488,13 +510,14 @@ li.nav-drop {
 header nav.nav-mobile li.nav-drop::after {
   content: '';
   display: inline-block;
-  color: var(--mt-header-color-nav-icons);
+  color: var(--mt-global-color-white);
   transform: rotate(45deg);
-  width: 7px;
-  height: 7px;
+  width: 6.5px;
+  height: 6px;
   border-style: solid;
-  border-radius: 0 2px 0 0;
-  border-width: 3px 3px 0 0;
+  border-radius: 1.5px;
+  border-width: 2px 2px 0 0;
+  margin-right: 15px;
 }
 
 header nav .nav-search {
@@ -617,10 +640,141 @@ header nav .nav-search-description {
 }
 
 header nav.nav-mobile .nav-overflow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding-top: var(--mt-nav-padding);
+  padding-bottom: var(--mt-nav-padding);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-overflow a {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+}
+
+header nav.nav-mobile .nav-overflow .globe-icon {
+  width: 24px;
+  height: 24px;
+  stroke: var(--mt-global-color-white);
+}
+
+header nav.nav-mobile .nav-email {
+  display: flex;
+}
+
+header nav.nav-mobile .nav-email .icon-email {
+  width: 24px;
+  height: 24px;
+}
+
+header nav.nav-mobile .nav-email .icon-email svg {
+  width: 24px;
+  height: 24px;
+  fill: currentcolor;
+  color: var(--mt-global-color-white);
+}
+
+/* Add dropdown arrow to mobile overflow/globe icon */
+header nav.nav-mobile .nav-overflow::after {
+  content: '';
+  display: inline-block;
+  color: var(--mt-header-color-nav-icons);
+  transform: rotate(45deg);
+  width: 7px;
+  height: 7px;
+  border-style: solid;
+  border-radius: 0 2px 0 0;
+  border-width: 3px 3px 0 0;
+}
+
+/* Add dropdown arrow to mobile email icon */
+header nav.nav-mobile .nav-email::after {
+  content: '';
+  display: inline-block;
+  color: var(--mt-header-color-nav-icons);
+  transform: rotate(45deg);
+  width: 7px;
+  height: 7px;
+  border-style: solid;
+  border-radius: 0 2px 0 0;
+  border-width: 3px 3px 0 0;
+}
+
+/* Hide overflow list by default in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-overflow[aria-expanded="false"] > ul,
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-overflow:not([aria-expanded]) > ul {
   display: none;
 }
 
-@media (min-width: 1025px) {
+/* Hide email list by default in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-email[aria-expanded="false"] > ul,
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-email:not([aria-expanded]) > ul {
+  display: none;
+}
+
+/* Show overflow list when expanded in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-overflow[aria-expanded="true"] > ul {
+  position: absolute;
+  width: var(--mt-nav-width);
+  left: calc(var(--mt-nav-width) - var(--mt-nav-padding-m));
+  top: 0;
+  height: 100%;
+  font-size: var(--mt-font-size-100);
+  padding: var(--mt-nav-padding-m);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  background-color: var(--mt-global-color-base-primary);
+}
+
+/* Show email list when expanded in mobile */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-email[aria-expanded="true"] > ul {
+  position: absolute;
+  width: var(--mt-nav-width);
+  left: calc(var(--mt-nav-width) - var(--mt-nav-padding-m));
+  top: 0;
+  height: 100%;
+  font-size: var(--mt-font-size-100);
+  padding: var(--mt-nav-padding-m);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  background-color: var(--mt-global-color-base-primary);
+}
+
+/* Style the overflow dropdown list in mobile */
+header nav.nav-mobile .nav-overflow-list {
+  padding-left: 0;
+}
+
+/* Style the email dropdown list in mobile */
+header nav.nav-mobile .nav-email-list {
+  padding-left: 0;
+}
+
+/* Hide the last language nav item in mobile since we're showing the globe icon */
+/* stylelint-disable-next-line no-descending-specificity */
+header nav.nav-mobile .nav-sections>ul>li:nth-last-child(2) {
+  display: none;
+}
+
+/* Hide the CTA buttons from the language list */
+header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(2),
+header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
+  display: none;
+}
+
+@media (min-width: 1080px) {
   header nav a:any-link {
     color: var(--mt-header-color-nav-links);
   }
@@ -643,7 +797,6 @@ header nav.nav-mobile .nav-overflow {
     margin: 0;
     font-size: var(--mt-font-size-90);
     color: var(--mt-global-color-base-primary);
-    padding-left: revert;
   }
 
   header nav .nav-sections>ul>li {
@@ -679,7 +832,8 @@ header nav.nav-mobile .nav-overflow {
   }
 
   header nav .nav-sections>ul>li[aria-expanded="true"]>ul>li:hover,
-  header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover {
+  header nav .nav-sections>ul>li.nav-overflow>ul>li.nav-drop:hover,
+  header nav .nav-sections>ul>li.nav-email>ul>li.nav-drop:hover {
     background-color: var(--mt-header-menu-item-selected-color);
   }
 
@@ -703,11 +857,19 @@ header nav.nav-mobile .nav-overflow {
     display: block;
   }
 
+  /* Add delay when leaving hover state */
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections>ul>li>ul {
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
+  }
+
   header nav .nav-sections>ul>li:hover>ul {
     visibility: visible;
     opacity: 1;
-    top: 44px;
+    top: 47px;
     z-index: 1000;
+    transition-delay: 0ms; /* Show immediately on hover */
   }
 
   header nav .nav-sections ul>li.nav-multilevel>ul {
@@ -723,7 +885,8 @@ header nav.nav-mobile .nav-overflow {
   /* disabling next line due to specificity incompatibility between the two selectors */
   /* stylelint-disable-next-line */
   header nav .nav-sections>ul>li>ul,
-  header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul {
+  header nav .nav-sections>ul>li>ul.nav-overflow-list>li.nav-drop>ul,
+  header nav .nav-sections>ul>li>ul.nav-email-list {
     display: block;
     visibility: hidden;
     opacity: 0;
@@ -743,40 +906,65 @@ header nav.nav-mobile .nav-overflow {
     padding-left: 0;
   }
 
-  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop {
-    display: grid;
-    height: auto;
-    text-align: left;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto;
-    padding-left: 15px;
-    align-items: center;
-  }
-
+  /* Removed grid layout for flat list items */
   header nav li.nav-drop::after {
     display: none;
   }
 
-  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop::after {
-    content: '';
-    display: inline-block;
-    color: white;
-    transform: rotate(135deg);
-    width: 7px;
-    height: 7px;
-    border-style: solid;
-    border-radius: 0 2px 0 0;
-    border-width: 2px 2px 0 0;
-    margin-bottom: 3px;
-    position: absolute;
-    margin-left: 110px;
+  /* Flat email items - no dropdown arrows */
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item {
+    display: block;
+    height: auto;
+    text-align: left;
+    padding-left: 15px;
+  }
+
+  /* Flat overflow items - no dropdown arrows */
+  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-overflow-item {
+    display: block;
+    height: auto;
+    text-align: left;
+    padding-left: 15px;
   }
 
   header nav .nav-sections .nav-button.nav-overflow a {
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop a {
+  header nav .nav-sections .nav-button.nav-overflow a .globe-icon {
+    width: 24px;
+    height: 24px;
+    stroke: currentcolor;
+  }
+
+  header nav .nav-email {
+    display: flex;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a {
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a .icon-email {
+    width: 24px;
+    height: 24px;
+  }
+
+  header nav .nav-sections .nav-button.nav-email a .icon-email svg {
+    width: 24px;
+    height: 24px;
+    fill: currentcolor;
+    color: var(--mt-header-color-nav-icons);
+  }
+
+  /* Flat email item links */
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item a {
     color: white;
     font-size: var(--mt-font-size-90);
     font-family: var(--mt-body-font-family-bold);
@@ -784,9 +972,31 @@ header nav.nav-mobile .nav-overflow {
     text-transform: none;
     letter-spacing: normal;
     margin: 0;
-    padding-bottom: var(--mt-nav-padding);
-    padding-top: var(--mt-nav-padding);
+    padding: var(--mt-nav-padding) 0;
     border: none;
+    display: block;
+  }
+
+  header nav .nav-sections ul>li.nav-email>ul.nav-email-list>li.nav-email-item:hover {
+    background-color: var(--mt-header-menu-item-selected-color);
+  }
+
+  /* Flat overflow item links */
+  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-overflow-item a {
+    color: white;
+    font-size: var(--mt-font-size-90);
+    font-family: var(--mt-body-font-family-bold);
+    font-weight: var(--mt-font-weight-bold);
+    text-transform: none;
+    letter-spacing: normal;
+    margin: 0;
+    padding: var(--mt-nav-padding) 0;
+    border: none;
+    display: block;
+  }
+
+  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-overflow-item:hover {
+    background-color: var(--mt-header-menu-item-selected-color);
   }
 
   header nav .nav-sections>ul>li.nav-multilevel[aria-expanded="true"]>ul>li>ul {
@@ -800,19 +1010,7 @@ header nav.nav-mobile .nav-overflow {
     margin: 10px;
   }
 
-  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop>ul {
-    visibility: hidden;
-    opacity: 0;
-    transition: top 300ms ease, opacity 300ms ease;
-    top: 0;
-    left: -14em;
-  }
-
-  header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-drop:hover>ul {
-    visibility: visible;
-    opacity: 1;
-    top: -1em;
-  }
+  /* Removed nested dropdown transitions - flat list only */
 
   header nav .nav-sections ul>li.nav-overflow>ul.nav-overflow-list>li.nav-button {
     height: auto;
@@ -866,7 +1064,7 @@ header nav.nav-mobile .nav-overflow {
     position: relative;
     cursor: pointer;
     height: var(--mt-nav-content-height);
-    padding-right: 2em;
+    padding-right: 25px;
   }
 
   header nav .nav-sections .nav-button {
@@ -963,17 +1161,21 @@ header nav.nav-mobile .nav-overflow {
     position: absolute;
     left: 100%;
     top: 0;
+    transition: opacity 200ms ease-out, visibility 200ms ease-out;
+    transition-delay: 300ms; /* 300ms delay before hiding */
   }
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
   .nav-subitem:hover .nav-subitems-level2 {
-   visibility: visible !important;
+    visibility: visible !important;
+    transition-delay: 0ms; /* Show immediately on hover */
   }
 
   header nav .nav-tools {
     visibility: visible;
     width: 100%;
     padding-right: 24px;
+    margin-bottom: 7px;
   }
 
   header nav input[type='search'].nav-search-input {
@@ -983,24 +1185,111 @@ header nav.nav-mobile .nav-overflow {
   header nav.narrow input[type='search'].nav-search-input {
     top: -25px;
   }
-}
 
-@media (min-width: 1200px) {
-  header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
-    display: flex;
-  }
-
-  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:first-child {
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2),
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(3) {
     display: none;
   }
 }
 
-@media (min-width: 1300px) {
+/* Replace .contact button text with email icon ONLY for screens between 1080px and 1199px */
+@media (min-width: 1080px) and (max-width: 1199px) {
+  a.button.primary.contact {
+    background-color: var(--mt-global-color-white);
+    border: none;
+  }
+
+  header nav .nav-sections .nav-button a.contact {
+    height: 33px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Hide text content but keep it for accessibility */
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: none;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+    fill: currentcolor;
+    color: var(--mt-header-color-nav-icons);
+  }
+}
+
+/* Hide icon below 1080px - show text normally */
+@media (max-width: 1079px) {
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    display: none !important;
+  }
+
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: inline;
+  }
+}
+
+@media (min-width: 1200px) {
+  header nav .nav-sections>ul>li:hover>ul {
+    left: -115px;
+  }
+
   header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(3) {
+      display: flex;
+    }
+
+  header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(4) {
     display: flex;
   }
 
+  /* Ensure .contact button text is visible at 1200px and above */
+  header nav .nav-sections .nav-button a.contact {
+    font-size: var(--mt-nav-tool-button-font-size);
+    line-height: normal;
+    overflow: visible;
+    width: auto;
+    height: auto;
+    padding: 5px 20px;
+  }
+
+  /* Show text and hide icon at 1200px+ */
+  header nav .nav-sections .nav-button a.contact .contact-text {
+    display: inline;
+  }
+
+  header nav .nav-sections .nav-button a.contact .icon-email {
+    display: none;
+  }
+
+}
+
+
+@media (min-width: 1300px) {
+  header nav .nav-sections ul {
+    padding-left: revert;
+  }
+
   header nav:not(.nav-mobile) .nav-sections>ul>li.nav-overflow>ul>li:nth-child(2) {
+    display: none;
+  }
+
+  header nav .nav-sections>ul>li:hover>ul {
+    left: revert;
+  }
+
+  header nav .nav-email {
     display: none;
   }
 }
@@ -1012,5 +1301,9 @@ header nav.nav-mobile .nav-overflow {
 
   header nav:not(.nav-mobile) .nav-sections>ul>li:nth-last-child(2) {
     display: flex;
+  }
+
+  header nav .nav-tools {
+    margin-bottom: revert;
   }
 }

@@ -1,4 +1,8 @@
-import { createOptimizedPicture, decorateIcons, loadCSS } from '../../scripts/lib-franklin.js';
+import {
+  createOptimizedPicture,
+  decorateIcons,
+  loadCSS,
+} from '../../scripts/lib-franklin.js';
 
 let playerCssLoaded = false;
 let removeVideo;
@@ -32,14 +36,19 @@ const getVideoURL = (video) => {
   return new URL(videoURLString).pathname;
 };
 
-const onPlayerCssLoaded = () => {
-  playerCssLoaded = true;
-};
-
 const ensurePlayerCSSLoaded = () => {
   if (!playerCssLoaded) {
-    loadCSS(`${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`, onPlayerCssLoaded);
+    return new Promise((resolve) => {
+      loadCSS(
+        `${window.hlx.codeBasePath}/blocks/video/asset-viewer/asset-viewer.css`,
+        () => {
+          playerCssLoaded = true;
+          resolve();
+        },
+      );
+    });
   }
+  return Promise.resolve();
 };
 
 const createVideoOverlays = (main) => {
@@ -85,8 +94,8 @@ const registerEventListeners = (main, overlays, videoIframe) => {
   window.addEventListener('keydown', escHandler);
 };
 
-const loadVideo = (video, videoPath) => {
-  ensurePlayerCSSLoaded();
+const loadVideo = async (video, videoPath) => {
+  await ensurePlayerCSSLoaded();
 
   const main = document.querySelector('main');
 
@@ -155,7 +164,9 @@ const mainCopy = (video) => {
 };
 
 const createButtonRow = (video) => {
-  const links = Array.from(video.querySelectorAll('a')).filter((a, idx) => idx !== 0);
+  const links = Array.from(video.querySelectorAll('a')).filter(
+    (a, idx) => idx !== 0,
+  );
 
   if (links.length > 0) {
     const buttonRow = document.createElement('div');

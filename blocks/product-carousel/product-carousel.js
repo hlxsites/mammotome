@@ -1,8 +1,7 @@
 import Carousel from '../../scripts/lib-carousel.js';
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
-// import { addEnclosingDiv, initSlider } from '../../scripts/lib-carousel';
 
-// Large sreen bigger than px
+// Large screen bigger than px
 const LARGE_SCREEN = 1000;
 
 // Number of required column and rows in table
@@ -201,7 +200,7 @@ export default function decorate(block) {
   productCarousel.setSliderIds();
   initSlideOrder(productCarousel.getSlides());
   productCarousel.setLeftAndRightArrowHtml(HTML_LEFT_ARROW, HTML_RIGHT_ARROW);
-  if (productCarousel.getSlides().length > 3) productCarousel.createArrowNav();
+  if (productCarousel.getSlides().length > 1) productCarousel.createArrowNav();
   productCarousel.initSlider(false, false, false);
-  if (productCarousel.getSlides().length > 3) arrowNavOnClickEvents(productCarousel);
+  if (productCarousel.getSlides().length > 1) arrowNavOnClickEvents(productCarousel);
 }
