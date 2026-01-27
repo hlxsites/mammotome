@@ -125,6 +125,13 @@ export default function decorate(block) {
     }
   }
 
+  function updateJapanDetails() {
+    const japanAddr = document.getElementsByClassName('japan_address');
+    for (let i = 0; i < japanAddr.length; i += 1) {
+      japanAddr[i].innerHTML = 'Devicor Medical Japan K.K.\n1-29-9 Takadanobaba\nShinjuku-ku, Tokyo 169-0075';
+    }
+  }
+
   const createAndAppendDiv = () => {
     const containerDiv = document.createElement('div');
     containerDiv.className = 'container';
@@ -159,6 +166,7 @@ export default function decorate(block) {
       await initializeOneTrust();
       await updateOpCoDetails(blockConfig);
       await updateKoreanDetails();
+      await updateJapanDetails();
     })
     .catch((error) => {
       console.error('Error loading OneTrust script: ', error);  // eslint-disable-line
