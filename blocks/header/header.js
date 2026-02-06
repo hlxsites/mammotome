@@ -433,7 +433,7 @@ async function searchInput(event) {
 
 async function searchClick(event) {
   const { input, searchElement } = event.currentTarget;
-  if (input.active) {
+  if (!input.active) {
     input.placeholder = await translate(
       'navSearchPlaceholder',
       'What are you looking for?',
