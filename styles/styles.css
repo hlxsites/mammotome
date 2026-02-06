@@ -865,6 +865,7 @@ main .section .default-content-wrapper {
 .section.hero-video-container.lower .button-row,
 .section.hero-autoplay-container.lower .button-row {
   inset-block-start: 70%;
+  min-width: 300px;
 }
 
 /* Remove icon play video fro hero-video */ 

@@ -101,6 +101,7 @@ main .section.hero-autoplay-container::before {
 .hero-autoplay-container .hero-copy,
 .hero-autoplay-container .button-row {
   z-index: 3;
+  min-width: 400px;
 }
 
 .hero-autoplay-container .hero-copy {
