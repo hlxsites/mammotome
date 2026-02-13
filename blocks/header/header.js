@@ -432,8 +432,10 @@ async function searchInput(event) {
 }
 
 async function searchClick(event) {
-  const { input, searchElement } = event.currentTarget;
-  if (input.active) {
+  const searchSection = event.currentTarget;
+  const { input, searchElement } = searchSection;
+  if (!input.active) {
+    // Search is closed → open it (show input and aside)
     input.placeholder = await translate(
       'navSearchPlaceholder',
       'What are you looking for?',
@@ -447,14 +449,33 @@ async function searchClick(event) {
     searchElement.append(input.aside);
     input.active = true;
     input.focus();
+
+    const handleClickOutside = (e) => {
+      if (!searchElement.contains(e.target)) {
+        closeSearch(searchSection);
+      }
+    };
+    searchElement._outsideClickHandler = handleClickOutside;
+    setTimeout(() => document.addEventListener('click', handleClickOutside), 0);
   } else {
-    input.active = false;
-    input.value = '';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    searchElement.removeChild(input.parentElement);
-    searchElement.removeChild(input.aside);
+    // Search is open → close it
+    closeSearch(searchSection);
   }
   event.preventDefault();
+}
+
+function closeSearch(searchSection) {
+  const { input, searchElement } = searchSection;
+  if (!input.active) return;
+  input.active = false;
+  input.value = '';
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  searchElement.removeChild(input.parentElement);
+  searchElement.removeChild(input.aside);
+  if (searchElement._outsideClickHandler) {
+    document.removeEventListener('click', searchElement._outsideClickHandler);
+    searchElement._outsideClickHandler = null;
+  }
 }
 
 function searchDisable(event) {

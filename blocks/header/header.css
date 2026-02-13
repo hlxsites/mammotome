@@ -857,19 +857,21 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     display: block;
   }
 
-  /* Add delay when leaving hover state */
+  /* Subnav hover transition (no hide latency) */
   /* stylelint-disable-next-line no-descending-specificity */
   header nav .nav-sections>ul>li>ul {
-    transition: opacity 200ms ease-out, visibility 200ms ease-out;
-    transition-delay: 300ms; /* 300ms delay before hiding */
+    transition: opacity 120ms ease-out, visibility 120ms ease-out;
+    transition-delay: 0ms;
   }
 
-  header nav .nav-sections>ul>li:hover>ul {
+  header nav .nav-sections>ul>li:hover>ul,
+  header nav .nav-sections>ul>li>ul:hover {
     visibility: visible;
     opacity: 1;
-    top: 47px;
+    top: 58px; /* Below nav content height (55px) so primary link is fully visible */
     z-index: 1000;
     transition-delay: 0ms; /* Show immediately on hover */
+    margin-top: 0; /* Remove gap when visible to eliminate dead zone */
   }
 
   header nav .nav-sections ul>li.nav-multilevel>ul {
@@ -891,9 +893,9 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    top: 56px;
+    top: 58px; /* Below nav content height (55px) so primary link is fully visible */
     left: -1em;
-    margin-top: 12px;
+    margin-top: 0; /* Remove gap to prevent dead zone */
     white-space: nowrap;
     background-color: var(--mt-global-color-base-primary);
     border-style: solid;
@@ -901,7 +903,6 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     border-color: var(--mt-header-menu-border-color);
     color: var(--mt-global-color-white);
     gap: unset;
-    transition: top 300ms ease, opacity 300ms ease;
     min-width: 200px;
     padding-left: 0;
   }
@@ -1110,6 +1111,18 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     border-right: 8px solid transparent;
   }
 
+  /* Invisible hover bridge: extends dropdown hit area upward so moving from
+     primary link to subnav never leaves hover → prevents twitch/flicker */
+  header nav .nav-sections>ul>li>ul::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: transparent;
+  }
+
   .nav-multi li.nav-items {
     padding: var(--mt-nav-padding) 15px;
     position: relative;
@@ -1162,11 +1175,12 @@ header nav.nav-mobile ul.nav-overflow-list>li.nav-overflow-item:nth-child(3) {
     left: 100%;
     top: 0;
     transition: opacity 200ms ease-out, visibility 200ms ease-out;
-    transition-delay: 300ms; /* 300ms delay before hiding */
+    transition-delay: 600ms; /* 600ms delay before hiding - increased for better UX */
   }
 
   /* Show .nav-subitems-level2 when .nav-subitem is hovered */
-  .nav-subitem:hover .nav-subitems-level2 {
+  .nav-subitem:hover .nav-subitems-level2,
+  .nav-subitems-level2:hover {
     visibility: visible !important;
     transition-delay: 0ms; /* Show immediately on hover */
   }
