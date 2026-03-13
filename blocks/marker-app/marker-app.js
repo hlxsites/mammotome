@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-const SHEET_URL = 'https://default771c9c477f2444dc958e34f8713a83.94.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/573d1cc1b40e4ee2ac5f335a25d6e25d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=35g7oZ3MiRAD3e5WiADtBm9YZt9GkeNMAiVT0pIHp-I';
+const SHEET_URL = 'https://default771c9c477f2444dc958e34f8713a83.94.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6b0a508e5534cff9b3978bffe5421a6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=K2bffTyaLcs3NEN02Ly8n5PN03SLnK-5TOUpoMtAKL4';
 
 async function sendToSheet(payload) {
   if (!SHEET_URL || SHEET_URL.startsWith('PASTE_')) return;
