@@ -2146,12 +2146,14 @@ function renderPreview(block, product, products) {
 export default async function decorate(block) {
   const { products } = await getMarkerRecommendations();
   const config = readBlockConfigWithHtml(block);
+  // eslint-disable-next-line no-console
+  console.log('[Marker App] config:', JSON.stringify(config, null, 2));
 
   const previewSlug = getPreviewSlug();
   if (previewSlug) {
     const product = findProductBySlug(products, previewSlug);
     if (product) {
-      renderPreview(block, product, products);
+      renderPreview(block, product, products, config);
       return null;
     }
   }
