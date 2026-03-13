@@ -15,6 +15,7 @@ async function sendToSheet(payload) {
     await fetch(SHEET_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      mode: 'no-cors',
       body: JSON.stringify({
         ...payload,
         token: 'mmt-quiz-2026-secure-token',
@@ -1072,33 +1073,71 @@ class MarkerQuiz {
     };
   }
 
-  /**
-     * Assembles the payload sent to Google Sheets.
-     * All values are derived from this.selections and this.scores — no PII included
-     * until the lead capture form is submitted separately.
-     */
   buildSheetPayload() {
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
     const top = sortedProducts[0];
-
-    const modalityQ = this.questions[0];
-    const modalitySel = this.selections[0];
+  
+    // ── Modality (Q1) ── find by text rather than assuming index 0
+    const modalityIdx = this.questions.findIndex(
+      (q) => q?.text && /modalit/i.test(q.text),
+    );
+    const modalityQ = this.questions[modalityIdx];
+    const modalitySel = modalityIdx >= 0 ? this.selections[modalityIdx] : null;
     let modalities = [];
     if (Array.isArray(modalitySel)) modalities = modalitySel;
     else if (modalitySel != null) modalities = [modalitySel];
-    const modalityLabels = modalities.map((i) => modalityQ?.options?.[i]?.text || `option ${i}`).join(', ');
-
-    const rankQ = this.questions[2];
-    const rankSel = this.selections[2] || rankQ?.options?.map((_, i) => i) || [];
+    const modalityLabels = modalities
+      .map((i) => modalityQ?.options?.[i]?.text || `option ${i}`)
+      .join(', ');
+  
+    // ── Priority ranking (Q3) ── find by type sortable
+    const rankIdx = this.questions.findIndex((q) => q?.type === 'sortable');
+    const rankQ = this.questions[rankIdx];
+    const rankSel = (rankIdx >= 0 ? this.selections[rankIdx] : null)
+      || rankQ?.options?.map((_, i) => i) || [];
     const rankOptions = this.isMriSelected()
       ? (rankQ?.optionsMri ?? SORTABLE_OPTIONS_MRI)
       : (rankQ?.options ?? SORTABLE_OPTIONS);
-    const priorities = rankSel.map((origIdx) => rankOptions[origIdx]?.text || `option ${origIdx}`);
-
-    const ratingSel = this.selections[6] || {};
-
+    const priorities = rankSel.map(
+      (origIdx) => rankOptions[origIdx]?.text || `option ${origIdx}`,
+    );
+  
+    // ── Rating (Q7) ── find by type rating
+    const ratingIdx = this.questions.findIndex((q) => q?.type === 'rating');
+    const ratingSel = (ratingIdx >= 0 ? this.selections[ratingIdx] : null) || {};
+  
+    // ── Patient cases (Q4) ── find by text
+    const casesIdx = this.questions.findIndex(
+      (q) => q?.text && /patient case/i.test(q.text),
+    );
+    const casesSel = casesIdx >= 0 ? this.selections[casesIdx] : null;
+    let cases = [];
+    if (Array.isArray(casesSel)) cases = casesSel;
+    else if (casesSel != null) cases = [casesSel];
+    const patientCases = cases
+      .map((i) => this.questions[casesIdx]?.options?.[i]?.text || `option ${i}`)
+      .join(', ');
+  
+    // ── Migration (Q5) ── find by text
+    const migrationIdx = this.questions.findIndex(
+      (q) => q?.text && /migration/i.test(q.text),
+    );
+    const migrationSel = migrationIdx >= 0 ? this.selections[migrationIdx] : null;
+    const migrationConcern = migrationSel != null
+      ? (this.questions[migrationIdx]?.options?.[migrationSel]?.text || `option ${migrationSel}`)
+      : '';
+  
+    // ── Bleeding (Q6) ── find by text
+    const bleedingIdx = this.questions.findIndex(
+      (q) => q?.text && /bleeding|hematoma/i.test(q.text),
+    );
+    const bleedingSel = bleedingIdx >= 0 ? this.selections[bleedingIdx] : null;
+    const bleedingConcern = bleedingSel != null
+      ? (this.questions[bleedingIdx]?.options?.[bleedingSel]?.text || `option ${bleedingSel}`)
+      : '';
+  
     return {
       timestamp: new Date().toISOString(),
       top_product_id: top?.id || '',
@@ -1109,21 +1148,9 @@ class MarkerQuiz {
       priority_2: priorities[1] || '',
       priority_3: priorities[2] || '',
       priority_4: priorities[3] || '',
-      patient_cases: (() => {
-        const sel = this.selections[3];
-        let cases = [];
-        if (Array.isArray(sel)) cases = sel;
-        else if (sel != null) cases = [sel];
-        return cases.map((i) => this.questions[3]?.options?.[i]?.text || `option ${i}`).join(', ');
-      })(),
-      migration_concern: (() => {
-        const sel = this.selections[4];
-        return sel != null ? (this.questions[4]?.options?.[sel]?.text || `option ${sel}`) : '';
-      })(),
-      bleeding_concern: (() => {
-        const sel = this.selections[5];
-        return sel != null ? (this.questions[5]?.options?.[sel]?.text || `option ${sel}`) : '';
-      })(),
+      patient_cases: patientCases,
+      migration_concern: migrationConcern,
+      bleeding_concern: bleedingConcern,
       bioabsorbable_rating: ratingSel[0] || '',
       nickel_rating: ratingSel[1] || '',
     };
