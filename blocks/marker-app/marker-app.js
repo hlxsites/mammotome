@@ -14,11 +14,11 @@ async function sendToSheet(payload) {
   try {
     await fetch(SHEET_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...payload,
-        token: 'mmt-quiz-2026-secure-token',
+        token: 'mmt-marker-app-2026-secure-token',
       }),
       signal: controller.signal,
     });
