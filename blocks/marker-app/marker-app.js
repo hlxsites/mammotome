@@ -1295,17 +1295,20 @@ class MarkerQuiz {
     const emailFormWrapper = this.block.querySelector('#email-results-form-wrapper');
 
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
-      requestResultsBtn.addEventListener('click', async () => {
-        requestResultsBtn.style.display = 'none';
-        emailFormWrapper.style.display = 'block';
-        try {
-          await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('Error loading email results form:', e);
-          emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
-        }
-      });
+        requestResultsBtn.addEventListener('click', async () => {
+          requestResultsBtn.style.display = 'none';
+          emailFormWrapper.style.display = 'block';
+          try {
+            const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
+            form.onSuccess((values) => {
+                sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
+                return true;
+              });
+          } catch (e) {
+            console.error('Error loading email results form:', e);
+            emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
+          }
+        });
     } else if (requestResultsBtn) {
       const leadForm = this.block.querySelector('#lead-capture-form');
       const leadConfirmation = this.block.querySelector('#lead-capture-confirmation');
