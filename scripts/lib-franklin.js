@@ -1,16 +1,4 @@
-/* eslint-disable max-classes-per-file */
-/*
- * Copyright 2023 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
+/* eslint-disable max-classes-per-file -- Core lib with PluginsRegistry and TemplatesRegistry */
 const PDF_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">'
   + '<!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) -->'
   + '<path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm64 236c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-72v8c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm96-114.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"/>'
@@ -505,12 +493,13 @@ export function decorateSupScriptInTextBelow(el) {
 
 export function getInfo() {
   const [, country, language] = window.location.pathname.split('/');
-  const getUrlPath = (path) => new URL(path, origin).pathname;
+  const getUrlPath = (path) => new URL(path, window.location.origin).pathname;
 
   return {
     country,
     language,
     productDB: getUrlPath('/products.json'),
+    markerRecommendations: getUrlPath('/marker-recommendation.json'),
     productSupport: getUrlPath(`/${country}/${language}/product-support`),
     queryIndex: getUrlPath(`/${country}/${language}/query-index.json`),
   };
@@ -594,6 +583,72 @@ export async function getProducts(country, language) {
   return (await Promise.all(productDB.Product.data
     .map(async (product) => getProduct(product.Page, country, language))))
     .filter((product) => product);
+}
+
+function parseMarkerFeatures(raw) {
+  if (!raw) return [];
+  const sep = raw.includes(';') ? ';' : '|';
+  return String(raw).split(sep).map((f) => f.trim()).filter(Boolean);
+}
+
+function parseFootnotes(raw) {
+  if (!raw) return [];
+  return String(raw).split('\\').map((f) => f.trim()).filter(Boolean);
+}
+
+export async function getMarkerRecommendations() {
+  if (!window.markerRecommendations) {
+    const { markerRecommendations, country, language } = getInfo();
+    let resp = await fetch(`${markerRecommendations}?limit=10000`);
+    // On localhost, try locale-prefixed path if root path fails (Franklin content structure)
+    if (!resp.ok && window.location.hostname === 'localhost' && country && language) {
+      const localePath = `/${country}/${language}/marker-recommendation.json`;
+      resp = await fetch(`${window.location.origin}${localePath}?limit=10000`);
+    }
+    if (!resp.ok) {
+      throw new Error(`${resp.status}: ${resp.statusText}`);
+    }
+    const json = await resp.json();
+
+    // AEM xlsx→JSON: single-sheet has root { data }, multi-sheet has { sheetName: { data } }
+    // Sheet names with shared- prefix become keys (e.g. shared-products → products)
+    const productsData = json.products?.data ?? json.Products?.data ?? json.data ?? [];
+    const capabilitiesData = json.capabilities?.data ?? json.Capabilities?.data ?? [];
+
+    const products = {};
+    (Array.isArray(productsData) ? productsData : []).forEach((p) => {
+      const id = String(p.id ?? p.ID ?? p.Id ?? '').toLowerCase();
+      if (!id) return;
+      products[id] = {
+        id,
+        slug: String(p.page ?? p.Page ?? p.slug ?? id).toLowerCase().replace(/\s+/g, '-'),
+        name: p.Products ?? p.products ?? p.name ?? p.Name ?? id,
+        shortName: p.Products ?? p.products ?? p.name ?? p.Name ?? id,
+        description: p.Description ?? p.description ?? '',
+        image: p.Image ?? p.image ?? '',
+        cardImage: p.CardImage ?? p.cardImage ?? p.ProductCardImage ?? '',
+        video: p.Video ?? p.video ?? p.VideoURL ?? p['Video URL'] ?? '',
+        videoThumbnail: p.VideoThumbnail ?? p.videoThumbnail ?? p['Video Thumbnail'] ?? '',
+        featuredPhoto: p.FeaturedPhoto ?? p.featuredPhoto ?? p['Featured Photo'] ?? '',
+        recommendationImage: p.RecommendationImage ?? p.recommendationImage ?? p['Recommendation Image'] ?? '',
+        footnotes: parseFootnotes(p.Footnotes ?? p.footnotes ?? ''),
+        features: parseMarkerFeatures(p.Features ?? p.features ?? ''),
+      };
+    });
+
+    const capabilities = {};
+    (Array.isArray(capabilitiesData) ? capabilitiesData : []).forEach((c) => {
+      const id = String(c.id ?? c.ID ?? c.Id ?? '').toLowerCase();
+      if (!id) return;
+      const {
+        id: _i, ID: _I, Id: _Id, ...ratings
+      } = c;
+      capabilities[id] = ratings;
+    });
+
+    window.markerRecommendations = { products, capabilities };
+  }
+  return window.markerRecommendations;
 }
 
 /**

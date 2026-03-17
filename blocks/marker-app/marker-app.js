@@ -5,43 +5,198 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-const SHEET_URL = 'https://default771c9c477f2444dc958e34f8713a83.94.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6b0a508e5534cff9b3978bffe5421a6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=K2bffTyaLcs3NEN02Ly8n5PN03SLnK-5TOUpoMtAKL4';
+// GOOGLE SHEETS CONFIGURATION & SECURITY
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx6hqbYS9OD-7X9R2iLngCCRDFo0JIiCGLPJblQT3qnk-Uy7dk6q8ONFlOPWNSGLsJo/exec';
 
-async function sendToSheet(payload) {
-  if (!SHEET_URL || SHEET_URL.startsWith('PASTE_')) return;
+const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
+
+const ALLOWED_ORIGINS = [
+  'https://www.mammotome.com',
+  'https://mammotome.com',
+  'https://*--mammotome--hlxsites.aem.page',
+  'http://localhost:3000',
+];
+
+// SECURITY UTILITY FUNCTIONS
+/**
+   * Validate current page origin (client-side CORS check)
+   */
+const isOriginAllowed = () => {
+    if (typeof window === 'undefined') return false;
+    const currentOrigin = window.location.origin;
+  
+    return ALLOWED_ORIGINS.some((allowed) => {
+      if (allowed.includes('*')) {
+        const pattern = allowed
+          .replace(/\./g, '\\.')
+          .replace(/\*/g, '.*');
+        return new RegExp(`^${pattern}$`).test(currentOrigin);
+      }
+      try {
+        return currentOrigin === new URL(allowed).origin;
+      } catch {
+        return false;
+      }
+    });
+  }
+
+/**
+   * Validate response data structure before sending
+   */
+const validateGoogleSheetsPayload = (payload) => {
+  const errors = [];
+
+  if (!payload || typeof payload !== 'object') {
+    errors.push('Payload must be a JSON object');
+  }
+
+  if (!payload.date_time) errors.push('Missing date_time');
+  if (!payload.current_bx_markers) errors.push('Missing current_bx_markers');
+  if (!payload.top_product_id) errors.push('Missing top_product_id');
+
+  return { valid: errors.length === 0, errors };
+}
+
+/**
+   * Sanitize user agent to prevent injection attacks
+   */
+const sanitizeUserAgent = (ua) => {
+  if (!ua || typeof ua !== 'string') return '';
+  return ua.substring(0, 500);
+};
+
+// ENHANCED GOOGLE SHEETS SUBMISSION FUNCTION
+/**
+   * Send quiz response to Google Sheets via Apps Script
+   * Enhanced with security layers while maintaining compatibility with existing code
+   *
+   * @param {object} payload - Response data from buildSheetPayload()
+   * @param {object} userInfo - Optional {name, email, facility} from lead form
+   * @param {object} options - Optional {includeUserAgent, timeout}
+   */
+async function sendToSheet(payload, userInfo = {}, options = {}) {
+  // Validate origin
+  if (!isOriginAllowed()) {
+    // eslint-disable-next-line no-console
+    console.warn('[Marker Quiz] Request origin not allowed');
+    return;
+  }
+
+  // Validate payload structure
+  const validation = validateGoogleSheetsPayload(payload);
+  if (!validation.valid) {
+    // eslint-disable-next-line no-console
+    console.error('[Marker Quiz] Invalid payload:', validation.errors);
+    return;
+  }
+
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = options.timeout || 15000;
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
   try {
-    await fetch(SHEET_URL, {
+    // Build Google Sheets request body
+    // Convert buildSheetPayload() output to Google Sheets format
+    const requestBody = {
+      // Authentication
+      clientSecret: CLIENT_SECRET,
+
+      // Quiz responses (from buildSheetPayload())
+      responses: {
+        q1_current_markers: payload.current_bx_markers || '',
+        q2_modalities: [payload.modality || ''],
+        q3_ranked_priorities: [
+          payload.priority_1 || '',
+          payload.priority_2 || '',
+          payload.priority_3 || '',
+          payload.priority_4 || '',
+        ],
+        q4_patient_cases: (payload.patient_cases || '').split(', ').filter(Boolean),
+        q5_migration_frequency_text: payload.migration_concern || '',
+        q6_bleeding_frequency_text: payload.bleeding_concern || '',
+        q7_natural_rating: payload.natural_rating || 0,
+        q7_nick_rating: payload.nickel_rating || 0,
+      },
+
+      // Product scores
+      scores: {
+        hydromark: payload.all_scores?.hm || 0,
+        hydromark_plus: payload.all_scores?.hmplus || 0,
+        mammomark: payload.all_scores?.mammomark || 0,
+        mammostar: payload.all_scores?.mammostar || 0,
+        biomarc: payload.all_scores?.biomarc || 0,
+        lumimark: payload.all_scores?.lumimark || 0,
+      },
+
+      // Recommendation
+      recommendedProductId: payload.top_product_id || '',
+
+      // User info
+      email: userInfo.email || '',
+
+      // Browser info
+      userAgent: sanitizeUserAgent(navigator.userAgent),
+      clientIp: options.clientIp || '',
+
+      // Timestamp
+      timestamp: payload.date_time || new Date().toISOString(),
+    };
+
+    // Send POST request
+    const response = await fetch(SHEET_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...payload,
-        token: 'mmt-marker-app-2026-secure-token',
-      }),
+      redirect: 'follow',
+      body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
-  } catch (e) {
-    console.warn('[Marker Quiz] Sheet submission failed (non-blocking):', e?.message);
+
+    // Handle response
+    if (!response.ok) {
+      // eslint-disable-next-line no-console
+      console.warn(`[Marker Quiz] Server returned ${response.status}`);
+      return;
+    }
+
+    const data = await response.json();
+
+    if (data.success && data.uuid) {
+      // eslint-disable-next-line no-console
+      console.log('[Marker Quiz] Response saved with UUID:', data.uuid);
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem('markerQuizUuid', data.uuid);
+      }
+    } else if (data.error) {
+      // eslint-disable-next-line no-console
+      console.warn('[Marker Quiz] Server error:', data.error);
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      // eslint-disable-next-line no-console
+      console.warn('[Marker Quiz] Request timeout after', timeout, 'ms');
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('[Marker Quiz] Sheet submission failed (non-blocking):', error?.message);
+    }
   } finally {
-    clearTimeout(timeout);
+    clearTimeout(timeoutId);
   }
 }
 
 const CLOSE_BTN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 7 7" width="24" height="24">
-    <line stroke="currentColor" x1="14.1213" y1="9.87866" x2="9.8787" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
-    <line stroke="currentColor" x1="9.87866" y1="9.87866" x2="14.1213" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
-  </svg>`;
+      <line stroke="currentColor" x1="14.1213" y1="9.87866" x2="9.8787" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+      <line stroke="currentColor" x1="9.87866" y1="9.87866" x2="14.1213" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
+    </svg>`;
 
 const CLOSE_BTN_HTML = `<button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">${CLOSE_BTN_SVG}</button>`;
+
+const START_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets/images/mammotome-markers-logo-transparent.png';
 
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23e0e0e0' width='400' height='300'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='16'%3EPlaceholder%3C/text%3E%3C/svg%3E";
 
 const ICON_PLAYVIDEO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="99.2px" height="99.2px">'
-    + '    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>'
-    + '    <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>'
-    + '</svg>';
+      + '    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>'
+      + '    <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>'
+      + '</svg>';
 
 const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
 const VIMEO_REGEX = /(?:vimeo\.com\/)(?:video\/)?(\d+)/;
@@ -51,17 +206,17 @@ const DRAG_THRESHOLD_DEFAULT = 8;
 /** QMB-T Tizen: larger threshold for big touch displays. */
 const DRAG_THRESHOLD_QMB_T = 24;
 
-function isQmbTDisplay() {
+const isQmbTDisplay = () => {
   return typeof window !== 'undefined'
-        && window.innerWidth >= 2160
-        && window.innerHeight >= 3840;
+          && window.innerWidth >= 2160
+          && window.innerHeight >= 3840;
 }
 
-function getDragThreshold() {
+const getDragThreshold = () => {
   return isQmbTDisplay() ? DRAG_THRESHOLD_QMB_T : DRAG_THRESHOLD_DEFAULT;
 }
 
-function escapeHtml(str) {
+const escapeHtml = (str) => {
   if (str == null || typeof str !== 'string') return '';
   return str
     .replace(/&/g, '&amp;')
@@ -70,7 +225,7 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function getVideoEmbedUrl(url) {
+const getVideoEmbedUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   const youtubeMatch = trimmed.match(YOUTUBE_REGEX);
@@ -80,14 +235,14 @@ function getVideoEmbedUrl(url) {
   return trimmed;
 }
 
-function getVideoThumbnailUrl(product) {
+const getVideoThumbnailUrl = (product) => {
   if (product.videoThumbnail) return product.videoThumbnail;
   const match = (product.video || '').trim().match(YOUTUBE_REGEX);
   if (match) return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
   return product.cardImage || product.image || '';
 }
 
-function isVimeoVideo(url) {
+const isVimeoVideo = (url) => {
   return url && typeof url === 'string' && VIMEO_REGEX.test(url.trim());
 }
 
@@ -124,17 +279,17 @@ async function applyVimeoThumbnails(container) {
   }));
 }
 
-function openProductVideo(embedUrl) {
+const openProductVideo = (embedUrl) => {
   if (!embedUrl) return;
   const overlay = document.createElement('div');
   overlay.className = 'product-video-overlay';
   overlay.innerHTML = `
-      <div class="product-video-backdrop" aria-hidden="true"></div>
-      <div class="product-video-lightbox">
-        <button type="button" class="product-video-close" aria-label="Close video">${CLOSE_BTN_SVG}</button>
-        <iframe class="product-video-iframe" src="${escapeHtml(embedUrl)}" title="Product video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-    `;
+        <div class="product-video-backdrop" aria-hidden="true"></div>
+        <div class="product-video-lightbox">
+          <button type="button" class="product-video-close" aria-label="Close video">${CLOSE_BTN_SVG}</button>
+          <iframe class="product-video-iframe" src="${escapeHtml(embedUrl)}" title="Product video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      `;
   const close = () => {
     overlay.remove();
     document.body.style.overflow = '';
@@ -149,18 +304,18 @@ function openProductVideo(embedUrl) {
 }
 
 /**
- * Strips HTML for use in alt attributes (plain text only).
- */
-function stripHtmlForAlt(str) {
+   * Strips HTML for use in alt attributes (plain text only).
+   */
+const stripHtmlForAlt = (str) => {
   if (str == null || typeof str !== 'string') return '';
   return str.replace(/<[^>]+>/g, '').trim();
-}
+};
 
 /**
- * Escapes HTML but allows safe markup (<sup>TM</sup>, <sup>®</sup>, <sup>1,2,3</sup>, etc.)
- * from authoring. Use for authoring-sourced text with trademark symbols or reference numbers.
- */
-function allowTrademarkHtml(str) {
+   * Escapes HTML but allows safe markup (<sup>TM</sup>, <sup>®</sup>, <sup>1,2,3</sup>, etc.)
+   * from authoring. Use for authoring-sourced text with trademark symbols or reference numbers.
+   */
+const allowTrademarkHtml = (str) => {
   const escaped = escapeHtml(str);
   return escaped.replace(
     /&lt;sup&gt;(.*?)&lt;\/sup&gt;/gs,
@@ -169,9 +324,9 @@ function allowTrademarkHtml(str) {
 }
 
 /**
- * Reads block config like readBlockConfig but uses innerHTML for text cells
- * so authoring markup like <sup>TM</sup> is preserved.
- */
+   * Reads block config like readBlockConfig but uses innerHTML for text cells
+   * so authoring markup like <sup>TM</sup> is preserved.
+   */
 const loadScriptAsync = (src) => new Promise((resolve, reject) => {
   loadScript(src, (type) => {
     if (type === 'error') reject(new Error(`Failed to load script: ${src}`));
@@ -190,7 +345,7 @@ const embedMarketoForm = async (container, formId) => {
   });
 };
 
-function readBlockConfigWithHtml(block) {
+const readBlockConfigWithHtml = (block) => {
   const config = readBlockConfig(block);
   block.querySelectorAll(':scope > div').forEach((row) => {
     const cols = [...row.children];
@@ -321,7 +476,7 @@ const SORTABLE_OPTIONS_MRI = Object.entries(
 }));
 
 const RATING_ITEMS = [
-  { text: 'Preference for natural markers', key: 'bioabsorbable' },
+  { text: 'Preference for natural markers', key: 'natural' },
   { text: 'Concerns about nickel allergies or metal sensitivities', key: 'nickel_free' },
 ];
 
@@ -348,18 +503,19 @@ const PRODUCT_ID_ALIASES = {
 };
 
 const CHEVRON_SVG = `<svg class="checkbox-group-chevron" viewBox="0 0 20 20" fill="currentColor">
-    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-  </svg>`;
+      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+    </svg>`;
 
 /**
- * Parses the block for sortable option image rows. Expects rows where:
- * - Column 1: "Question N - Keyword" (e.g. "Question 3 - Ultrasound") — keyword matches option text
- * - Column 1 (legacy): "Question N Option M" (e.g. "Question 3 Option 1")
- * - Column 2: Up to 4 images
- * @param {Element} block The marker-quiz block
- * @returns {Object} question number -> { byKeyword, byIndex }
- */
-function parseSortableOptionImagesFromBlock(block) {
+   * Parses the block for sortable option image rows. Expects rows where:
+   * - Column 1: "Question N - Keyword" (e.g. "Question 3 - Ultrasound")
+ *   — keyword matches option text
+   * - Column 1 (legacy): "Question N Option M" (e.g. "Question 3 Option 1")
+   * - Column 2: Up to 4 images
+   * @param {Element} block The marker-quiz block
+   * @returns {Object} question number -> { byKeyword, byIndex }
+   */
+const parseSortableOptionImagesFromBlock = (block) => {
   const result = {};
   block.querySelectorAll(':scope > div').forEach((row) => {
     const cols = [...row.children];
@@ -389,13 +545,13 @@ function parseSortableOptionImagesFromBlock(block) {
 }
 
 /**
- * Finds images for an option by matching keyword to option text, or by index (legacy).
- * @param {Object} optionImages Parsed option images for a question
- * @param {Object} opt Option with .text
- * @param {number} fallbackIndex Legacy option index
- * @returns {string[]} Image URLs
- */
-function getOptionImages(optionImages, opt, fallbackIndex) {
+   * Finds images for an option by matching keyword to option text, or by index (legacy).
+   * @param {Object} optionImages Parsed option images for a question
+   * @param {Object} opt Option with .text
+   * @param {number} fallbackIndex Legacy option index
+   * @returns {string[]} Image URLs
+   */
+const getOptionImages = (optionImages, opt, fallbackIndex) => {
   if (!optionImages) return (opt.images || []).slice(0, 4);
   const text = (opt.text || '').toLowerCase();
   const byKeyword = optionImages.byKeyword || {};
@@ -408,13 +564,13 @@ function getOptionImages(optionImages, opt, fallbackIndex) {
 }
 
 /**
- * Parses the block for question image rows. Expects rows where:
- * - Column 1: "Question N" (e.g. "Question 1", "Question 7")
- * - Column 2: An image and placement text ("left" or "right") underneath
- * @param {Element} block The marker-quiz block
- * @returns {Object} Map of question number -> { image, placement }
- */
-function parseQuestionImagesFromBlock(block) {
+   * Parses the block for question image rows. Expects rows where:
+   * - Column 1: "Question N" (e.g. "Question 1", "Question 7")
+   * - Column 2: An image and placement text ("left" or "right") underneath
+   * @param {Element} block The marker-quiz block
+   * @returns {Object} Map of question number -> { image, placement }
+   */
+const parseQuestionImagesFromBlock = (block) => {
   const result = {};
   block.querySelectorAll(':scope > div').forEach((row) => {
     const cols = [...row.children];
@@ -448,6 +604,31 @@ function parseQuestionImagesFromBlock(block) {
   return result;
 }
 
+/**
+   * Parses a "Sub-header" row from the block, extracting both image and text.
+   * @param {Element} block
+   * @returns {{ image: string, text: string } | null}
+   */
+const parseSubHeaderFromBlock = (block) => {
+  let image = '';
+  let text = '';
+  block.querySelectorAll(':scope > div').forEach((row) => {
+    const cols = [...row.children];
+    if (cols.length < 2) return;
+    const label = toClassName(cols[0].textContent);
+    if (label !== 'sub-header' && label !== 'subheader') return;
+    const col = cols[1];
+    const img = col.querySelector('img');
+    if (img) image = img.src;
+    const ps = [...col.querySelectorAll('p')];
+    const textP = ps.find((p) => !p.querySelector('img') && !p.querySelector('picture'));
+    if (textP) {
+      text = textP.innerHTML.trim();
+    }
+  });
+  return image || text ? { image, text } : null;
+}
+
 class MarkerQuiz {
   constructor(block, config, products) {
     this.block = block;
@@ -476,11 +657,11 @@ class MarkerQuiz {
   render() {
     if (this.loading) {
       this.block.innerHTML = `
-          <div class="product-survey-container">
-            <div class="survey-card">
-              <div class="loading"><div class="spinner"></div><p>Loading survey...</p></div>
-            </div>
-          </div>`;
+            <div class="product-survey-container">
+              <div class="survey-card">
+                <div class="loading"><div class="spinner"></div><p>Loading survey...</p></div>
+              </div>
+            </div>`;
       return;
     }
 
@@ -496,20 +677,33 @@ class MarkerQuiz {
     const startTitle = this.config['start-title'] ?? this.config.startTitle ?? this.config.title ?? 'Ready to Explore Your Marker Options?';
     const startDescription = this.config['start-description'] ?? this.config.startDescription ?? this.config.description ?? 'Answer a few questions and we\'ll suggest markers worth discussing. Our team can help continue the conversation to help you find what fits your practice.';
     const startButton = this.config['start-button'] ?? this.config.startButton ?? this.config.button ?? 'Start Assessment';
+    const subHeader = this.config.subHeader || {};
     const titleSafe = allowTrademarkHtml(startTitle);
     const descSafe = allowTrademarkHtml(startDescription);
     const btnSafe = allowTrademarkHtml(startButton);
 
+    const subHeaderImageHtml = subHeader.image
+      ? `<div class="start-sub-header-image"><img src="${escapeHtml(subHeader.image)}" alt="Mammotome markers" /></div>`
+      : '';
+    const subHeaderTextHtml = subHeader.text
+      ? `<h2 class="start-sub-header-text">${allowTrademarkHtml(subHeader.text)}</h2>`
+      : '';
+
     this.block.innerHTML = `
-        <div class="product-survey-container">
-          <div class="survey-card">
-            <div class="start-screen">
-              <h1>${titleSafe}</h1>
-              <p>${descSafe}</p>
-              <button class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
+          <div class="product-survey-container">
+            <div class="survey-card">
+              <div class="start-logo-banner">
+                <img src="${START_LOGO_URL}" alt="Mammotome Markers" />
+              </div>
+              <div class="start-screen">
+                <h1>${titleSafe}</h1>
+                ${subHeaderImageHtml}
+                ${subHeaderTextHtml}
+                <p>${descSafe}</p>
+                <button class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
+              </div>
             </div>
-          </div>
-        </div>`;
+          </div>`;
 
     this.block.querySelector('#start-survey-btn')?.addEventListener('click', () => {
       this.showStartScreen = false;
@@ -521,16 +715,16 @@ class MarkerQuiz {
     document.body.classList.add('survey-fullscreen-active');
 
     this.block.innerHTML = `
-        <div class="product-survey-container survey-fullscreen">
-          ${CLOSE_BTN_HTML}
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="quiz-progress-bar"></div>
-          </div>
-          <div class="survey-card">
-            <div id="quiz-question-display"></div>
-            <div class="navigation" id="quiz-nav"></div>
-          </div>
-        </div>`;
+          <div class="product-survey-container survey-fullscreen">
+            ${CLOSE_BTN_HTML}
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="quiz-progress-bar"></div>
+            </div>
+            <div class="survey-card">
+              <div id="quiz-question-display"></div>
+              <div class="navigation" id="quiz-nav"></div>
+            </div>
+          </div>`;
 
     this.bindCloseBtn();
     this.questions = MarkerQuiz.buildQuestions();
@@ -540,9 +734,9 @@ class MarkerQuiz {
   }
 
   /**
-     * Builds native question definitions — no Marketo DOM parsing required.
-     * Mirrors the structure previously extracted from Marketo fieldsets.
-     */
+       * Builds native question definitions — no Marketo DOM parsing required.
+       * Mirrors the structure previously extracted from Marketo fieldsets.
+       */
   static buildQuestions() {
     return [
       {
@@ -571,6 +765,7 @@ class MarkerQuiz {
           { brand: 'BD', items: [] },
         ],
         otherOption: { text: 'Other' },
+        otherTextInput: { value: '' },
         ungrouped: [],
       },
       {
@@ -731,9 +926,9 @@ class MarkerQuiz {
 
     // Q7: Patient preferences (rating 1-5) — nickel allergy excluded when MRI selected
     if (this.selections[6]) {
-      const bioabsorbableRating = this.selections[6][0] || 1;
-      const bioabsorbableScores = MarkerQuiz.getAllNatural(bioabsorbableRating);
-      Object.entries(bioabsorbableScores).forEach(([productId, points]) => {
+      const naturalRating = this.selections[6][0] || 1;
+      const naturalScores = MarkerQuiz.getAllNatural(naturalRating);
+      Object.entries(naturalScores).forEach(([productId, points]) => {
         const resolvedId = this.resolveProductId(productId);
         if (resolvedId) this.scores[resolvedId] += points;
       });
@@ -755,7 +950,7 @@ class MarkerQuiz {
     const sorted = Object.keys(this.scores)
       .map((id) => ({ id, name: this.products[id]?.shortName || id, score: this.scores[id] }))
       .sort((a, b) => b.score - a.score);
-    // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-console
     console.log(
       `%c[Marker Quiz] Scores after: ${trigger}`,
       'color: #84329b; font-weight: bold;',
@@ -819,19 +1014,19 @@ class MarkerQuiz {
   }
 
   /**
-     * When natural or nickel rating is 3+, returns the second recommendation as a relevant bonus
-     * marker (non-negative score), with contextual language.
-     * @returns {{ product: object, reasonLabel: string } | null}
-     */
+       * When natural or nickel rating is 3+, returns the second recommendation as a relevant bonus
+       * marker (non-negative score), with contextual language.
+       * @returns {{ product: object, reasonLabel: string } | null}
+       */
   // eslint-disable-next-line no-unused-vars
   getSecondRecommendationWithContext(topProductId, sortedProducts) {
     const ratingSel = this.selections[6];
     if (!ratingSel || typeof ratingSel !== 'object') return null;
 
-    const bioabsorbableRating = ratingSel[0] || 1;
+    const naturalRating = ratingSel[0] || 1;
     const nickelRating = this.isMriSelected() ? 0 : (ratingSel[1] || 1);
 
-    const naturalHigh = bioabsorbableRating >= 3;
+    const naturalHigh = naturalRating >= 3;
     const nickelHigh = nickelRating >= 3;
 
     if (!naturalHigh && !nickelHigh) return null;
@@ -839,8 +1034,8 @@ class MarkerQuiz {
     let bonusKeys;
     let reasonLabel;
     if (naturalHigh && nickelHigh) {
-      bonusKeys = bioabsorbableRating >= nickelRating ? NATURAL_BONUS_KEYS : NICKEL_BONUS_KEYS;
-      reasonLabel = bioabsorbableRating >= nickelRating
+      bonusKeys = naturalRating >= nickelRating ? NATURAL_BONUS_KEYS : NICKEL_BONUS_KEYS;
+      reasonLabel = naturalRating >= nickelRating
         ? 'preference for natural markers'
         : 'concerns about nickel allergies or metal sensitivities';
     } else if (naturalHigh) {
@@ -871,7 +1066,7 @@ class MarkerQuiz {
     const t = String(optionText).toLowerCase();
     if (/ultrasound/i.test(t)) return 0;
     if (/stereotactic/i.test(t)) return 1;
-    if (/mri/i.test(t)) return 2;
+    if (/\bmri\b/i.test(t)) return 2;
     return fallbackIndex;
   }
 
@@ -892,9 +1087,9 @@ class MarkerQuiz {
     const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     const patterns = {
       hm: (nameNorm) => (nameNorm.includes('hydromark') || nameNorm.includes('hydro mark'))
-                && !nameNorm.includes('plus'),
+                  && !nameNorm.includes('plus'),
       hmplus: (nameNorm) => (nameNorm.includes('hydromark') || nameNorm.includes('hydro mark'))
-                && nameNorm.includes('plus'),
+                  && nameNorm.includes('plus'),
       mammomark: (nameNorm) => nameNorm.includes('mammomark') || nameNorm.includes('cormark'),
       mammostar: (nameNorm) => nameNorm.includes('mammostar') || nameNorm.includes('mammo star'),
       lumimark: (nameNorm) => nameNorm.includes('lumimark') || nameNorm.includes('lumi mark'),
@@ -929,11 +1124,11 @@ class MarkerQuiz {
   }
 
   /**
-     * Patient case scores by modality. modalityIndex: 0=Ultrasound, 1=Stereotactic, 2=MRI.
-     * @param {number} optionIndex Case option index (0-4)
-     * @param {number} modalityIndex 0=Ultrasound, 1=Stereotactic, 2=MRI
-     * Order of Options: Benign lesion, dense tissue, small marker, specific marker
-     */
+       * Patient case scores by modality. modalityIndex: 0=Ultrasound, 1=Stereotactic, 2=MRI.
+       * @param {number} optionIndex Case option index (0-4)
+       * @param {number} modalityIndex 0=Ultrasound, 1=Stereotactic, 2=MRI
+       * Order of Options: Benign lesion, dense tissue, small marker, specific marker
+       */
   static getPatientCaseScores(optionIndex, modalityIndex = 2) {
     const byModality = [
       // Ultrasound
@@ -1031,7 +1226,7 @@ class MarkerQuiz {
   }
 
   static getAllNatural(rating) {
-    // Rating 1-5, where 5 = Very frequently prefer bioabsorbable
+    // Rating 1-5, where 5 = Very frequently prefer natural
     const bonusMap = {
       1: 0, 2: 1, 3: 2, 4: 4, 5: 6,
     };
@@ -1079,8 +1274,20 @@ class MarkerQuiz {
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
     const top = sortedProducts[0];
-  
-    // ── Modality (Q1) ── find by text rather than assuming index 0
+
+    // ── Current Bx Markers (Q1)
+    const markersIdx = this.questions.findIndex(
+      (q) => q?.type === 'grouped-multi',
+    );
+    const markersSel = markersIdx >= 0 ? this.selections[markersIdx] : null;
+    let markerIndices = [];
+    if (Array.isArray(markersSel)) markerIndices = markersSel;
+    else if (markersSel != null) markerIndices = [markersSel];
+    const currentBxMarkers = markerIndices
+      .map((i) => this.questions[markersIdx]?.options?.[i]?.text || `option ${i}`)
+      .join(', ');
+
+    // ── Modality (Q2)
     const modalityIdx = this.questions.findIndex(
       (q) => q?.text && /modalit/i.test(q.text),
     );
@@ -1092,24 +1299,27 @@ class MarkerQuiz {
     const modalityLabels = modalities
       .map((i) => modalityQ?.options?.[i]?.text || `option ${i}`)
       .join(', ');
-  
-    // ── Priority ranking (Q3) ── find by type sortable
+
+    // ── Priority ranking (Q3)
     const rankIdx = this.questions.findIndex((q) => q?.type === 'sortable');
     const rankQ = this.questions[rankIdx];
     const rankSel = (rankIdx >= 0 ? this.selections[rankIdx] : null)
-      || rankQ?.options?.map((_, i) => i) || [];
+        || rankQ?.options?.map((_, i) => i) || [];
     const rankOptions = this.isMriSelected()
       ? (rankQ?.optionsMri ?? SORTABLE_OPTIONS_MRI)
       : (rankQ?.options ?? SORTABLE_OPTIONS);
     const priorities = rankSel.map(
       (origIdx) => rankOptions[origIdx]?.text || `option ${origIdx}`,
     );
-  
-    // ── Rating (Q7) ── find by type rating
+
+    // ── Rating (Q7)
     const ratingIdx = this.questions.findIndex((q) => q?.type === 'rating');
     const ratingSel = (ratingIdx >= 0 ? this.selections[ratingIdx] : null) || {};
-  
-    // ── Patient cases (Q4) ── find by text
+    const isMri = this.isMriSelected();
+    const bio = Number(ratingSel[0] ?? 0);
+    const nick = isMri ? undefined : Number(ratingSel[1] ?? 0);
+
+    // ── Patient cases (Q4)
     const casesIdx = this.questions.findIndex(
       (q) => q?.text && /patient case/i.test(q.text),
     );
@@ -1120,8 +1330,8 @@ class MarkerQuiz {
     const patientCases = cases
       .map((i) => this.questions[casesIdx]?.options?.[i]?.text || `option ${i}`)
       .join(', ');
-  
-    // ── Migration (Q5) ── find by text
+
+    // ── Migration (Q5)
     const migrationIdx = this.questions.findIndex(
       (q) => q?.text && /migration/i.test(q.text),
     );
@@ -1129,8 +1339,8 @@ class MarkerQuiz {
     const migrationConcern = migrationSel != null
       ? (this.questions[migrationIdx]?.options?.[migrationSel]?.text || `option ${migrationSel}`)
       : '';
-  
-    // ── Bleeding (Q6) ── find by text
+
+    // ── Bleeding (Q6)
     const bleedingIdx = this.questions.findIndex(
       (q) => q?.text && /bleeding|hematoma/i.test(q.text),
     );
@@ -1138,12 +1348,13 @@ class MarkerQuiz {
     const bleedingConcern = bleedingSel != null
       ? (this.questions[bleedingIdx]?.options?.[bleedingSel]?.text || `option ${bleedingSel}`)
       : '';
-  
+
     return {
-      timestamp: new Date().toISOString(),
+      date_time: new Date().toISOString(),
       top_product_id: top?.id || '',
       top_product_name: top?.name || '',
       top_score: top?.score ?? 0,
+      current_bx_markers: currentBxMarkers,
       modality: modalityLabels,
       priority_1: priorities[0] || '',
       priority_2: priorities[1] || '',
@@ -1152,8 +1363,9 @@ class MarkerQuiz {
       patient_cases: patientCases,
       migration_concern: migrationConcern,
       bleeding_concern: bleedingConcern,
-      bioabsorbable_rating: ratingSel[0] || '',
-      nickel_rating: ratingSel[1] || '',
+      natural_rating: bio,
+      ...(nick !== undefined ? { nickel_rating: nick } : {}),
+      all_scores: { ...this.scores },
     };
   }
 
@@ -1172,108 +1384,108 @@ class MarkerQuiz {
       : null;
 
     this.block.innerHTML = `
-        <div class="product-survey-container survey-fullscreen">
-          ${CLOSE_BTN_HTML}
-          <div class="survey-card results-card">
-            <div class="results-container">
-              <div class="top-recommendation-hero">
-                <div class="top-recommendation-image">
-                  <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="${stripHtmlForAlt(topProduct.name)}" />
-                </div>
-                <div class="top-recommendation-content">
-                  <p class="top-recommendation-label">Your top recommended marker</p>
-                  <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
-                  <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
-                </div>
-              </div>
-  
-              <div class="features-video-section ${(topProduct.video || topProduct.featuredPhoto) ? 'has-video' : 'no-video'}">
-                <div class="features-section-inner">
-                  <h2 class="features-section-title">Product Features</h2>
-                  <div class="features-section-content">
-                    <div class="features-container">
-                      <ul class="top-recommendation-features product-features">
-                        ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
-                      </ul>
-                    </div>
-                    ${(topProduct.video || topProduct.featuredPhoto) ? `
-                    <div class="features-media-column">
-                      ${topProduct.featuredPhoto ? `
-                        <div class="product-featured-photo">
-                          <img src="${escapeHtml(topProduct.featuredPhoto)}" alt="Featured" />
-                        </div>
-                      ` : ''}
-                      ${topProduct.video ? `
-                        <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(topProduct.video))}" ${isVimeoVideo(topProduct.video) ? `data-vimeo-url="${escapeHtml(topProduct.video.trim())}"` : ''} aria-label="Play video">
-                          <img src="${escapeHtml(getVideoThumbnailUrl(topProduct))}" alt="Play video" />
-                          <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
-                        </button>
-                      ` : ''}
-                    </div>
-                  ` : ''}
+          <div class="product-survey-container survey-fullscreen">
+            ${CLOSE_BTN_HTML}
+            <div class="survey-card results-card">
+              <div class="results-container">
+                <div class="top-recommendation-hero">
+                  <div class="top-recommendation-image">
+                    <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="${stripHtmlForAlt(topProduct.name)}" />
+                  </div>
+                  <div class="top-recommendation-content">
+                    <p class="top-recommendation-label">Your top recommended marker</p>
+                    <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
+                    <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
                   </div>
                 </div>
-              </div>
-  
-              <div class="quiz-actions-section">
-                <div class="quiz-actions-buttons">
-                  <button class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
-                  <button class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
-                </div>
-                ${this.emailResultsFormId ? `<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>` : `
-                <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
-                  <div class="lead-capture-fields">
-                    <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
-                    <input class="lead-input" id="lead-email" type="email" placeholder="Work email" autocomplete="email" />
-                    <input class="lead-input" id="lead-facility" type="text" placeholder="Facility / institution" autocomplete="organization" />
-                  </div>
-                  <div class="lead-capture-actions">
-                    <button class="btn btn-quiz-primary" id="lead-submit-btn">Submit</button>
-                    <button class="btn btn-quiz-secondary" id="lead-cancel-btn">Cancel</button>
-                  </div>
-                  <p class="lead-capture-error" style="display:none;">Please enter your name and a valid email.</p>
-                </div>
-                <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
-                  ✓ Thanks! Your results have been recorded.
-                </p>`}
-              </div>
-  
-              <div class="alternatives-section">
-                <h3>You Should Also Consider</h3>
-                ${alternativeReason ? `<p class="alternatives-reason">${alternativeReason}</p>` : ''}
-                <div class="alternatives-grid">
-                  ${alternativeProducts.map((prod) => `
-                    <div class="product-card">
-                      <div class="product-image">
-                        <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
+    
+                <div class="features-video-section ${(topProduct.video || topProduct.featuredPhoto) ? 'has-video' : 'no-video'}">
+                  <div class="features-section-inner">
+                    <h2 class="features-section-title">Product Features</h2>
+                    <div class="features-section-content">
+                      <div class="features-container">
+                        <ul class="top-recommendation-features product-features">
+                          ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
+                        </ul>
                       </div>
-                      <h4>${allowTrademarkHtml(prod.name)}</h4>
+                      ${(topProduct.video || topProduct.featuredPhoto) ? `
+                      <div class="features-media-column">
+                        ${topProduct.featuredPhoto ? `
+                          <div class="product-featured-photo">
+                            <img src="${escapeHtml(topProduct.featuredPhoto)}" alt="Featured" />
+                          </div>
+                        ` : ''}
+                        ${topProduct.video ? `
+                          <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(topProduct.video))}" ${isVimeoVideo(topProduct.video) ? `data-vimeo-url="${escapeHtml(topProduct.video.trim())}"` : ''} aria-label="Play video">
+                            <img src="${escapeHtml(getVideoThumbnailUrl(topProduct))}" alt="Play video" />
+                            <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
+                          </button>
+                        ` : ''}
+                      </div>
+                    ` : ''}
                     </div>
-                  `).join('')}
+                  </div>
                 </div>
+    
+                <div class="quiz-actions-section">
+                  <div class="quiz-actions-buttons">
+                    <button class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
+                    <button class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
+                  </div>
+                  ${this.emailResultsFormId ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>' : `
+                  <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
+                    <div class="lead-capture-fields">
+                      <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
+                      <input class="lead-input" id="lead-email" type="email" placeholder="Work email" autocomplete="email" />
+                      <input class="lead-input" id="lead-facility" type="text" placeholder="Facility / institution" autocomplete="organization" />
+                    </div>
+                    <div class="lead-capture-actions">
+                      <button class="btn btn-quiz-primary" id="lead-submit-btn">Submit</button>
+                      <button class="btn btn-quiz-secondary" id="lead-cancel-btn">Cancel</button>
+                    </div>
+                    <p class="lead-capture-error" style="display:none;">Please enter your name and a valid email.</p>
+                  </div>
+                  <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
+                    ✓ Thanks! Your results have been recorded.
+                  </p>`}
+                </div>
+    
+                <div class="alternatives-section">
+                  <h3>You Should Also Consider</h3>
+                  ${alternativeReason ? `<p class="alternatives-reason">${alternativeReason}</p>` : ''}
+                  <div class="alternatives-grid">
+                    ${alternativeProducts.map((prod) => `
+                      <div class="product-card">
+                        <div class="product-image">
+                          <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
+                        </div>
+                        <h4>${allowTrademarkHtml(prod.name)}</h4>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+    
+    
+                <div class="contact-section">
+                  <h3>Would you like to be contacted by a sales rep to learn more?</h3>
+                  <div class="contact-buttons">
+                    <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
+                    <button class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
+                  </div>
+                </div>
+    
+    
+                ${(topProduct.footnotes || []).length ? `
+                  <div class="product-footnotes">
+                    <ol class="footnotes-list">
+                      ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
+                    </ol>
+                  </div>
+                ` : ''}
+    
               </div>
-  
-  
-              <div class="contact-section">
-                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
-                <div class="contact-buttons">
-                  <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
-                  <button class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
-                </div>
-              </div>
-  
-  
-              ${(topProduct.footnotes || []).length ? `
-                <div class="product-footnotes">
-                  <ol class="footnotes-list">
-                    ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
-                  </ol>
-                </div>
-              ` : ''}
-  
             </div>
-          </div>
-        </div>`;
+          </div>`;
 
     this.bindCloseBtn();
     this.block.querySelector('#restart-btn')?.addEventListener('click', () => this.restart());
@@ -1365,7 +1577,7 @@ class MarkerQuiz {
     if (progressBar) {
       progressBar.innerHTML = this.questions.map((_, i) => {
         const classes = ['progress-segment'];
-        if (i < step || this.selections[i] != null) classes.push('completed');
+        if (i < step) classes.push('completed');
         if (i === step) classes.push('active');
         return `<div class="${classes.join(' ')}"></div>`;
       }).join('');
@@ -1384,11 +1596,11 @@ class MarkerQuiz {
           const selected = this.isOptionSelected(step, i);
           const indicator = isMulti ? 'checkbox' : 'radio';
           return `<div class="option${selected ? ' selected' : ''}" data-option-index="${i}">
-              <div class="option-content">
-                <span class="${indicator}${selected ? ' checked' : ''}"></span>
-                <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
-              </div>
-            </div>`;
+                <div class="option-content">
+                  <span class="${indicator}${selected ? ' checked' : ''}"></span>
+                  <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
+                </div>
+              </div>`;
         }).join('');
 
         const qImage = this.questionImages[step + 1];
@@ -1402,10 +1614,10 @@ class MarkerQuiz {
           : `${imageHtml}${optionsBlock}`;
 
         display.innerHTML = `
-            <div class="question-text">${allowTrademarkHtml(question.text)}</div>
-            <div class="question-container${imageLayoutClass}">
-              ${contentOrder}
-            </div>`;
+              <div class="question-text">${allowTrademarkHtml(question.text)}</div>
+              <div class="question-container${imageLayoutClass}">
+                ${contentOrder}
+              </div>`;
 
         display.querySelectorAll('.option').forEach((optEl) => {
           optEl.addEventListener('click', () => {
@@ -1422,9 +1634,9 @@ class MarkerQuiz {
     if (nav) {
       const hasSelection = this.hasSelection(step);
       nav.innerHTML = `
-          <button class="btn btn-secondary" id="quiz-prev-btn" ${step === 0 ? 'disabled' : ''}>← Previous</button>
-          <div class="question-counter">Question ${step + 1} of ${total}</div>
-          <button class="btn" id="quiz-next-btn" ${!hasSelection ? 'disabled' : ''}>${isLast ? 'Get Results' : 'Next'} →</button>`;
+            <button class="btn btn-secondary" id="quiz-prev-btn" ${step === 0 ? 'disabled' : ''}>← Previous</button>
+            <div class="question-counter">Question ${step + 1} of ${total}</div>
+            <button class="btn" id="quiz-next-btn" ${!hasSelection ? 'disabled' : ''}>${isLast ? 'Get Results' : 'Next'} →</button>`;
 
       nav.querySelector('#quiz-prev-btn')?.addEventListener('click', () => {
         if (this.currentStep > 0) {
@@ -1456,36 +1668,36 @@ class MarkerQuiz {
         const optIndex = question.options.indexOf(opt);
         const selected = this.isOptionSelected(step, optIndex);
         return `
-            <div class="grouped-checkbox-row${selected ? ' selected' : ''}"
-                 data-option-index="${optIndex}">
-              <span class="checkbox${selected ? ' checked' : ''}"></span>
-              <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
-            </div>`;
+              <div class="grouped-checkbox-row${selected ? ' selected' : ''}"
+                   data-option-index="${optIndex}">
+                <span class="checkbox${selected ? ' checked' : ''}"></span>
+                <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
+              </div>`;
       }).join('');
 
       return `
-          <div class="checkbox-group">
-            <div class="checkbox-group-header">
-              <span>${allowTrademarkHtml(group.brand)}</span>
-              <div class="header-right">
-                ${CHEVRON_SVG}
+            <div class="checkbox-group">
+              <div class="checkbox-group-header">
+                <span>${allowTrademarkHtml(group.brand)}</span>
+                <div class="header-right">
+                  ${CHEVRON_SVG}
+                </div>
               </div>
-            </div>
-            <div class="checkbox-group-body">
-              ${itemsHtml}
-            </div>
-          </div>`;
+              <div class="checkbox-group-body">
+                ${itemsHtml}
+              </div>
+            </div>`;
     }).join('');
 
     const ungroupedHtml = question.ungrouped.map((opt) => {
       const optIndex = question.options.indexOf(opt);
       const selected = this.isOptionSelected(step, optIndex);
       return `
-          <div class="grouped-checkbox-row standalone${selected ? ' selected' : ''}"
-               data-option-index="${optIndex}">
-            <span class="checkbox${selected ? ' checked' : ''}"></span>
-            <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
-          </div>`;
+            <div class="grouped-checkbox-row standalone${selected ? ' selected' : ''}"
+                 data-option-index="${optIndex}">
+              <span class="checkbox${selected ? ' checked' : ''}"></span>
+              <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
+            </div>`;
     }).join('');
 
     let otherHtml = '';
@@ -1497,21 +1709,21 @@ class MarkerQuiz {
         : '';
       const textFieldHtml = otherSelected && question.otherTextInput
         ? `<div class="other-text-field">
-               <input type="text" class="other-text-input"
-                      placeholder="Please specify..."
-                      value="${allowTrademarkHtml(otherTextValue)}" />
-               <div class="other-text-error">This field is required</div>
-             </div>`
+                 <input type="text" class="other-text-input"
+                        placeholder="Please specify..."
+                        value="${allowTrademarkHtml(otherTextValue)}" />
+                 <div class="other-text-error">This field is required</div>
+               </div>`
         : '';
       otherHtml = `
-          <div class="checkbox-group-other${otherSelected ? ' active' : ''}"
-               data-option-index="${otherIndex}">
-            <div class="other-check-row">
-              <span class="checkbox${otherSelected ? ' checked' : ''}"></span>
-              <span class="option-text">Other</span>
-            </div>
-            ${textFieldHtml}
-          </div>`;
+            <div class="checkbox-group-other${otherSelected ? ' active' : ''}"
+                 data-option-index="${otherIndex}">
+              <div class="other-check-row">
+                <span class="checkbox${otherSelected ? ' checked' : ''}"></span>
+                <span class="option-text">Other</span>
+              </div>
+              ${textFieldHtml}
+            </div>`;
     }
 
     const qImage = this.questionImages[step + 1];
@@ -1525,10 +1737,10 @@ class MarkerQuiz {
       : `${imageHtml}${optionsBlock}`;
 
     display.innerHTML = `
-        <div class="question-text">${allowTrademarkHtml(question.text)}</div>
-        <div class="question-container${imageLayoutClass}">
-          ${contentOrder}
-        </div>`;
+          <div class="question-text">${allowTrademarkHtml(question.text)}</div>
+          <div class="question-container${imageLayoutClass}">
+            ${contentOrder}
+          </div>`;
 
     display.querySelectorAll('.checkbox-group-header').forEach((header) => {
       header.addEventListener('click', () => {
@@ -1626,19 +1838,19 @@ class MarkerQuiz {
       const scaleHtml = RATING_SCALE.map((s) => {
         const selected = selections[itemIdx] === s.value;
         return `
-            <div class="rating-scale-point${selected ? ' selected' : ''}"
-                 data-item-index="${itemIdx}" data-value="${s.value}">
-              <span class="rating-radio${selected ? ' checked' : ''}"></span>
-              <span class="rating-value">${s.value}</span>
-              ${s.label ? `<span class="rating-label">${allowTrademarkHtml(s.label)}</span>` : ''}
-            </div>`;
+              <div class="rating-scale-point${selected ? ' selected' : ''}"
+                   data-item-index="${itemIdx}" data-value="${s.value}">
+                <span class="rating-radio${selected ? ' checked' : ''}"></span>
+                <span class="rating-value">${s.value}</span>
+                ${s.label ? `<span class="rating-label">${allowTrademarkHtml(s.label)}</span>` : ''}
+              </div>`;
       }).join('');
 
       return `
-          <div class="rating-item">
-            <div class="rating-item-text">${allowTrademarkHtml(item.text)}</div>
-            <div class="rating-scale">${scaleHtml}</div>
-          </div>`;
+            <div class="rating-item">
+              <div class="rating-item-text">${allowTrademarkHtml(item.text)}</div>
+              <div class="rating-scale">${scaleHtml}</div>
+            </div>`;
     }).join('');
 
     const qImage = this.questionImages[step + 1];
@@ -1652,10 +1864,10 @@ class MarkerQuiz {
       : `${imageHtml}${optionsBlock}`;
 
     display.innerHTML = `
-        <div class="question-text">${allowTrademarkHtml(question.text)}</div>
-        <div class="question-container${imageLayoutClass}">
-          ${contentOrder}
-        </div>`;
+          <div class="question-text">${allowTrademarkHtml(question.text)}</div>
+          <div class="question-container${imageLayoutClass}">
+            ${contentOrder}
+          </div>`;
 
     display.querySelectorAll('.rating-scale-point').forEach((el) => {
       el.addEventListener('click', () => {
@@ -1706,9 +1918,11 @@ class MarkerQuiz {
       this.lastSortableWasMri = isMri;
     }
 
-    // Use saved order if available, otherwise default order
+    // Use saved order if available, otherwise default order — persist so
+    // scores are calculated even when the user accepts the default ranking.
     const order = this.selections[step]
-            || options.map((_, i) => i);
+              || options.map((_, i) => i);
+    this.selections[step] = order;
 
     const optionParts = order.map((origIdx) => {
       const opt = options[origIdx];
@@ -1717,12 +1931,12 @@ class MarkerQuiz {
         ? `<div class="sortable-option-images">${images.map((src) => `<img src="${escapeHtml(src)}" alt="" class="sortable-option-img" />`).join('')}</div>`
         : '';
       return `<div class="sortable-drop-zone" data-drop-zone="true"></div><div class="option sortable" data-option-index="${origIdx}" draggable="true">
-          <div class="option-content">
-            ${imagesHtml}
-            <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
-          </div>
-          <span class="drag-handle" title="Drag to sort">⋮⋮</span>
-        </div>`;
+            <div class="option-content">
+              ${imagesHtml}
+              <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
+            </div>
+            <span class="drag-handle" title="Drag to sort">⋮⋮</span>
+          </div>`;
     }).join('');
 
     const trailingDropZone = '<div class="sortable-drop-zone" data-drop-zone="true"></div>';
@@ -1738,10 +1952,10 @@ class MarkerQuiz {
       : `${imageHtml}${optionsBlock}`;
 
     display.innerHTML = `
-        <div class="question-text">${allowTrademarkHtml(question.text)}</div>
-        <div class="question-container question-sortable${imageLayoutClass}">
-          ${contentOrder}
-        </div>`;
+          <div class="question-text">${allowTrademarkHtml(question.text)}</div>
+          <div class="question-container question-sortable${imageLayoutClass}">
+            ${contentOrder}
+          </div>`;
 
     display.querySelectorAll('.option.sortable').forEach((el) => {
       this.attachSortableDragListeners(el);
@@ -1772,7 +1986,7 @@ class MarkerQuiz {
       const threshold = getDragThreshold();
       if (!this.touchDragStarted) {
         if (Math.abs(clientX - this.touchStartX) > threshold
-                    || Math.abs(clientY - this.touchStartY) > threshold) {
+                      || Math.abs(clientY - this.touchStartY) > threshold) {
           this.touchDragStarted = true;
           option.classList.add('dragging');
           option.style.pointerEvents = 'none';
@@ -1977,16 +2191,16 @@ class MarkerQuiz {
     const message = 'Thank you! Someone will connect with you within 3 business days or less to discuss more.';
 
     this.block.innerHTML = `
-        <div class="product-survey-container survey-fullscreen">
-          ${CLOSE_BTN_HTML}
-          <div class="survey-card">
-            <div class="thank-you-container">
-              <h2>Thank You!</h2>
-              <p>${message}</p>
-              <button class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
+          <div class="product-survey-container survey-fullscreen">
+            ${CLOSE_BTN_HTML}
+            <div class="survey-card">
+              <div class="thank-you-container">
+                <h2>Thank You!</h2>
+                <p>${message}</p>
+                <button class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
+              </div>
             </div>
-          </div>
-        </div>`;
+          </div>`;
 
     this.bindCloseBtn();
     this.block.querySelector('#restart-btn')
@@ -2012,7 +2226,7 @@ class MarkerQuiz {
 
 MarkerQuiz.PRODUCT_ID_ALIASES = PRODUCT_ID_ALIASES;
 
-function applyStartScreenContentFromBlock(block, config) {
+const applyStartScreenContentFromBlock = (block, config) => {
   const rows = [...block.querySelectorAll(':scope > div')];
   const singleColTexts = rows
     .filter((row) => row.children.length === 1)
@@ -2035,7 +2249,7 @@ function applyStartScreenContentFromBlock(block, config) {
   }
 }
 
-function getPreviewSlug() {
+const getPreviewSlug = () => {
   const params = new URLSearchParams(window.location.search);
   let slug = params.get('preview') || null;
   // Handle malformed URLs like ?preview=biomarc?preview=biomarc (strip accidental duplicate)
@@ -2045,7 +2259,7 @@ function getPreviewSlug() {
   return slug;
 }
 
-function findProductBySlug(products, slug) {
+const findProductBySlug = (products, slug) => {
   if (!slug) return null;
   const slugNorm = String(slug).toLowerCase().trim();
   return Object.values(products).find(
@@ -2053,7 +2267,7 @@ function findProductBySlug(products, slug) {
   ) || null;
 }
 
-function renderPreview(block, product, products) {
+const renderPreview = (block, product, products) => {
   const allProducts = Object.values(products);
   const options = allProducts
     .map((p) => `<option value="${p.slug}"${p.slug === product.slug ? ' selected' : ''}>${p.name}</option>`)
@@ -2062,90 +2276,90 @@ function renderPreview(block, product, products) {
   document.body.classList.add('survey-fullscreen-active');
 
   block.innerHTML = `
-      <div class="product-survey-container survey-fullscreen">
-        ${CLOSE_BTN_HTML}
-        <div class="preview-bar">
-          <span>Preview mode</span>
-          <select id="preview-product-select">${options}</select>
-        </div>
-        <div class="survey-card results-card preview-results">
-          <div class="results-container">
-            <div class="top-recommendation-hero">
-              <div class="top-recommendation-image">
-                <img src="${escapeHtml(product.cardImage || product.image)}" alt="${stripHtmlForAlt(product.name)}" />
-              </div>
-              <div class="top-recommendation-content">
-                <p class="top-recommendation-label">Your top recommended marker</p>
-                <h1 class="top-recommendation-name">${allowTrademarkHtml(product.name)}</h1>
-                <div class="top-recommendation-description">${allowTrademarkHtml(product.description)}</div>
-              </div>
-            </div>
-  
-            <div class="features-video-section ${(product.video || product.featuredPhoto) ? 'has-video' : 'no-video'}">
-              <div class="features-section-inner">
-                <h2 class="features-section-title">Product Features</h2>
-                <div class="features-section-content">
-                  <div class="features-container">
-                    <ul class="top-recommendation-features product-features">
-                      ${(product.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
-                    </ul>
-                  </div>
-                  ${(product.video || product.featuredPhoto) ? `
-                    <div class="features-media-column">
-                      ${product.featuredPhoto ? `
-                        <div class="product-featured-photo">
-                          <img src="${escapeHtml(product.featuredPhoto)}" alt="Featured" />
-                        </div>
-                      ` : ''}
-                  ${product.video ? `
-                      <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(product.video))}" ${isVimeoVideo(product.video) ? `data-vimeo-url="${escapeHtml(product.video.trim())}"` : ''} aria-label="Play video">
-                        <img src="${escapeHtml(getVideoThumbnailUrl(product))}" alt="Play video" />
-                        <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
-                      </button>
-                    ` : ''}
-                    </div>
-                  ` : ''}
-                </div>
-              </div>
-            </div>
-  
-            <div class="quiz-actions-section">
-              <div class="quiz-actions-buttons">
-                <button class="btn btn-quiz-secondary" id="preview-restart-btn">Take Quiz Again</button>
-              </div>
-            </div>
-  
-            <div class="alternatives-section">
-              <h3>You Should Also Consider</h3>
-              <div class="alternatives-grid">
-                <div class="product-card">
-                  <div class="product-image">
-                    <img src="${PLACEHOLDER_IMAGE}" alt="Placeholder" />
-                  </div>
-                  <h4>Alternative Product Placeholder</h4>
-                </div>
-              </div>
-            </div>
-  
-            <div class="contact-section">
-              <h3>Would you like to be contacted by a sales rep to learn more?</h3>
-              <div class="contact-buttons">
-                <button class="btn btn-contact-primary">Yes, Contact Me</button>
-                <button class="btn btn-contact-secondary">No, Thank You</button>
-              </div>
-            </div>
-  
-            ${(product.footnotes || []).length ? `
-              <div class="product-footnotes">
-                <ol class="footnotes-list">
-                  ${(product.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
-                </ol>
-              </div>
-            ` : ''}
-          
+        <div class="product-survey-container survey-fullscreen">
+          ${CLOSE_BTN_HTML}
+          <div class="preview-bar">
+            <span>Preview mode</span>
+            <select id="preview-product-select">${options}</select>
           </div>
-        </div>
-      </div>`;
+          <div class="survey-card results-card preview-results">
+            <div class="results-container">
+              <div class="top-recommendation-hero">
+                <div class="top-recommendation-image">
+                  <img src="${escapeHtml(product.cardImage || product.image)}" alt="${stripHtmlForAlt(product.name)}" />
+                </div>
+                <div class="top-recommendation-content">
+                  <p class="top-recommendation-label">Your top recommended marker</p>
+                  <h1 class="top-recommendation-name">${allowTrademarkHtml(product.name)}</h1>
+                  <div class="top-recommendation-description">${allowTrademarkHtml(product.description)}</div>
+                </div>
+              </div>
+    
+              <div class="features-video-section ${(product.video || product.featuredPhoto) ? 'has-video' : 'no-video'}">
+                <div class="features-section-inner">
+                  <h2 class="features-section-title">Product Features</h2>
+                  <div class="features-section-content">
+                    <div class="features-container">
+                      <ul class="top-recommendation-features product-features">
+                        ${(product.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
+                      </ul>
+                    </div>
+                    ${(product.video || product.featuredPhoto) ? `
+                      <div class="features-media-column">
+                        ${product.featuredPhoto ? `
+                          <div class="product-featured-photo">
+                            <img src="${escapeHtml(product.featuredPhoto)}" alt="Featured" />
+                          </div>
+                        ` : ''}
+                    ${product.video ? `
+                        <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(product.video))}" ${isVimeoVideo(product.video) ? `data-vimeo-url="${escapeHtml(product.video.trim())}"` : ''} aria-label="Play video">
+                          <img src="${escapeHtml(getVideoThumbnailUrl(product))}" alt="Play video" />
+                          <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
+                        </button>
+                      ` : ''}
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+    
+              <div class="quiz-actions-section">
+                <div class="quiz-actions-buttons">
+                  <button class="btn btn-quiz-secondary" id="preview-restart-btn">Take Quiz Again</button>
+                </div>
+              </div>
+    
+              <div class="alternatives-section">
+                <h3>You Should Also Consider</h3>
+                <div class="alternatives-grid">
+                  <div class="product-card">
+                    <div class="product-image">
+                      <img src="${PLACEHOLDER_IMAGE}" alt="Placeholder" />
+                    </div>
+                    <h4>Alternative Product Placeholder</h4>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="contact-section">
+                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
+                <div class="contact-buttons">
+                  <button class="btn btn-contact-primary">Yes, Contact Me</button>
+                  <button class="btn btn-contact-secondary">No, Thank You</button>
+                </div>
+              </div>
+    
+              ${(product.footnotes || []).length ? `
+                <div class="product-footnotes">
+                  <ol class="footnotes-list">
+                    ${(product.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
+                  </ol>
+                </div>
+              ` : ''}
+            
+            </div>
+          </div>
+        </div>`;
 
   block.querySelector('#close-survey-btn')?.addEventListener('click', () => {
     document.body.classList.remove('survey-fullscreen-active');
@@ -2177,8 +2391,6 @@ function renderPreview(block, product, products) {
 export default async function decorate(block) {
   const { products } = await getMarkerRecommendations();
   const config = readBlockConfigWithHtml(block);
-  // eslint-disable-next-line no-console
-  console.log('[Marker App] config:', JSON.stringify(config, null, 2));
 
   const previewSlug = getPreviewSlug();
   if (previewSlug) {
@@ -2189,6 +2401,7 @@ export default async function decorate(block) {
     }
   }
   applyStartScreenContentFromBlock(block, config);
+  config.subHeader = parseSubHeaderFromBlock(block);
   config.questionImages = parseQuestionImagesFromBlock(block);
   config.sortableOptionImages = parseSortableOptionImagesFromBlock(block);
   const quiz = new MarkerQuiz(block, config, products);

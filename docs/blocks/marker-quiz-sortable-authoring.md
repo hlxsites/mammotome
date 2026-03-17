@@ -174,15 +174,41 @@ option  3           Affordability                     lumimark:1,biomarc:1,mammo
 
 **Products:**
 ```
-Type     Id        Name         Description         Image
+Type     Id        Name         Description         Image           Video URL    Video Thumbnail   Footnotes
 product  hmplus    HM Plus      Description here    /image1.jpg
-product  lumimark  LumiMark     Description here    /image2.jpg
+product  lumimark  LumiMark     Description here    /image2.jpg                  | Ref one; Ref two
 product  biomarc   BioMarc      Description here    /image3.jpg
 product  mammomark MammoMark    Description here    /image4.jpg
 ```
+
+- **Video URL** (optional): YouTube URL for the top-recommended product. When set, a video thumbnail appears to the left of the Product Features list. Clicking opens a video lightbox. Supports full URLs (e.g. `https://www.youtube.com/watch?v=VIDEO_ID`) or short URLs (e.g. `https://youtu.be/VIDEO_ID`).
+- **Video Thumbnail** (optional): Image URL for the video thumbnail. When not provided, YouTube's thumbnail is used automatically for YouTube URLs. Falls back to the product image for non-YouTube videos.
+- **Footnotes** (optional): Reference text for superscript numbers in the description (e.g. `<sup>1,2,3</sup>`). Use backslash `\` as a delimiter to create an ordered list. Example: `1. First reference. \ 2. Second reference. \ 3. Third reference.`
 
 ### Result
 - User sees four options with drag handles
 - User can drag them to rank (e.g., "Anti-Migration" first, "Long-term ultrasound visibility" second, etc.)
 - Scoring is based on the final rank order using `RankScores`
 - Total product scores are accumulated based on where each option was ranked
+
+## Block Authoring: Option Images
+
+You can add up to **4 images per sortable option** by adding rows to the marker-quiz block. Use the **keyword format** so icons stay with their option when users reorder.
+
+| Column 1 | Column 2 |
+|----------|----------|
+| `Question N - Keyword` | Up to 4 images |
+
+**Examples (recommended):**
+- `Question 3 - Ultrasound` | [icon]
+- `Question 3 - Stereotactic` | [icon]
+- `Question 3 - Multiple/Unique Shapes` | [icon]
+- `Question 3 - Affordability` | [icon]
+
+- `N` = the question number (e.g., 3 for the sortable ranking question)
+- `Keyword` = a word or phrase that appears in the option text (e.g., "Ultrasound" matches "Long-term ultrasound visibility")
+- Icons are matched to options by keyword, so they stay with the correct option when users drag to reorder
+- Images appear above the option text in a grid layout
+
+**Legacy format (still supported):**
+- `Question 3 Option 1` | [image1] — uses option position; icons may not follow correctly when reordered
