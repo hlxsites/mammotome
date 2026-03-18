@@ -388,7 +388,7 @@ const RANK_SCORES = {
       long_term_us_visibility: 2,
       anti_migration: 5,
       locating: 1,
-      affordability: 4,
+      affordability: 5,
     },
     mammostar: {
       long_term_us_visibility: 4,
@@ -400,7 +400,7 @@ const RANK_SCORES = {
       long_term_us_visibility: 3,
       anti_migration: 3,
       locating: 3,
-      affordability: 5,
+      affordability: 4,
     },
     biomarc: {
       long_term_us_visibility: 1,
@@ -1060,6 +1060,44 @@ class MarkerQuiz {
     return { product, reasonLabel };
   }
 
+  /**
+   * When bleeding is "Often" or "Occasionally" and MammoMARK is not already
+   * in the top 2 recommendations, returns a bleeding-based recommendation
+   * for MammoMARK with contextual language.
+   * @param {string} topProductId
+   * @param {string[]} alternativeProductIds
+   * @returns {{ product: object, reasonLabel: string } | null}
+   */
+  getBleedingRecommendationContext(topProductId, alternativeProductIds) {
+    const bleedingIdx = this.questions.findIndex(
+      (q) => q?.text && /bleeding|hematoma/i.test(q.text),
+    );
+    if (bleedingIdx < 0) return null;
+
+    const bleedingSel = this.selections[bleedingIdx];
+    if (bleedingSel !== 0 && bleedingSel !== 1) return null;
+
+    const mammomarkId = this.resolveProductId('mammomark');
+    if (!mammomarkId || !(mammomarkId in this.products)) return null;
+
+    if (mammomarkId === topProductId || alternativeProductIds.includes(mammomarkId)) return null;
+
+    const frequencyLabel = bleedingSel === 0 ? 'often' : 'occasionally';
+    const product = { id: mammomarkId, ...this.products[mammomarkId] };
+
+    const ratingSel = this.selections[6];
+    const nickelRating = (!this.isMriSelected() && ratingSel && typeof ratingSel === 'object')
+      ? (ratingSel[1] || 1)
+      : 1;
+    const nickelHigh = nickelRating >= 3;
+
+    const reasonLabel = nickelHigh
+      ? `Because you have patients that ${frequencyLabel} experience bleeding and patients have expressed concerns about nickel allergies or metal sensitivities, we recommend ${allowTrademarkHtml(product.name)}.`
+      : `Because your patients ${frequencyLabel} experience excessive bleeding, we recommend ${allowTrademarkHtml(product.name)}.`;
+
+    return { product, reasonLabel };
+  }
+
   /** Maps modality option text to score index (0=Ultrasound, 1=Stereotactic, 2=MRI). */
   static getModalityIndexFromOption(optionText, fallbackIndex) {
     if (!optionText) return fallbackIndex;
@@ -1134,7 +1172,7 @@ class MarkerQuiz {
       // Ultrasound
       [
         {
-          hm: 2, hmplus: 1, mammomark: 4, mammostar: 3, lumimark: 5, biomarc: 5,
+          hm: 2, hmplus: 0, mammomark: 4, mammostar: 3, lumimark: 5, biomarc: 5,
         },
         {
           hm: 5, hmplus: 5, mammomark: 2, mammostar: 4, lumimark: 2, biomarc: 1,
@@ -1383,6 +1421,11 @@ class MarkerQuiz {
       ? `Because you have patients that have expressed ${bonusContext.reasonLabel}, we recommend ${allowTrademarkHtml(bonusContext.product.name)}.`
       : null;
 
+    const bleedingContext = this.getBleedingRecommendationContext(
+      topProduct?.id,
+      alternativeProducts.map((p) => p.id),
+    );
+
     this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen">
             ${CLOSE_BTN_HTML}
@@ -1452,7 +1495,6 @@ class MarkerQuiz {
     
                 <div class="alternatives-section">
                   <h3>You Should Also Consider</h3>
-                  ${alternativeReason ? `<p class="alternatives-reason">${alternativeReason}</p>` : ''}
                   <div class="alternatives-grid">
                     ${alternativeProducts.map((prod) => `
                       <div class="product-card">
@@ -1460,8 +1502,18 @@ class MarkerQuiz {
                           <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
                         </div>
                         <h4>${allowTrademarkHtml(prod.name)}</h4>
+                        ${alternativeReason ? `<p class="card-reason">${alternativeReason}</p>` : ''}
                       </div>
                     `).join('')}
+                    ${bleedingContext ? `
+                      <div class="product-card">
+                        <div class="product-image">
+                          <img src="${escapeHtml(bleedingContext.product.recommendationImage || bleedingContext.product.cardImage || bleedingContext.product.image)}" alt="${stripHtmlForAlt(bleedingContext.product.name)}" />
+                        </div>
+                        <h4>${allowTrademarkHtml(bleedingContext.product.name)}</h4>
+                        <p class="card-reason">${bleedingContext.reasonLabel}</p>
+                      </div>
+                    ` : ''}
                   </div>
                 </div>
     
@@ -1930,7 +1982,7 @@ class MarkerQuiz {
       const imagesHtml = images.length > 0
         ? `<div class="sortable-option-images">${images.map((src) => `<img src="${escapeHtml(src)}" alt="" class="sortable-option-img" />`).join('')}</div>`
         : '';
-      return `<div class="sortable-drop-zone" data-drop-zone="true"></div><div class="option sortable" data-option-index="${origIdx}" draggable="true">
+      return `<div class="sortable-drop-zone" data-drop-zone="true"></div><div class="option sortable" data-option-index="${origIdx}">
             <div class="option-content">
               ${imagesHtml}
               <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
@@ -1960,102 +2012,76 @@ class MarkerQuiz {
     display.querySelectorAll('.option.sortable').forEach((el) => {
       this.attachSortableDragListeners(el);
     });
-    this.attachDropZoneListeners();
   }
 
   attachSortableDragListeners(option) {
-    option.addEventListener('dragstart', (e) => {
-      this.draggedElement = option;
-      option.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    option.addEventListener('dragend', () => this.clearDragState());
-
-    option.addEventListener('touchstart', (e) => {
-      if (e.touches.length !== 1) return;
-      this.touchDragStarted = false;
-      this.touchDropTarget = null;
-      this.draggedElement = option;
-      this.touchStartY = e.touches[0].clientY;
-      this.touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-
-    option.addEventListener('touchmove', (e) => {
-      if (e.touches.length !== 1 || this.draggedElement !== option) return;
-      const { clientX, clientY } = e.touches[0];
-      const threshold = getDragThreshold();
-      if (!this.touchDragStarted) {
-        if (Math.abs(clientX - this.touchStartX) > threshold
-                      || Math.abs(clientY - this.touchStartY) > threshold) {
-          this.touchDragStarted = true;
-          option.classList.add('dragging');
-          option.style.pointerEvents = 'none';
-        } else return;
-      }
+    option.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
       e.preventDefault();
-      this.clearDragOver();
 
-      const under = document.elementFromPoint(clientX, clientY);
-      const dropZone = under?.closest?.('.sortable-drop-zone');
-      if (dropZone && dropZone.closest('.options-container')) {
-        this.touchDropTarget = dropZone;
-        dropZone.classList.add('drag-over');
-      } else {
-        this.touchDropTarget = null;
-      }
-    }, { passive: false });
+      this.draggedElement = option;
+      this.pointerStartX = e.clientX;
+      this.pointerStartY = e.clientY;
+      this.pointerDragStarted = false;
+      this.touchDropTarget = null;
 
-    option.addEventListener('touchend', (e) => {
-      if (e.changedTouches.length !== 1 || this.draggedElement !== option) return;
-      const wasDragging = this.touchDragStarted;
-      option.classList.remove('dragging');
-      option.style.pointerEvents = '';
-      this.clearDragState();
+      let lastHighlighted = null;
 
-      if (wasDragging && this.touchDropTarget) {
-        this.touchDropTarget.parentNode.insertBefore(option, this.touchDropTarget);
-        this.captureSortedOrder();
-        this.touchDropTarget = null;
-      }
-      this.draggedElement = null;
-    }, { passive: true });
+      const onMove = (ev) => {
+        if (this.draggedElement !== option) return;
+        const threshold = getDragThreshold();
+        if (!this.pointerDragStarted) {
+          if (Math.abs(ev.clientX - this.pointerStartX) > threshold
+              || Math.abs(ev.clientY - this.pointerStartY) > threshold) {
+            this.pointerDragStarted = true;
+            option.classList.add('dragging');
+            option.style.pointerEvents = 'none';
+          } else return;
+        }
+        ev.preventDefault();
 
-    option.addEventListener('touchcancel', () => {
-      if (this.draggedElement === option) {
+        const dx = ev.clientX - this.pointerStartX;
+        const dy = ev.clientY - this.pointerStartY;
+        option.style.transform = `translate(${dx}px, ${dy}px) scale(1.03)`;
+
+        const under = document.elementFromPoint(ev.clientX, ev.clientY);
+        const dropZone = under?.closest?.('.sortable-drop-zone');
+        const validZone = dropZone?.closest('.options-container') ? dropZone : null;
+
+        if (validZone !== lastHighlighted) {
+          if (lastHighlighted) lastHighlighted.classList.remove('drag-over');
+          if (validZone) validZone.classList.add('drag-over');
+          lastHighlighted = validZone;
+        }
+        this.touchDropTarget = validZone;
+      };
+
+      const cleanup = () => {
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', cleanup);
+        document.removeEventListener('pointercancel', cleanup);
+
+        const wasDragging = this.pointerDragStarted;
         option.classList.remove('dragging');
         option.style.pointerEvents = '';
+        option.style.transform = '';
+        this.pointerDragStarted = false;
+
+        if (wasDragging && this.touchDropTarget) {
+          this.touchDropTarget.parentNode.insertBefore(option, this.touchDropTarget);
+          this.captureSortedOrder();
+          this.touchDropTarget = null;
+        }
         this.clearDragState();
         this.draggedElement = null;
-        this.touchDropTarget = null;
-      }
-    }, { passive: true });
-  }
+      };
 
-  attachDropZoneListeners() {
-    this.block.querySelectorAll('.sortable-drop-zone').forEach((zone) => {
-      zone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (this.draggedElement) {
-          this.clearDragOver();
-          zone.classList.add('drag-over');
-        }
-      });
-      zone.addEventListener('dragleave', (e) => {
-        if (!zone.contains(e.relatedTarget)) {
-          zone.classList.remove('drag-over');
-        }
-      });
-      zone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        zone.classList.remove('drag-over');
-        if (this.draggedElement) {
-          zone.parentNode.insertBefore(this.draggedElement, zone);
-          this.captureSortedOrder();
-        }
-      });
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', cleanup);
+      document.addEventListener('pointercancel', cleanup);
     });
   }
+
 
   clearDragOver() {
     this.block.querySelectorAll('.option.drag-over').forEach(
@@ -2325,6 +2351,7 @@ const renderPreview = (block, product, products) => {
     
               <div class="quiz-actions-section">
                 <div class="quiz-actions-buttons">
+                  <button class="btn btn-quiz-primary" disabled>Email My Results</button>
                   <button class="btn btn-quiz-secondary" id="preview-restart-btn">Take Quiz Again</button>
                 </div>
               </div>

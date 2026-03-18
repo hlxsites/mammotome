@@ -747,12 +747,6 @@ body.survey-fullscreen-active .footer {
     box-shadow: 0 8px 25px rgb(109 110 113 / 60%);
 }
 
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
 .btn-secondary {
     background: #f8f9fa;
     color: var(--mt-global-color-base-secondary);
@@ -1187,8 +1181,9 @@ body.survey-fullscreen-active .footer {
 }
 
 .alternatives-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 20px;
     max-width: 100%;
     margin: 0 auto;
@@ -1202,7 +1197,8 @@ body.survey-fullscreen-active .footer {
     flex-direction: column;
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
     width: 42%;
-    margin: 0 auto;
+    flex: 0 1 42%;
+    max-width: 420px;
 }
 
 .alternatives-grid .product-card .product-image {
@@ -1246,6 +1242,15 @@ body.survey-fullscreen-active .footer {
     line-height: 1.5;
     margin: 0 0 10px;
     display: none;
+}
+
+.alternatives-grid .product-card .card-reason {
+    display: block;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 0 20px 16px;
+    margin: 0;
+    text-align: center;
 }
 
 .alternatives-grid .product-card .btn {
@@ -1754,6 +1759,11 @@ body.survey-fullscreen-active .footer {
         width: 40%;
     }
 
+    .alternatives-grid .product-card .card-reason {
+        font-size: 1.5rem;
+        padding: 0 30px 24px;
+    }
+
     .results-card .contact-section h3 {
         font-size: 2.75rem;
         font-weight: 500;
@@ -1985,12 +1995,14 @@ body.survey-fullscreen-active .footer {
     }
 
     .alternatives-grid {
-        justify-items: center;
+        flex-direction: column;
+        align-items: center;
     }
 
     .alternatives-grid .product-card {
         max-width: 320px;
         width: 100%;
+        flex: 0 1 auto;
     }
 
     .alternatives-grid .product-card .product-image {
@@ -2001,6 +2013,11 @@ body.survey-fullscreen-active .footer {
         padding: 12px 16px;
         font-size: 17px;
         font-weight: 500;
+    }
+
+    .alternatives-grid .product-card .card-reason {
+        font-size: 13px;
+        padding: 0 12px 12px;
     }
 
     .results-card .contact-buttons {
