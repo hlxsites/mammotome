@@ -1557,22 +1557,48 @@ class MarkerQuiz {
 
     const requestResultsBtn = this.block.querySelector('#request-results-btn');
     const emailFormWrapper = this.block.querySelector('#email-results-form-wrapper');
-
+    
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
-        requestResultsBtn.addEventListener('click', async () => {
-          requestResultsBtn.style.display = 'none';
-          emailFormWrapper.style.display = 'block';
+      requestResultsBtn.addEventListener('click', async () => {
+        requestResultsBtn.style.display = 'none';
+        emailFormWrapper.style.display = 'block';
+        try {
+          const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
+          const uuid = sessionStorage.getItem('markerQuizUuid') || '';
+    
+          // Pre-generate the authenticated results URL
+          let resultsUrl = `https://www.mammotome.com/marker-results?uuid=${uuid}`;
           try {
-            const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
-            form.onSuccess((values) => {
-                sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
-                return true;
-              });
-          } catch (e) {
-            console.error('Error loading email results form:', e);
-            emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
+            const linkResponse = await fetch(SHEET_URL, {
+              method: 'POST',
+              redirect: 'follow',
+              body: JSON.stringify({
+                clientSecret: CLIENT_SECRET,
+                action: 'createEmailLink',
+                uuid,
+              }),
+            });
+            const linkData = await linkResponse.json();
+            if (linkData.success && linkData.token) {
+              resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${Date.now()}`;
+            }
+          } catch (err) {
+            console.warn('[Marker Quiz] Failed to pre-generate link:', err);
           }
-        });
+    
+          form.addHiddenFields({
+            Quiz_Results_URL__c: resultsUrl,
+          });
+    
+          form.onSuccess((values) => {
+            sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
+            return true;
+          });
+        } catch (e) {
+          console.error('Error loading email results form:', e);
+          emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
+        }
+      });
     } else if (requestResultsBtn) {
       const leadForm = this.block.querySelector('#lead-capture-form');
       const leadConfirmation = this.block.querySelector('#lead-capture-confirmation');
