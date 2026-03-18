@@ -561,7 +561,8 @@ body.survey-fullscreen-active .footer {
 .option.sortable {
     flex-direction: row;
     cursor: grab;
-    touch-action: manipulation;
+    touch-action: none;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .option.sortable:active {
@@ -589,8 +590,9 @@ body.survey-fullscreen-active .footer {
 .option.dragging {
     opacity: 0.5;
     box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
-    transform: scale(1.02);
     z-index: 100;
+    transition: none;
+    will-change: transform;
 }
 
 .option.drag-over {
@@ -603,7 +605,7 @@ body.survey-fullscreen-active .footer {
     flex: 0 0 16px;
     min-height: 16px;
     margin: 0;
-    transition: all 0.15s ease;
+    transition: flex 0.1s ease, min-height 0.1s ease, background 0.1s ease;
 }
 
 .sortable-drop-zone.drag-over {

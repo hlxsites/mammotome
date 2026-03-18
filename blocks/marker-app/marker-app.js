@@ -6,7 +6,7 @@ import {
 } from '../../scripts/lib-franklin.js';
 
 // GOOGLE SHEETS CONFIGURATION & SECURITY
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx6hqbYS9OD-7X9R2iLngCCRDFo0JIiCGLPJblQT3qnk-Uy7dk6q8ONFlOPWNSGLsJo/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzhlsHkta-gTlzlb7yA95X2QmgaXci7olEZZZJ9DhSb9s-WZtyBzKO-iNfg9wYiA0UT/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
 
@@ -202,9 +202,9 @@ const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embe
 const VIMEO_REGEX = /(?:vimeo\.com\/)(?:video\/)?(\d+)/;
 
 /** Drag threshold (px) — higher = less accidental drag. */
-const DRAG_THRESHOLD_DEFAULT = 8;
+const DRAG_THRESHOLD_DEFAULT = 3;
 /** QMB-T Tizen: larger threshold for big touch displays. */
-const DRAG_THRESHOLD_QMB_T = 24;
+const DRAG_THRESHOLD_QMB_T = 10;
 
 const isQmbTDisplay = () => {
   return typeof window !== 'undefined'
@@ -2015,71 +2015,71 @@ class MarkerQuiz {
   }
 
   attachSortableDragListeners(option) {
+    let threshold;
+    let lastHighlighted = null;
+
     option.addEventListener('pointerdown', (e) => {
       if (e.button !== 0) return;
       e.preventDefault();
+      option.setPointerCapture(e.pointerId);
 
+      threshold = getDragThreshold();
+      lastHighlighted = null;
       this.draggedElement = option;
       this.pointerStartX = e.clientX;
       this.pointerStartY = e.clientY;
       this.pointerDragStarted = false;
       this.touchDropTarget = null;
-
-      let lastHighlighted = null;
-
-      const onMove = (ev) => {
-        if (this.draggedElement !== option) return;
-        const threshold = getDragThreshold();
-        if (!this.pointerDragStarted) {
-          if (Math.abs(ev.clientX - this.pointerStartX) > threshold
-              || Math.abs(ev.clientY - this.pointerStartY) > threshold) {
-            this.pointerDragStarted = true;
-            option.classList.add('dragging');
-            option.style.pointerEvents = 'none';
-          } else return;
-        }
-        ev.preventDefault();
-
-        const dx = ev.clientX - this.pointerStartX;
-        const dy = ev.clientY - this.pointerStartY;
-        option.style.transform = `translate(${dx}px, ${dy}px) scale(1.03)`;
-
-        const under = document.elementFromPoint(ev.clientX, ev.clientY);
-        const dropZone = under?.closest?.('.sortable-drop-zone');
-        const validZone = dropZone?.closest('.options-container') ? dropZone : null;
-
-        if (validZone !== lastHighlighted) {
-          if (lastHighlighted) lastHighlighted.classList.remove('drag-over');
-          if (validZone) validZone.classList.add('drag-over');
-          lastHighlighted = validZone;
-        }
-        this.touchDropTarget = validZone;
-      };
-
-      const cleanup = () => {
-        document.removeEventListener('pointermove', onMove);
-        document.removeEventListener('pointerup', cleanup);
-        document.removeEventListener('pointercancel', cleanup);
-
-        const wasDragging = this.pointerDragStarted;
-        option.classList.remove('dragging');
-        option.style.pointerEvents = '';
-        option.style.transform = '';
-        this.pointerDragStarted = false;
-
-        if (wasDragging && this.touchDropTarget) {
-          this.touchDropTarget.parentNode.insertBefore(option, this.touchDropTarget);
-          this.captureSortedOrder();
-          this.touchDropTarget = null;
-        }
-        this.clearDragState();
-        this.draggedElement = null;
-      };
-
-      document.addEventListener('pointermove', onMove);
-      document.addEventListener('pointerup', cleanup);
-      document.addEventListener('pointercancel', cleanup);
     });
+
+    option.addEventListener('pointermove', (e) => {
+      if (this.draggedElement !== option) return;
+      if (!this.pointerDragStarted) {
+        if (Math.abs(e.clientX - this.pointerStartX) > threshold
+            || Math.abs(e.clientY - this.pointerStartY) > threshold) {
+          this.pointerDragStarted = true;
+          option.classList.add('dragging');
+          option.style.pointerEvents = 'none';
+        } else return;
+      }
+
+      option.style.transform = `translate(${e.clientX - this.pointerStartX}px, ${e.clientY - this.pointerStartY}px)`;
+
+      const under = document.elementFromPoint(e.clientX, e.clientY);
+      const dropZone = under?.closest?.('.sortable-drop-zone');
+      const validZone = dropZone?.closest('.options-container') ? dropZone : null;
+
+      if (validZone !== lastHighlighted) {
+        if (lastHighlighted) lastHighlighted.classList.remove('drag-over');
+        if (validZone) validZone.classList.add('drag-over');
+        lastHighlighted = validZone;
+      }
+      this.touchDropTarget = validZone;
+    });
+
+    const cleanup = () => {
+      const wasDragging = this.pointerDragStarted;
+      option.classList.remove('dragging');
+      option.style.pointerEvents = '';
+      option.style.transform = '';
+      this.pointerDragStarted = false;
+
+      if (lastHighlighted) {
+        lastHighlighted.classList.remove('drag-over');
+        lastHighlighted = null;
+      }
+
+      if (wasDragging && this.touchDropTarget) {
+        this.touchDropTarget.parentNode.insertBefore(option, this.touchDropTarget);
+        this.captureSortedOrder();
+        this.touchDropTarget = null;
+      }
+      this.clearDragState();
+      this.draggedElement = null;
+    };
+
+    option.addEventListener('pointerup', cleanup);
+    option.addEventListener('pointercancel', cleanup);
   }
 
 
@@ -2120,7 +2120,6 @@ class MarkerQuiz {
     const container = this.block.querySelector('.options-container');
     if (!container) return;
 
-    // Read original indices from data attributes
     const indices = [...container.querySelectorAll('.option.sortable')]
       .map((el) => parseInt(el.dataset.optionIndex, 10));
     this.selections[step] = indices;
@@ -2130,11 +2129,22 @@ class MarkerQuiz {
     const rankList = indices.map((i, rank) => `${rank + 1}. ${options[i].text}`).join(', ');
     this.logCurrentScores(`Q${step + 1} reorder — ${rankList}`);
 
-    // Re-render to fix drop zone pairing
-    const display = this.block.querySelector('#quiz-question-display');
-    if (display) {
-      this.renderSortableQuestion(display, question);
-    }
+    this.fixDropZonePairing(container);
+  }
+
+  fixDropZonePairing(container) {
+    container.querySelectorAll('.sortable-drop-zone').forEach((dz) => dz.remove());
+    const opts = container.querySelectorAll('.option.sortable');
+    opts.forEach((opt) => {
+      const dz = document.createElement('div');
+      dz.className = 'sortable-drop-zone';
+      dz.dataset.dropZone = 'true';
+      container.insertBefore(dz, opt);
+    });
+    const trailing = document.createElement('div');
+    trailing.className = 'sortable-drop-zone';
+    trailing.dataset.dropZone = 'true';
+    container.appendChild(trailing);
   }
 
   selectOption(stepIndex, optionIndex) {
