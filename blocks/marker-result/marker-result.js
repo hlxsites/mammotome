@@ -1,6 +1,6 @@
 import { getMarkerRecommendations } from '../../scripts/lib-franklin.js';
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGOcf4e3G1qIEEaznEYtrt-qdLkBTVPTFxs3YrXnO7JF2LEt7DwzAvp0wM34qoc72S/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz-ohnFf3f48X4-bA8C4Cdt7wybi9bP1RLp_40BMc6DITxzVeAjG8FFAjffD0tV-MLX/exec';
 
 export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
