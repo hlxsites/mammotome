@@ -5,7 +5,6 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-// GOOGLE SHEETS CONFIGURATION & SECURITY
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6htTl0CtIgqpMeD7_JrF5X8LOJB0qBtM_RbPasDcWkK16LXUKJl42xiuUV__oK39a/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
@@ -143,30 +142,13 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
     };
 
     // Send POST request
-    try {
-      const linkResponse = await fetch(SHEET_URL, {
-        method: 'POST',
-        redirect: 'follow',
-        body: JSON.stringify({
-          clientSecret: CLIENT_SECRET,
-          action: 'createEmailLink',
-          uuid,
-        }),
-      });
-      console.log('[Marker Quiz] linkResponse status:', linkResponse.status);
-      console.log('[Marker Quiz] linkResponse type:', linkResponse.type);
-      const linkText = await linkResponse.text();
-      console.log('[Marker Quiz] linkResponse body:', linkText);
-      const linkData = JSON.parse(linkText);
-      console.log('[Marker Quiz] createEmailLink response:', linkData);
-      if (linkData.success && linkData.token) {
-        resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${Date.now()}`;
-      }
-    } catch (err) {
-      console.warn('[Marker Quiz] Failed to pre-generate link:', err);
-    }
+    const response = await fetch(SHEET_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
 
-    // Handle response
     if (!response.ok) {
       // eslint-disable-next-line no-console
       console.warn(`[Marker Quiz] Server returned ${response.status}`);
