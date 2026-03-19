@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6htTl0CtIgqpMeD7_JrF5X8LOJB0qBtM_RbPasDcWkK16LXUKJl42xiuUV__oK39a/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGOcf4e3G1qIEEaznEYtrt-qdLkBTVPTFxs3YrXnO7JF2LEt7DwzAvp0wM34qoc72S/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
 
@@ -21,23 +21,23 @@ const ALLOWED_ORIGINS = [
    * Validate current page origin (client-side CORS check)
    */
 const isOriginAllowed = () => {
-    if (typeof window === 'undefined') return false;
-    const currentOrigin = window.location.origin;
-  
-    return ALLOWED_ORIGINS.some((allowed) => {
-      if (allowed.includes('*')) {
-        const pattern = allowed
-          .replace(/\./g, '\\.')
-          .replace(/\*/g, '.*');
-        return new RegExp(`^${pattern}$`).test(currentOrigin);
-      }
-      try {
-        return currentOrigin === new URL(allowed).origin;
-      } catch {
-        return false;
-      }
-    });
-  }
+  if (typeof window === 'undefined') return false;
+  const currentOrigin = window.location.origin;
+
+  return ALLOWED_ORIGINS.some((allowed) => {
+    if (allowed.includes('*')) {
+      const pattern = allowed
+        .replace(/\./g, '\\.')
+        .replace(/\*/g, '.*');
+      return new RegExp(`^${pattern}$`).test(currentOrigin);
+    }
+    try {
+      return currentOrigin === new URL(allowed).origin;
+    } catch {
+      return false;
+    }
+  });
+};
 
 /**
    * Validate response data structure before sending
@@ -54,7 +54,7 @@ const validateGoogleSheetsPayload = (payload) => {
   if (!payload.top_product_id) errors.push('Missing top_product_id');
 
   return { valid: errors.length === 0, errors };
-}
+};
 
 /**
    * Sanitize user agent to prevent injection attacks
@@ -204,15 +204,11 @@ const DRAG_THRESHOLD_DEFAULT = 3;
 /** QMB-T Tizen: larger threshold for big touch displays. */
 const DRAG_THRESHOLD_QMB_T = 10;
 
-const isQmbTDisplay = () => {
-  return typeof window !== 'undefined'
+const isQmbTDisplay = () => typeof window !== 'undefined'
           && window.innerWidth >= 2160
           && window.innerHeight >= 3840;
-}
 
-const getDragThreshold = () => {
-  return isQmbTDisplay() ? DRAG_THRESHOLD_QMB_T : DRAG_THRESHOLD_DEFAULT;
-}
+const getDragThreshold = () => (isQmbTDisplay() ? DRAG_THRESHOLD_QMB_T : DRAG_THRESHOLD_DEFAULT);
 
 const escapeHtml = (str) => {
   if (str == null || typeof str !== 'string') return '';
@@ -221,7 +217,7 @@ const escapeHtml = (str) => {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
-}
+};
 
 const getVideoEmbedUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
@@ -231,18 +227,16 @@ const getVideoEmbedUrl = (url) => {
   const vimeoMatch = trimmed.match(VIMEO_REGEX);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
   return trimmed;
-}
+};
 
 const getVideoThumbnailUrl = (product) => {
   if (product.videoThumbnail) return product.videoThumbnail;
   const match = (product.video || '').trim().match(YOUTUBE_REGEX);
   if (match) return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
   return product.cardImage || product.image || '';
-}
+};
 
-const isVimeoVideo = (url) => {
-  return url && typeof url === 'string' && VIMEO_REGEX.test(url.trim());
-}
+const isVimeoVideo = (url) => url && typeof url === 'string' && VIMEO_REGEX.test(url.trim());
 
 const vimeoThumbnailCache = new Map();
 
@@ -299,7 +293,7 @@ const openProductVideo = (embedUrl) => {
   });
   document.body.style.overflow = 'hidden';
   document.body.appendChild(overlay);
-}
+};
 
 /**
    * Strips HTML for use in alt attributes (plain text only).
@@ -319,7 +313,7 @@ const allowTrademarkHtml = (str) => {
     /&lt;sup&gt;(.*?)&lt;\/sup&gt;/gs,
     (_, content) => `<sup>${content}</sup>`,
   );
-}
+};
 
 /**
    * Reads block config like readBlockConfig but uses innerHTML for text cells
@@ -356,7 +350,7 @@ const readBlockConfigWithHtml = (block) => {
     if (html) config[name] = html;
   });
   return config;
-}
+};
 
 const RANK_SCORES = {
   type: 'ranked_capability',
@@ -540,7 +534,7 @@ const parseSortableOptionImagesFromBlock = (block) => {
     }
   });
   return result;
-}
+};
 
 /**
    * Finds images for an option by matching keyword to option text, or by index (legacy).
@@ -559,7 +553,7 @@ const getOptionImages = (optionImages, opt, fallbackIndex) => {
   if (keywords.length > 0) return (byKeyword[keywords[0]] || []).slice(0, 4);
   const byIndex = optionImages.byIndex || {};
   return (byIndex[fallbackIndex] ?? optionImages[fallbackIndex] ?? opt.images ?? []).slice(0, 4);
-}
+};
 
 /**
    * Parses the block for question image rows. Expects rows where:
@@ -600,7 +594,7 @@ const parseQuestionImagesFromBlock = (block) => {
     result[questionNum] = { image: img.src, placement };
   });
   return result;
-}
+};
 
 /**
    * Parses a "Sub-header" row from the block, extracting both image and text.
@@ -625,7 +619,7 @@ const parseSubHeaderFromBlock = (block) => {
     }
   });
   return image || text ? { image, text } : null;
-}
+};
 
 class MarkerQuiz {
   constructor(block, config, products) {
@@ -1555,7 +1549,7 @@ class MarkerQuiz {
 
     const requestResultsBtn = this.block.querySelector('#request-results-btn');
     const emailFormWrapper = this.block.querySelector('#email-results-form-wrapper');
-    
+
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
       requestResultsBtn.addEventListener('click', async () => {
         requestResultsBtn.style.display = 'none';
@@ -1563,13 +1557,14 @@ class MarkerQuiz {
         try {
           const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
           const uuid = sessionStorage.getItem('markerQuizUuid') || '';
-    
+
           // Disable submit until token is ready
           const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
           if (submitBtn) submitBtn.disabled = true;
-    
+
           // Pre-generate the authenticated results URL
-          let resultsUrl = `https://www.mammotome.com/marker-results?uuid=${uuid}`;
+          const baseUrl = window.location.origin;
+          let resultsUrl = `${baseUrl}/us/en/marker-results?uuid=${uuid}`;
           try {
             const linkResponse = await fetch(SHEET_URL, {
               method: 'POST',
@@ -1588,14 +1583,14 @@ class MarkerQuiz {
           } catch (err) {
             console.warn('[Marker Quiz] Failed to pre-generate link:', err);
           }
-    
+
           form.addHiddenFields({
             quizResultsURL: resultsUrl,
           });
-    
+
           // Re-enable submit now that URL is set
           if (submitBtn) submitBtn.disabled = false;
-    
+
           form.onSuccess((values) => {
             sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
             return true;
@@ -2114,7 +2109,6 @@ class MarkerQuiz {
     option.addEventListener('pointercancel', cleanup);
   }
 
-
   clearDragOver() {
     this.block.querySelectorAll('.option.drag-over').forEach(
       (el) => el.classList.remove('drag-over'),
@@ -2161,10 +2155,10 @@ class MarkerQuiz {
     const rankList = indices.map((i, rank) => `${rank + 1}. ${options[i].text}`).join(', ');
     this.logCurrentScores(`Q${step + 1} reorder — ${rankList}`);
 
-    this.fixDropZonePairing(container);
+    MarkerQuiz.fixDropZonePairing(container);
   }
 
-  fixDropZonePairing(container) {
+  static fixDropZonePairing(container) {
     container.querySelectorAll('.sortable-drop-zone').forEach((dz) => dz.remove());
     const opts = container.querySelectorAll('.option.sortable');
     opts.forEach((opt) => {
@@ -2315,7 +2309,7 @@ const applyStartScreenContentFromBlock = (block, config) => {
   if (description && (config['start-description'] == null || config['start-description'] === '')) {
     config['start-description'] = description;
   }
-}
+};
 
 const getPreviewSlug = () => {
   const params = new URLSearchParams(window.location.search);
@@ -2325,7 +2319,7 @@ const getPreviewSlug = () => {
     slug = slug.split('?preview=')[0].trim() || null;
   }
   return slug;
-}
+};
 
 const findProductBySlug = (products, slug) => {
   if (!slug) return null;
@@ -2333,7 +2327,7 @@ const findProductBySlug = (products, slug) => {
   return Object.values(products).find(
     (p) => p.slug === slugNorm || p.id === slugNorm,
   ) || null;
-}
+};
 
 const renderPreview = (block, product, products) => {
   const allProducts = Object.values(products);
@@ -2455,7 +2449,7 @@ const renderPreview = (block, product, products) => {
   });
 
   applyVimeoThumbnails(block);
-}
+};
 
 export default async function decorate(block) {
   const { products } = await getMarkerRecommendations();
