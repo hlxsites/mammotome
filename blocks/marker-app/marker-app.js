@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz-ohnFf3f48X4-bA8C4Cdt7wybi9bP1RLp_40BMc6DITxzVeAjG8FFAjffD0tV-MLX/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxyY3rx1TBLXGYkxQbPRZxHQsmwtqlkN-8donPqdJfJx6SHN2ZAuOvvmsbxIvAq8aPu/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
 
@@ -129,6 +129,10 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
 
       // Recommendation
       recommendedProductId: payload.top_product_id || '',
+      secondProductId: payload.second_product_id || '',
+      secondProductName: payload.second_product_name || '',
+      thirdProductId: payload.third_product_id || '',
+      thirdProductName: payload.third_product_name || '',
 
       // User info
       email: userInfo.email || '',
@@ -1396,6 +1400,10 @@ class MarkerQuiz {
       natural_rating: bio,
       ...(nick !== undefined ? { nickel_rating: nick } : {}),
       all_scores: { ...this.scores },
+      second_product_id: sortedProducts[1]?.id || '',
+      second_product_name: sortedProducts[1]?.name || '',
+      third_product_id: sortedProducts[2]?.id || '',
+      third_product_name: sortedProducts[2]?.name || '',
     };
   }
 
