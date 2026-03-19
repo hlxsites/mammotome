@@ -6,7 +6,7 @@ import {
 } from '../../scripts/lib-franklin.js';
 
 // GOOGLE SHEETS CONFIGURATION & SECURITY
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzhlsHkta-gTlzlb7yA95X2QmgaXci7olEZZZJ9DhSb9s-WZtyBzKO-iNfg9wYiA0UT/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6htTl0CtIgqpMeD7_JrF5X8LOJB0qBtM_RbPasDcWkK16LXUKJl42xiuUV__oK39a/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
 
@@ -143,12 +143,28 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
     };
 
     // Send POST request
-    const response = await fetch(SHEET_URL, {
-      method: 'POST',
-      redirect: 'follow',
-      body: JSON.stringify(requestBody),
-      signal: controller.signal,
-    });
+    try {
+      const linkResponse = await fetch(SHEET_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        body: JSON.stringify({
+          clientSecret: CLIENT_SECRET,
+          action: 'createEmailLink',
+          uuid,
+        }),
+      });
+      console.log('[Marker Quiz] linkResponse status:', linkResponse.status);
+      console.log('[Marker Quiz] linkResponse type:', linkResponse.type);
+      const linkText = await linkResponse.text();
+      console.log('[Marker Quiz] linkResponse body:', linkText);
+      const linkData = JSON.parse(linkText);
+      console.log('[Marker Quiz] createEmailLink response:', linkData);
+      if (linkData.success && linkData.token) {
+        resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${Date.now()}`;
+      }
+    } catch (err) {
+      console.warn('[Marker Quiz] Failed to pre-generate link:', err);
+    }
 
     // Handle response
     if (!response.ok) {
@@ -1566,6 +1582,10 @@ class MarkerQuiz {
           const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
           const uuid = sessionStorage.getItem('markerQuizUuid') || '';
     
+          // Disable submit until token is ready
+          const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
+          if (submitBtn) submitBtn.disabled = true;
+    
           // Pre-generate the authenticated results URL
           let resultsUrl = `https://www.mammotome.com/marker-results?uuid=${uuid}`;
           try {
@@ -1579,6 +1599,7 @@ class MarkerQuiz {
               }),
             });
             const linkData = await linkResponse.json();
+            console.log('[Marker Quiz] createEmailLink response:', linkData);
             if (linkData.success && linkData.token) {
               resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${Date.now()}`;
             }
@@ -1587,8 +1608,11 @@ class MarkerQuiz {
           }
     
           form.addHiddenFields({
-            Quiz_Results_URL__c: resultsUrl,
+            quizResultsURL: resultsUrl,
           });
+    
+          // Re-enable submit now that URL is set
+          if (submitBtn) submitBtn.disabled = false;
     
           form.onSuccess((values) => {
             sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
