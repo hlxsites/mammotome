@@ -5,7 +5,7 @@ import {
   toClassName,
 } from '../../scripts/lib-franklin.js';
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxyY3rx1TBLXGYkxQbPRZxHQsmwtqlkN-8donPqdJfJx6SHN2ZAuOvvmsbxIvAq8aPu/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwZYd5rhFtYLc0SaBDvq_lz_m5CzEG4PmPcsJBYMWbkSKEP4UNgObFh1XrxMs-vn5ME/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
 
