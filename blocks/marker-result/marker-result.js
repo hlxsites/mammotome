@@ -224,54 +224,9 @@ export default async function decorate(block) {
       'Third_Product_Id',
     ]);
 
-    const secondProductNameRaw = firstSheetString(sheet, [
-      'secondProductName',
-      'second_product_name',
-    ]);
-    const thirdProductNameRaw = firstSheetString(sheet, [
-      'thirdProductName',
-      'third_product_name',
-    ]);
-
     const topProduct = getProductById(products, topProductId);
     const secondProduct = getProductById(products, secondProductId);
     const thirdProduct = getProductById(products, thirdProductId);
-
-    const productKeys = Object.keys(products);
-    // eslint-disable-next-line no-console
-    console.log('[marker-result] sheet/API debug', {
-      topLevelKeys: Object.keys(data).sort(),
-      mergedSheetKeys: Object.keys(sheet).sort(),
-      recommendedIdsTried: {
-        recommendedProductId: data.recommendedProductId,
-        recommended_product_id: data.recommended_product_id,
-        top_product_id: sheet.top_product_id,
-      },
-      secondThirdFromApi: {
-        secondProductId: data.secondProductId,
-        second_product_id: data.second_product_id,
-        second_product_name: secondProductNameRaw || data.second_product_name,
-        thirdProductId: data.thirdProductId,
-        third_product_id: data.third_product_id,
-        third_product_name: thirdProductNameRaw || data.third_product_name,
-      },
-      resolvedIds: {
-        topProductId,
-        secondProductId,
-        thirdProductId,
-      },
-      lookupOk: {
-        top: Boolean(topProduct),
-        second: Boolean(secondProduct),
-        third: Boolean(thirdProduct),
-      },
-      normalizedLookupKeys: {
-        second: secondProductId ? String(secondProductId).trim().toLowerCase() : '',
-        third: thirdProductId ? String(thirdProductId).trim().toLowerCase() : '',
-      },
-      markerJsonProductIdSample: productKeys.slice(0, 15),
-      markerJsonProductCount: productKeys.length,
-    });
 
     if (!topProduct) {
       block.innerHTML = '<p>Product recommendation not found.</p>';
@@ -342,15 +297,7 @@ export default async function decorate(block) {
                 </div>
               </div>
 
-              <hr class="divider primary">
-                  <div class="contact-section">
-                <h2>Would you like more information about these markers?</h2>
-                <div class="contact-buttons">
-                  <button type="button" class="btn btn-contact-primary" id="contact-yes-btn">Learn More</button>
-                </div>
-              </div>
-
-              ${alternativeEntries.length > 0 ? `
+                            ${alternativeEntries.length > 0 ? `
               <div class="alternatives-section">
                 <h3>You Should Also Consider</h3>
                 <div class="alternatives-grid">
@@ -366,6 +313,15 @@ export default async function decorate(block) {
                 </div>
               </div>
               ` : ''}
+
+
+              <hr class="divider primary">
+                  <div class="contact-section">
+                <h2>Would you like more information about these markers?</h2>
+                <div class="contact-buttons">
+                  <button type="button" class="btn btn-contact-primary" id="contact-yes-btn" onclick="window.location.href='/contact/';">Learn More</button>
+                </div>
+              </div>
 
               ${(topProduct.footnotes || []).length ? `
               <div class="product-footnotes">
@@ -397,11 +353,6 @@ export default async function decorate(block) {
         // eslint-disable-next-line no-alert
         window.prompt('Copy this link to share your results:', window.location.href);
       }
-    });
-
-    block.querySelector('#contact-yes-btn')?.addEventListener('click', () => {
-      // eslint-disable-next-line no-alert
-      alert('Thank you! A specialist will contact you soon.');
     });
 
     block.querySelector('#contact-no-btn')?.addEventListener('click', () => {

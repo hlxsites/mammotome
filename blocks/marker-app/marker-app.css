@@ -78,6 +78,32 @@
     flex-shrink: 0;
 }
 
+/* Welcome / start screen: same fullscreen shell as quiz, card centered (Tizen parallax uses .survey-fullscreen) */
+.survey-fullscreen.survey-fullscreen-welcome {
+    padding: 0;
+}
+
+.survey-fullscreen-welcome-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 56px 24px 32px;
+}
+
+.survey-fullscreen.survey-fullscreen-welcome .survey-card {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.survey-fullscreen.survey-fullscreen-welcome .survey-card:hover {
+    transform: none;
+    box-shadow: 0 20px 40px rgb(0 0 0 / 10%);
+}
+
 body.survey-fullscreen-active {
     overflow: hidden;
 }
@@ -86,6 +112,17 @@ body.survey-fullscreen-active header,
 body.survey-fullscreen-active footer,
 body.survey-fullscreen-active .header,
 body.survey-fullscreen-active .footer {
+    display: none !important;
+}
+
+/* Authoring: marker-app block rows "hide | nav", "hide | footer", or "hide | nav, footer" */
+body.marker-app-hide-chrome-nav header,
+body.marker-app-hide-chrome-nav .header {
+    display: none !important;
+}
+
+body.marker-app-hide-chrome-footer footer,
+body.marker-app-hide-chrome-footer .footer {
     display: none !important;
 }
 
@@ -1200,7 +1237,7 @@ body.survey-fullscreen-active .footer {
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
     width: 42%;
     flex: 0 1 42%;
-    max-width: 420px;
+    max-width: 700px;
 }
 
 .alternatives-grid .product-card .product-image {
@@ -1384,6 +1421,11 @@ body.survey-fullscreen-active .footer {
 
     .survey-fullscreen {
         justify-content: center;
+        background-image: url('https://main--mammotome--hlxsites.aem.page/assets/images/mammotome-gradient-wave-no-tagline.png');
+        background-attachment: fixed;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     .survey-fullscreen .survey-card,
@@ -1651,6 +1693,7 @@ body.survey-fullscreen-active .footer {
         height: 70px;
         top: 20px;
         right: 30px;
+        border-radius: 20px;
     }
 
     .survey-fullscreen .survey-close-btn svg {

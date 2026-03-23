@@ -356,6 +356,45 @@ const readBlockConfigWithHtml = (block) => {
   return config;
 };
 
+/**
+ * Optional authoring: two-column rows on the marker-app block to hide site chrome.
+ * First column must be `hide` (case-insensitive → class name `hide`).
+ * Second column lists what to hide, space/comma/semicolon-separated:
+ * - `nav` — hides global header (`header`, `.header`)
+ * - `footer` — hides global footer (`footer`, `.footer`)
+ * Examples (one or more rows):
+ *   hide | nav
+ *   hide | footer
+ *   hide | nav, footer
+ */
+const MARKER_APP_HIDE_CHROME_KEYS = new Set(['nav', 'footer']);
+
+const parseHideChromeFromBlock = (block) => {
+  const targets = new Set();
+  block.querySelectorAll(':scope > div').forEach((row) => {
+    const cols = [...row.children];
+    if (cols.length < 2) return;
+    const rowKey = toClassName(cols[0].textContent);
+    if (rowKey !== 'hide') return;
+    const col = cols[1];
+    const raw = (col.innerText || col.textContent || '').trim();
+    if (!raw) return;
+    raw.split(/[\s,;|]+/u).forEach((token) => {
+      const t = token.toLowerCase().trim();
+      if (MARKER_APP_HIDE_CHROME_KEYS.has(t)) targets.add(t);
+    });
+  });
+  return {
+    hideNav: targets.has('nav'),
+    hideFooter: targets.has('footer'),
+  };
+};
+
+const applyMarkerAppHideChrome = ({ hideNav, hideFooter }) => {
+  document.body.classList.toggle('marker-app-hide-chrome-nav', Boolean(hideNav));
+  document.body.classList.toggle('marker-app-hide-chrome-footer', Boolean(hideFooter));
+};
+
 const RANK_SCORES = {
   type: 'ranked_capability',
   label_to_capability: {
@@ -638,11 +677,21 @@ class MarkerQuiz {
     this.currentStep = 0;
     this.selections = {};
     this.scores = {};
+    /** After user closes fullscreen welcome, show embedded start until they begin the quiz again. */
+    this.startScreenInline = false;
   }
 
   bindCloseBtn() {
     this.block.querySelector('#close-survey-btn')
-      ?.addEventListener('click', () => this.exitFullscreen());
+      ?.addEventListener('click', () => {
+        if (this.showStartScreen && !this.startScreenInline) {
+          this.startScreenInline = true;
+          document.body.classList.remove('survey-fullscreen-active');
+          this.render();
+          return;
+        }
+        this.exitFullscreen();
+      });
   }
 
   async init() {
@@ -685,9 +734,7 @@ class MarkerQuiz {
       ? `<h2 class="start-sub-header-text">${allowTrademarkHtml(subHeader.text)}</h2>`
       : '';
 
-    this.block.innerHTML = `
-          <div class="product-survey-container">
-            <div class="survey-card">
+    const startCardInner = `
               <div class="start-logo-banner">
                 <img src="${START_LOGO_URL}" alt="Mammotome Markers" />
               </div>
@@ -697,9 +744,28 @@ class MarkerQuiz {
                 ${subHeaderTextHtml}
                 <p>${descSafe}</p>
                 <button class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
+              </div>`;
+
+    if (this.startScreenInline) {
+      this.block.innerHTML = `
+          <div class="product-survey-container">
+            <div class="survey-card">
+              ${startCardInner}
+            </div>
+          </div>`;
+    } else {
+      this.block.innerHTML = `
+          <div class="product-survey-container survey-fullscreen survey-fullscreen-welcome">
+            ${CLOSE_BTN_HTML}
+            <div class="survey-fullscreen-welcome-body">
+              <div class="survey-card">
+                ${startCardInner}
               </div>
             </div>
           </div>`;
+      document.body.classList.add('survey-fullscreen-active');
+      this.bindCloseBtn();
+    }
 
     this.block.querySelector('#start-survey-btn')?.addEventListener('click', () => {
       this.showStartScreen = false;
@@ -2283,8 +2349,10 @@ class MarkerQuiz {
     this.scores = {};
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
+    this.startScreenInline = false;
     this.showStartScreen = true;
-    this.exitFullscreen();
+    document.body.classList.remove('survey-fullscreen-active');
+    this.render();
   }
 
   exitFullscreen() {
@@ -2461,13 +2529,15 @@ const renderPreview = (block, product, products) => {
 
 export default async function decorate(block) {
   const { products } = await getMarkerRecommendations();
+  const hideChrome = parseHideChromeFromBlock(block);
+  applyMarkerAppHideChrome(hideChrome);
   const config = readBlockConfigWithHtml(block);
 
   const previewSlug = getPreviewSlug();
   if (previewSlug) {
     const product = findProductBySlug(products, previewSlug);
     if (product) {
-      renderPreview(block, product, products, config);
+      renderPreview(block, product, products);
       return null;
     }
   }
