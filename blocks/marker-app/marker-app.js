@@ -4,10 +4,24 @@ import {
   getMarkerRecommendations,
   toClassName,
 } from '../../scripts/lib-franklin.js';
+import { embedMultistepMarketoForm } from '../multistep-form/multistep-form.js';
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwZYd5rhFtYLc0SaBDvq_lz_m5CzEG4PmPcsJBYMWbkSKEP4UNgObFh1XrxMs-vn5ME/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
+
+const DEFAULT_CONTACT_SALES_FORM_ID = 2364;
+
+const getEmailResultsFormIdFromConfig = (config) => config['email-results-form-id'] || config.emailresultsformid || null;
+
+const getContactSalesFormIdFromConfig = (config) => {
+  const contactFormRaw = config['contact-sales-form-id'] || config.contactsalesformid;
+  if (contactFormRaw != null && String(contactFormRaw).trim() !== '') {
+    const n = parseInt(String(contactFormRaw).trim(), 10);
+    return Number.isNaN(n) ? DEFAULT_CONTACT_SALES_FORM_ID : n;
+  }
+  return DEFAULT_CONTACT_SALES_FORM_ID;
+};
 
 const ALLOWED_ORIGINS = [
   'https://www.mammotome.com',
@@ -16,10 +30,6 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
 ];
 
-// SECURITY UTILITY FUNCTIONS
-/**
-   * Validate current page origin (client-side CORS check)
-   */
 const isOriginAllowed = () => {
   if (typeof window === 'undefined') return false;
   const currentOrigin = window.location.origin;
@@ -39,9 +49,6 @@ const isOriginAllowed = () => {
   });
 };
 
-/**
-   * Validate response data structure before sending
-   */
 const validateGoogleSheetsPayload = (payload) => {
   const errors = [];
 
@@ -66,12 +73,9 @@ const sanitizeUserAgent = (ua) => {
 
 // ENHANCED GOOGLE SHEETS SUBMISSION FUNCTION
 /**
-   * Send quiz response to Google Sheets via Apps Script
-   * Enhanced with security layers while maintaining compatibility with existing code
-   *
-   * @param {object} payload - Response data from buildSheetPayload()
-   * @param {object} userInfo - Optional {name, email, facility} from lead form
-   * @param {object} options - Optional {includeUserAgent, timeout}
+   * @param {object} payload
+   * @param {object} userInfo
+   * @param {object} options
    */
 async function sendToSheet(payload, userInfo = {}, options = {}) {
   // Validate origin
@@ -81,7 +85,6 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
     return;
   }
 
-  // Validate payload structure
   const validation = validateGoogleSheetsPayload(payload);
   if (!validation.valid) {
     // eslint-disable-next-line no-console
@@ -94,13 +97,8 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
-    // Build Google Sheets request body
-    // Convert buildSheetPayload() output to Google Sheets format
     const requestBody = {
-      // Authentication
       clientSecret: CLIENT_SECRET,
-
-      // Quiz responses (from buildSheetPayload())
       responses: {
         q1_current_markers: payload.current_bx_markers || '',
         q2_modalities: [payload.modality || ''],
@@ -111,13 +109,13 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
           payload.priority_4 || '',
         ],
         q4_patient_cases: (payload.patient_cases || '').split(', ').filter(Boolean),
-        q5_migration_frequency_text: payload.migration_concern || '',
-        q6_bleeding_frequency_text: payload.bleeding_concern || '',
+        q5_followup_concern: payload.followup_concern || '',
+        q5_bleeding_frequency_text: payload.bleeding_concern || '',
+        q6_case_mix: payload.case_mix || '',
         q7_natural_rating: payload.natural_rating || 0,
         q7_nick_rating: payload.nickel_rating || 0,
       },
 
-      // Product scores
       scores: {
         hydromark: payload.all_scores?.hm || 0,
         hydromark_plus: payload.all_scores?.hmplus || 0,
@@ -127,25 +125,18 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
         lumimark: payload.all_scores?.lumimark || 0,
       },
 
-      // Recommendation
       recommendedProductId: payload.top_product_id || '',
       secondProductId: payload.second_product_id || '',
       secondProductName: payload.second_product_name || '',
       thirdProductId: payload.third_product_id || '',
       thirdProductName: payload.third_product_name || '',
 
-      // User info
       email: userInfo.email || '',
-
-      // Browser info
       userAgent: sanitizeUserAgent(navigator.userAgent),
       clientIp: options.clientIp || '',
-
-      // Timestamp
       timestamp: payload.date_time || new Date().toISOString(),
     };
 
-    // Send POST request
     const response = await fetch(SHEET_URL, {
       method: 'POST',
       redirect: 'follow',
@@ -191,7 +182,20 @@ const CLOSE_BTN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 
 
 const CLOSE_BTN_HTML = `<button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">${CLOSE_BTN_SVG}</button>`;
 
-const START_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets/images/mammotome-markers-logo-transparent.png';
+/** Full-window quiz exit: always return visitors to the markers hub (avoids odd reload targets on author/preview URLs). */
+const MARKER_QUIZ_EXIT_URL = 'https://www.mammotome.com/us/en/products/breast-biopsy-markers/';
+
+const START_HEADER_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets/images/mammotome-markers-logo-transparent.png';
+
+const START_FOOTER_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets/images/circle-m-symbol-logo-white.png';
+
+const DEFAULT_START_TITLE_HTML = '<h1 class="start-screen-title-heading"><span class="start-screen-title-line">Meet Your</span><span class="start-screen-title-line start-screen-title-line--emphasis">Match</span></h1>';
+
+const DEFAULT_START_DESCRIPTION = 'Take our quick quiz to discover the solution that best aligns with your patient and clinical needs.';
+
+const DEFAULT_START_BUTTON = 'Start Quiz';
+
+const DEFAULT_SUB_HEADER_TEXT = 'Not sure which marker is right for you?';
 
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23e0e0e0' width='400' height='300'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='16'%3EPlaceholder%3C/text%3E%3C/svg%3E";
 
@@ -203,9 +207,7 @@ const ICON_PLAYVIDEO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0
 const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
 const VIMEO_REGEX = /(?:vimeo\.com\/)(?:video\/)?(\d+)/;
 
-/** Drag threshold (px) — higher = less accidental drag. */
 const DRAG_THRESHOLD_DEFAULT = 3;
-/** QMB-T Tizen: larger threshold for big touch displays. */
 const DRAG_THRESHOLD_QMB_T = 10;
 
 const isQmbTDisplay = () => typeof window !== 'undefined'
@@ -299,18 +301,11 @@ const openProductVideo = (embedUrl) => {
   document.body.appendChild(overlay);
 };
 
-/**
-   * Strips HTML for use in alt attributes (plain text only).
-   */
 const stripHtmlForAlt = (str) => {
   if (str == null || typeof str !== 'string') return '';
   return str.replace(/<[^>]+>/g, '').trim();
 };
 
-/**
-   * Escapes HTML but allows safe markup (<sup>TM</sup>, <sup>®</sup>, <sup>1,2,3</sup>, etc.)
-   * from authoring. Use for authoring-sourced text with trademark symbols or reference numbers.
-   */
 const allowTrademarkHtml = (str) => {
   const escaped = escapeHtml(str);
   return escaped.replace(
@@ -319,16 +314,23 @@ const allowTrademarkHtml = (str) => {
   );
 };
 
-/**
-   * Reads block config like readBlockConfig but uses innerHTML for text cells
-   * so authoring markup like <sup>TM</sup> is preserved.
-   */
 const loadScriptAsync = (src) => new Promise((resolve, reject) => {
   loadScript(src, (type) => {
     if (type === 'error') reject(new Error(`Failed to load script: ${src}`));
     else resolve();
   });
 });
+
+const MARKETO_FORMS2_SRC = 'https://www2.mammotome.com/js/forms2/js/forms2.min.js';
+
+const prefetchMarketoForms2 = () => {
+  if (typeof window === 'undefined' || window.MktoForms2) return;
+  if (document.querySelector('script[src*="forms2.min.js"]')) return;
+  const s = document.createElement('script');
+  s.src = MARKETO_FORMS2_SRC;
+  s.async = true;
+  document.head.appendChild(s);
+};
 
 const embedMarketoForm = async (container, formId) => {
   await loadScriptAsync('//www2.mammotome.com/js/forms2/js/forms2.min.js');
@@ -339,6 +341,31 @@ const embedMarketoForm = async (container, formId) => {
   return new Promise((resolve) => {
     window.MktoForms2.whenReady(resolve);
   });
+};
+
+const prepareQuizResultsUrlForMarketo = async () => {
+  const uuid = sessionStorage.getItem('markerQuizUuid') || '';
+  const baseUrl = window.location.origin;
+  let resultsUrl = `${baseUrl}/us/en/marker-results?uuid=${uuid}`;
+  try {
+    const linkResponse = await fetch(SHEET_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      body: JSON.stringify({
+        clientSecret: CLIENT_SECRET,
+        action: 'createEmailLink',
+        uuid,
+      }),
+    });
+    const linkData = await linkResponse.json();
+    if (linkData.success && linkData.token) {
+      resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${linkData.tokenCreatedAt}`;
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[Marker Quiz] Failed to pre-generate results link:', err);
+  }
+  return resultsUrl;
 };
 
 const readBlockConfigWithHtml = (block) => {
@@ -356,21 +383,48 @@ const readBlockConfigWithHtml = (block) => {
   return config;
 };
 
-/**
- * Optional authoring: two-column rows on the marker-app block to hide site chrome.
- * First column must be `hide` (case-insensitive → class name `hide`).
- * Second column lists what to hide, space/comma/semicolon-separated:
- * - `nav` — hides global header (`header`, `.header`)
- * - `footer` — hides global footer (`footer`, `.footer`)
- * Examples (one or more rows):
- *   hide | nav
- *   hide | footer
- *   hide | nav, footer
- */
 const MARKER_APP_HIDE_CHROME_KEYS = new Set(['nav', 'footer']);
 
+/** Map curly/smart quotes from Word/Excel to ASCII so quoted phrases parse reliably. */
+const normalizeAuthoringQuotes = (str) => String(str || '')
+  .replace(/\u201C|\u201D/g, '"')
+  .replace(/\u2018|\u2019/g, "'");
+
+const stripSurroundingQuotes = (token) => {
+  let t = token.trim();
+  if (t.length >= 2) {
+    if (t.startsWith('"') && t.endsWith('"')) t = t.slice(1, -1).trim();
+    else if (t.startsWith("'") && t.endsWith("'")) t = t.slice(1, -1).trim();
+    else if (t.startsWith('\u201C') && t.endsWith('\u201D')) t = t.slice(1, -1).trim();
+  }
+  return t;
+};
+
+/**
+ * Splits a hide-row value into tokens: quoted phrases become one token each;
+ * the remainder is split on whitespace, commas, semicolons, or pipes.
+ * @param {string} raw
+ * @returns {string[]}
+ */
+const extractHideRowTokens = (raw) => {
+  const tokens = [];
+  let s = normalizeAuthoringQuotes(raw).trim();
+  if (!s) return tokens;
+  s = s.replace(/["']([^"']*)["']/gu, (_, inner) => {
+    const t = inner.trim();
+    if (t) tokens.push(t);
+    return ' ';
+  });
+  s.split(/[\s,;|]+/u).forEach((piece) => {
+    const t = stripSurroundingQuotes(piece);
+    if (t) tokens.push(t);
+  });
+  return tokens;
+};
+
 const parseHideChromeFromBlock = (block) => {
-  const targets = new Set();
+  const chromeTargets = new Set();
+  const scoreKeywords = [];
   block.querySelectorAll(':scope > div').forEach((row) => {
     const cols = [...row.children];
     if (cols.length < 2) return;
@@ -379,14 +433,20 @@ const parseHideChromeFromBlock = (block) => {
     const col = cols[1];
     const raw = (col.innerText || col.textContent || '').trim();
     if (!raw) return;
-    raw.split(/[\s,;|]+/u).forEach((token) => {
-      const t = token.toLowerCase().trim();
-      if (MARKER_APP_HIDE_CHROME_KEYS.has(t)) targets.add(t);
+    extractHideRowTokens(raw).forEach((token) => {
+      const tLower = token.toLowerCase();
+      if (MARKER_APP_HIDE_CHROME_KEYS.has(tLower)) {
+        chromeTargets.add(tLower);
+      } else if (token.trim()) {
+        scoreKeywords.push(token.trim());
+      }
     });
   });
+  const scoreExcludeKeywords = [...new Set(scoreKeywords)];
   return {
-    hideNav: targets.has('nav'),
-    hideFooter: targets.has('footer'),
+    hideNav: chromeTargets.has('nav'),
+    hideFooter: chromeTargets.has('footer'),
+    scoreExcludeKeywords,
   };
 };
 
@@ -412,36 +472,60 @@ const RANK_SCORES = {
       anti_migration: 2,
       locating: 5,
       affordability: 2,
+      cross_modal_visibility: 4,
+      shape_distinction: 1,
+      low_artifact: 2,
+      or_anti_displacement: 3,
     },
     hmplus: {
-      long_term_us_visibility: 4,
+      long_term_us_visibility: 5,
       anti_migration: 4,
       locating: 5,
       affordability: 1,
+      cross_modal_visibility: 5,
+      shape_distinction: 1,
+      low_artifact: 2,
+      or_anti_displacement: 4,
     },
     mammomark: {
       long_term_us_visibility: 2,
       anti_migration: 5,
       locating: 1,
       affordability: 5,
+      cross_modal_visibility: 3,
+      shape_distinction: 3,
+      low_artifact: 2,
+      or_anti_displacement: 5,
     },
     mammostar: {
       long_term_us_visibility: 4,
       anti_migration: 3,
       locating: 2,
       affordability: 3,
+      cross_modal_visibility: 2,
+      shape_distinction: 2,
+      low_artifact: 5,
+      or_anti_displacement: 3,
     },
     lumimark: {
-      long_term_us_visibility: 3,
-      anti_migration: 3,
+      long_term_us_visibility: 4,
+      anti_migration: 4,
       locating: 3,
       affordability: 4,
+      cross_modal_visibility: 4,
+      shape_distinction: 5,
+      low_artifact: 3,
+      or_anti_displacement: 3,
     },
     biomarc: {
       long_term_us_visibility: 1,
       anti_migration: 1,
       locating: 1,
       affordability: 5,
+      cross_modal_visibility: 2,
+      shape_distinction: 1,
+      low_artifact: 5,
+      or_anti_displacement: 2,
     },
   },
 };
@@ -451,7 +535,6 @@ const SORTABLE_OPTIONS = Object.entries(RANK_SCORES.label_to_capability).map(([t
   key,
 }));
 
-/** MRI-specific sortable options when user selects MRI in modality (Q1). */
 const RANK_SCORES_MRI = {
   type: 'ranked_capability',
   label_to_capability: {
@@ -542,13 +625,8 @@ const CHEVRON_SVG = `<svg class="checkbox-group-chevron" viewBox="0 0 20 20" fil
     </svg>`;
 
 /**
-   * Parses the block for sortable option image rows. Expects rows where:
-   * - Column 1: "Question N - Keyword" (e.g. "Question 3 - Ultrasound")
- *   — keyword matches option text
-   * - Column 1 (legacy): "Question N Option M" (e.g. "Question 3 Option 1")
-   * - Column 2: Up to 4 images
-   * @param {Element} block The marker-quiz block
-   * @returns {Object} question number -> { byKeyword, byIndex }
+   * @param {Element}
+   * @returns {Object}
    */
 const parseSortableOptionImagesFromBlock = (block) => {
   const result = {};
@@ -580,7 +658,6 @@ const parseSortableOptionImagesFromBlock = (block) => {
 };
 
 /**
-   * Finds images for an option by matching keyword to option text, or by index (legacy).
    * @param {Object} optionImages Parsed option images for a question
    * @param {Object} opt Option with .text
    * @param {number} fallbackIndex Legacy option index
@@ -599,9 +676,6 @@ const getOptionImages = (optionImages, opt, fallbackIndex) => {
 };
 
 /**
-   * Parses the block for question image rows. Expects rows where:
-   * - Column 1: "Question N" (e.g. "Question 1", "Question 7")
-   * - Column 2: An image and placement text ("left" or "right") underneath
    * @param {Element} block The marker-quiz block
    * @returns {Object} Map of question number -> { image, placement }
    */
@@ -640,7 +714,6 @@ const parseQuestionImagesFromBlock = (block) => {
 };
 
 /**
-   * Parses a "Sub-header" row from the block, extracting both image and text.
    * @param {Element} block
    * @returns {{ image: string, text: string } | null}
    */
@@ -659,9 +732,78 @@ const parseSubHeaderFromBlock = (block) => {
     const textP = ps.find((p) => !p.querySelector('img') && !p.querySelector('picture'));
     if (textP) {
       text = textP.innerHTML.trim();
+    } else if (!img) {
+      const colClone = col.cloneNode(true);
+      colClone.querySelectorAll('img, picture, source').forEach((n) => n.remove());
+      const plain = colClone.textContent.replace(/\s+/g, ' ').trim();
+      if (plain) {
+        text = colClone.innerHTML.trim();
+      }
     }
   });
   return image || text ? { image, text } : null;
+};
+
+const isRichStartTitleContent = (str) => {
+  if (str == null || typeof str !== 'string') return false;
+  return /<[a-z][\s\S]*>/i.test(str.trim());
+};
+
+const MEET_YOUR_MATCH_TITLE_TEXT = /^meet your match$/i;
+
+const normalizeMeetYourMatchStartTitle = (startTitle) => {
+  const raw = String(startTitle ?? '').trim();
+  if (!raw) return startTitle;
+
+  if (!isRichStartTitleContent(raw)) {
+    const plain = raw.replace(/\s+/g, ' ').trim();
+    return MEET_YOUR_MATCH_TITLE_TEXT.test(plain) ? DEFAULT_START_TITLE_HTML : startTitle;
+  }
+
+  try {
+    const doc = new DOMParser().parseFromString(`<div>${raw}</div>`, 'text/html');
+    const wrapper = doc.querySelector('div');
+    if (!wrapper) return startTitle;
+
+    const buildMeetYourMatchH1Markup = (h1) => {
+      const idAttr = h1.id ? ` id="${escapeHtml(h1.id)}"` : '';
+      const extra = (h1.className || '').trim().replace(/\s+/g, ' ');
+      const classValue = extra
+        ? `start-screen-title-heading ${extra}`.trim()
+        : 'start-screen-title-heading';
+      const classAttr = ` class="${escapeHtml(classValue)}"`;
+      return `<h1${classAttr}${idAttr}><span class="start-screen-title-line">Meet Your</span><span class="start-screen-title-line start-screen-title-line--emphasis">Match</span></h1>`;
+    };
+
+    let changed = false;
+    wrapper.querySelectorAll('h1').forEach((h1) => {
+      if (h1.querySelector('.start-screen-title-line')) return;
+      const text = h1.textContent.replace(/\s+/g, ' ').trim();
+      if (!MEET_YOUR_MATCH_TITLE_TEXT.test(text)) return;
+      const tpl = doc.createElement('template');
+      tpl.innerHTML = buildMeetYourMatchH1Markup(h1).trim();
+      const next = tpl.content.firstElementChild;
+      if (next) {
+        h1.replaceWith(next);
+        changed = true;
+      }
+    });
+
+    return changed ? wrapper.innerHTML : startTitle;
+  } catch {
+    return startTitle;
+  }
+};
+
+const mergeStartTitleFromBlock = (block, config) => {
+  block.querySelectorAll(':scope > div').forEach((row) => {
+    const cols = [...row.children];
+    if (cols.length < 2) return;
+    const label = toClassName(cols[0].textContent);
+    if (label !== 'start-title' && label !== 'starttitle') return;
+    const html = cols[1].innerHTML.trim();
+    if (html) config['start-title'] = html;
+  });
 };
 
 class MarkerQuiz {
@@ -671,26 +813,23 @@ class MarkerQuiz {
     this.products = products;
     this.loading = true;
     this.showStartScreen = true;
-    this.emailResultsFormId = config['email-results-form-id'] || config.emailresultsformid || null;
+    this.emailResultsFormId = getEmailResultsFormIdFromConfig(config);
+    this.contactSalesFormId = getContactSalesFormIdFromConfig(config);
     this.questionImages = config.questionImages || {};
+    this.scoreExcludeKeywords = config.scoreExcludeKeywords || [];
     this.questions = [];
+    /** Canonical question indices shown in the quiz (authoring keywords omit others). */
+    this.visibleQuestionIndices = [];
     this.currentStep = 0;
     this.selections = {};
     this.scores = {};
-    /** After user closes fullscreen welcome, show embedded start until they begin the quiz again. */
     this.startScreenInline = false;
   }
 
   bindCloseBtn() {
     this.block.querySelector('#close-survey-btn')
       ?.addEventListener('click', () => {
-        if (this.showStartScreen && !this.startScreenInline) {
-          this.startScreenInline = true;
-          document.body.classList.remove('survey-fullscreen-active');
-          this.render();
-          return;
-        }
-        this.exitFullscreen();
+        window.location.assign(MARKER_QUIZ_EXIT_URL);
       });
   }
 
@@ -719,37 +858,39 @@ class MarkerQuiz {
   }
 
   renderStartScreen() {
-    const startTitle = this.config['start-title'] ?? this.config.startTitle ?? this.config.title ?? 'Ready to Explore Your Marker Options?';
-    const startDescription = this.config['start-description'] ?? this.config.startDescription ?? this.config.description ?? 'Answer a few questions and we\'ll suggest markers worth discussing. Our team can help continue the conversation to help you find what fits your practice.';
-    const startButton = this.config['start-button'] ?? this.config.startButton ?? this.config.button ?? 'Start Assessment';
-    const subHeader = this.config.subHeader || {};
-    const titleSafe = allowTrademarkHtml(startTitle);
+    const startTitle = this.config['start-title'] ?? this.config.startTitle ?? this.config.title ?? DEFAULT_START_TITLE_HTML;
+    const startDescription = this.config['start-description'] ?? this.config.startDescription ?? this.config.description ?? DEFAULT_START_DESCRIPTION;
+    const startButton = this.config['start-button'] ?? this.config.startButton ?? this.config.button ?? DEFAULT_START_BUTTON;
+    const { subHeader } = this.config;
     const descSafe = allowTrademarkHtml(startDescription);
     const btnSafe = allowTrademarkHtml(startButton);
 
-    const subHeaderImageHtml = subHeader.image
-      ? `<div class="start-sub-header-image"><img src="${escapeHtml(subHeader.image)}" alt="Mammotome markers" /></div>`
+    const subHeaderImageHtml = subHeader?.image
+      ? `<div class="start-sub-header-image"><img src="${escapeHtml(subHeader.image)}" alt="" /></div>`
       : '';
-    const subHeaderTextHtml = subHeader.text
-      ? `<h2 class="start-sub-header-text">${allowTrademarkHtml(subHeader.text)}</h2>`
-      : '';
+    let subHeaderTextHtml = '';
+    if (subHeader?.text) {
+      const raw = String(subHeader.text).trim();
+      subHeaderTextHtml = isRichStartTitleContent(raw)
+        ? `<div class="start-sub-header">${raw}</div>`
+        : `<div class="start-sub-header">${allowTrademarkHtml(raw)}</div>`;
+    } else if (!subHeader?.image) {
+      subHeaderTextHtml = `<div class="start-sub-header">${allowTrademarkHtml(DEFAULT_SUB_HEADER_TEXT)}</div>`;
+    }
 
     const startCardInner = `
-              <div class="start-logo-banner">
-                <img src="${START_LOGO_URL}" alt="Mammotome Markers" />
-              </div>
               <div class="start-screen">
-                <h1>${titleSafe}</h1>
+                <div class="start-screen-title-block"></div>
                 ${subHeaderImageHtml}
                 ${subHeaderTextHtml}
-                <p>${descSafe}</p>
-                <button class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
+                <p class="start-screen-description">${descSafe}</p>
+                <button type="button" class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
               </div>`;
 
     if (this.startScreenInline) {
       this.block.innerHTML = `
-          <div class="product-survey-container">
-            <div class="survey-card">
+          <div class="product-survey-container survey-inline-welcome">
+            <div class="survey-card start-welcome-card">
               ${startCardInner}
             </div>
           </div>`;
@@ -757,14 +898,31 @@ class MarkerQuiz {
       this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen survey-fullscreen-welcome">
             ${CLOSE_BTN_HTML}
+            <div class="start-screen-page-heading">
+              <img class="start-screen-page-heading-logo" src="${escapeHtml(START_HEADER_LOGO_URL)}" alt="Mammotome Markers" width="320" height="56" />
+            </div>
             <div class="survey-fullscreen-welcome-body">
-              <div class="survey-card">
+              <div class="survey-card start-welcome-card">
                 ${startCardInner}
               </div>
+            </div>
+            <div class="start-screen-footer-logo">
+              <img src="${escapeHtml(START_FOOTER_LOGO_URL)}" alt="" width="89" height="89" />
             </div>
           </div>`;
       document.body.classList.add('survey-fullscreen-active');
       this.bindCloseBtn();
+    }
+
+    const titleRoot = this.block.querySelector('.start-screen-title-block');
+    if (titleRoot) {
+      const resolvedTitle = normalizeMeetYourMatchStartTitle(startTitle);
+      if (isRichStartTitleContent(resolvedTitle)) {
+        titleRoot.innerHTML = resolvedTitle;
+      } else {
+        const plain = String(resolvedTitle).trim();
+        titleRoot.innerHTML = `<h1>${allowTrademarkHtml(plain)}</h1>`;
+      }
     }
 
     this.block.querySelector('#start-survey-btn')?.addEventListener('click', () => {
@@ -790,6 +948,7 @@ class MarkerQuiz {
 
     this.bindCloseBtn();
     this.questions = MarkerQuiz.buildQuestions();
+    this.computeVisibleQuestionIndices();
     this.currentStep = 0;
     this.selections = {};
     this.renderStep();
@@ -849,29 +1008,31 @@ class MarkerQuiz {
       },
       {
         index: 3,
-        text: 'Do specific patient case considerations impact your biopsy marker choice? Select all that apply.',
+        text: 'What specific patient case considerations impact your biopsy marker choice? Select all that apply.',
         type: 'multi',
         options: [
-          { text: 'Yes, I prefer a less-premium marker for suspected benign lesion.' },
-          { text: 'Yes, dense breast tissue impacts my ability to visualize, so I prefer a larger clip or one with ultrasound enhancements.' },
-          { text: 'Yes, I prefer smaller markers for superficial lesions, or those in the axilla or near breast implants.' },
-          { text: 'Yes, I prefer to use a specific marker brand or shape for each biopsy modality, so I easily know how the biopsy was performed.' },
+          { text: 'I prefer a cost-effective marker for suspected benign lesions, institutional restrictions, contract limitations, etc.' },
+          { text: 'Dense breast tissue impacts my ability to visualize, so I prefer a larger clip or one with ultrasound enhancements.' },
+          { text: 'I prefer smaller markers for superficial lesions, or those in the axilla or near breast implants.' },
+          { text: 'I prefer to use a specific marker brand or shape for each biopsy modality, so I easily know how the biopsy was performed.' },
         ],
       },
       {
         index: 4,
-        text: 'How often do you experience marker migration?',
+        text: 'At follow-up imaging, what is your biggest concern about a previously placed marker?',
         type: 'single',
         options: [
-          { text: 'Often' },
-          { text: 'Occasionally' },
-          { text: 'Rarely' },
-          { text: 'Never' },
+          { text: 'Marker migration away from biopsy site', capability: 'anti_migration' },
+          { text: 'Poor visibility or no longer visible', capability: 'long_term_us_visibility' },
+          { text: 'Inconsistent visibility across different imaging modalities', capability: 'cross_modal_visibility' },
+          { text: 'Unable to distinguish marker shape or identify which modality was used', capability: 'shape_distinction' },
+          { text: 'Artifact obscuring adjacent tissue on follow-up imaging', capability: 'low_artifact', modalityGated: true },
+          { text: 'Marker displaced from site during surgical excision (OR anti-displacement)', capability: 'or_anti_displacement' },
         ],
       },
       {
         index: 5,
-        text: 'How often do your patients experience excessive bleeding/hematoma?',
+        text: 'How often would you use a marker with hemostatic properties?',
         type: 'single',
         options: [
           { text: 'Often' },
@@ -882,7 +1043,129 @@ class MarkerQuiz {
       },
       {
         index: 6,
-        text: 'How frequently do your patients express the following preferences or needs? Rate each on a scale of 1-5 (1 = Never, 5 = Very frequently)',
+        text: 'Which best describes your biopsy case mix?',
+        type: 'single',
+        options: [
+          {
+            text: 'Diagnostic-Focused',
+            capWeights: {
+              long_term_us_visibility: 1,
+              anti_migration: 1,
+              locating: 1,
+              affordability: 3,
+              cross_modal_visibility: 0,
+              shape_distinction: 1,
+              low_artifact: 1,
+              or_anti_displacement: 0,
+            },
+            q3Floors: {
+              long_term_us_visibility: 1,
+              anti_migration: 1,
+              locating: 1,
+              affordability: 3,
+            },
+          },
+          {
+            text: 'Pre-Surgical',
+            capWeights: {
+              long_term_us_visibility: 3,
+              anti_migration: 2,
+              locating: 2,
+              affordability: 0,
+              cross_modal_visibility: 2,
+              shape_distinction: 1,
+              low_artifact: 1,
+              or_anti_displacement: 3,
+            },
+            q3Floors: {
+              long_term_us_visibility: 3,
+              anti_migration: 2,
+              locating: 2,
+              affordability: 0,
+            },
+          },
+          {
+            text: 'Oncology-Integrated',
+            capWeights: {
+              long_term_us_visibility: 3,
+              anti_migration: 2,
+              locating: 1,
+              affordability: 0,
+              cross_modal_visibility: 3,
+              shape_distinction: 2,
+              low_artifact: 1,
+              or_anti_displacement: 2,
+            },
+            q3Floors: {
+              long_term_us_visibility: 3,
+              anti_migration: 2,
+              locating: 1,
+              affordability: 0,
+            },
+          },
+          {
+            text: 'High-Risk',
+            capWeights: {
+              long_term_us_visibility: 3,
+              anti_migration: 1,
+              locating: 2,
+              affordability: 0,
+              cross_modal_visibility: 2,
+              shape_distinction: 3,
+              low_artifact: 1,
+              or_anti_displacement: 1,
+            },
+            q3Floors: {
+              long_term_us_visibility: 3,
+              anti_migration: 1,
+              locating: 2,
+              affordability: 0,
+            },
+          },
+          {
+            text: 'Community Center: Broad Patient Mix',
+            capWeights: {
+              long_term_us_visibility: 2,
+              anti_migration: 1,
+              locating: 2,
+              affordability: 2,
+              cross_modal_visibility: 1,
+              shape_distinction: 3,
+              low_artifact: 1,
+              or_anti_displacement: 1,
+            },
+            q3Floors: {
+              long_term_us_visibility: 2,
+              anti_migration: 1,
+              locating: 2,
+              affordability: 2,
+            },
+          },
+          {
+            text: 'Academic / Teaching Hospital',
+            capWeights: {
+              long_term_us_visibility: 2,
+              anti_migration: 1,
+              locating: 2,
+              affordability: 0,
+              cross_modal_visibility: 3,
+              shape_distinction: 2,
+              low_artifact: 1,
+              or_anti_displacement: 1,
+            },
+            q3Floors: {
+              long_term_us_visibility: 2,
+              anti_migration: 1,
+              locating: 2,
+              affordability: 0,
+            },
+          },
+        ],
+      },
+      {
+        index: 7,
+        text: 'How frequently do your patients express the following preferences or needs? '
+          + 'Rate each on a scale of 1-5 (1 = Never, 5 = Very frequently)',
         type: 'rating',
         items: RATING_ITEMS.map((item) => ({ ...item })),
       },
@@ -899,35 +1182,81 @@ class MarkerQuiz {
     });
   }
 
+  /**
+   * Authoring "hide" keywords: substring match on question prompt (case-insensitive).
+   * Excludes the question from scoring and omits it from the quiz DOM (steps/progress).
+   */
+  questionExcludedFromScore(question) {
+    const text = typeof question === 'string' ? question : question?.text;
+    if (!text || !this.scoreExcludeKeywords?.length) return false;
+    const hay = text.toLowerCase();
+    return this.scoreExcludeKeywords.some((kw) => {
+      const k = String(kw).trim().toLowerCase();
+      return k && hay.includes(k);
+    });
+  }
+
+  computeVisibleQuestionIndices() {
+    const allIdx = this.questions.map((_, i) => i);
+    const visible = allIdx.filter((i) => !this.questionExcludedFromScore(this.questions[i]));
+    this.visibleQuestionIndices = visible.length > 0 ? visible : allIdx;
+  }
+
+  /** Canonical `this.questions` index for the current visible step. */
+  getCurrentQuestionIndex() {
+    return this.visibleQuestionIndices[this.currentStep];
+  }
+
   calculateScores() {
     Object.keys(this.products).forEach((id) => {
       this.scores[id] = 0;
     });
 
-    // Modalities (multi-select) — find by question text since form order may vary
     const modalitiesIdx = this.questions.findIndex(
       (q) => q?.text && /modalit/i.test(q.text),
     );
-    if (modalitiesIdx >= 0 && modalitiesIdx in this.selections) {
+    if (
+      modalitiesIdx >= 0
+      && modalitiesIdx in this.selections
+      && !this.questionExcludedFromScore(this.questions[modalitiesIdx])
+    ) {
       const modalitiesQuestion = this.questions[modalitiesIdx];
       const sel = this.selections[modalitiesIdx];
       const modalities = Array.isArray(sel) ? sel : [sel];
+
+      const severityRank = { incompatible: 2, partial: 1, full: 0 };
+      const worstCompat = {};
+
       modalities.forEach((optIdx) => {
         const optionText = modalitiesQuestion?.options?.[optIdx]?.text;
         const modalityIndex = MarkerQuiz.getModalityIndexFromOption(optionText, optIdx);
-        const modalityScores = MarkerQuiz.getModalityScores(modalityIndex);
-        Object.entries(modalityScores).forEach(([productId, points]) => {
+        const compat = MarkerQuiz.getModalityCompatibility(modalityIndex);
+
+        Object.entries(compat).forEach(([productId, level]) => {
           const resolvedId = this.resolveProductId(productId);
-          if (resolvedId) {
-            this.scores[resolvedId] += points;
+          if (!resolvedId) return;
+          const current = worstCompat[resolvedId];
+          if (!current || severityRank[level] > severityRank[current]) {
+            worstCompat[resolvedId] = level;
           }
         });
+      });
+
+      const { ELECTRE_SCORES } = MarkerQuiz;
+      Object.entries(worstCompat).forEach(([resolvedId, level]) => {
+        if (resolvedId in this.scores) {
+          this.scores[resolvedId] += ELECTRE_SCORES[level] ?? 0;
+        }
       });
     }
 
     // Q3: Priority ranking (sortable) — branch by modality (MRI vs default)
     const sortableIdx = this.questions.findIndex((q) => q?.type === 'sortable');
-    if (sortableIdx >= 0 && this.selections[sortableIdx]) {
+    if (
+      sortableIdx >= 0
+      && this.selections[sortableIdx]
+      && !this.questionExcludedFromScore(this.questions[sortableIdx])
+    ) {
       const sortableQuestion = this.questions[sortableIdx];
       const rankOrder = this.selections[sortableIdx];
       const options = this.isMriSelected()
@@ -955,7 +1284,7 @@ class MarkerQuiz {
     }
 
     // Q4: Patient case considerations (multi-select) — scores vary by modality
-    if (this.selections[3]) {
+    if (this.selections[3] && !this.questionExcludedFromScore(this.questions[3])) {
       const sel4 = this.selections[3];
       const cases = Array.isArray(sel4) ? sel4 : [sel4];
       const modalityIndex = this.getPrimaryModalityIndex();
@@ -968,17 +1297,20 @@ class MarkerQuiz {
       });
     }
 
-    // Q5: Migration frequency (single-select)
-    if (this.selections[4] != null) {
-      const migrationScores = MarkerQuiz.getMigrationScores(this.selections[4]);
-      Object.entries(migrationScores).forEach(([productId, points]) => {
-        const resolvedId = this.resolveProductId(productId);
-        if (resolvedId) this.scores[resolvedId] += points;
+    if (this.selections[4] != null && !this.questionExcludedFromScore(this.questions[4])) {
+      const { q3_capability_ratings: capRatings } = RANK_SCORES;
+      const followupScores = MarkerQuiz.getFollowupConcernScores(
+        this.selections[4],
+        this.isMriSelected(),
+        capRatings,
+      );
+      Object.entries(followupScores).forEach(([productId, points]) => {
+        const resolvedId = this.resolveProductId(productId) ?? productId;
+        if (resolvedId in this.scores) this.scores[resolvedId] += points;
       });
     }
 
-    // Q6: Bleeding/hematoma frequency (single-select)
-    if (this.selections[5] != null) {
+    if (this.selections[5] != null && !this.questionExcludedFromScore(this.questions[5])) {
       const bleedingScores = MarkerQuiz.getBleedingScores(this.selections[5]);
       Object.entries(bleedingScores).forEach(([productId, points]) => {
         const resolvedId = this.resolveProductId(productId);
@@ -986,9 +1318,25 @@ class MarkerQuiz {
       });
     }
 
-    // Q7: Patient preferences (rating 1-5) — nickel allergy excluded when MRI selected
-    if (this.selections[6]) {
-      const naturalRating = this.selections[6][0] || 1;
+    if (this.selections[6] != null && !this.questionExcludedFromScore(this.questions[6])) {
+      const { q3_capability_ratings: capRatings } = RANK_SCORES;
+      const { scores: caseMixScores, q3Floors } = MarkerQuiz.getCaseMixScores(
+        this.selections[6],
+        capRatings,
+      );
+
+      Object.entries(caseMixScores).forEach(([productId, points]) => {
+        const resolvedId = this.resolveProductId(productId) ?? productId;
+        if (resolvedId in this.scores) this.scores[resolvedId] += points;
+      });
+
+      if (q3Floors && Object.keys(q3Floors).length > 0) {
+        this.caseMixQ3Floors = q3Floors;
+      }
+    }
+
+    if (this.selections[7] && !this.questionExcludedFromScore(this.questions[7])) {
+      const naturalRating = this.selections[7][0] || 1;
       const naturalScores = MarkerQuiz.getAllNatural(naturalRating);
       Object.entries(naturalScores).forEach(([productId, points]) => {
         const resolvedId = this.resolveProductId(productId);
@@ -996,7 +1344,7 @@ class MarkerQuiz {
       });
 
       if (!this.isMriSelected()) {
-        const nickelRating = this.selections[6][1] || 1;
+        const nickelRating = this.selections[7][1] || 1;
         const nickelScores = MarkerQuiz.getNickelScores(nickelRating);
         Object.entries(nickelScores).forEach(([productId, points]) => {
           const resolvedId = this.resolveProductId(productId);
@@ -1018,7 +1366,14 @@ class MarkerQuiz {
       'color: #84329b; font-weight: bold;',
     );
     // eslint-disable-next-line no-console
-    console.table(sorted.map((p, i) => ({ Rank: i + 1, Product: p.name, Score: p.score })));
+    console.table(sorted.map((p, i) => {
+      const vetoed = p.score <= MarkerQuiz.ELECTRE_VETO_THRESHOLD;
+      return {
+        Rank: vetoed ? 'VETO' : i + 1,
+        Product: p.name,
+        Score: vetoed ? 'ELECTRE vetoed' : p.score,
+      };
+    }));
     this.scores = saved;
   }
 
@@ -1076,13 +1431,12 @@ class MarkerQuiz {
   }
 
   /**
-       * When natural or nickel rating is 3+, returns the second recommendation as a relevant bonus
-       * marker (non-negative score), with contextual language.
-       * @returns {{ product: object, reasonLabel: string } | null}
-       */
-  // eslint-disable-next-line no-unused-vars
-  getSecondRecommendationWithContext(topProductId, sortedProducts) {
-    const ratingSel = this.selections[6];
+   * When natural or nickel rating is 3+, returns the second recommendation as a relevant bonus
+   * marker (non-negative score), with contextual language.
+   * @returns {{ product: object, reasonLabel: string } | null}
+   */
+  getSecondRecommendationWithContext(topProductId) {
+    const ratingSel = this.selections[7];
     if (!ratingSel || typeof ratingSel !== 'object') return null;
 
     const naturalRating = ratingSel[0] || 1;
@@ -1147,7 +1501,7 @@ class MarkerQuiz {
     const frequencyLabel = bleedingSel === 0 ? 'often' : 'occasionally';
     const product = { id: mammomarkId, ...this.products[mammomarkId] };
 
-    const ratingSel = this.selections[6];
+    const ratingSel = this.selections[7];
     const nickelRating = (!this.isMriSelected() && ratingSel && typeof ratingSel === 'object')
       ? (ratingSel[1] || 1)
       : 1;
@@ -1204,23 +1558,52 @@ class MarkerQuiz {
     }) || null;
   }
 
-  static getModalityScores(optionIndex) {
-    const scores = [
-      // Ultrasound
+  /**
+   * ELECTRE modality compatibility table.
+   * Returns the compatibility level per product for a given modality.
+   *
+   * Levels:
+   *   'full'         — validated for this modality                  → +15 pts
+   *   'partial'      — usable with known limitations                → -20 pts
+   *   'incompatible' — clinically contraindicated for this modality → -9999 (hard veto)
+   *
+   * @param {number} optionIndex 0=Ultrasound, 1=Stereotactic, 2=MRI
+   * @returns {{ [productKey: string]: 'full'|'partial'|'incompatible' }}
+   */
+  static getModalityCompatibility(optionIndex) {
+    const compatibility = [
       {
-        hm: 5, hmplus: 5, mammomark: 1, mammostar: 4, biomarc: 1, lumimark: 1,
+        hm: 'full',
+        hmplus: 'full',
+        mammomark: 'full',
+        mammostar: 'full',
+        lumimark: 'full',
+        biomarc: 'full',
       },
-      // Stereotactic
-      // May need to update this in a 2027 because hmplus will be available in ST
       {
-        hm: 2, hmplus: -90, mammomark: 5, mammostar: 2, lumimark: -90, biomarc: 2,
+        hm: 'full',
+        hmplus: 'incompatible',
+        mammomark: 'full',
+        mammostar: 'full',
+        lumimark: 'incompatible',
+        biomarc: 'partial',
       },
-      // MRI
       {
-        hm: 5, hmplus: 5, mammomark: 5, mammostar: -60, lumimark: -70, biomarc: -60,
+        hm: 'full',
+        hmplus: 'full',
+        mammomark: 'full',
+        mammostar: 'incompatible',
+        lumimark: 'incompatible',
+        biomarc: 'incompatible',
       },
     ];
-    return scores[optionIndex] || {};
+    return compatibility[optionIndex] || {};
+  }
+
+  static get ELECTRE_VETO_THRESHOLD() { return -9000; }
+
+  static get ELECTRE_SCORES() {
+    return { full: 15, partial: -20, incompatible: -9999 };
   }
 
   /**
@@ -1240,7 +1623,7 @@ class MarkerQuiz {
           hm: 5, hmplus: 5, mammomark: 2, mammostar: 4, lumimark: 2, biomarc: 1,
         },
         {
-          hm: 5, hmplus: 4, mammomark: 4, mammostar: 3, lumimark: 1, biomarc: 3,
+          hm: 5, hmplus: 4, mammomark: 4, mammostar: 3, lumimark: 0, biomarc: 3,
         },
         {
           hm: 5, hmplus: 1, mammomark: 4, mammostar: 2, lumimark: 1, biomarc: 2,
@@ -1281,41 +1664,157 @@ class MarkerQuiz {
     return modalityScores[optionIndex] || {};
   }
 
-  static getMigrationScores(optionIndex) {
-    const scores = [
-      // Often
+  static getFollowupConcernScores(optionIndex, isMriContext, capRatings) {
+    const OPTION_CAPABILITY_MAP = [
+      'anti_migration',
+      'long_term_us_visibility',
+      'cross_modal_visibility',
+      'shape_distinction',
+      'low_artifact',
+      'or_anti_displacement',
+    ];
+    const PREFERENCE_THRESHOLD = 4;
+    const ARTIFACT_US_WEIGHT = 0.4;
+
+    const capability = OPTION_CAPABILITY_MAP[optionIndex];
+    if (!capability) return {};
+
+    const products = Object.keys(capRatings);
+    const scores = {};
+
+    products.forEach((p) => {
+      let flow = 0;
+      const ratingP = capRatings[p]?.[capability] ?? 0;
+      products.forEach((q) => {
+        if (p === q) return;
+        const ratingQ = capRatings[q]?.[capability] ?? 0;
+        const diff = ratingP - ratingQ;
+        flow += Math.max(0, Math.min(diff, PREFERENCE_THRESHOLD)) / PREFERENCE_THRESHOLD
+              - Math.max(0, Math.min(-diff, PREFERENCE_THRESHOLD)) / PREFERENCE_THRESHOLD;
+      });
+      const rawFlow = flow / (products.length - 1);
+      const weight = (optionIndex === 4 && !isMriContext) ? ARTIFACT_US_WEIGHT : 1.0;
+      scores[p] = parseFloat((rawFlow * weight * 10).toFixed(2));
+    });
+
+    return scores;
+  }
+
+  static getCaseMixScores(optionIndex, capRatings) {
+    const BUCKET_WEIGHTS = [
       {
-        hm: 1, hmplus: 5, mammomark: 5, mammostar: 1, lumimark: 5, biomarc: 1,
+        long_term_us_visibility: 1,
+        anti_migration: 1,
+        locating: 1,
+        affordability: 3,
+        cross_modal_visibility: 0,
+        shape_distinction: 1,
+        low_artifact: 1,
+        or_anti_displacement: 0,
       },
-      // Occasionally
       {
-        hm: 1, hmplus: 5, mammomark: 5, mammostar: 1, lumimark: 5, biomarc: 1,
+        long_term_us_visibility: 3,
+        anti_migration: 2,
+        locating: 2,
+        affordability: 0,
+        cross_modal_visibility: 2,
+        shape_distinction: 1,
+        low_artifact: 1,
+        or_anti_displacement: 3,
       },
-      // Rarely
       {
-        hm: 0, hmplus: 1, mammomark: 1, mammostar: 0, lumimark: 1, biomarc: 0,
+        long_term_us_visibility: 3,
+        anti_migration: 2,
+        locating: 1,
+        affordability: 0,
+        cross_modal_visibility: 3,
+        shape_distinction: 2,
+        low_artifact: 1,
+        or_anti_displacement: 2,
       },
-      // Never
       {
-        hm: 0, hmplus: 0, mammomark: 0, mammostar: 0, lumimark: 0, biomarc: 0,
+        long_term_us_visibility: 3,
+        anti_migration: 1,
+        locating: 2,
+        affordability: 0,
+        cross_modal_visibility: 2,
+        shape_distinction: 3,
+        low_artifact: 1,
+        or_anti_displacement: 1,
+      },
+      {
+        long_term_us_visibility: 2,
+        anti_migration: 1,
+        locating: 2,
+        affordability: 2,
+        cross_modal_visibility: 1,
+        shape_distinction: 3,
+        low_artifact: 1,
+        or_anti_displacement: 1,
+      },
+      {
+        long_term_us_visibility: 2,
+        anti_migration: 1,
+        locating: 2,
+        affordability: 0,
+        cross_modal_visibility: 3,
+        shape_distinction: 2,
+        low_artifact: 1,
+        or_anti_displacement: 1,
       },
     ];
-    return scores[optionIndex] || {};
+
+    const Q3_FLOORS = [
+      {
+        long_term_us_visibility: 1, anti_migration: 1, locating: 1, affordability: 3,
+      },
+      {
+        long_term_us_visibility: 3, anti_migration: 2, locating: 2, affordability: 0,
+      },
+      {
+        long_term_us_visibility: 3, anti_migration: 2, locating: 1, affordability: 0,
+      },
+      {
+        long_term_us_visibility: 3, anti_migration: 1, locating: 2, affordability: 0,
+      },
+      {
+        long_term_us_visibility: 2, anti_migration: 1, locating: 2, affordability: 2,
+      },
+      {
+        long_term_us_visibility: 2, anti_migration: 1, locating: 2, affordability: 0,
+      },
+    ];
+
+    const weights = BUCKET_WEIGHTS[optionIndex];
+    const q3Floors = Q3_FLOORS[optionIndex];
+    if (!weights) return { scores: {}, q3Floors: {} };
+
+    const scores = {};
+    Object.entries(capRatings).forEach(([productId, caps]) => {
+      let total = 0;
+      Object.entries(weights).forEach(([cap, w]) => {
+        total += (caps[cap] ?? 0) * w;
+      });
+      const maxRaw = Object.values(weights).reduce((a, b) => a + b, 0) * 5;
+      scores[productId] = maxRaw > 0 ? parseFloat(((total / maxRaw) * 15).toFixed(2)) : 0;
+    });
+
+    return { scores, q3Floors };
   }
 
   static getBleedingScores(optionIndex) {
     const scores = [
       // Often
       {
-        hm: 0, hmplus: 1, mammomark: 5, mammostar: 0, lumimark: 3, biomarc: 0,
+        hm: 0, hmplus: 1, mammomark: 5, mammostar: 0, lumimark: 0, biomarc: 0,
       },
       // Occasionally
       {
-        hm: 0, hmplus: 1, mammomark: 5, mammostar: 0, lumimark: 3, biomarc: 0,
+        hm: 0, hmplus: 1, mammomark: 5, mammostar: 0, lumimark: 0, biomarc: 0,
       },
       // Rarely
       {
-        hm: 0, hmplus: 1, mammomark: 1, mammostar: 0, lumimark: 1, biomarc: 0,
+        hm: 0, hmplus: 1, mammomark: 1, mammostar: 0, lumimark: 0, biomarc: 0,
       },
       // Never
       {
@@ -1373,7 +1872,10 @@ class MarkerQuiz {
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
-    const top = sortedProducts[0];
+    const eligibleForPayload = sortedProducts.filter(
+      (p) => p.score > MarkerQuiz.ELECTRE_VETO_THRESHOLD,
+    );
+    const top = eligibleForPayload[0] ?? sortedProducts[0];
 
     // ── Current Bx Markers (Q1)
     const markersIdx = this.questions.findIndex(
@@ -1412,7 +1914,6 @@ class MarkerQuiz {
       (origIdx) => rankOptions[origIdx]?.text || `option ${origIdx}`,
     );
 
-    // ── Rating (Q7)
     const ratingIdx = this.questions.findIndex((q) => q?.type === 'rating');
     const ratingSel = (ratingIdx >= 0 ? this.selections[ratingIdx] : null) || {};
     const isMri = this.isMriSelected();
@@ -1431,16 +1932,22 @@ class MarkerQuiz {
       .map((i) => this.questions[casesIdx]?.options?.[i]?.text || `option ${i}`)
       .join(', ');
 
-    // ── Migration (Q5)
-    const migrationIdx = this.questions.findIndex(
-      (q) => q?.text && /migration/i.test(q.text),
+    const followupIdx = this.questions.findIndex(
+      (q) => q?.text && /follow.?up imaging/i.test(q.text),
     );
-    const migrationSel = migrationIdx >= 0 ? this.selections[migrationIdx] : null;
-    const migrationConcern = migrationSel != null
-      ? (this.questions[migrationIdx]?.options?.[migrationSel]?.text || `option ${migrationSel}`)
+    const followupSel = followupIdx >= 0 ? this.selections[followupIdx] : null;
+    const followupConcern = followupSel != null
+      ? (this.questions[followupIdx]?.options?.[followupSel]?.text || `option ${followupSel}`)
       : '';
 
-    // ── Bleeding (Q6)
+    const caseMixIdx = this.questions.findIndex(
+      (q) => q?.text && /biopsy case mix/i.test(q.text),
+    );
+    const caseMixSel = caseMixIdx >= 0 ? this.selections[caseMixIdx] : null;
+    const caseMix = caseMixSel != null
+      ? (this.questions[caseMixIdx]?.options?.[caseMixSel]?.text || `option ${caseMixSel}`)
+      : '';
+
     const bleedingIdx = this.questions.findIndex(
       (q) => q?.text && /bleeding|hematoma/i.test(q.text),
     );
@@ -1461,28 +1968,34 @@ class MarkerQuiz {
       priority_3: priorities[2] || '',
       priority_4: priorities[3] || '',
       patient_cases: patientCases,
-      migration_concern: migrationConcern,
+      followup_concern: followupConcern,
+      case_mix: caseMix,
       bleeding_concern: bleedingConcern,
       natural_rating: bio,
       ...(nick !== undefined ? { nickel_rating: nick } : {}),
       all_scores: { ...this.scores },
-      second_product_id: sortedProducts[1]?.id || '',
-      second_product_name: sortedProducts[1]?.name || '',
-      third_product_id: sortedProducts[2]?.id || '',
-      third_product_name: sortedProducts[2]?.name || '',
+      second_product_id: eligibleForPayload[1]?.id || '',
+      second_product_name: eligibleForPayload[1]?.name || '',
+      third_product_id: eligibleForPayload[2]?.id || '',
+      third_product_name: eligibleForPayload[2]?.name || '',
     };
   }
 
   showResults() {
+    prefetchMarketoForms2();
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
 
-    const topProduct = sortedProducts[0];
-    const bonusContext = this.getSecondRecommendationWithContext(topProduct?.id, sortedProducts);
+    const eligibleProducts = sortedProducts.filter(
+      (p) => p.score > MarkerQuiz.ELECTRE_VETO_THRESHOLD,
+    );
+
+    const topProduct = eligibleProducts[0] ?? sortedProducts[0];
+    const bonusContext = this.getSecondRecommendationWithContext(topProduct?.id);
     const alternativeProducts = bonusContext
       ? [bonusContext.product]
-      : sortedProducts.slice(1, 2);
+      : eligibleProducts.slice(1, 2);
     const alternativeReason = bonusContext
       ? `Because you have patients that have expressed ${bonusContext.reasonLabel}, we recommend ${allowTrademarkHtml(bonusContext.product.name)}.`
       : null;
@@ -1590,6 +2103,7 @@ class MarkerQuiz {
                     <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
                     <button class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
                   </div>
+                  <div id="contact-sales-form-wrapper" class="contact-sales-form-wrapper" style="display: none;"></div>
                 </div>
     
     
@@ -1611,9 +2125,39 @@ class MarkerQuiz {
       btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
     });
 
-    this.block.querySelector('#contact-yes-btn')?.addEventListener('click', () => {
-      // eslint-disable-next-line no-alert
-      alert('Thank you! A specialist will contact you soon.');
+    this.block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
+      const wrapper = this.block.querySelector('#contact-sales-form-wrapper');
+      const contactButtons = this.block.querySelector('.contact-section .contact-buttons');
+      if (!wrapper || !this.contactSalesFormId) return;
+
+      if (contactButtons) contactButtons.style.display = 'none';
+      wrapper.style.display = 'block';
+
+      if (wrapper.dataset.mktoLoaded === 'true') return;
+
+      try {
+        const form = await embedMultistepMarketoForm(wrapper, this.contactSalesFormId, {
+          extendHiddenFields: async (f) => {
+            const resultsUrl = await prepareQuizResultsUrlForMarketo();
+            try {
+              f.addHiddenFields({ quizResultsURL: resultsUrl });
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.warn('[Marker Quiz] contact form addHiddenFields:', err);
+            }
+          },
+          onSuccess: (values) => {
+            sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
+            return true;
+          },
+        });
+        if (!form) return;
+        wrapper.dataset.mktoLoaded = 'true';
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error loading contact sales form:', e);
+        wrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
+      }
     });
 
     this.block.querySelector('#contact-no-btn')?.addEventListener('click', () => {
@@ -1630,33 +2174,11 @@ class MarkerQuiz {
         emailFormWrapper.style.display = 'block';
         try {
           const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
-          const uuid = sessionStorage.getItem('markerQuizUuid') || '';
 
-          // Disable submit until token is ready
           const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
           if (submitBtn) submitBtn.disabled = true;
 
-          // Pre-generate the authenticated results URL
-          const baseUrl = window.location.origin;
-          let resultsUrl = `${baseUrl}/us/en/marker-results?uuid=${uuid}`;
-          try {
-            const linkResponse = await fetch(SHEET_URL, {
-              method: 'POST',
-              redirect: 'follow',
-              body: JSON.stringify({
-                clientSecret: CLIENT_SECRET,
-                action: 'createEmailLink',
-                uuid,
-              }),
-            });
-            const linkData = await linkResponse.json();
-            console.log('[Marker Quiz] createEmailLink response:', linkData);
-            if (linkData.success && linkData.token) {
-              resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${linkData.tokenCreatedAt}`;
-            }
-          } catch (err) {
-            console.warn('[Marker Quiz] Failed to pre-generate link:', err);
-          }
+          const resultsUrl = await prepareQuizResultsUrlForMarketo();
 
           form.addHiddenFields({
             quizResultsURL: resultsUrl,
@@ -1670,6 +2192,7 @@ class MarkerQuiz {
             return true;
           });
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.error('Error loading email results form:', e);
           emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
         }
@@ -1715,12 +2238,13 @@ class MarkerQuiz {
   }
 
   renderStep() {
-    const step = this.currentStep;
-    const question = this.questions[step];
+    const qIdx = this.getCurrentQuestionIndex();
+    const question = this.questions[qIdx];
     if (!question) return;
 
-    const total = this.questions.length;
-    const isLast = step === total - 1;
+    const visibleCount = this.visibleQuestionIndices.length;
+    const stepPos = this.currentStep;
+    const isLast = stepPos === visibleCount - 1;
     const isMulti = question.type === 'multi';
     const isGroupedMulti = question.type === 'grouped-multi';
     const isSortable = question.type === 'sortable';
@@ -1728,10 +2252,10 @@ class MarkerQuiz {
 
     const progressBar = this.block.querySelector('#quiz-progress-bar');
     if (progressBar) {
-      progressBar.innerHTML = this.questions.map((_, i) => {
+      progressBar.innerHTML = this.visibleQuestionIndices.map((_, vi) => {
         const classes = ['progress-segment'];
-        if (i < step) classes.push('completed');
-        if (i === step) classes.push('active');
+        if (vi < stepPos) classes.push('completed');
+        if (vi === stepPos) classes.push('active');
         return `<div class="${classes.join(' ')}"></div>`;
       }).join('');
     }
@@ -1746,7 +2270,7 @@ class MarkerQuiz {
         this.renderGroupedMultiQuestion(display, question);
       } else {
         const optionsHtml = question.options.map((opt, i) => {
-          const selected = this.isOptionSelected(step, i);
+          const selected = this.isOptionSelected(qIdx, i);
           const indicator = isMulti ? 'checkbox' : 'radio';
           return `<div class="option${selected ? ' selected' : ''}" data-option-index="${i}">
                 <div class="option-content">
@@ -1756,7 +2280,7 @@ class MarkerQuiz {
               </div>`;
         }).join('');
 
-        const qImage = this.questionImages[step + 1];
+        const qImage = this.questionImages[qIdx + 1];
         const imageHtml = qImage
           ? `<div class="question-image"><img src="${escapeHtml(qImage.image)}" alt="" /></div>`
           : '';
@@ -1775,7 +2299,7 @@ class MarkerQuiz {
         display.querySelectorAll('.option').forEach((optEl) => {
           optEl.addEventListener('click', () => {
             this.selectOption(
-              step,
+              qIdx,
               parseInt(optEl.dataset.optionIndex, 10),
             );
           });
@@ -1785,10 +2309,10 @@ class MarkerQuiz {
 
     const nav = this.block.querySelector('#quiz-nav');
     if (nav) {
-      const hasSelection = this.hasSelection(step);
+      const hasSelection = this.hasSelection(qIdx);
       nav.innerHTML = `
-            <button class="btn btn-secondary" id="quiz-prev-btn" ${step === 0 ? 'disabled' : ''}>← Previous</button>
-            <div class="question-counter">Question ${step + 1} of ${total}</div>
+            <button class="btn btn-secondary" id="quiz-prev-btn" ${stepPos === 0 ? 'disabled' : ''}>← Previous</button>
+            <div class="question-counter">Question ${stepPos + 1} of ${visibleCount}</div>
             <button class="btn" id="quiz-next-btn" ${!hasSelection ? 'disabled' : ''}>${isLast ? 'Get Results' : 'Next'} →</button>`;
 
       nav.querySelector('#quiz-prev-btn')?.addEventListener('click', () => {
@@ -1800,6 +2324,7 @@ class MarkerQuiz {
 
       nav.querySelector('#quiz-next-btn')?.addEventListener('click', () => {
         if (isLast) {
+          prefetchMarketoForms2();
           this.calculateScores();
           this.showResults();
           sendToSheet(this.buildSheetPayload());
@@ -1810,8 +2335,6 @@ class MarkerQuiz {
       });
     }
   }
-
-  /* ===== GROUPED MULTI-SELECT (Accordion Checkboxes) ===== */
 
   renderGroupedMultiQuestion(display, question) {
     const step = question.index;
@@ -1975,8 +2498,6 @@ class MarkerQuiz {
     if (btn) btn.disabled = !this.hasSelection(stepIndex);
   }
 
-  /* ===== END GROUPED MULTI-SELECT ===== */
-
   renderRatingQuestion(display, question) {
     const step = question.index;
     const items = this.getRatingItemsForQuestion(question);
@@ -2071,8 +2592,6 @@ class MarkerQuiz {
       this.lastSortableWasMri = isMri;
     }
 
-    // Use saved order if available, otherwise default order — persist so
-    // scores are calculated even when the user accepts the default ranking.
     const order = this.selections[step]
               || options.map((_, i) => i);
     this.selections[step] = order;
@@ -2213,8 +2732,8 @@ class MarkerQuiz {
   }
 
   captureSortedOrder() {
-    const step = this.currentStep;
-    const question = this.questions[step];
+    const qIdx = this.getCurrentQuestionIndex();
+    const question = this.questions[qIdx];
     if (!question || question.type !== 'sortable') return;
 
     const container = this.block.querySelector('.options-container');
@@ -2222,12 +2741,12 @@ class MarkerQuiz {
 
     const indices = [...container.querySelectorAll('.option.sortable')]
       .map((el) => parseInt(el.dataset.optionIndex, 10));
-    this.selections[step] = indices;
+    this.selections[qIdx] = indices;
 
     const options = this.getSortableOptionsForQuestion(question);
 
     const rankList = indices.map((i, rank) => `${rank + 1}. ${options[i].text}`).join(', ');
-    this.logCurrentScores(`Q${step + 1} reorder — ${rankList}`);
+    this.logCurrentScores(`Q${qIdx + 1} reorder — ${rankList}`);
 
     MarkerQuiz.fixDropZonePairing(container);
   }
@@ -2347,17 +2866,12 @@ class MarkerQuiz {
     this.currentStep = 0;
     this.selections = {};
     this.scores = {};
+    this.caseMixQ3Floors = undefined;
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
     this.startScreenInline = false;
     this.showStartScreen = true;
     document.body.classList.remove('survey-fullscreen-active');
-    this.render();
-  }
-
-  exitFullscreen() {
-    document.body.classList.remove('survey-fullscreen-active');
-    this.showStartScreen = true;
     this.render();
   }
 }
@@ -2387,14 +2901,23 @@ const applyStartScreenContentFromBlock = (block, config) => {
   }
 };
 
-const getPreviewSlug = () => {
+/*
+ * ?=preview helps develop the layout without going through the quiz. Also for MAPSS purposes.
+ */
+
+const getPreviewParams = () => {
   const params = new URLSearchParams(window.location.search);
-  let slug = params.get('preview') || null;
-  // Handle malformed URLs like ?preview=biomarc?preview=biomarc (strip accidental duplicate)
+  if (!params.has('preview')) {
+    return { active: false, slug: null };
+  }
+  let slug = params.get('preview');
   if (slug && slug.includes('?preview=')) {
     slug = slug.split('?preview=')[0].trim() || null;
   }
-  return slug;
+  if (slug == null || String(slug).trim() === '') {
+    return { active: true, slug: null };
+  }
+  return { active: true, slug: String(slug).trim() };
 };
 
 const findProductBySlug = (products, slug) => {
@@ -2405,11 +2928,213 @@ const findProductBySlug = (products, slug) => {
   ) || null;
 };
 
-const renderPreview = (block, product, products) => {
+const getDefaultPreviewProduct = (products) => {
+  const list = Object.values(products || {}).filter(Boolean);
+  if (list.length === 0) return null;
+  return [...list].sort((a, b) => a.slug.localeCompare(b.slug))[0];
+};
+
+const buildPreviewSheetPayload = (topProduct, products) => {
+  const others = Object.values(products || {})
+    .filter((p) => p.id !== topProduct.id)
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+  const second = others[0] || {};
+  const third = others[1] || {};
+  return {
+    date_time: new Date().toISOString(),
+    top_product_id: topProduct.id || '',
+    top_product_name: topProduct.name || '',
+    top_score: 0,
+    current_bx_markers: '(preview mode)',
+    modality: '',
+    priority_1: '',
+    priority_2: '',
+    priority_3: '',
+    priority_4: '',
+    patient_cases: '',
+    followup_concern: '',
+    case_mix: '',
+    bleeding_concern: '',
+    natural_rating: 0,
+    all_scores: {
+      hm: 0, hmplus: 0, mammomark: 0, mammostar: 0, biomarc: 0, lumimark: 0,
+    },
+    second_product_id: second.id || '',
+    second_product_name: second.name || '',
+    third_product_id: third.id || '',
+    third_product_name: third.name || '',
+  };
+};
+
+const pickPreviewAlternativeProducts = (topProduct, products, limit = 2) => (
+  Object.values(products || {})
+    .filter((p) => p.id !== topProduct.id)
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .slice(0, limit)
+);
+
+const wirePreviewResultsPage = (block, product, products, config) => {
+  const emailResultsFormId = getEmailResultsFormIdFromConfig(config);
+  const contactSalesFormId = getContactSalesFormIdFromConfig(config);
+  const sheetPayload = () => buildPreviewSheetPayload(product, products);
+
+  block.querySelector('#close-survey-btn')?.addEventListener('click', () => {
+    window.location.assign(MARKER_QUIZ_EXIT_URL);
+  });
+
+  block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
+    btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
+  });
+
+  block.querySelector('#preview-restart-btn')?.addEventListener('click', () => {
+    window.location.assign(MARKER_QUIZ_EXIT_URL);
+  });
+
+  block.querySelector('#preview-product-select')?.addEventListener('change', (e) => {
+    const url = new URL(window.location);
+    url.searchParams.set('preview', e.target.value);
+    window.location.href = url.toString();
+  });
+
+  block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
+    const wrapper = block.querySelector('#contact-sales-form-wrapper');
+    const contactButtons = block.querySelector('.contact-section .contact-buttons');
+    if (!wrapper || !contactSalesFormId) return;
+    if (contactButtons) contactButtons.style.display = 'none';
+    wrapper.style.display = 'block';
+    if (wrapper.dataset.mktoLoaded === 'true') return;
+    try {
+      const form = await embedMultistepMarketoForm(wrapper, contactSalesFormId, {
+        extendHiddenFields: async (f) => {
+          const resultsUrl = await prepareQuizResultsUrlForMarketo();
+          try {
+            f.addHiddenFields({ quizResultsURL: resultsUrl });
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn('[Marker Quiz] preview contact form addHiddenFields:', err);
+          }
+        },
+        onSuccess: (values) => {
+          sendToSheet(sheetPayload(), { email: values.Email || '' });
+          return true;
+        },
+      });
+      if (!form) return;
+      wrapper.dataset.mktoLoaded = 'true';
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Error loading contact sales form (preview):', e);
+      wrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
+    }
+  });
+
+  block.querySelector('#contact-no-btn')?.addEventListener('click', () => {
+    // eslint-disable-next-line no-alert
+    alert('Thank you for taking the quiz!');
+  });
+
+  const requestResultsBtn = block.querySelector('#request-results-btn');
+  const emailFormWrapper = block.querySelector('#email-results-form-wrapper');
+
+  if (emailResultsFormId && requestResultsBtn && emailFormWrapper) {
+    requestResultsBtn.addEventListener('click', async () => {
+      requestResultsBtn.style.display = 'none';
+      emailFormWrapper.style.display = 'block';
+      try {
+        const form = await embedMarketoForm(emailFormWrapper, emailResultsFormId);
+        const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+        const resultsUrl = await prepareQuizResultsUrlForMarketo();
+        form.addHiddenFields({ quizResultsURL: resultsUrl });
+        if (submitBtn) submitBtn.disabled = false;
+        form.onSuccess((values) => {
+          sendToSheet(sheetPayload(), { email: values.Email || '' });
+          return true;
+        });
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error loading email results form (preview):', e);
+        emailFormWrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form.</p>';
+      }
+    });
+  } else if (requestResultsBtn) {
+    const leadForm = block.querySelector('#lead-capture-form');
+    const leadConfirmation = block.querySelector('#lead-capture-confirmation');
+    const leadError = block.querySelector('.lead-capture-error');
+
+    requestResultsBtn.addEventListener('click', () => {
+      requestResultsBtn.style.display = 'none';
+      if (leadForm) leadForm.style.display = 'block';
+      block.querySelector('#lead-name')?.focus();
+    });
+
+    block.querySelector('#lead-cancel-btn')?.addEventListener('click', () => {
+      if (leadForm) leadForm.style.display = 'none';
+      requestResultsBtn.style.display = '';
+    });
+
+    block.querySelector('#lead-submit-btn')?.addEventListener('click', () => {
+      const name = block.querySelector('#lead-name')?.value?.trim() || '';
+      const email = block.querySelector('#lead-email')?.value?.trim() || '';
+      const facility = block.querySelector('#lead-facility')?.value?.trim() || '';
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!name || !emailValid) {
+        if (leadError) leadError.style.display = 'block';
+        return;
+      }
+      if (leadError) leadError.style.display = 'none';
+      if (leadForm) leadForm.style.display = 'none';
+      if (leadConfirmation) leadConfirmation.style.display = 'block';
+      sendToSheet({
+        ...sheetPayload(), name, email, facility,
+      });
+    });
+  }
+
+  applyVimeoThumbnails(block);
+};
+
+const renderPreview = (block, product, products, config) => {
+  prefetchMarketoForms2();
   const allProducts = Object.values(products);
   const options = allProducts
     .map((p) => `<option value="${p.slug}"${p.slug === product.slug ? ' selected' : ''}>${p.name}</option>`)
     .join('');
+  const emailResultsFormId = getEmailResultsFormIdFromConfig(config);
+  const alternativeProducts = pickPreviewAlternativeProducts(product, products, 2);
+  const alternativesHtml = alternativeProducts.length
+    ? alternativeProducts.map((prod) => `
+                      <div class="product-card">
+                        <div class="product-image">
+                          <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
+                        </div>
+                        <h4>${allowTrademarkHtml(prod.name)}</h4>
+                      </div>`).join('')
+    : `
+                      <div class="product-card preview-alternative-fallback">
+                        <div class="product-image">
+                          <img src="${PLACEHOLDER_IMAGE}" alt="" />
+                        </div>
+                        <h4>No other products in feed</h4>
+                      </div>`;
+  const emailOrLeadBlock = emailResultsFormId
+    ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>'
+    : `
+                  <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
+                    <div class="lead-capture-fields">
+                      <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
+                      <input class="lead-input" id="lead-email" type="email" placeholder="Work email" autocomplete="email" />
+                      <input class="lead-input" id="lead-facility" type="text" placeholder="Facility / institution" autocomplete="organization" />
+                    </div>
+                    <div class="lead-capture-actions">
+                      <button class="btn btn-quiz-primary" id="lead-submit-btn">Submit</button>
+                      <button class="btn btn-quiz-secondary" id="lead-cancel-btn">Cancel</button>
+                    </div>
+                    <p class="lead-capture-error" style="display:none;">Please enter your name and a valid email.</p>
+                  </div>
+                  <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
+                    ✓ Thanks! Your results have been recorded.
+                  </p>`;
 
   document.body.classList.add('survey-fullscreen-active');
 
@@ -2417,8 +3142,8 @@ const renderPreview = (block, product, products) => {
         <div class="product-survey-container survey-fullscreen">
           ${CLOSE_BTN_HTML}
           <div class="preview-bar">
-            <span>Preview mode</span>
-            <select id="preview-product-select">${options}</select>
+            <span class="preview-bar-label">Results preview — add <code>?preview</code> or <code>?preview=slug</code> to the URL</span>
+            <select id="preview-product-select" aria-label="Preview product">${options}</select>
           </div>
           <div class="survey-card results-card preview-results">
             <div class="results-container">
@@ -2463,29 +3188,26 @@ const renderPreview = (block, product, products) => {
     
               <div class="quiz-actions-section">
                 <div class="quiz-actions-buttons">
-                  <button class="btn btn-quiz-primary" disabled>Email My Results</button>
-                  <button class="btn btn-quiz-secondary" id="preview-restart-btn">Take Quiz Again</button>
+                  <button type="button" class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
+                  <button type="button" class="btn btn-quiz-secondary" id="preview-restart-btn">Exit preview</button>
                 </div>
+                  ${emailOrLeadBlock}
               </div>
     
               <div class="alternatives-section">
                 <h3>You Should Also Consider</h3>
                 <div class="alternatives-grid">
-                  <div class="product-card">
-                    <div class="product-image">
-                      <img src="${PLACEHOLDER_IMAGE}" alt="Placeholder" />
-                    </div>
-                    <h4>Alternative Product Placeholder</h4>
-                  </div>
+                  ${alternativesHtml}
                 </div>
               </div>
     
               <div class="contact-section">
                 <h3>Would you like to be contacted by a sales rep to learn more?</h3>
                 <div class="contact-buttons">
-                  <button class="btn btn-contact-primary">Yes, Contact Me</button>
-                  <button class="btn btn-contact-secondary">No, Thank You</button>
+                  <button type="button" class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
+                  <button type="button" class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
                 </div>
+                <div id="contact-sales-form-wrapper" class="contact-sales-form-wrapper" style="display: none;"></div>
               </div>
     
               ${(product.footnotes || []).length ? `
@@ -2500,31 +3222,7 @@ const renderPreview = (block, product, products) => {
           </div>
         </div>`;
 
-  block.querySelector('#close-survey-btn')?.addEventListener('click', () => {
-    document.body.classList.remove('survey-fullscreen-active');
-    const url = new URL(window.location);
-    url.searchParams.delete('preview');
-    window.location.href = url.toString();
-  });
-
-  block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
-    btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
-  });
-
-  block.querySelector('#preview-restart-btn')?.addEventListener('click', () => {
-    document.body.classList.remove('survey-fullscreen-active');
-    const url = new URL(window.location);
-    url.searchParams.delete('preview');
-    window.location.href = url.toString();
-  });
-
-  block.querySelector('#preview-product-select')?.addEventListener('change', (e) => {
-    const url = new URL(window.location);
-    url.searchParams.set('preview', e.target.value);
-    window.location.href = url.toString();
-  });
-
-  applyVimeoThumbnails(block);
+  wirePreviewResultsPage(block, product, products, config);
 };
 
 export default async function decorate(block) {
@@ -2532,12 +3230,15 @@ export default async function decorate(block) {
   const hideChrome = parseHideChromeFromBlock(block);
   applyMarkerAppHideChrome(hideChrome);
   const config = readBlockConfigWithHtml(block);
+  config.scoreExcludeKeywords = hideChrome.scoreExcludeKeywords;
+  mergeStartTitleFromBlock(block, config);
 
-  const previewSlug = getPreviewSlug();
-  if (previewSlug) {
-    const product = findProductBySlug(products, previewSlug);
+  const previewParams = getPreviewParams();
+  if (previewParams.active) {
+    const fromSlug = previewParams.slug ? findProductBySlug(products, previewParams.slug) : null;
+    const product = fromSlug || getDefaultPreviewProduct(products);
     if (product) {
-      renderPreview(block, product, products);
+      renderPreview(block, product, products, config);
       return null;
     }
   }

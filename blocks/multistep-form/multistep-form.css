@@ -113,3 +113,60 @@ main .multistep-form :is(textarea) {
       text-align: center;
    }
 }
+
+/*
+ * Marker-app results: embedded contact form.
+ * Avoid display:grid + minmax(0,1fr) here — it lets table-based Marketo markup shrink
+ * to near-zero column widths (differs from standalone multistep block width).
+ */
+main .contact-sales-form-wrapper.multistep-form form,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form form {
+    display: block;
+    padding: 5% 3%;
+    width: 100% !important;
+    max-width: 100% !important;
+    background-color: #fff;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.contact-sales-form-wrapper.multistep-form .form-div {
+    padding: 4% 0;
+    margin-right: 0;
+}
+
+main .contact-sales-form-wrapper.multistep-form :is(select, textarea),
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form :is(select, textarea),
+main .contact-sales-form-wrapper.multistep-form :is(input[type="text"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"]),
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form :is(input[type="text"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"]) {
+    background-color: #fff;
+    border: solid 1px #000;
+    color: var(--mt-text-color);
+    border-radius: 8px;
+    min-height: 50px;
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+main .contact-sales-form-wrapper.multistep-form :is(textarea),
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form :is(textarea) {
+    min-height: 100px;
+}
+
+main .contact-sales-form-wrapper.multistep-form .mktoForm table,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto;
+}
+
+main .contact-sales-form-wrapper.multistep-form .mktoForm td,
+main .contact-sales-form-wrapper.multistep-form .mktoForm th,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm td,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm th {
+    width: auto !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    vertical-align: top;
+}
