@@ -114,6 +114,7 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
         q6_case_mix: payload.case_mix || '',
         q7_natural_rating: payload.natural_rating || 0,
         q7_nick_rating: payload.nickel_rating || 0,
+        q7_permanent_visibility_rating: payload.permanent_visibility_rating || 0,
       },
 
       scores: {
@@ -182,7 +183,7 @@ const CLOSE_BTN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 
 
 const CLOSE_BTN_HTML = `<button class="survey-close-btn" id="close-survey-btn" aria-label="Close survey">${CLOSE_BTN_SVG}</button>`;
 
-/** Full-window quiz exit: always return visitors to the markers hub (avoids odd reload targets on author/preview URLs). */
+/** Leave the quiz to the markers hub (only after closing from Meet Your Match welcome). */
 const MARKER_QUIZ_EXIT_URL = 'https://www.mammotome.com/us/en/products/breast-biopsy-markers/';
 
 const START_HEADER_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets/images/mammotome-markers-logo-transparent.png';
@@ -233,6 +234,91 @@ const getVideoEmbedUrl = (url) => {
   const vimeoMatch = trimmed.match(VIMEO_REGEX);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
   return trimmed;
+};
+
+const isAllowedBackgroundVideoHost = (hostname) => {
+  const h = (hostname || '').replace(/^www\./, '').toLowerCase();
+  return h === 'player.vimeo.com' || h === 'youtube.com' || h === 'youtube-nocookie.com';
+};
+
+/**
+ * Mute/loop/background params for Vimeo or YouTube embeds used as full-screen backdrops.
+ */
+const appendBackgroundEmbedParams = (embedUrl) => {
+  if (!embedUrl || typeof embedUrl !== 'string') return '';
+  try {
+    const u = new URL(embedUrl);
+    if (!isAllowedBackgroundVideoHost(u.hostname)) return '';
+    if (u.hostname.replace(/^www\./, '').includes('vimeo')) {
+      u.searchParams.set('autoplay', '1');
+      u.searchParams.set('muted', '1');
+      u.searchParams.set('loop', '1');
+      u.searchParams.set('background', '1');
+      return u.toString();
+    }
+    const pathMatch = u.pathname.match(/\/embed\/([^/?]+)/);
+    const videoId = pathMatch ? pathMatch[1] : '';
+    u.searchParams.set('autoplay', '1');
+    u.searchParams.set('mute', '1');
+    u.searchParams.set('controls', '0');
+    u.searchParams.set('modestbranding', '1');
+    u.searchParams.set('playsinline', '1');
+    if (videoId) {
+      u.searchParams.set('loop', '1');
+      u.searchParams.set('playlist', videoId);
+    }
+    return u.toString();
+  } catch {
+    return '';
+  }
+};
+
+/**
+ * Resolves authoring "Start-Window" URLs (including Vimeo paths without numeric id)
+ * to a safe iframe src.
+ */
+const resolveStartWindowBackgroundUrl = async (raw) => {
+  if (!raw || typeof raw !== 'string') return '';
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+
+  const tryFromEmbedUrl = (candidate) => {
+    const withParams = appendBackgroundEmbedParams(candidate);
+    if (!withParams) return '';
+    try {
+      const u = new URL(withParams);
+      return isAllowedBackgroundVideoHost(u.hostname) ? withParams : '';
+    } catch {
+      return '';
+    }
+  };
+
+  const direct = getVideoEmbedUrl(trimmed);
+  const isDirectEmbed = direct.includes('player.vimeo.com')
+    || direct.includes('youtube.com/embed');
+  if (isDirectEmbed) {
+    const resolved = tryFromEmbedUrl(direct);
+    if (resolved) return resolved;
+  }
+
+  if (!/vimeo\.com/i.test(trimmed)) {
+    return '';
+  }
+
+  try {
+    const oembedUrl = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(trimmed)}`;
+    const res = await fetch(oembedUrl);
+    if (!res.ok) return '';
+    const data = await res.json();
+    const html = data?.html || '';
+    const m = html.match(/src=["']([^"']+)["']/);
+    if (!m) return '';
+    let src = m[1].replace(/&amp;/g, '&');
+    if (src.startsWith('//')) src = `https:${src}`;
+    return tryFromEmbedUrl(src);
+  } catch {
+    return '';
+  }
 };
 
 const getVideoThumbnailUrl = (product) => {
@@ -509,7 +595,7 @@ const RANK_SCORES = {
     },
     lumimark: {
       long_term_us_visibility: 4,
-      anti_migration: 4,
+      anti_migration: 3,
       locating: 3,
       affordability: 4,
       cross_modal_visibility: 4,
@@ -518,7 +604,7 @@ const RANK_SCORES = {
       or_anti_displacement: 3,
     },
     biomarc: {
-      long_term_us_visibility: 1,
+      long_term_us_visibility: 2,
       anti_migration: 1,
       locating: 1,
       affordability: 5,
@@ -602,6 +688,8 @@ const RATING_ITEMS = [
 const NATURAL_BONUS_KEYS = ['mammostar', 'biomarc'];
 /** Bonus markers for nickel concerns (rating 3+): mammostar, biomarc, mammomark, hm, hmplus */
 const NICKEL_BONUS_KEYS = ['mammostar', 'biomarc', 'mammomark', 'hm', 'hmplus'];
+/** Bonus markers for permanent visibility preference: lumimark, biomarc only */
+const PERMANENT_VISIBILITY_BONUS_KEYS = ['lumimark', 'biomarc'];
 
 const RATING_SCALE = [
   { value: 1, label: 'Never' },
@@ -609,6 +697,15 @@ const RATING_SCALE = [
   { value: 3, label: 'Sometimes' },
   { value: 4, label: '' },
   { value: 5, label: 'Very frequently' },
+];
+
+/** Scale for long-term ultrasound visibility / resorbable preference (rating-single only). */
+const PERMANENT_VISIBILITY_RATING_SCALE = [
+  { value: 1, label: 'Not Important' },
+  { value: 2, label: '' },
+  { value: 3, label: 'Somewhat important' },
+  { value: 4, label: '' },
+  { value: 5, label: 'Strongly Agree' },
 ];
 
 const PRODUCT_ID_ALIASES = {
@@ -824,13 +921,66 @@ class MarkerQuiz {
     this.selections = {};
     this.scores = {};
     this.startScreenInline = false;
+    this.startWindowBackgroundUrl = String(config.startWindowBackgroundUrl || '').trim();
+    this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
+  }
+
+  /**
+   * Close (X): from quiz/results/thank-you, go to Meet Your Match welcome (skips video).
+   */
+  goToWelcomeScreenFromClose() {
+    this.currentStep = 0;
+    this.selections = {};
+    this.scores = {};
+    this.caseMixQ3Floors = undefined;
+    this.lastSortableWasMri = undefined;
+    this.lastRatingWasMri = undefined;
+    this._prevMriForStepRecompute = undefined;
+    this.startScreenInline = false;
+    this.showStartScreen = true;
+    this.showVideoIntroScreen = false;
+    document.body.classList.remove('survey-fullscreen-active');
+    this.render();
+  }
+
+  handleSurveyCloseClick() {
+    if (this.showStartScreen && !this.showVideoIntroScreen) {
+      if (this.startWindowBackgroundUrl) {
+        this.showVideoIntroScreen = true;
+        document.body.classList.remove('survey-fullscreen-active');
+        this.render();
+        return;
+      }
+      window.location.assign(MARKER_QUIZ_EXIT_URL);
+      return;
+    }
+    this.goToWelcomeScreenFromClose();
   }
 
   bindCloseBtn() {
     this.block.querySelector('#close-survey-btn')
       ?.addEventListener('click', () => {
-        window.location.assign(MARKER_QUIZ_EXIT_URL);
+        this.handleSurveyCloseClick();
       });
+  }
+
+  clearQuizSelectionRequiredHint() {
+    const el = this.block.querySelector('#quiz-selection-required');
+    if (!el) return;
+    el.textContent = '';
+    el.setAttribute('hidden', '');
+  }
+
+  showQuizSelectionRequiredHint() {
+    const el = this.block.querySelector('#quiz-selection-required');
+    if (!el) return;
+    el.textContent = 'A selection is required';
+    el.removeAttribute('hidden');
+  }
+
+  syncQuizSelectionHint(stepIndex) {
+    if (this.questions[stepIndex]?.type === 'sortable') return;
+    if (this.hasSelection(stepIndex)) this.clearQuizSelectionRequiredHint();
   }
 
   async init() {
@@ -850,11 +1000,55 @@ class MarkerQuiz {
     }
 
     if (this.showStartScreen) {
+      if (this.showVideoIntroScreen) {
+        this.renderVideoIntroScreen();
+        return;
+      }
       this.renderStartScreen();
       return;
     }
 
     this.showQuizForm();
+  }
+
+  renderVideoIntroScreen() {
+    const iframeSrc = this.startWindowBackgroundUrl;
+    if (!iframeSrc) {
+      this.showVideoIntroScreen = false;
+      this.renderStartScreen();
+      return;
+    }
+
+    const overlayLabel = this.config['start-window-overlay']
+      ?? this.config.startwindowoverlay
+      ?? DEFAULT_START_BUTTON;
+    const btnSafe = allowTrademarkHtml(
+      typeof overlayLabel === 'string' ? overlayLabel : String(overlayLabel ?? ''),
+    );
+
+    document.body.classList.add('survey-fullscreen-active');
+    this.block.innerHTML = `
+          <div class="product-survey-container survey-fullscreen survey-fullscreen-video-intro">
+            <div class="start-video-intro-media" aria-hidden="true">
+              <iframe
+                class="start-video-intro-iframe"
+                src="${escapeHtml(iframeSrc)}"
+                title=""
+                tabindex="-1"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="start-video-intro-scrim" aria-hidden="true"></div>
+            <div class="start-video-intro-content">
+              <button type="button" class="btn btn-primary" id="start-video-intro-btn">${btnSafe}</button>
+            </div>
+          </div>`;
+
+    this.block.querySelector('#start-video-intro-btn')?.addEventListener('click', () => {
+      this.showVideoIntroScreen = false;
+      this.renderStartScreen();
+    });
   }
 
   renderStartScreen() {
@@ -942,13 +1136,16 @@ class MarkerQuiz {
             </div>
             <div class="survey-card">
               <div id="quiz-question-display"></div>
-              <div class="navigation" id="quiz-nav"></div>
+              <div class="quiz-navigation-stack">
+                <div class="navigation" id="quiz-nav"></div>
+                <p class="quiz-selection-required" id="quiz-selection-required" hidden aria-live="polite"></p>
+              </div>
             </div>
           </div>`;
 
     this.bindCloseBtn();
     this.questions = MarkerQuiz.buildQuestions();
-    this.computeVisibleQuestionIndices();
+    this._prevMriForStepRecompute = undefined;
     this.currentStep = 0;
     this.selections = {};
     this.renderStep();
@@ -1164,6 +1361,14 @@ class MarkerQuiz {
       },
       {
         index: 7,
+        text: 'Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?',
+        type: 'rating-single',
+        ratingScale: PERMANENT_VISIBILITY_RATING_SCALE,
+        /** Omitted when MRI is selected (LumiMARK/BioMaRC vetoed; question has no scoring effect). */
+        skipWhenMri: true,
+      },
+      {
+        index: 8,
         text: 'How frequently do your patients express the following preferences or needs? '
           + 'Rate each on a scale of 1-5 (1 = Never, 5 = Very frequently)',
         type: 'rating',
@@ -1196,10 +1401,26 @@ class MarkerQuiz {
     });
   }
 
+  /** Authoring exclusions + modality-only skips (e.g. permanent-visibility step when MRI). */
+  isQuestionVisibleInQuiz(question) {
+    if (!question) return false;
+    if (this.questionExcludedFromScore(question)) return false;
+    if (question.skipWhenMri && this.isMriSelected()) return false;
+    return true;
+  }
+
   computeVisibleQuestionIndices() {
     const allIdx = this.questions.map((_, i) => i);
-    const visible = allIdx.filter((i) => !this.questionExcludedFromScore(this.questions[i]));
+    const visible = allIdx.filter((i) => this.isQuestionVisibleInQuiz(this.questions[i]));
     this.visibleQuestionIndices = visible.length > 0 ? visible : allIdx;
+  }
+
+  getPermanentVisibilityQuestionIndex() {
+    return this.questions.findIndex((q) => q?.type === 'rating-single');
+  }
+
+  getPreferencesRatingQuestionIndex() {
+    return this.questions.findIndex((q) => q?.type === 'rating');
   }
 
   /** Canonical `this.questions` index for the current visible step. */
@@ -1335,8 +1556,14 @@ class MarkerQuiz {
       }
     }
 
-    if (this.selections[7] && !this.questionExcludedFromScore(this.questions[7])) {
-      const naturalRating = this.selections[7][0] || 1;
+    const prefIdx = this.getPreferencesRatingQuestionIndex();
+    if (
+      prefIdx >= 0
+      && this.selections[prefIdx]
+      && !this.questionExcludedFromScore(this.questions[prefIdx])
+    ) {
+      const prefSel = this.selections[prefIdx];
+      const naturalRating = prefSel[0] || 1;
       const naturalScores = MarkerQuiz.getAllNatural(naturalRating);
       Object.entries(naturalScores).forEach(([productId, points]) => {
         const resolvedId = this.resolveProductId(productId);
@@ -1344,13 +1571,28 @@ class MarkerQuiz {
       });
 
       if (!this.isMriSelected()) {
-        const nickelRating = this.selections[7][1] || 1;
+        const nickelRating = prefSel[1] || 1;
         const nickelScores = MarkerQuiz.getNickelScores(nickelRating);
         Object.entries(nickelScores).forEach(([productId, points]) => {
           const resolvedId = this.resolveProductId(productId);
           if (resolvedId) this.scores[resolvedId] += points;
         });
       }
+    }
+
+    const permVisIdx = this.getPermanentVisibilityQuestionIndex();
+    if (
+      permVisIdx >= 0
+      && this.selections[permVisIdx] != null
+      && !this.isMriSelected()
+      && !this.questionExcludedFromScore(this.questions[permVisIdx])
+    ) {
+      const permVisRating = Number(this.selections[permVisIdx]) || 1;
+      const permVisScores = MarkerQuiz.getPermanentVisibilityScores(permVisRating);
+      Object.entries(permVisScores).forEach(([productId, points]) => {
+        const resolvedId = this.resolveProductId(productId);
+        if (resolvedId) this.scores[resolvedId] += points;
+      });
     }
   }
 
@@ -1366,10 +1608,9 @@ class MarkerQuiz {
       'color: #84329b; font-weight: bold;',
     );
     // eslint-disable-next-line no-console
-    console.table(sorted.map((p, i) => {
+    console.table(sorted.map((p) => {
       const vetoed = p.score <= MarkerQuiz.ELECTRE_VETO_THRESHOLD;
       return {
-        Rank: vetoed ? 'VETO' : i + 1,
         Product: p.name,
         Score: vetoed ? 'ELECTRE vetoed' : p.score,
       };
@@ -1423,7 +1664,7 @@ class MarkerQuiz {
     return this.isMriSelected() ? question.optionsMri : (question.options ?? SORTABLE_OPTIONS);
   }
 
-  /** Returns rating items for the current modality (excludes nickel allergy when MRI selected). */
+  /** Returns rating items for the current modality (excludes nickel when MRI selected). */
   getRatingItemsForQuestion(question) {
     if (question?.type !== 'rating' || !question?.items) return question?.items ?? RATING_ITEMS;
     if (!this.isMriSelected()) return question.items;
@@ -1431,58 +1672,66 @@ class MarkerQuiz {
   }
 
   /**
-   * When natural or nickel rating is 3+, returns the second recommendation as a relevant bonus
-   * marker (non-negative score), with contextual language.
-   * @returns {{ product: object, reasonLabel: string } | null}
+   * When natural, nickel, or permanent-visibility rating is 3+, returns the best-scoring
+   * marker from the contextual bonus pool, excluding all ids in `excludeIds`
+   * (e.g. top pick and strict second-by-score).
+   * @param {Set<string>|Iterable<string>} excludeIds
+   * @returns {object | null} Product row { id, score, ...catalog fields }
    */
-  getSecondRecommendationWithContext(topProductId) {
-    const ratingSel = this.selections[7];
+  getRatingBonusProduct(excludeIds) {
+    const exclude = excludeIds instanceof Set ? excludeIds : new Set(excludeIds);
+
+    const prefIdx = this.getPreferencesRatingQuestionIndex();
+    const ratingSel = prefIdx >= 0 ? this.selections[prefIdx] : null;
     if (!ratingSel || typeof ratingSel !== 'object') return null;
 
     const naturalRating = ratingSel[0] || 1;
     const nickelRating = this.isMriSelected() ? 0 : (ratingSel[1] || 1);
+    const permVisIdx = this.getPermanentVisibilityQuestionIndex();
+    const permVisRaw = (permVisIdx >= 0 && !this.isMriSelected())
+      ? this.selections[permVisIdx]
+      : undefined;
+    const permVisRating = (permVisRaw != null) ? (Number(permVisRaw) || 1) : 0;
 
     const naturalHigh = naturalRating >= 3;
     const nickelHigh = nickelRating >= 3;
+    const permVisHigh = permVisRating >= 3;
 
-    if (!naturalHigh && !nickelHigh) return null;
+    if (!naturalHigh && !nickelHigh && !permVisHigh) return null;
 
     let bonusKeys;
-    let reasonLabel;
-    if (naturalHigh && nickelHigh) {
+
+    if (permVisHigh && permVisRating >= naturalRating && permVisRating >= nickelRating) {
+      bonusKeys = PERMANENT_VISIBILITY_BONUS_KEYS;
+    } else if (naturalHigh && nickelHigh) {
       bonusKeys = naturalRating >= nickelRating ? NATURAL_BONUS_KEYS : NICKEL_BONUS_KEYS;
-      reasonLabel = naturalRating >= nickelRating
-        ? 'preference for natural markers'
-        : 'concerns about nickel allergies or metal sensitivities';
     } else if (naturalHigh) {
       bonusKeys = NATURAL_BONUS_KEYS;
-      reasonLabel = 'preference for natural markers';
-    } else {
+    } else if (nickelHigh) {
       bonusKeys = NICKEL_BONUS_KEYS;
-      reasonLabel = 'concerns about nickel allergies or metal sensitivities';
+    } else {
+      bonusKeys = PERMANENT_VISIBILITY_BONUS_KEYS;
     }
 
     const eligible = bonusKeys
       .map((key) => this.resolveProductId(key))
-      .filter((id) => id && id !== topProductId && this.scores[id] >= 0 && id in this.products);
+      .filter((id) => id && !exclude.has(id) && this.scores[id] >= 0 && id in this.products);
 
     if (eligible.length === 0) return null;
 
     const byScore = eligible
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
-    const product = byScore[0];
-
-    return { product, reasonLabel };
+    return byScore[0];
   }
 
   /**
    * When bleeding is "Often" or "Occasionally" and MammoMARK is not already
-   * in the top 2 recommendations, returns a bleeding-based recommendation
-   * for MammoMARK with contextual language.
+   * among the primary and "You Should Also Consider" picks, returns a
+   * bleeding-based recommendation for MammoMARK.
    * @param {string} topProductId
    * @param {string[]} alternativeProductIds
-   * @returns {{ product: object, reasonLabel: string } | null}
+   * @returns {{ product: object } | null}
    */
   getBleedingRecommendationContext(topProductId, alternativeProductIds) {
     const bleedingIdx = this.questions.findIndex(
@@ -1498,20 +1747,9 @@ class MarkerQuiz {
 
     if (mammomarkId === topProductId || alternativeProductIds.includes(mammomarkId)) return null;
 
-    const frequencyLabel = bleedingSel === 0 ? 'often' : 'occasionally';
     const product = { id: mammomarkId, ...this.products[mammomarkId] };
 
-    const ratingSel = this.selections[7];
-    const nickelRating = (!this.isMriSelected() && ratingSel && typeof ratingSel === 'object')
-      ? (ratingSel[1] || 1)
-      : 1;
-    const nickelHigh = nickelRating >= 3;
-
-    const reasonLabel = nickelHigh
-      ? `Because you have patients that ${frequencyLabel} experience bleeding and patients have expressed concerns about nickel allergies or metal sensitivities, we recommend ${allowTrademarkHtml(product.name)}.`
-      : `Because your patients ${frequencyLabel} experience excessive bleeding, we recommend ${allowTrademarkHtml(product.name)}.`;
-
-    return { product, reasonLabel };
+    return { product };
   }
 
   /** Maps modality option text to score index (0=Ultrasound, 1=Stereotactic, 2=MRI). */
@@ -1868,6 +2106,22 @@ class MarkerQuiz {
     };
   }
 
+  static getPermanentVisibilityScores(rating) {
+    const bonusMap = {
+      1: 0, 2: 1, 3: 2, 4: 4, 5: 6,
+    };
+    const bonus = bonusMap[rating] || 0;
+
+    return {
+      lumimark: bonus,
+      biomarc: bonus,
+      hm: 0,
+      hmplus: 0,
+      mammomark: 0,
+      mammostar: 0,
+    };
+  }
+
   buildSheetPayload() {
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
@@ -1919,6 +2173,10 @@ class MarkerQuiz {
     const isMri = this.isMriSelected();
     const bio = Number(ratingSel[0] ?? 0);
     const nick = isMri ? undefined : Number(ratingSel[1] ?? 0);
+    const permVisIdx = this.getPermanentVisibilityQuestionIndex();
+    const permVis = (permVisIdx >= 0 && !isMri)
+      ? Number(this.selections[permVisIdx] ?? 0)
+      : undefined;
 
     // ── Patient cases (Q4)
     const casesIdx = this.questions.findIndex(
@@ -1956,6 +2214,11 @@ class MarkerQuiz {
       ? (this.questions[bleedingIdx]?.options?.[bleedingSel]?.text || `option ${bleedingSel}`)
       : '';
 
+    const sheetSecond = eligibleForPayload[1];
+    const sheetRatingBonus = sheetSecond
+      ? this.getRatingBonusProduct(new Set([top?.id, sheetSecond.id].filter(Boolean)))
+      : null;
+
     return {
       date_time: new Date().toISOString(),
       top_product_id: top?.id || '',
@@ -1973,11 +2236,12 @@ class MarkerQuiz {
       bleeding_concern: bleedingConcern,
       natural_rating: bio,
       ...(nick !== undefined ? { nickel_rating: nick } : {}),
+      ...(permVis !== undefined ? { permanent_visibility_rating: permVis } : {}),
       all_scores: { ...this.scores },
-      second_product_id: eligibleForPayload[1]?.id || '',
-      second_product_name: eligibleForPayload[1]?.name || '',
-      third_product_id: eligibleForPayload[2]?.id || '',
-      third_product_name: eligibleForPayload[2]?.name || '',
+      second_product_id: sheetSecond?.id || '',
+      second_product_name: sheetSecond?.name || '',
+      third_product_id: sheetRatingBonus?.id || '',
+      third_product_name: sheetRatingBonus?.name || '',
     };
   }
 
@@ -1992,13 +2256,17 @@ class MarkerQuiz {
     );
 
     const topProduct = eligibleProducts[0] ?? sortedProducts[0];
-    const bonusContext = this.getSecondRecommendationWithContext(topProduct?.id);
-    const alternativeProducts = bonusContext
-      ? [bonusContext.product]
-      : eligibleProducts.slice(1, 2);
-    const alternativeReason = bonusContext
-      ? `Because you have patients that have expressed ${bonusContext.reasonLabel}, we recommend ${allowTrademarkHtml(bonusContext.product.name)}.`
-      : null;
+    const secondByScore = eligibleProducts[1];
+    const alternativeProducts = [];
+    if (secondByScore) {
+      alternativeProducts.push(secondByScore);
+      const ratingBonusProduct = this.getRatingBonusProduct(
+        new Set([topProduct?.id, secondByScore.id].filter(Boolean)),
+      );
+      if (ratingBonusProduct && ratingBonusProduct.id !== secondByScore.id) {
+        alternativeProducts.push(ratingBonusProduct);
+      }
+    }
 
     const bleedingContext = this.getBleedingRecommendationContext(
       topProduct?.id,
@@ -2015,8 +2283,10 @@ class MarkerQuiz {
                     <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="${stripHtmlForAlt(topProduct.name)}" />
                   </div>
                   <div class="top-recommendation-content">
-                    <p class="top-recommendation-label">Your top recommended marker</p>
-                    <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
+                    <div class="top-recommendation-heading">
+                      <p class="top-recommendation-label">Your top recommended marker</p>
+                      <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
+                    </div>
                     <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
                   </div>
                 </div>
@@ -2071,7 +2341,8 @@ class MarkerQuiz {
                     ✓ Thanks! Your results have been recorded.
                   </p>`}
                 </div>
-    
+
+                <hr class="divider primary">
                 <div class="alternatives-section">
                   <h3>You Should Also Consider</h3>
                   <div class="alternatives-grid">
@@ -2081,7 +2352,6 @@ class MarkerQuiz {
                           <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
                         </div>
                         <h4>${allowTrademarkHtml(prod.name)}</h4>
-                        ${alternativeReason ? `<p class="card-reason">${alternativeReason}</p>` : ''}
                       </div>
                     `).join('')}
                     ${bleedingContext ? `
@@ -2090,13 +2360,13 @@ class MarkerQuiz {
                           <img src="${escapeHtml(bleedingContext.product.recommendationImage || bleedingContext.product.cardImage || bleedingContext.product.image)}" alt="${stripHtmlForAlt(bleedingContext.product.name)}" />
                         </div>
                         <h4>${allowTrademarkHtml(bleedingContext.product.name)}</h4>
-                        <p class="card-reason">${bleedingContext.reasonLabel}</p>
                       </div>
                     ` : ''}
                   </div>
                 </div>
     
     
+                <hr class="divider primary">
                 <div class="contact-section">
                   <h3>Would you like to be contacted by a sales rep to learn more?</h3>
                   <div class="contact-buttons">
@@ -2238,6 +2508,18 @@ class MarkerQuiz {
   }
 
   renderStep() {
+    const mriNow = this.isMriSelected();
+    if (this._prevMriForStepRecompute !== undefined && this._prevMriForStepRecompute !== mriNow) {
+      const pIdx = this.getPermanentVisibilityQuestionIndex();
+      if (pIdx >= 0) delete this.selections[pIdx];
+    }
+    this._prevMriForStepRecompute = mriNow;
+
+    this.computeVisibleQuestionIndices();
+    if (this.currentStep >= this.visibleQuestionIndices.length) {
+      this.currentStep = Math.max(0, this.visibleQuestionIndices.length - 1);
+    }
+
     const qIdx = this.getCurrentQuestionIndex();
     const question = this.questions[qIdx];
     if (!question) return;
@@ -2249,6 +2531,7 @@ class MarkerQuiz {
     const isGroupedMulti = question.type === 'grouped-multi';
     const isSortable = question.type === 'sortable';
     const isRating = question.type === 'rating';
+    const isRatingSingle = question.type === 'rating-single';
 
     const progressBar = this.block.querySelector('#quiz-progress-bar');
     if (progressBar) {
@@ -2264,6 +2547,8 @@ class MarkerQuiz {
     if (display) {
       if (isSortable) {
         this.renderSortableQuestion(display, question);
+      } else if (isRatingSingle) {
+        this.renderRatingSingleQuestion(display, question);
       } else if (isRating) {
         this.renderRatingQuestion(display, question);
       } else if (isGroupedMulti) {
@@ -2309,11 +2594,11 @@ class MarkerQuiz {
 
     const nav = this.block.querySelector('#quiz-nav');
     if (nav) {
-      const hasSelection = this.hasSelection(qIdx);
+      this.clearQuizSelectionRequiredHint();
       nav.innerHTML = `
             <button class="btn btn-secondary" id="quiz-prev-btn" ${stepPos === 0 ? 'disabled' : ''}>← Previous</button>
             <div class="question-counter">Question ${stepPos + 1} of ${visibleCount}</div>
-            <button class="btn" id="quiz-next-btn" ${!hasSelection ? 'disabled' : ''}>${isLast ? 'Get Results' : 'Next'} →</button>`;
+            <button class="btn" id="quiz-next-btn">${isLast ? 'Get Results' : 'Next'} →</button>`;
 
       nav.querySelector('#quiz-prev-btn')?.addEventListener('click', () => {
         if (this.currentStep > 0) {
@@ -2323,6 +2608,11 @@ class MarkerQuiz {
       });
 
       nav.querySelector('#quiz-next-btn')?.addEventListener('click', () => {
+        if (!isSortable && !this.hasSelection(qIdx)) {
+          this.showQuizSelectionRequiredHint();
+          return;
+        }
+        this.clearQuizSelectionRequiredHint();
         if (isLast) {
           prefetchMarketoForms2();
           this.calculateScores();
@@ -2444,8 +2734,7 @@ class MarkerQuiz {
       otherInput.addEventListener('input', () => {
         this.otherTextValue = otherInput.value;
         question.otherTextInput.value = otherInput.value;
-        const btn = this.block.querySelector('#quiz-next-btn');
-        if (btn) btn.disabled = !this.hasSelection(step);
+        this.syncQuizSelectionHint(step);
       });
       otherInput.addEventListener('click', (e) => e.stopPropagation());
     }
@@ -2494,8 +2783,7 @@ class MarkerQuiz {
     const optText = question.options[optionIndex]?.text || `option ${optionIndex}`;
     this.logCurrentScores(`Q${stepIndex + 1} grouped — "${optText}"`);
 
-    const btn = this.block.querySelector('#quiz-next-btn');
-    if (btn) btn.disabled = !this.hasSelection(stepIndex);
+    this.syncQuizSelectionHint(stepIndex);
   }
 
   renderRatingQuestion(display, question) {
@@ -2554,6 +2842,69 @@ class MarkerQuiz {
     });
   }
 
+  renderRatingSingleQuestion(display, question) {
+    const step = question.index;
+    const selected = this.selections[step];
+    const scale = question.ratingScale || RATING_SCALE;
+
+    const scaleHtml = scale.map((s) => {
+      const isSelected = selected === s.value;
+      return `
+            <div class="rating-scale-point${isSelected ? ' selected' : ''}"
+                 data-value="${s.value}">
+              <span class="rating-radio${isSelected ? ' checked' : ''}"></span>
+              <span class="rating-value">${s.value}</span>
+              ${s.label ? `<span class="rating-label">${allowTrademarkHtml(s.label)}</span>` : ''}
+            </div>`;
+    }).join('');
+
+    const qImage = this.questionImages[step + 1];
+    const imageHtml = qImage
+      ? `<div class="question-image"><img src="${escapeHtml(qImage.image)}" alt="" /></div>`
+      : '';
+    const imageLayoutClass = qImage ? ` has-image image-${qImage.placement}` : '';
+    const optionsBlock = `
+          <div class="rating-container rating-single-page">
+            <div class="rating-item rating-item--single-scale">
+              <div class="rating-scale">${scaleHtml}</div>
+            </div>
+          </div>`;
+    const contentOrder = qImage?.placement === 'right'
+      ? `${optionsBlock}${imageHtml}`
+      : `${imageHtml}${optionsBlock}`;
+
+    display.innerHTML = `
+          <div class="question-text">${allowTrademarkHtml(question.text)}</div>
+          <div class="question-container${imageLayoutClass}">
+            ${contentOrder}
+          </div>`;
+
+    display.querySelectorAll('.rating-scale-point').forEach((el) => {
+      el.addEventListener('click', () => {
+        this.selectRatingSingle(question, parseInt(el.dataset.value, 10));
+      });
+    });
+  }
+
+  selectRatingSingle(question, value) {
+    const step = question.index;
+    this.selections[step] = value;
+
+    const container = this.block.querySelector('.rating-single-page');
+    if (container) {
+      container.querySelectorAll('.rating-scale-point').forEach((pt) => {
+        const v = parseInt(pt.dataset.value, 10);
+        const isSelected = v === value;
+        pt.classList.toggle('selected', isSelected);
+        pt.querySelector('.rating-radio')?.classList.toggle('checked', isSelected);
+      });
+    }
+
+    this.logCurrentScores(`Q${step + 1} rating-single — permanent visibility = ${value}`);
+
+    this.syncQuizSelectionHint(step);
+  }
+
   selectRating(question, itemIndex, value) {
     const step = question.index;
     if (!this.selections[step]) this.selections[step] = {};
@@ -2576,8 +2927,7 @@ class MarkerQuiz {
     const itemLabel = items[itemIndex]?.text || `item ${itemIndex}`;
     this.logCurrentScores(`Q${step + 1} rating — "${itemLabel}" = ${value}`);
 
-    const btn = this.block.querySelector('#quiz-next-btn');
-    if (btn) btn.disabled = !this.hasSelection(step);
+    this.syncQuizSelectionHint(step);
   }
 
   renderSortableQuestion(display, question) {
@@ -2804,8 +3154,7 @@ class MarkerQuiz {
     const optText = question.options[optionIndex]?.text || `option ${optionIndex}`;
     this.logCurrentScores(`Q${stepIndex + 1} — "${optText}"`);
 
-    const btn = this.block.querySelector('#quiz-next-btn');
-    if (btn) btn.disabled = !this.hasSelection(stepIndex);
+    this.syncQuizSelectionHint(stepIndex);
   }
 
   isOptionSelected(stepIndex, optionIndex) {
@@ -2829,6 +3178,10 @@ class MarkerQuiz {
         }
       }
       return true;
+    }
+    if (question?.type === 'rating-single') {
+      const v = this.selections[stepIndex];
+      return v != null && v >= 1 && v <= 5;
     }
     if (question?.type === 'rating') {
       const sel = this.selections[stepIndex];
@@ -2869,8 +3222,10 @@ class MarkerQuiz {
     this.caseMixQ3Floors = undefined;
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
+    this._prevMriForStepRecompute = undefined;
     this.startScreenInline = false;
     this.showStartScreen = true;
+    this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
     document.body.classList.remove('survey-fullscreen-active');
     this.render();
   }
@@ -3152,8 +3507,10 @@ const renderPreview = (block, product, products, config) => {
                   <img src="${escapeHtml(product.cardImage || product.image)}" alt="${stripHtmlForAlt(product.name)}" />
                 </div>
                 <div class="top-recommendation-content">
-                  <p class="top-recommendation-label">Your top recommended marker</p>
-                  <h1 class="top-recommendation-name">${allowTrademarkHtml(product.name)}</h1>
+                  <div class="top-recommendation-heading">
+                    <p class="top-recommendation-label">Your top recommended marker</p>
+                    <h1 class="top-recommendation-name">${allowTrademarkHtml(product.name)}</h1>
+                  </div>
                   <div class="top-recommendation-description">${allowTrademarkHtml(product.description)}</div>
                 </div>
               </div>
@@ -3194,6 +3551,7 @@ const renderPreview = (block, product, products, config) => {
                   ${emailOrLeadBlock}
               </div>
     
+              <hr class="divider primary">
               <div class="alternatives-section">
                 <h3>You Should Also Consider</h3>
                 <div class="alternatives-grid">
@@ -3201,6 +3559,7 @@ const renderPreview = (block, product, products, config) => {
                 </div>
               </div>
     
+              <hr class="divider primary">
               <div class="contact-section">
                 <h3>Would you like to be contacted by a sales rep to learn more?</h3>
                 <div class="contact-buttons">
@@ -3246,6 +3605,13 @@ export default async function decorate(block) {
   config.subHeader = parseSubHeaderFromBlock(block);
   config.questionImages = parseQuestionImagesFromBlock(block);
   config.sortableOptionImages = parseSortableOptionImagesFromBlock(block);
+
+  const startWindowRaw = config['start-window'] ?? config.startwindow ?? '';
+  const startWindowStr = Array.isArray(startWindowRaw)
+    ? String(startWindowRaw[0] || '')
+    : String(startWindowRaw || '');
+  config.startWindowBackgroundUrl = await resolveStartWindowBackgroundUrl(startWindowStr);
+
   const quiz = new MarkerQuiz(block, config, products);
   await quiz.init();
   return quiz;

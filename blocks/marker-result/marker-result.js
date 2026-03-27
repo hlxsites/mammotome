@@ -163,14 +163,6 @@ function getMarkerQuizUrl() {
   }
 }
 
-function defaultAlternativeReason(product, position) {
-  const name = allowTrademarkHtml(product.name);
-  if (position === 0) {
-    return `Because your quiz identified another strong option for your patients, we recommend ${name}.`;
-  }
-  return `Based on your responses, we also recommend ${name}.`;
-}
-
 export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   const uuid = params.get('uuid');
@@ -196,8 +188,10 @@ export default async function decorate(block) {
 
   try {
     const url = `${SHEET_URL}?uuid=${encodeURIComponent(uuid)}&token=${encodeURIComponent(token)}&tokenCreatedAt=${encodeURIComponent(tokenCreatedAt)}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const [data, { products }] = await Promise.all([
+      fetch(url).then((res) => res.json()),
+      getMarkerRecommendations(),
+    ]);
 
     if (!data.success) {
       block.innerHTML = `<p>Unable to load results: ${escapeHtml(data.error || 'Unknown error')}</p>`;
@@ -206,7 +200,6 @@ export default async function decorate(block) {
 
     const sheet = flattenSheetPayload(data);
 
-    const { products } = await getMarkerRecommendations();
     const topProductId = firstSheetString(sheet, [
       'recommendedProductId',
       'recommended_product_id',
@@ -233,19 +226,7 @@ export default async function decorate(block) {
       return;
     }
 
-    const secondReason = firstSheetString(sheet, [
-      'secondRecommendationReason',
-      'second_product_reason',
-    ]) || data.secondRecommendationReason || data.second_product_reason;
-    const thirdReason = firstSheetString(sheet, [
-      'thirdRecommendationReason',
-      'third_product_reason',
-    ]) || data.thirdRecommendationReason || data.third_product_reason;
-
-    const alternativeEntries = [
-      { product: secondProduct, reason: secondReason },
-      { product: thirdProduct, reason: thirdReason },
-    ].filter((e) => e.product);
+    const alternativeEntries = [secondProduct, thirdProduct].filter(Boolean);
 
     const quizUrl = getMarkerQuizUrl();
     const hasProductVideo = Boolean(topProduct.video);
@@ -301,13 +282,12 @@ export default async function decorate(block) {
               <div class="alternatives-section">
                 <h3>You Should Also Consider</h3>
                 <div class="alternatives-grid">
-                  ${alternativeEntries.map(({ product: prod, reason }, idx) => `
+                  ${alternativeEntries.map((prod) => `
                     <div class="product-card">
                       <div class="product-image">
                         <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
                       </div>
                       <h4>${allowTrademarkHtml(prod.name)}</h4>
-                      <p class="card-reason">${reason ? allowTrademarkHtml(reason) : defaultAlternativeReason(prod, idx)}</p>
                     </div>
                   `).join('')}
                 </div>
@@ -360,7 +340,7 @@ export default async function decorate(block) {
       alert('Thank you for reviewing your results!');
     });
 
-    await applyVimeoThumbnails(root);
+    applyVimeoThumbnails(root).catch(() => {});
   } catch {
     block.innerHTML = '<p>Something went wrong loading your results. Please try again later.</p>';
   }
