@@ -679,8 +679,12 @@ const SORTABLE_OPTIONS_MRI = Object.entries(
   key,
 }));
 
+const RATING_ITEM_NATURAL = 'Preference for natural markers';
+/** Same 1–5 scale as natural row; MRI scoring uses `getNonAnimalPreferenceScores` (MammoMARK penalty for 3+). */
+const RATING_ITEM_NON_ANIMAL = 'Preference for non-animal markers';
+
 const RATING_ITEMS = [
-  { text: 'Preference for natural markers', key: 'natural' },
+  { text: RATING_ITEM_NATURAL, key: 'natural' },
   { text: 'Concerns about nickel allergies or metal sensitivities', key: 'nickel_free' },
 ];
 
@@ -705,7 +709,7 @@ const PERMANENT_VISIBILITY_RATING_SCALE = [
   { value: 2, label: '' },
   { value: 3, label: 'Somewhat important' },
   { value: 4, label: '' },
-  { value: 5, label: 'Strongly Agree' },
+  { value: 5, label: 'Very Important' },
 ];
 
 const PRODUCT_ID_ALIASES = {
@@ -1564,11 +1568,20 @@ class MarkerQuiz {
     ) {
       const prefSel = this.selections[prefIdx];
       const naturalRating = prefSel[0] || 1;
-      const naturalScores = MarkerQuiz.getAllNatural(naturalRating);
+      const naturalScores = this.isMriSelected()
+        ? MarkerQuiz.getNonAnimalPreferenceScores(naturalRating)
+        : MarkerQuiz.getAllNatural(naturalRating);
       Object.entries(naturalScores).forEach(([productId, points]) => {
         const resolvedId = this.resolveProductId(productId);
         if (resolvedId) this.scores[resolvedId] += points;
       });
+
+      if (this.isMriSelected() && naturalRating >= 4) {
+        const mammoId = this.resolveProductId('mammomark');
+        if (mammoId && mammoId in this.scores) {
+          this.scores[mammoId] += MarkerQuiz.ELECTRE_SCORES.incompatible;
+        }
+      }
 
       if (!this.isMriSelected()) {
         const nickelRating = prefSel[1] || 1;
@@ -1664,11 +1677,18 @@ class MarkerQuiz {
     return this.isMriSelected() ? question.optionsMri : (question.options ?? SORTABLE_OPTIONS);
   }
 
-  /** Returns rating items for the current modality (excludes nickel when MRI selected). */
+  /** Returns rating items for the current modality (excludes nickel when MRI; natural row label → non-animal for MRI). */
   getRatingItemsForQuestion(question) {
     if (question?.type !== 'rating' || !question?.items) return question?.items ?? RATING_ITEMS;
-    if (!this.isMriSelected()) return question.items;
-    return question.items.filter((item) => item.key !== 'nickel_free');
+    let items = !this.isMriSelected()
+      ? question.items
+      : question.items.filter((item) => item.key !== 'nickel_free');
+    if (this.isMriSelected()) {
+      items = items.map((item) => (item.key === 'natural'
+        ? { ...item, text: RATING_ITEM_NON_ANIMAL }
+        : item));
+    }
+    return items;
   }
 
   /**
@@ -2063,7 +2083,7 @@ class MarkerQuiz {
   }
 
   static getAllNatural(rating) {
-    // Rating 1-5, where 5 = Very frequently prefer natural
+    // Rating 1-5; Ultrasound/Stereotactic “natural markers” row. (MRI uses getNonAnimalPreferenceScores.)
     const bonusMap = {
       1: 0, 2: 1, 3: 2, 4: 4, 5: 6,
     };
@@ -2081,6 +2101,27 @@ class MarkerQuiz {
       hmplus: penalty,
       mammomark: penalty,
       lumimark: penalty,
+    };
+  }
+
+  /**
+   * MRI “non-animal markers” row: same bonus curve as natural for mammostar/biomarc;
+   * rating 3 → small MammoMARK penalty only; ratings 4–5 → hard veto applied in calculateScores.
+   */
+  static getNonAnimalPreferenceScores(rating) {
+    const bonusMap = {
+      1: 0, 2: 1, 3: 2, 4: 4, 5: 6,
+    };
+    const bonus = bonusMap[rating] || 0;
+    const mammoPenalty = rating === 3 ? -1 : 0;
+
+    return {
+      mammostar: bonus,
+      biomarc: bonus,
+      hm: 0,
+      hmplus: 0,
+      mammomark: mammoPenalty,
+      lumimark: 0,
     };
   }
 
