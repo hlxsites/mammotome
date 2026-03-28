@@ -1872,17 +1872,15 @@ body.marker-app-hide-chrome-footer .footer {
     overflow-x: hidden;
   }
 
-  .survey-fullscreen:has(.progress-bar-container)::before,
-  .survey-fullscreen:has(.progress-bar-container)::after,
-  .survey-fullscreen:has(.preview-bar)::before,
-  .survey-fullscreen:has(.preview-bar)::after {
+  /* :has() omitted for Tizen WebKit — target quiz / results / preview / thank-you via exclusions. */
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::before,
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::after {
     content: "";
     flex: 1 1 0;
     min-height: 0;
   }
 
-  .survey-fullscreen:has(.progress-bar-container) .survey-card,
-  .survey-fullscreen:has(.preview-bar) .survey-card {
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) .survey-card {
     margin-top: 24px;
     margin-bottom: 24px;
   }
@@ -2364,13 +2362,23 @@ body.marker-app-hide-chrome-footer .footer {
     z-index: -1;
   }
 
-  .survey-fullscreen:has(.progress-bar-container),
-  .survey-fullscreen:has(.preview-bar) {
+  /* No :has() — unsupported on Tizen / older WebKit; welcome/video use their own layouts. */
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) {
     justify-content: center;
   }
 
-  .survey-fullscreen:has(.progress-bar-container) .survey-card,
-  .survey-fullscreen:has(.preview-bar) .survey-card {
+  /*
+   * Kiosk (1080–1536) uses ::before/::after flex spacers to center. This range uses a
+   * fixed ::before for the wave, so leftover ::after flex-grow from the kiosk query
+   * only expands below the card and pins content to the top (e.g. Tizen TV 1080×1688/1920).
+   */
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::before,
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::after {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) .survey-card {
     margin-bottom: 24px;
     margin-top: 24px;
   }
