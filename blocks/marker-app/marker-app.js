@@ -80,15 +80,11 @@ const sanitizeUserAgent = (ua) => {
 async function sendToSheet(payload, userInfo = {}, options = {}) {
   // Validate origin
   if (!isOriginAllowed()) {
-    // eslint-disable-next-line no-console
-    console.warn('[Marker Quiz] Request origin not allowed');
     return;
   }
 
   const validation = validateGoogleSheetsPayload(payload);
   if (!validation.valid) {
-    // eslint-disable-next-line no-console
-    console.error('[Marker Quiz] Invalid payload:', validation.errors);
     return;
   }
 
@@ -146,31 +142,20 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
     });
 
     if (!response.ok) {
-      // eslint-disable-next-line no-console
-      console.warn(`[Marker Quiz] Server returned ${response.status}`);
       return;
     }
 
     const data = await response.json();
 
     if (data.success && data.uuid) {
-      // eslint-disable-next-line no-console
-      console.log('[Marker Quiz] Response saved with UUID:', data.uuid);
       if (typeof sessionStorage !== 'undefined') {
         sessionStorage.setItem('markerQuizUuid', data.uuid);
       }
     } else if (data.error) {
-      // eslint-disable-next-line no-console
-      console.warn('[Marker Quiz] Server error:', data.error);
+      // server returned an error – no action needed
     }
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      // eslint-disable-next-line no-console
-      console.warn('[Marker Quiz] Request timeout after', timeout, 'ms');
-    } else {
-      // eslint-disable-next-line no-console
-      console.warn('[Marker Quiz] Sheet submission failed (non-blocking):', error?.message);
-    }
+  } catch {
+    // non-blocking – intentionally swallowed
   } finally {
     clearTimeout(timeoutId);
   }
@@ -273,10 +258,6 @@ const appendBackgroundEmbedParams = (embedUrl) => {
   }
 };
 
-/**
- * Resolves authoring "Start-Window" URLs (including Vimeo paths without numeric id)
- * to a safe iframe src.
- */
 const resolveStartWindowBackgroundUrl = async (raw) => {
   if (!raw || typeof raw !== 'string') return '';
   const trimmed = raw.trim();
@@ -448,8 +429,7 @@ const prepareQuizResultsUrlForMarketo = async () => {
       resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${linkData.tokenCreatedAt}`;
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('[Marker Quiz] Failed to pre-generate results link:', err);
+    
   }
   return resultsUrl;
 };
@@ -1427,7 +1407,6 @@ class MarkerQuiz {
     return this.questions.findIndex((q) => q?.type === 'rating');
   }
 
-  /** Canonical `this.questions` index for the current visible step. */
   getCurrentQuestionIndex() {
     return this.visibleQuestionIndices[this.currentStep];
   }
@@ -1615,12 +1594,10 @@ class MarkerQuiz {
     const sorted = Object.keys(this.scores)
       .map((id) => ({ id, name: this.products[id]?.shortName || id, score: this.scores[id] }))
       .sort((a, b) => b.score - a.score);
-      // eslint-disable-next-line no-console
     console.log(
       `%c[Marker Quiz] Scores after: ${trigger}`,
       'color: #84329b; font-weight: bold;',
     );
-    // eslint-disable-next-line no-console
     console.table(sorted.map((p) => {
       const vetoed = p.score <= MarkerQuiz.ELECTRE_VETO_THRESHOLD;
       return {
@@ -1818,13 +1795,6 @@ class MarkerQuiz {
 
   /**
    * ELECTRE modality compatibility table.
-   * Returns the compatibility level per product for a given modality.
-   *
-   * Levels:
-   *   'full'         — validated for this modality                  → +15 pts
-   *   'partial'      — usable with known limitations                → -20 pts
-   *   'incompatible' — clinically contraindicated for this modality → -9999 (hard veto)
-   *
    * @param {number} optionIndex 0=Ultrasound, 1=Stereotactic, 2=MRI
    * @returns {{ [productKey: string]: 'full'|'partial'|'incompatible' }}
    */
@@ -2453,8 +2423,7 @@ class MarkerQuiz {
             try {
               f.addHiddenFields({ quizResultsURL: resultsUrl });
             } catch (err) {
-              // eslint-disable-next-line no-console
-              console.warn('[Marker Quiz] contact form addHiddenFields:', err);
+              
             }
           },
           onSuccess: (values) => {
@@ -2465,8 +2434,6 @@ class MarkerQuiz {
         if (!form) return;
         wrapper.dataset.mktoLoaded = 'true';
       } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Error loading contact sales form:', e);
         wrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
       }
     });
@@ -2495,7 +2462,6 @@ class MarkerQuiz {
             quizResultsURL: resultsUrl,
           });
 
-          // Re-enable submit now that URL is set
           if (submitBtn) submitBtn.disabled = false;
 
           form.onSuccess((values) => {
@@ -2503,8 +2469,6 @@ class MarkerQuiz {
             return true;
           });
         } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('Error loading email results form:', e);
           emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
         }
       });
@@ -3406,8 +3370,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
           try {
             f.addHiddenFields({ quizResultsURL: resultsUrl });
           } catch (err) {
-            // eslint-disable-next-line no-console
-            console.warn('[Marker Quiz] preview contact form addHiddenFields:', err);
+            
           }
         },
         onSuccess: (values) => {
@@ -3418,8 +3381,6 @@ const wirePreviewResultsPage = (block, product, products, config) => {
       if (!form) return;
       wrapper.dataset.mktoLoaded = 'true';
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Error loading contact sales form (preview):', e);
       wrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
     }
   });
@@ -3448,8 +3409,6 @@ const wirePreviewResultsPage = (block, product, products, config) => {
           return true;
         });
       } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Error loading email results form (preview):', e);
         emailFormWrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form.</p>';
       }
     });
