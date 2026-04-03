@@ -6,6 +6,7 @@
 
 .survey-fullscreen.survey-fullscreen-welcome {
   padding: 0;
+  cursor: pointer;
 }
 
 .start-screen-page-heading {
@@ -96,6 +97,7 @@
 .survey-inline-welcome {
   max-width: 800px;
   margin: 0 auto;
+  cursor: pointer;
 }
 
 .start-screen {
@@ -138,10 +140,17 @@
 
 .start-screen #start-survey-btn {
   background: var(--mt-global-color-accent-primary);
+  border-color: var(--mt-global-color-accent-primary);
   box-shadow: none;
-  padding: 11px 30px;
+  color: var(--mt-global-color-white);
+  display: inline-block;
   font-size: 1.5rem;
   font-weight: 500;
+  line-height: 1.2;
+  overflow: visible;
+  padding: 11px 30px;
+  text-overflow: unset;
+  white-space: normal;
 }
 
 .start-sub-header-image {
@@ -188,6 +197,7 @@
   background: #0d1117;
   background-image: none;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .survey-fullscreen-video-intro .start-video-intro-media {
@@ -201,9 +211,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100vw;
-  height: 56.25vw;
-  min-height: 100vh;
+  min-height: 103vh;
   min-width: 177.78vh;
   transform: translate(-50%, -50%);
   border: 0;
@@ -214,25 +222,58 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: color-mix(in srgb, var(--mt-global-color-black) 40%, transparent);
+  cursor: inherit;
+}
+
+.survey-fullscreen-video-intro .start-video-intro-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 16px 24px max(28px, env(safe-area-inset-bottom, 0));
+  box-sizing: border-box;
   pointer-events: none;
 }
 
-.survey-fullscreen-video-intro .start-video-intro-content {
-  position: relative;
-  z-index: 2;
-  flex: 1 1 auto;
-  display: flex;
+.survey-fullscreen-video-intro .start-video-intro-cta {
+  pointer-events: auto;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 0;
-  padding: 24px;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  padding: 14px 20px;
+  background: var(--mt-global-color-white);
+  color: var(--mt-global-color-accent-quinary);
+  font-size: 1.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+  text-overflow: unset;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  cursor: pointer;
+  width: 150px;
+  height: 150px;
   box-sizing: border-box;
+  box-shadow: 0 6px 24px
+    color-mix(in srgb, var(--mt-global-color-black) 22%, transparent);
 }
 
-.survey-fullscreen-video-intro #start-video-intro-btn {
-  box-shadow: 0 8px 32px
-    color-mix(in srgb, var(--mt-global-color-black) 35%, transparent);
+.survey-fullscreen-video-intro .start-video-intro-cta:hover {
+  filter: brightness(0.97);
+}
+
+.survey-fullscreen-video-intro .start-video-intro-cta:focus-visible {
+  outline: 2px solid var(--mt-global-color-white);
+  outline-offset: 3px;
 }
 
 .survey-fullscreen.survey-fullscreen-welcome > .survey-fullscreen-welcome-body {
@@ -337,8 +378,8 @@
   }
 
   .start-screen #start-survey-btn {
-    padding: 10px 24px;
     font-size: 1.125rem;
+    padding: 10px 24px;
   }
 
   .start-screen-title-block {
@@ -386,8 +427,8 @@
   }
 
   .start-screen #start-survey-btn {
-    padding: 8px 20px;
     font-size: 1rem;
+    padding: 8px 20px;
   }
 
   .start-screen-title-block {
@@ -1843,6 +1884,10 @@ body.marker-app-hide-chrome-footer .footer {
 }
 
 @media (min-width: 1080px) and (min-height: 1350px) and (max-width: 1536px) {
+  .survey-fullscreen {
+    height: 120vh;
+  }
+
   .start-screen .start-screen-title-heading .start-screen-title-line {
     font-size: 5.25rem;
     font-weight: 500;
@@ -1872,7 +1917,6 @@ body.marker-app-hide-chrome-footer .footer {
     overflow-x: hidden;
   }
 
-  /* :has() omitted for Tizen WebKit — target quiz / results / preview / thank-you via exclusions. */
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::before,
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::after {
     content: "";
@@ -2339,6 +2383,22 @@ body.marker-app-hide-chrome-footer .footer {
   }
 }
 
+@media (min-width: 1080px) and (min-height: 1680px) {
+  .survey-fullscreen {
+    height: 113vh;
+  }
+
+  .survey-fullscreen-video-intro .start-video-intro-iframe {
+    top: 45%;
+    min-height: 103vh;
+    min-height: 103vh;
+  }
+
+  .survey-fullscreen-video-intro .start-video-intro-footer {
+    bottom: 25%;
+  }
+}
+
 @media (min-width: 864px) and (min-height: 1350px) and (max-width: 1920px) {
   .survey-fullscreen:not(.survey-fullscreen-video-intro) {
     background-color: var(--mt-global-color-accent-primary);
@@ -2362,16 +2422,10 @@ body.marker-app-hide-chrome-footer .footer {
     z-index: -1;
   }
 
-  /* No :has() — unsupported on Tizen / older WebKit; welcome/video use their own layouts. */
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) {
     justify-content: center;
   }
 
-  /*
-   * Kiosk (1080–1536) uses ::before/::after flex spacers to center. This range uses a
-   * fixed ::before for the wave, so leftover ::after flex-grow from the kiosk query
-   * only expands below the card and pins content to the top (e.g. Tizen TV 1080×1688/1920).
-   */
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::before,
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::after {
     flex: 0 0 auto;
@@ -2664,6 +2718,207 @@ body.marker-app-hide-chrome-footer .footer {
   }
 }
 
+@media (min-width: 860px) and (max-width: 868px) and (min-height: 1350px) {
+  .survey-fullscreen:has(.results-card):not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) {
+    justify-content: flex-start;
+  }
+
+  .survey-fullscreen:has(.results-card):not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) .survey-card {
+    margin-bottom: 24px;
+    margin-top: max(16px, env(safe-area-inset-top, 0));
+  }
+
+  .survey-fullscreen:has(.results-card) .top-recommendation-content {
+    padding-top: 12px;
+    top: max(88px, 22%);
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) {
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 110vh;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  .product-survey-container.survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) {
+    box-sizing: border-box;
+    max-width: none;
+    padding: 28px;
+    width: 100%;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar-container,
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card {
+    box-sizing: border-box;
+    max-width: min(1480px, 100%);
+    min-width: 0;
+    width: 100%;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card {
+    border-radius: 28px;
+    margin-bottom: 60px;
+    margin-top: 30px;
+    padding: 40px 48px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar-container {
+    border-radius: 28px;
+    padding: 24px 48px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar {
+    gap: 12px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-segment {
+    border-radius: 6px;
+    height: 12px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .question-text {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .options-container {
+    margin-bottom: 50px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .option {
+    border-radius: 24px;
+    font-size: 24px;
+    padding: 16px 20px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .option-content {
+    gap: 22px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .checkbox,
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .radio {
+    height: 29px;
+    width: 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .checkbox.checked::after {
+    font-size: 18px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .radio.checked::after {
+    height: 13px;
+    width: 13px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .question-container .grouped-checkboxes-container {
+    max-width: 1100px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-header {
+    padding: 22px 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-header span {
+    font-size: 1.4rem;
+    font-weight: 300;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-header .header-right {
+    gap: 13px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-chevron {
+    width: 29px;
+    height: 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group.open .checkbox-group-body {
+    max-height: 900px;
+    padding: 11px 29px 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-body {
+    padding: 0 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row {
+    border-radius: 13px;
+    margin-bottom: 13px;
+    padding: 19px 22px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row .option-text {
+    font-size: 16px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row.standalone {
+    border-radius: 14px;
+    margin-bottom: 14px;
+    padding: 22px 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row .checkbox,
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-other .checkbox {
+    margin-right: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-other {
+    border-radius: 14px;
+    margin-bottom: 14px;
+    padding: 22px 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-other .other-check-row .option-text {
+    font-size: 1.4rem;
+    font-weight: 300;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .other-text-field {
+    margin-top: 29px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .other-text-input {
+    border-radius: 11px;
+    font-size: 18px;
+    padding: 14px 19px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .question-counter {
+    font-size: 21px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation {
+    align-items: center;
+    column-gap: unset;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 26px;
+    grid-template-columns: unset;
+    justify-content: space-between;
+    margin-top: 40px;
+    row-gap: unset;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation .question-counter {
+    justify-self: unset;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation .btn {
+    font-size: 24px;
+    font-weight: 400;
+    padding: 19px 27px;
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 768px) {
   .alternatives-grid {
     flex-direction: column;
@@ -2841,12 +3096,20 @@ body.marker-app-hide-chrome-footer .footer {
     padding: 20px;
   }
 
-  .start-screen #start-survey-btn,
   .btn {
     font-size: 14px;
     width: 44%;
     font-weight: 400;
     padding: 5px;
+  }
+
+  .start-screen #start-survey-btn {
+    font-weight: 500;
+    max-width: calc(100% - 32px);
+    min-width: 12rem;
+    padding: 10px 20px;
+    width: auto;
+    white-space: normal;
   }
 
   .question-image img {
@@ -2926,12 +3189,6 @@ body.marker-app-hide-chrome-footer .footer {
     max-height: none;
   }
 
-  .survey-fullscreen.survey-fullscreen-welcome #start-survey-btn {
-    max-width: calc(100% - 32px);
-    min-width: 12rem;
-    width: auto;
-  }
-
   .survey-fullscreen.survey-fullscreen-welcome .start-screen-description {
     padding: 0 5px;
     text-align: center;
@@ -2950,7 +3207,6 @@ body.marker-app-hide-chrome-footer .footer {
   }
 }
 
-/* Results hero: narrow phones only — label/title overlay image; description full width below (see ≤600px). */
 @media (max-width: 600px) {
   .start-screen-page-heading {
     padding-top: 24px;

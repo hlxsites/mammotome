@@ -1,7 +1,9 @@
 import { readExactBlockConfig, getInfo } from '../../scripts/lib-franklin.js';
+import { mergeOpCoBlockConfig, applyOpCoDetailsToNotice } from '../onetrust-shared/opco-notice-helpers.js';
 
 export default function decorate(block) {
   const blockConfig = readExactBlockConfig(block.cloneNode(true));
+  const opCoDetails = mergeOpCoBlockConfig(blockConfig);
   block.innerHTML = '';
 
   // Get the current page's language and country
@@ -49,70 +51,6 @@ export default function decorate(block) {
     });
   };
 
-  function updateOpCoDetails(opCoDetails) {
-    const versionNumber = document.getElementsByClassName('otnotice-public-version')[0].innerHTML;
-    const versionNum = document.getElementsByClassName('VersionNumber');
-    if (opCoDetails.OpCoName) {
-      const opcoNameElements = document.getElementsByClassName('OpCoName');
-      Array.from(opcoNameElements).forEach((el) => {
-        el.innerHTML = opCoDetails.OpCoName;
-      });
-    }
-
-    if (opCoDetails.OpCoAddressMultiLine) {
-      const opcoAddrElements = document.getElementsByClassName('OpCoAddressMultiLine');
-      Array.from(opcoAddrElements).forEach((el) => {
-        el.innerHTML = opCoDetails.OpCoAddressMultiLine;
-      });
-    }
-
-    if (opCoDetails.OpCoEntity) {
-      const opcoEntityElements = document.getElementsByClassName('OpCoEntity');
-      Array.from(opcoEntityElements).forEach((el) => {
-        el.innerHTML = opCoDetails.OpCoEntity;
-      });
-    }
-
-    if (opCoDetails.OpCoEmail) {
-      const opcoEmailElements = document.getElementsByClassName('OpCoEmail');
-      Array.from(opcoEmailElements).forEach((el) => {
-        el.innerHTML = opCoDetails.OpCoEmail;
-        el.href = `mailto:${opCoDetails.OpCoEmail}`;
-      });
-    }
-
-    // Update the href for OpCoCookiePolicy, OpCoCCPAPolicy, OpCoPrivacyPolicy
-    if (opCoDetails.OpCoCookiePolicy) {
-      const opcoCookiePolicyElements = document.getElementsByClassName('OpCoCookiePolicy');
-      Array.from(opcoCookiePolicyElements).forEach((el) => {
-        el.href = opCoDetails.OpCoCookiePolicy;
-      });
-    }
-
-    if (opCoDetails.OpCoCCPAPolicy) {
-      const opcoCCPAPolicyElements = document.getElementsByClassName('OpCoCCPAPolicy');
-      Array.from(opcoCCPAPolicyElements).forEach((el) => {
-        el.href = opCoDetails.OpCoCCPAPolicy;
-      });
-    }
-
-    if (opCoDetails.OpCoPrivacyPolicy) {
-      const opcoPrivacyPolicyElements = document.getElementsByClassName('OpCoPrivacyPolicy');
-      Array.from(opcoPrivacyPolicyElements).forEach((el) => {
-        el.href = opCoDetails.OpCoPrivacyPolicy;
-      });
-    }
-
-    for (let i = 0; i < versionNum.length; i += 1) {
-      versionNum[i].innerHTML = versionNumber;
-    }
-
-    const versionElements = document.getElementsByClassName('otnotice-version');
-    Array.from(versionElements).forEach((el) => {
-      el.remove();
-    });
-  }
-
   const createAndAppendDiv = () => {
     const containerDiv = document.createElement('div');
     containerDiv.className = 'container';
@@ -145,7 +83,7 @@ export default function decorate(block) {
     .then(async () => {
       await createAndAppendDiv();
       await initializeOneTrust();
-      await updateOpCoDetails(blockConfig);
+      applyOpCoDetailsToNotice(opCoDetails);
     })
     .catch((error) => {
       console.error('Error loading OneTrust script: ', error);  // eslint-disable-line

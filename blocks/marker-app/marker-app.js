@@ -524,7 +524,7 @@ const applyMarkerAppHideChrome = ({ hideNav, hideFooter }) => {
 const RANK_SCORES = {
   type: 'ranked_capability',
   label_to_capability: {
-    'Long-term ultrasound visibility': 'long_term_us_visibility',
+    'Long-term Ultrasound Visibility': 'long_term_us_visibility',
     'Migration from Deployment Site': 'anti_migration',
     'Ease of Locating': 'locating',
     Affordability: 'affordability',
@@ -629,7 +629,7 @@ const RANK_SCORES_MRI = {
       accurate_placement: 4,
       mri_artifact_size: 5,
       migration_from_deployment_site: 5,
-      duration_of_ultrasound_visibility: 2,
+      duration_of_ultrasound_visibility: 3,
     },
     mammostar: {
       accurate_placement: 0,
@@ -1003,13 +1003,6 @@ class MarkerQuiz {
       return;
     }
 
-    const overlayLabel = this.config['start-window-overlay']
-      ?? this.config.startwindowoverlay
-      ?? DEFAULT_START_BUTTON;
-    const btnSafe = allowTrademarkHtml(
-      typeof overlayLabel === 'string' ? overlayLabel : String(overlayLabel ?? ''),
-    );
-
     document.body.classList.add('survey-fullscreen-active');
     this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen survey-fullscreen-video-intro">
@@ -1024,12 +1017,15 @@ class MarkerQuiz {
               ></iframe>
             </div>
             <div class="start-video-intro-scrim" aria-hidden="true"></div>
-            <div class="start-video-intro-content">
-              <button type="button" class="btn btn-primary" id="start-video-intro-btn">${btnSafe}</button>
+            <div class="start-video-intro-footer">
+              <button type="button" class="start-video-intro-cta">Tap to Begin</button>
             </div>
           </div>`;
 
-    this.block.querySelector('#start-video-intro-btn')?.addEventListener('click', () => {
+    const videoIntroRoot = this.block.querySelector(
+      '.product-survey-container.survey-fullscreen-video-intro',
+    );
+    videoIntroRoot?.addEventListener('click', () => {
       this.showVideoIntroScreen = false;
       this.renderStartScreen();
     });
@@ -1038,10 +1034,11 @@ class MarkerQuiz {
   renderStartScreen() {
     const startTitle = this.config['start-title'] ?? this.config.startTitle ?? this.config.title ?? DEFAULT_START_TITLE_HTML;
     const startDescription = this.config['start-description'] ?? this.config.startDescription ?? this.config.description ?? DEFAULT_START_DESCRIPTION;
-    const startButton = this.config['start-button'] ?? this.config.startButton ?? this.config.button ?? DEFAULT_START_BUTTON;
+    const startButtonRaw = this.config['start-button'] ?? this.config.startButton ?? this.config.button ?? DEFAULT_START_BUTTON;
+    const startButton = typeof startButtonRaw === 'string' ? startButtonRaw.trim() : String(startButtonRaw ?? '').trim();
     const { subHeader } = this.config;
     const descSafe = allowTrademarkHtml(startDescription);
-    const btnSafe = allowTrademarkHtml(startButton);
+    const btnSafe = allowTrademarkHtml(startButton || DEFAULT_START_BUTTON);
 
     const subHeaderImageHtml = subHeader?.image
       ? `<div class="start-sub-header-image"><img src="${escapeHtml(subHeader.image)}" alt="" /></div>`
@@ -1103,9 +1100,17 @@ class MarkerQuiz {
       }
     }
 
-    this.block.querySelector('#start-survey-btn')?.addEventListener('click', () => {
+    const startWelcomeRoot = this.block.querySelector(
+      '.product-survey-container.survey-fullscreen-welcome, .product-survey-container.survey-inline-welcome',
+    );
+    const activateWelcomeStart = () => {
       this.showStartScreen = false;
       this.showQuizForm();
+    };
+    startWelcomeRoot?.addEventListener('click', (e) => {
+      if (e.target.closest('.survey-close-btn')) return;
+      if (e.target.closest('a[href]')) return;
+      activateWelcomeStart();
     });
   }
 
@@ -1146,8 +1151,8 @@ class MarkerQuiz {
         text: 'Which biopsy site markers do you currently use?',
         type: 'grouped-multi',
         options: [
-          { text: 'BiomarC® (Barbell, Tribell)', group: 'Mammotome' },
-          { text: 'HydroMARK™ (Barrel, Butterfly)', group: 'Mammotome' },
+          { text: 'BiomarC® (Barbell, Petite Barbell, Tribell)', group: 'Mammotome' },
+          { text: 'HydroMARK™ (Barrel, Butterfly, Open Coil)', group: 'Mammotome' },
           { text: 'HydroMARK™ Plus (Dragonfly, Hummingbird)', group: 'Mammotome' },
           { text: 'LumiMARK™ (Tulip, Lotus, Rose)', group: 'Mammotome' },
           { text: 'MammoMARK® (Bowtie, Triple Twist, U-Shape)', group: 'Mammotome' },
@@ -1155,10 +1160,13 @@ class MarkerQuiz {
           { text: 'Hologic SecurMark® (Buckle, Infinity, Stoplight, Mini Cork, Top Hat)', group: 'Hologic' },
           { text: 'Hologic TriMark® and CelerMark™ (Cork, Hourglass)', group: 'Hologic' },
           { text: 'Hologic TuMark® (Q, X, Vision, Eye, U, Conic)', group: 'Hologic' },
-          { text: 'BD Gel Mark UltraCor™ (S, Omega)', group: 'BD' },
-          { text: 'BD UltraClip™ (Wing, Ribbon, Coil, Heart, Venus)', group: 'BD' },
+          { text: 'BD Gel Mark UltraCor™ or Ultra™ (S, Omega)', group: 'BD' },
+          { text: 'BD SenoMark™ (O, X, M, S, Omega)', group: 'BD' },
+          { text: 'BD SenoMark™ UltraCor™ MRI (M, X)', group: 'BD' },
+          { text: 'BD SenoMark™ Ultra (Ribbon, Coil)', group: 'BD' },
+          { text: 'BD UltraClip™ II or UltraClip™ Dual Trigger (Wing, Ribbon, Coil, Heart, Venus)', group: 'BD' },
           { text: 'BD UltraCor™ Twirl™ (Curls, Clover, Ring)', group: 'BD' },
-          { text: 'BD Senomark™ (O, X, M)', group: 'BD' },
+          { text: 'BD UltraCor™ (Spring)', group: 'BD' },
           { text: 'Other' },
         ],
         groups: [
