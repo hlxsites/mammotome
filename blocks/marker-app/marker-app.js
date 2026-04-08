@@ -399,6 +399,8 @@ const prefetchMarketoForms2 = () => {
   document.head.appendChild(s);
 };
 
+const EMAIL_RESULTS_LOADING_HTML = '<p class="email-results-form-loading" role="status" aria-live="polite">Loading...</p>';
+
 const embedMarketoForm = async (container, formId) => {
   await loadScriptAsync('//www2.mammotome.com/js/forms2/js/forms2.min.js');
   const formElement = document.createElement('form');
@@ -406,7 +408,10 @@ const embedMarketoForm = async (container, formId) => {
   container.appendChild(formElement);
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
   return new Promise((resolve) => {
-    window.MktoForms2.whenReady(resolve);
+    window.MktoForms2.whenReady((form) => {
+      container.querySelector('.email-results-form-loading')?.remove();
+      resolve(form);
+    });
   });
 };
 
@@ -545,7 +550,7 @@ const RANK_SCORES = {
     },
     hmplus: {
       long_term_us_visibility: 5,
-      anti_migration: 4,
+      anti_migration: 3,
       locating: 5,
       affordability: 1,
       cross_modal_visibility: 5,
@@ -661,7 +666,7 @@ const SORTABLE_OPTIONS_MRI = Object.entries(
 
 const RATING_ITEM_NATURAL = 'Preference for natural markers';
 /** Same 1–5 scale as natural row; MRI scoring uses `getNonAnimalPreferenceScores` (MammoMARK penalty for 3+). */
-const RATING_ITEM_NON_ANIMAL = 'Preference for non-animal markers';
+const RATING_ITEM_NON_ANIMAL = 'Preference for non-animal origin markers';
 
 const RATING_ITEMS = [
   { text: RATING_ITEM_NATURAL, key: 'natural' },
@@ -687,10 +692,50 @@ const RATING_SCALE = [
 const PERMANENT_VISIBILITY_RATING_SCALE = [
   { value: 1, label: 'Not Important' },
   { value: 2, label: '' },
-  { value: 3, label: 'Somewhat important' },
+  { value: 3, label: 'Somewhat Important' },
   { value: 4, label: '' },
   { value: 5, label: 'Very Important' },
 ];
+
+function getRatingSliderSummaryLabel(value, scale) {
+  const v = Number(value);
+  const labelFor = (val) => {
+    const entry = scale.find((s) => s.value === val);
+    const t = entry?.label != null ? String(entry.label).trim() : '';
+    return t;
+  };
+  if (v <= 2) return labelFor(1) || 'Not Important';
+  if (v === 3) return labelFor(3) || 'Somewhat Important';
+  return labelFor(5) || 'Very Important';
+}
+
+function syncRatingSliderScaleNums(wrap, value) {
+  const v = Number(value);
+  if (v < 1 || v > 5 || Number.isNaN(v)) return;
+  wrap.querySelectorAll('.rating-slider-scale-num').forEach((el) => {
+    const n = parseInt(el.dataset.value, 10);
+    el.classList.toggle('rating-slider-scale-num--active', n === v);
+  });
+}
+
+function buildRatingMobileSliderHtml(itemIndex, selectedValue) {
+  const idxAttr = typeof itemIndex === 'number'
+    ? ` data-item-index="${itemIndex}"`
+    : '';
+  const hasSel = selectedValue != null && selectedValue >= 1 && selectedValue <= 5;
+  const val = hasSel ? selectedValue : 3;
+  const scaleNums = [1, 2, 3, 4, 5].map(
+    (n) => `<span class="rating-slider-scale-num" data-value="${n}">${n}</span>`,
+  ).join('');
+  return `
+    <div class="rating-slider-mobile"${idxAttr}>
+      <div class="rating-slider-scale-labels" aria-hidden="true">${scaleNums}</div>
+      <input type="range" class="rating-range-input" min="1" max="5" step="1" value="${val}"
+        aria-valuemin="1" aria-valuemax="5" aria-valuenow="${val}"
+        aria-label="Select rating from 1 to 5" />
+      <p class="rating-slider-summary" aria-live="polite"></p>
+    </div>`;
+}
 
 const PRODUCT_ID_ALIASES = {
   hm: ['hm', 'hydromark', 'hydro-mark', 'hydro mark'],
@@ -2457,6 +2502,7 @@ class MarkerQuiz {
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
       requestResultsBtn.addEventListener('click', async () => {
         requestResultsBtn.style.display = 'none';
+        emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
         emailFormWrapper.style.display = 'block';
         try {
           const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
@@ -2810,7 +2856,7 @@ class MarkerQuiz {
     const selections = this.selections[step] || {};
 
     const itemsHtml = items.map((item, itemIdx) => {
-      const scaleHtml = RATING_SCALE.map((s) => {
+      const pointsHtml = RATING_SCALE.map((s) => {
         const selected = selections[itemIdx] === s.value;
         return `
               <div class="rating-scale-point${selected ? ' selected' : ''}"
@@ -2820,6 +2866,7 @@ class MarkerQuiz {
                 ${s.label ? `<span class="rating-label">${allowTrademarkHtml(s.label)}</span>` : ''}
               </div>`;
       }).join('');
+      const scaleHtml = `${pointsHtml}${buildRatingMobileSliderHtml(itemIdx, selections[itemIdx])}`;
 
       return `
             <div class="rating-item">
@@ -2853,6 +2900,7 @@ class MarkerQuiz {
         );
       });
     });
+    this.bindRatingRangeSliders(display, question, 'multi');
   }
 
   renderRatingSingleQuestion(display, question) {
@@ -2860,7 +2908,7 @@ class MarkerQuiz {
     const selected = this.selections[step];
     const scale = question.ratingScale || RATING_SCALE;
 
-    const scaleHtml = scale.map((s) => {
+    const pointsHtml = scale.map((s) => {
       const isSelected = selected === s.value;
       return `
             <div class="rating-scale-point${isSelected ? ' selected' : ''}"
@@ -2870,6 +2918,7 @@ class MarkerQuiz {
               ${s.label ? `<span class="rating-label">${allowTrademarkHtml(s.label)}</span>` : ''}
             </div>`;
     }).join('');
+    const scaleHtml = `${pointsHtml}${buildRatingMobileSliderHtml(undefined, selected)}`;
 
     const qImage = this.questionImages[step + 1];
     const imageHtml = qImage
@@ -2897,6 +2946,53 @@ class MarkerQuiz {
         this.selectRatingSingle(question, parseInt(el.dataset.value, 10));
       });
     });
+    this.bindRatingRangeSliders(display, question, 'single');
+  }
+
+  bindRatingRangeSliders(display, question, mode) {
+    const scale = mode === 'single'
+      ? (question.ratingScale || RATING_SCALE)
+      : RATING_SCALE;
+    const step = question.index;
+    display.querySelectorAll('.rating-slider-mobile').forEach((wrap) => {
+      const input = wrap.querySelector('.rating-range-input');
+      const summary = wrap.querySelector('.rating-slider-summary');
+      if (!input || !summary) return;
+      const itemIdx = wrap.dataset.itemIndex !== undefined && wrap.dataset.itemIndex !== ''
+        ? parseInt(wrap.dataset.itemIndex, 10)
+        : null;
+      let initialSelected;
+      if (mode === 'single') {
+        initialSelected = this.selections[step];
+      } else if (itemIdx != null) {
+        initialSelected = this.selections[step]?.[itemIdx];
+      } else {
+        initialSelected = undefined;
+      }
+      let committed = initialSelected != null && initialSelected >= 1 && initialSelected <= 5;
+      if (committed) input.value = String(initialSelected);
+      const applySummary = () => {
+        const v = parseInt(input.value, 10);
+        summary.textContent = committed
+          ? getRatingSliderSummaryLabel(v, scale)
+          : 'Drag the slider to rate';
+        input.setAttribute('aria-valuenow', String(v));
+        syncRatingSliderScaleNums(wrap, v);
+      };
+      applySummary();
+      input.addEventListener('input', () => {
+        committed = true;
+        const v = parseInt(input.value, 10);
+        summary.textContent = getRatingSliderSummaryLabel(v, scale);
+        input.setAttribute('aria-valuenow', String(v));
+        syncRatingSliderScaleNums(wrap, v);
+        if (mode === 'single') {
+          this.selectRatingSingle(question, v);
+        } else if (itemIdx != null) {
+          this.selectRating(question, itemIdx, v);
+        }
+      });
+    });
   }
 
   selectRatingSingle(question, value) {
@@ -2911,6 +3007,17 @@ class MarkerQuiz {
         pt.classList.toggle('selected', isSelected);
         pt.querySelector('.rating-radio')?.classList.toggle('checked', isSelected);
       });
+      const scaleEl = container.querySelector('.rating-scale');
+      const range = scaleEl?.querySelector('.rating-range-input');
+      const summary = scaleEl?.querySelector('.rating-slider-summary');
+      const sc = question.ratingScale || RATING_SCALE;
+      if (range && summary) {
+        range.value = String(value);
+        range.setAttribute('aria-valuenow', String(value));
+        summary.textContent = getRatingSliderSummaryLabel(value, sc);
+        const mobileWrap = range.closest('.rating-slider-mobile');
+        if (mobileWrap) syncRatingSliderScaleNums(mobileWrap, value);
+      }
     }
 
     this.logCurrentScores(`Q${step + 1} rating-single — permanent visibility = ${value}`);
@@ -2934,6 +3041,16 @@ class MarkerQuiz {
         pt.classList.toggle('selected', isSelected);
         pt.querySelector('.rating-radio')?.classList.toggle('checked', isSelected);
       });
+      const scaleEl = itemEl.querySelector('.rating-scale');
+      const range = scaleEl?.querySelector('.rating-range-input');
+      const summary = scaleEl?.querySelector('.rating-slider-summary');
+      if (range && summary) {
+        range.value = String(value);
+        range.setAttribute('aria-valuenow', String(value));
+        summary.textContent = getRatingSliderSummaryLabel(value, RATING_SCALE);
+        const mobileWrap = range.closest('.rating-slider-mobile');
+        if (mobileWrap) syncRatingSliderScaleNums(mobileWrap, value);
+      }
     }
 
     const items = this.getRatingItemsForQuestion(question);
@@ -3404,6 +3521,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   if (emailResultsFormId && requestResultsBtn && emailFormWrapper) {
     requestResultsBtn.addEventListener('click', async () => {
       requestResultsBtn.style.display = 'none';
+      emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
       emailFormWrapper.style.display = 'block';
       try {
         const form = await embedMarketoForm(emailFormWrapper, emailResultsFormId);
