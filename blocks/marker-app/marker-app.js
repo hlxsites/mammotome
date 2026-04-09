@@ -434,9 +434,32 @@ const prepareQuizResultsUrlForMarketo = async () => {
       resultsUrl += `&token=${linkData.token}&tokenCreatedAt=${linkData.tokenCreatedAt}`;
     }
   } catch (err) {
-    
+    /* ignore: results URL still valid without email link token */
   }
   return resultsUrl;
+};
+
+const MARKETO_QUIZ_PRODUCT_ID_TO_LABEL = {
+  biomarc: 'BiomarC',
+  hm: 'HydroMARK',
+  hmplus: 'HydroMARK Plus',
+  lumimark: 'LumiMARK',
+  mammomark: 'MammoMARK & CorMARK',
+  mammostar: 'MammoSTAR',
+};
+
+const buildMarketoEmailResultsProductFieldValue = (payload) => {
+  const ids = [
+    payload.top_product_id,
+    payload.second_product_id,
+    payload.third_product_id,
+  ]
+    .map((id) => (id != null ? String(id).trim() : ''))
+    .filter(Boolean);
+  const labels = ids
+    .map((id) => MARKETO_QUIZ_PRODUCT_ID_TO_LABEL[id.toLowerCase()] || '')
+    .filter(Boolean);
+  return labels.join(';');
 };
 
 const readBlockConfigWithHtml = (block) => {
@@ -665,7 +688,10 @@ const SORTABLE_OPTIONS_MRI = Object.entries(
 }));
 
 const RATING_ITEM_NATURAL = 'Preference for natural markers';
-/** Same 1–5 scale as natural row; MRI scoring uses `getNonAnimalPreferenceScores` (MammoMARK penalty for 3+). */
+/**
+ * Same 1–5 scale as natural row; MRI scoring uses `getNonAnimalPreferenceScores`
+ * (MammoMARK penalty for 3+).
+ */
 const RATING_ITEM_NON_ANIMAL = 'Preference for non-animal origin markers';
 
 const RATING_ITEMS = [
@@ -964,7 +990,7 @@ class MarkerQuiz {
     this.caseMixQ3Floors = undefined;
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
-    this._prevMriForStepRecompute = undefined;
+    this.prevMriForStepRecompute = undefined;
     this.startScreenInline = false;
     this.showStartScreen = true;
     this.showVideoIntroScreen = false;
@@ -1179,7 +1205,7 @@ class MarkerQuiz {
 
     this.bindCloseBtn();
     this.questions = MarkerQuiz.buildQuestions();
-    this._prevMriForStepRecompute = undefined;
+    this.prevMriForStepRecompute = undefined;
     this.currentStep = 0;
     this.selections = {};
     this.renderStep();
@@ -1401,7 +1427,9 @@ class MarkerQuiz {
         text: 'Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?',
         type: 'rating-single',
         ratingScale: PERMANENT_VISIBILITY_RATING_SCALE,
-        /** Omitted when MRI is selected (LumiMARK/BioMaRC vetoed; question has no scoring effect). */
+        /**
+         * Omitted when MRI is selected (LumiMARK/BioMaRC vetoed; question has no scoring effect).
+         */
         skipWhenMri: true,
       },
       {
@@ -1642,6 +1670,7 @@ class MarkerQuiz {
   }
 
   logCurrentScores(trigger) {
+    /* eslint-disable no-console -- dev/debug score inspection */
     const saved = { ...this.scores };
     this.calculateScores();
     const sorted = Object.keys(this.scores)
@@ -1659,6 +1688,7 @@ class MarkerQuiz {
       };
     }));
     this.scores = saved;
+    /* eslint-enable no-console */
   }
 
   /** Returns primary modality index (0=Ultrasound, 1=Stereotactic, 2=MRI) for scoring. */
@@ -1707,7 +1737,10 @@ class MarkerQuiz {
     return this.isMriSelected() ? question.optionsMri : (question.options ?? SORTABLE_OPTIONS);
   }
 
-  /** Returns rating items for the current modality (excludes nickel when MRI; natural row label → non-animal for MRI). */
+  /**
+   * Returns rating items for the current modality (excludes nickel when MRI;
+   * natural row label → non-animal for MRI).
+   */
   getRatingItemsForQuestion(question) {
     if (question?.type !== 'rating' || !question?.items) return question?.items ?? RATING_ITEMS;
     let items = !this.isMriSelected()
@@ -2106,7 +2139,8 @@ class MarkerQuiz {
   }
 
   static getAllNatural(rating) {
-    // Rating 1-5; Ultrasound/Stereotactic “natural markers” row. (MRI uses getNonAnimalPreferenceScores.)
+    // Rating 1-5; Ultrasound/Stereotactic “natural markers” row.
+    // MRI uses getNonAnimalPreferenceScores.
     const bonusMap = {
       1: 0, 2: 1, 3: 2, 4: 4, 5: 6,
     };
@@ -2476,7 +2510,7 @@ class MarkerQuiz {
             try {
               f.addHiddenFields({ quizResultsURL: resultsUrl });
             } catch (err) {
-              
+              /* ignore: hidden field optional */
             }
           },
           onSuccess: (values) => {
@@ -2511,9 +2545,11 @@ class MarkerQuiz {
           if (submitBtn) submitBtn.disabled = true;
 
           const resultsUrl = await prepareQuizResultsUrlForMarketo();
+          const sheetPayload = this.buildSheetPayload();
 
           form.addHiddenFields({
             quizResultsURL: resultsUrl,
+            Product__c: buildMarketoEmailResultsProductFieldValue(sheetPayload),
           });
 
           if (submitBtn) submitBtn.disabled = false;
@@ -2568,11 +2604,11 @@ class MarkerQuiz {
 
   renderStep() {
     const mriNow = this.isMriSelected();
-    if (this._prevMriForStepRecompute !== undefined && this._prevMriForStepRecompute !== mriNow) {
+    if (this.prevMriForStepRecompute !== undefined && this.prevMriForStepRecompute !== mriNow) {
       const pIdx = this.getPermanentVisibilityQuestionIndex();
       if (pIdx >= 0) delete this.selections[pIdx];
     }
-    this._prevMriForStepRecompute = mriNow;
+    this.prevMriForStepRecompute = mriNow;
 
     this.computeVisibleQuestionIndices();
     if (this.currentStep >= this.visibleQuestionIndices.length) {
@@ -3352,7 +3388,7 @@ class MarkerQuiz {
     this.caseMixQ3Floors = undefined;
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
-    this._prevMriForStepRecompute = undefined;
+    this.prevMriForStepRecompute = undefined;
     this.startScreenInline = false;
     this.showStartScreen = true;
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
@@ -3495,7 +3531,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
           try {
             f.addHiddenFields({ quizResultsURL: resultsUrl });
           } catch (err) {
-            
+            /* ignore: hidden field optional */
           }
         },
         onSuccess: (values) => {
@@ -3528,7 +3564,11 @@ const wirePreviewResultsPage = (block, product, products, config) => {
         const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
         if (submitBtn) submitBtn.disabled = true;
         const resultsUrl = await prepareQuizResultsUrlForMarketo();
-        form.addHiddenFields({ quizResultsURL: resultsUrl });
+        const previewPayload = sheetPayload();
+        form.addHiddenFields({
+          quizResultsURL: resultsUrl,
+          Product__c: buildMarketoEmailResultsProductFieldValue(previewPayload),
+        });
         if (submitBtn) submitBtn.disabled = false;
         form.onSuccess((values) => {
           sendToSheet(sheetPayload(), { email: values.Email || '' });

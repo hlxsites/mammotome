@@ -1945,6 +1945,7 @@ body.marker-app-hide-chrome-footer .footer {
 
   .start-screen-description {
     padding: 0 20px;
+    font-size: 22px;
   }
 
   .survey-fullscreen .survey-card {
@@ -2469,7 +2470,7 @@ body.marker-app-hide-chrome-footer .footer {
     width: 120px;
     height: auto;
     position: absolute;
-    bottom: px;
+    bottom: 175px;
   }
 
   .survey-card .rating-container {
@@ -3345,10 +3346,6 @@ body.marker-app-hide-chrome-footer .footer {
   .start-screen-description {
     font-size: 14px;
     padding: 0 20px;
-  }
-
-  .start-screen #start-survey-btn {
-    font-size: 1rem;
   }
 
   .btn {

@@ -91,7 +91,9 @@ async function applyVimeoThumbnails(container) {
 
 /**
  * Look up a product by id from getMarkerRecommendations().
- * The products map is keyed by lowercase id (see lib-franklin.js); sheet/API values may be any case.
+ *
+ * The products map is keyed by lowercase id (see lib-franklin.js);
+ * sheet/API values may be any case.
  */
 function getProductById(products, rawId) {
   if (rawId == null) return null;
@@ -115,17 +117,20 @@ function flattenSheetPayload(data) {
   return merged;
 }
 
-/** First non-empty string for any key (quiz POST uses camelCase; sheet columns may be snake_case). */
+/**
+ * First non-empty string for any key.
+ *
+ * Quiz POST uses camelCase; sheet columns may be snake_case.
+ */
 function firstSheetString(obj, keys) {
   if (!obj) return '';
-  for (const key of keys) {
-    if (!(key in obj)) continue;
+  const hit = keys.map((key) => {
+    if (!(key in obj)) return '';
     const v = obj[key];
-    if (v == null) continue;
-    const s = String(v).trim();
-    if (s !== '') return s;
-  }
-  return '';
+    if (v == null) return '';
+    return String(v).trim();
+  }).find((s) => s !== '');
+  return hit || '';
 }
 
 const openProductVideo = (embedUrl) => {
@@ -152,17 +157,6 @@ const openProductVideo = (embedUrl) => {
   document.body.appendChild(overlay);
 };
 
-/** Quiz page URL (sibling of marker-results). */
-function getMarkerQuizUrl() {
-  try {
-    const { pathname } = window.location;
-    const next = pathname.replace(/marker-results\/?/i, 'marker-quiz');
-    return `${window.location.origin}${next}`;
-  } catch {
-    return '/us/en/marker-quiz';
-  }
-}
-
 export default async function decorate(block) {
   const params = new URLSearchParams(window.location.search);
   const uuid = params.get('uuid');
@@ -175,16 +169,14 @@ export default async function decorate(block) {
   }
 
   block.innerHTML = `
-    <div class="marker-result-root">
-      <div class="product-survey-container marker-result-container">
+      <div class="product-survey-container">
         <div class="survey-card results-card">
           <div class="loading">
             <div class="spinner"></div>
             <p>Loading your results...</p>
           </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
 
   try {
     const url = `${SHEET_URL}?uuid=${encodeURIComponent(uuid)}&token=${encodeURIComponent(token)}&tokenCreatedAt=${encodeURIComponent(tokenCreatedAt)}`;
@@ -228,57 +220,67 @@ export default async function decorate(block) {
 
     const alternativeEntries = [secondProduct, thirdProduct].filter(Boolean);
 
-    const quizUrl = getMarkerQuizUrl();
     const hasProductVideo = Boolean(topProduct.video);
 
     block.innerHTML = `
-      <div class="marker-result-root">
-        <section class="marker-result-hero-fullbleed" aria-label="Your top recommended marker">
-          <div class="marker-result-hero-media" aria-hidden="true">
-            <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="" />
-          </div>
-          <div class="marker-result-hero-scrim" aria-hidden="true"></div>
-          <div class="marker-result-hero-content">
-            <div class="marker-result-hero-text-inner">
-              <p class="top-recommendation-label">Your top recommended marker</p>
-              <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
-              <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
+        <div class="section marker-result-header-container">
+          <div class="marker-result-header-wrapper">
+            <div class="marker-result-header block">
+              <div class="marker-result-hero-spacer" aria-hidden="true"></div>
+              <div class="marker-result-hero-media" aria-hidden="true">
+                <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="" />
+              </div>
+              <div class="marker-result-hero-content">
+                <div class="marker-result-hero-text-inner">
+                  <p class="top-recommendation-label">Your top recommended marker</p>
+                  <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
+                  <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
+                </div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <div class="product-survey-container marker-result-container">
-          <div class="survey-card results-card marker-result-body-card">
-            <div class="results-container">
-              <div class="features-video-section ${hasProductVideo ? 'has-video' : 'no-video'}">
-                <div class="features-section-inner">
-                  <h2 class="features-section-title">Product Features</h2>
-                  ${topProduct.featuredPhoto ? `
-                  <div class="features-section-featured-row">
-                    <div class="product-featured-photo">
-                      <img src="${escapeHtml(topProduct.featuredPhoto)}" alt="Featured" />
-                    </div>
-                  </div>
-                  ` : ''}
-                  <div class="features-section-content">
-                    <div class="features-container">
-                      <ul class="top-recommendation-features product-features">
-                        ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
-                      </ul>
-                    </div>
-                    ${hasProductVideo ? `
-                    <div class="features-media-column">
-                      <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(topProduct.video))}" ${isVimeoVideo(topProduct.video) ? `data-vimeo-url="${escapeHtml(topProduct.video.trim())}"` : ''} aria-label="Play video">
-                        <img src="${escapeHtml(getVideoThumbnailUrl(topProduct))}" alt="Play video" />
-                        <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
-                      </button>
+        <div class="section marker-result-features-container">
+          <div class="marker-result-features-wrapper">
+            <div class="marker-result-features block">
+              <div class="product-survey-container">
+                <div class="features-video-section ${hasProductVideo ? 'has-video' : 'no-video'}">
+                  <div class="features-section-inner">
+                    <h2 class="features-section-title">Product Features</h2>
+                    ${topProduct.featuredPhoto ? `
+                    <div class="features-section-featured-row">
+                      <div class="product-featured-photo">
+                        <img src="${escapeHtml(topProduct.featuredPhoto)}" alt="Featured" />
+                      </div>
                     </div>
                     ` : ''}
+                    <div class="features-section-content">
+                      <div class="features-container">
+                        <ul class="top-recommendation-features">
+                          ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
+                        </ul>
+                      </div>
+                      ${hasProductVideo ? `
+                      <div class="features-media-column">
+                        <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(topProduct.video))}" ${isVimeoVideo(topProduct.video) ? `data-vimeo-url="${escapeHtml(topProduct.video.trim())}"` : ''} aria-label="Play video">
+                          <img src="${escapeHtml(getVideoThumbnailUrl(topProduct))}" alt="Play video" />
+                          <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
+                        </button>
+                      </div>
+                      ` : ''}
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-                            ${alternativeEntries.length > 0 ? `
+        <div class="product-survey-container">
+          <div class="survey-card results-card marker-result-body-card">
+            <div class="results-container">
+              ${alternativeEntries.length > 0 ? `
               <div class="alternatives-section">
                 <h3>You Should Also Consider</h3>
                 <div class="alternatives-grid">
@@ -313,10 +315,8 @@ export default async function decorate(block) {
             </div>
           </div>
         </div>
-      </div>
     `;
 
-    const root = block.querySelector('.marker-result-root');
     block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
       btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
     });
@@ -340,7 +340,7 @@ export default async function decorate(block) {
       alert('Thank you for reviewing your results!');
     });
 
-    applyVimeoThumbnails(root).catch(() => {});
+    applyVimeoThumbnails(block).catch(() => {});
   } catch {
     block.innerHTML = '<p>Something went wrong loading your results. Please try again later.</p>';
   }

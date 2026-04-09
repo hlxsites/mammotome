@@ -1,74 +1,33 @@
-.section.marker-result-container {
+.section.marker-result-container,
+main .section.marker-result-header-container {
   margin: 0;
+  padding: 0;
 }
 
-.start-screen-title-block > h1 {
-  color: red !important;
-}
-
-main .section.marker-result-container {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.marker-result-root {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: visible;
-}
-
-.marker-result-hero-fullbleed {
-  position: relative;
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  min-height: clamp(320px, 55vh, 640px);
-  overflow: hidden;
-  box-sizing: border-box;
+main .section.marker-result-features-container {
+  padding: 0;
 }
 
 .marker-result-hero-media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: var(--mt-global-color-alabaste);
+  position: relative;
+  object-fit: cover;
+  user-select: none;
 }
+
 
 .marker-result-hero-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 72% center;
-  max-width: none;
-  max-height: none;
-  display: block;
-}
-
-.marker-result-hero-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--mt-global-color-white) 96%, transparent) 0%,
-    color-mix(in srgb, var(--mt-global-color-white) 82%, transparent) 28%,
-    color-mix(in srgb, var(--mt-global-color-white) 35%, transparent) 55%,
-    color-mix(in srgb, var(--mt-global-color-white) 0%, transparent) 78%
-  );
+    height: auto;
+      min-height: 320px;
+      object-fit: cover;
+      object-position: center;
+      display: block;
 }
 
 .marker-result-hero-content {
-  position: absolute;
-  z-index: 2;
-  left: 100px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: clamp(320px, 55vh, 640px);
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
+    position: absolute;
+    top: 35%;
+    left: 100px;
+    width: 100%;
 }
 
 .marker-result-hero-text-inner {
@@ -76,7 +35,7 @@ main .section.marker-result-container {
   text-align: left;
 }
 
-.marker-result-hero-fullbleed .top-recommendation-label {
+.top-recommendation-label {
   font-size: 1.15rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -86,7 +45,7 @@ main .section.marker-result-container {
   color: var(--mt-global-color-accent-primary);
 }
 
-.marker-result-hero-fullbleed .top-recommendation-name {
+.top-recommendation-name {
   font-size: clamp(1.5rem, 2.8vw, 2.35rem);
   font-weight: 700;
   line-height: 1.2;
@@ -95,7 +54,7 @@ main .section.marker-result-container {
   text-align: left;
 }
 
-.marker-result-hero-fullbleed .top-recommendation-description {
+.top-recommendation-description {
   color: var(--mt-global-color-base-secondary);
   font-size: clamp(0.95rem, 1.1vw + 0.85rem, 1.125rem);
   line-height: 1.55;
@@ -105,10 +64,10 @@ main .section.marker-result-container {
   max-width: 36rem;
 }
 
-.marker-result-container.product-survey-container {
+.product-survey-container {
   width: 100%;
   max-width: none;
-  padding: 0 50px;
+  padding: 0 10px;
   margin: 0;
   box-sizing: border-box;
 }
@@ -169,7 +128,6 @@ main .section.marker-result-container {
 
 .marker-result-body-card.results-card {
   border-radius: 16px;
-  padding: 32px 32px 40px;
   max-width: none;
   width: 100%;
   box-shadow: none;
@@ -332,44 +290,6 @@ main .section.marker-result-container {
   height: 64px;
 }
 
-.quiz-actions-section {
-  margin: 45px 0;
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.quiz-actions-buttons {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.quiz-actions-buttons .btn,
-.results-card .quiz-actions-buttons .btn {
-  padding: 12px 28px;
-  font-size: 14px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  min-width: 160px;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-.quiz-actions-buttons a.btn {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .btn {
   background: var(--mt-global-color-accent-quinary);
   color: var(--mt-global-color-white);
@@ -388,38 +308,6 @@ main .section.marker-result-container {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px
     color-mix(in srgb, var(--mt-global-color-base-mmt-gray) 60%, transparent);
-}
-
-.btn-quiz-primary {
-  background: var(--mt-global-color-base-primary);
-  color: var(--mt-global-color-white);
-  border: none;
-  box-shadow: none;
-}
-
-.btn-quiz-primary:hover {
-  background: var(--mt-global-color-base-primary-light);
-  transform: translateY(-2px);
-}
-
-.btn-quiz-secondary {
-  background: var(--mt-global-color-white);
-  color: var(--mt-global-color-base-secondary);
-  border: 2px solid var(--mt-global-color-base-primary);
-  box-shadow: none;
-}
-
-.btn-quiz-secondary:hover {
-  background: var(--mt-global-color-base-primary-very-light);
-  transform: translateY(-2px);
-}
-
-.marker-result-root .lead-capture-confirmation {
-  margin-top: 12px;
-  color: #27ae60;
-  font-weight: 600;
-  font-size: 15px;
-  text-align: center;
 }
 
 .product-video-overlay {
@@ -557,28 +445,6 @@ main .section.marker-result-container {
   text-align: center;
 }
 
-.alternatives-grid .product-card h4 a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.alternatives-grid .product-card p {
-  font-size: 12px;
-  color: var(--mt-global-color-dove-gray);
-  line-height: 1.5;
-  margin: 0 0 10px;
-  display: none;
-}
-
-.alternatives-grid .product-card .card-reason {
-  display: block;
-  font-size: 16px;
-  line-height: 1.5;
-  padding: 0 20px 16px;
-  margin: 0;
-  text-align: center;
-}
-
 .contact-section {
   padding-top: 28px;
   margin: 40px 0 30px;
@@ -618,57 +484,6 @@ main .section.marker-result-container {
     color-mix(in srgb, var(--mt-global-color-accent-primary) 50%, transparent);
 }
 
-.btn-contact-secondary {
-  background: var(--mt-global-color-white);
-  color: var(--mt-global-color-base-secondary);
-  border: 2px solid var(--mt-global-color-accent-primary);
-  box-shadow: none;
-}
-
-.btn-contact-secondary:hover {
-  background: var(--mt-global-color-accent-tertiary);
-  transform: translateY(-2px);
-}
-
-.marker-result-root a.btn:any-link,
-.marker-result-root a.btn:visited {
-  color: var(--mt-global-color-white);
-}
-
-.marker-result-root a.btn.btn-quiz-secondary:any-link,
-.marker-result-root a.btn.btn-quiz-secondary:visited {
-  color: var(--mt-global-color-base-secondary);
-}
-
-.marker-result-root a.btn.btn-quiz-primary:any-link,
-.marker-result-root a.btn.btn-quiz-primary:visited {
-  color: var(--mt-global-color-white);
-}
-
-.marker-result-root a.btn.btn-contact-primary:any-link,
-.marker-result-root a.btn.btn-contact-primary:visited {
-  color: var(--mt-global-color-white);
-}
-
-.marker-result-root a.btn.btn-contact-secondary:any-link,
-.marker-result-root a.btn.btn-contact-secondary:visited {
-  color: var(--mt-global-color-base-secondary);
-}
-
-.marker-result-root a.btn:hover,
-.marker-result-root a.btn.btn-quiz-primary:hover,
-.marker-result-root a.btn.btn-contact-primary:hover {
-  color: var(--mt-global-color-white);
-}
-
-.marker-result-root a.btn.btn-quiz-secondary:hover {
-  color: var(--mt-global-color-base-secondary);
-}
-
-.marker-result-root a.btn.btn-contact-secondary:hover {
-  color: var(--mt-global-color-base-secondary);
-}
-
 .product-footnotes {
   text-align: left;
 }
@@ -693,10 +508,6 @@ main .section.marker-result-container {
 }
 
 @media (max-width: 1024px) {
-  .marker-result-hero-fullbleed {
-    min-height: clamp(340px, 52vh, 580px);
-  }
-
   .marker-result-hero-media img {
     object-fit: contain;
     object-position: center 88%;
@@ -705,21 +516,56 @@ main .section.marker-result-container {
   .marker-result-hero-content {
     min-height: clamp(340px, 52vh, 580px);
   }
-}
 
-@media (min-width: 864px) and (min-height: 1536px) {
-  .marker-result-hero-scrim {
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--mt-global-color-white) 94%, transparent) 0%,
-      color-mix(in srgb, var(--mt-global-color-white) 72%, transparent) 38%,
-      color-mix(in srgb, var(--mt-global-color-white) 28%, transparent) 65%,
-      color-mix(in srgb, var(--mt-global-color-black) 12%, transparent) 100%
-    );
+  .marker-result-hero-text-inner {
+   top: -5%;
+   left: -5%;
+   position: absolute;
   }
 }
 
 @media (max-width: 768px) {
+  .marker-result-hero-content {
+    top: 17%;
+    left: 12%;
+  }
+
+  .marker-result-hero-text-inner {
+    width: 77%;
+  }
+
+  .top-recommendation-label {
+    left: 0;
+    position: absolute;
+    top: 10px;
+    z-index: 1;
+    font-size: 15px;
+  }
+
+  .top-recommendation-name {
+    top: 50px;
+    position: absolute;
+    font-size: 20px;
+    width: 80%;
+    font-weight: 500;
+  }
+
+  .top-recommendation-description {
+    position: absolute;
+    top: 200px;
+    z-index: 1;
+  }
+
+  .marker-result-hero-media img {
+    box-sizing: border-box;
+      display: block;
+      height: 190px;
+      max-width: 100%;
+      min-height: 190px;
+      object-fit: cover;
+      object-position: center;
+      width: 100%;
+  }
   .survey-card {
     padding: 20px;
   }
@@ -728,53 +574,17 @@ main .section.marker-result-container {
     padding: 0 16px 30px;
   }
 
+  main .section.marker-result-features-container { 
+    margin-top: 35%;
+  }
+
   .marker-result-body-card.results-card {
     padding: 24px 16px 32px;
   }
 
-  .marker-result-hero-fullbleed {
-    min-height: clamp(380px, 62vh, 520px);
-  }
-
-  .marker-result-hero-scrim {
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--mt-global-color-white) 94%, transparent) 0%,
-      color-mix(in srgb, var(--mt-global-color-white) 72%, transparent) 38%,
-      color-mix(in srgb, var(--mt-global-color-white) 28%, transparent) 65%,
-      color-mix(in srgb, var(--mt-global-color-white) 0%, transparent) 100%
-    );
-  }
-
-  .marker-result-hero-content {
-    min-height: clamp(380px, 62vh, 520px);
-    align-items: flex-start;
-    padding-top: clamp(1.75rem, 5vw, 2.5rem);
-    padding-left: max(
-      20px,
-      clamp(16px, 5vw, 40px),
-      env(safe-area-inset-left, 0px)
-    );
-    padding-right: max(
-      20px,
-      clamp(16px, 5vw, 40px),
-      env(safe-area-inset-right, 0px)
-    );
-  }
-
-  .marker-result-hero-text-inner {
-    max-width: none;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .marker-result-hero-fullbleed .top-recommendation-label,
-  .marker-result-hero-fullbleed .top-recommendation-name,
-  .marker-result-hero-fullbleed .top-recommendation-description {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+  .features-section-title {
+    font-size: 1.5rem;
+    margin-top: 45%;
   }
 
   .features-video-section {
@@ -814,10 +624,6 @@ main .section.marker-result-container {
   .product-featured-photo img,
   .product-video-thumbnail img {
     width: 100%;
-    max-width: 360px;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    object-position: center center;
     border-radius: 12px;
   }
 
@@ -832,15 +638,6 @@ main .section.marker-result-container {
   }
 
   .contact-buttons .btn {
-    width: 100%;
-  }
-
-  .quiz-actions-buttons {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .quiz-actions-buttons .btn {
     width: 100%;
   }
 }
