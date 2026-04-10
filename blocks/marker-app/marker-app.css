@@ -529,6 +529,11 @@ body.marker-app-hide-chrome-footer .footer {
   overflow-y: visible;
 }
 
+.survey-fullscreen:has(.results-card) .survey-card.results-card {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .survey-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 25px 50px
@@ -2238,7 +2243,7 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) .survey-card {
-    margin-top: 24px;
+    margin-top: 75px;
     margin-bottom: 24px;
   }
 
@@ -2702,6 +2707,191 @@ body.marker-app-hide-chrome-footer .footer {
 
   .product-footnotes .footnote {
     font-size: 1.25rem;
+  }
+
+  /* Results: undo oversized quiz-tablet rules at 1080–1536px width (e.g. 1080×1920). */
+  .survey-fullscreen:has(.results-card) .results-card {
+    max-width: 720px;
+    padding: 0 24px 36px;
+  }
+
+  .survey-fullscreen:has(.results-card) .results-container h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .survey-fullscreen:has(.results-card) .results-card .top-recommendation-image {
+    width: calc(100% + 48px);
+    margin: 0 -24px;
+  }
+
+  .survey-fullscreen:has(.results-card) .results-card .top-recommendation-image img {
+    min-height: 220px;
+    height: auto;
+  }
+
+  .survey-fullscreen:has(.results-card) .top-recommendation-content {
+    top: 25%;
+    padding: 10px 12px;
+    max-width: 57%;
+  }
+
+  .survey-fullscreen:has(.results-card) .top-recommendation-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .survey-fullscreen:has(.results-card) .top-recommendation-description {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .survey-fullscreen:has(.results-card) .features-video-section {
+    margin: 24px -24px;
+    width: calc(100% + 48px);
+  }
+
+  .survey-fullscreen:has(.results-card) .features-section-inner {
+    padding: 0 24px;
+  }
+
+  .survey-fullscreen:has(.results-card) .features-section-title,
+  .survey-fullscreen:has(.results-card) .alternatives-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 24px 0;
+  }
+
+  .survey-fullscreen:has(.results-card) .features-section-content {
+    align-items: flex-start;
+  }
+
+  .survey-fullscreen:has(.results-card) .features-media-column {
+    flex: 1 1 42%;
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 48%;
+    gap: 16px;
+  }
+
+  .survey-fullscreen:has(.results-card) .features-container {
+    flex: 1 1 52%;
+    min-width: 0;
+  }
+
+  .survey-fullscreen:has(.results-card) .product-featured-photo img {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .survey-fullscreen:has(.results-card) .product-video-thumbnail img {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 16 / 9;
+    height: auto;
+  }
+
+  .survey-fullscreen:has(.results-card) .product-video-thumbnail .icon-playvideo svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .survey-fullscreen:has(.results-card) .top-recommendation-features li {
+    padding: 12px 16px 12px 24px;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .survey-fullscreen:has(.results-card) .quiz-actions-section {
+    margin: 28px 0;
+    padding-top: 12px;
+    gap: 16px;
+  }
+
+  .survey-fullscreen:has(.results-card) .quiz-actions-buttons,
+  .survey-fullscreen:has(.results-card) .results-card .contact-buttons {
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .survey-fullscreen:has(.results-card) .quiz-actions-buttons .btn,
+  .survey-fullscreen:has(.results-card) .results-card .quiz-actions-buttons .btn,
+  .survey-fullscreen:has(.results-card) .results-card .contact-buttons .btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 140px;
+    width: auto;
+    margin: 0;
+    border-radius: 50px;
+  }
+
+  .survey-fullscreen:has(.results-card) .alternatives-grid .product-card h4 {
+    padding: 14px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    min-width: unset;
+  }
+
+  .survey-fullscreen:has(.results-card) .alternatives-section .alternatives-reason {
+    font-size: 1rem;
+    font-weight: 400;
+    padding: 0 8%;
+    margin-bottom: 28px;
+  }
+
+  .survey-fullscreen:has(.results-card) .alternatives-grid {
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .survey-fullscreen:has(.results-card) .alternatives-grid .product-card {
+    width: 42%;
+    flex: 0 1 42%;
+    max-width: 340px;
+  }
+
+  .survey-fullscreen:has(.results-card) .alternatives-grid .product-card .card-reason {
+    font-size: 15px;
+    padding: 0 16px 14px;
+  }
+
+  .survey-fullscreen:has(.results-card) .results-card .product-card .product-image img {
+    min-width: 0;
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    min-height: 0;
+    max-height: 260px;
+    margin: 12px auto;
+    padding: 12px;
+    object-fit: contain;
+  }
+
+  .survey-fullscreen:has(.results-card) .results-card .contact-section h3 {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 16px 0;
+  }
+
+  .survey-fullscreen:has(.results-card) .product-video-lightbox {
+    max-width: 900px;
+  }
+
+  .survey-fullscreen:has(.results-card) .product-footnotes {
+    margin: 36px 0;
+    padding: 0 12px;
+  }
+
+  .survey-fullscreen:has(.results-card) .product-footnotes .footnote {
+    font-size: 13px;
   }
 }
 
