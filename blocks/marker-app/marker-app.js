@@ -155,7 +155,7 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
       // server returned an error – no action needed
     }
   } catch {
-    // non-blocking – intentionally swallowed
+    console.warn('[Marker Quiz] sendToSheet error:', err);
   } finally {
     clearTimeout(timeoutId);
   }
