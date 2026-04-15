@@ -382,7 +382,6 @@ const allowTrademarkHtml = (str) => {
 
 const MARKETO_FORMS2_SRC = 'https://www2.mammotome.com/js/forms2/js/forms2.min.js';
 
-/** Single in-flight load for Forms 2 (contact sales form 2364, email form, multistep). */
 let marketoForms2LoadPromise = null;
 
 /**
@@ -437,7 +436,6 @@ const prefetchMarketoForms2 = () => {
 
 const EMAIL_RESULTS_LOADING_HTML = '<p class="email-results-form-loading" role="status" aria-live="polite">Loading...</p>';
 
-/** Shown in contact-sales wrapper while Forms2 loads, then cleared by embedMultistepMarketoForm (clearContainer). */
 const CONTACT_SALES_LOADING_HTML = '<p class="contact-sales-form-loading" role="status" aria-live="polite">Loading...</p>';
 
 const CONTACT_SALES_THANK_YOU_HTML = `
@@ -457,11 +455,6 @@ const removeContactSalesMarketoOverlay = () => {
 
 let contactSalesOverlayEscapeHandler = null;
 
-/**
- * Full-screen contact (2695) layer: quiz-style purple shell, white card, Mkto embed, thank-you, "Go back".
- * Appended to `overlayHost` (defaults: `.survey-fullscreen`, `main`, or `document.body`) so the contact form
- * is not mounted beside the email-results form on the same page.
- */
 const openContactSalesMarketoOverlay = async ({
   contactSalesFormId,
   extendHiddenFields,
@@ -490,6 +483,7 @@ const openContactSalesMarketoOverlay = async ({
     <div class="contact-sales-marketo-overlay-inner">
       ${CONTACT_SALES_OVERLAY_CLOSE_HTML}
       <div class="survey-card contact-sales-marketo-card">
+        <h1 class="contact-sales-marketo-heading">Connect with a Rep to Learn More</h1>
         <div id="contact-sales-form-mount" class="contact-sales-form-wrapper"></div>
       </div>
       <div class="contact-sales-marketo-overlay-footer" id="contact-sales-overlay-footer" hidden>
@@ -540,6 +534,9 @@ const openContactSalesMarketoOverlay = async ({
         m.classList.remove('multistep-form', 'multistep-form-embedded');
         delete m.dataset.mktoLoaded;
       }
+      document
+        .querySelector(`#${CONTACT_SALES_MARKETO_OVERLAY_ID} .contact-sales-marketo-heading`)
+        ?.setAttribute('hidden', '');
       root.dataset.submitted = 'true';
       if (footer) footer.hidden = false;
       return false;
