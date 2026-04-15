@@ -2894,7 +2894,7 @@ class MarkerQuiz {
         }
       });
 
-      nav.querySelector('#quiz-next-btn')?.addEventListener('click', () => {
+      nav.querySelector('#quiz-next-btn')?.addEventListener('click', async () => {
         if (!isSortable && !this.hasSelection(qIdx)) {
           this.showQuizSelectionRequiredHint();
           return;
@@ -2903,8 +2903,8 @@ class MarkerQuiz {
         if (isLast) {
           prefetchMarketoForms2();
           this.calculateScores();
+          await sendToSheet(this.buildSheetPayload());
           this.showResults();
-          sendToSheet(this.buildSheetPayload());
         } else {
           this.currentStep += 1;
           this.renderStep();
