@@ -1169,6 +1169,8 @@ class MarkerQuiz {
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
     /** Warmed in showResults for contact-sales Marketo hidden field (parallel with form load). */
     this._marketoResultsUrlPromise = null;
+    /** Fired when leaving the quiz on "Get Results"; await before reading markerQuizUuid for Marketo. */
+    this._sendToSheetPromise = null;
   }
 
   /**
@@ -2726,6 +2728,7 @@ class MarkerQuiz {
 
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
       requestResultsBtn.addEventListener('click', async () => {
+        if (this._sendToSheetPromise) await this._sendToSheetPromise;
         requestResultsBtn.style.display = 'none';
         emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
         emailFormWrapper.style.display = 'block';
@@ -2894,16 +2897,18 @@ class MarkerQuiz {
         }
       });
 
-      nav.querySelector('#quiz-next-btn')?.addEventListener('click', async () => {
+      nav.querySelector('#quiz-next-btn')?.addEventListener('click', () => {
         if (!isSortable && !this.hasSelection(qIdx)) {
           this.showQuizSelectionRequiredHint();
           return;
         }
         this.clearQuizSelectionRequiredHint();
         if (isLast) {
+          const nextBtn = nav.querySelector('#quiz-next-btn');
+          if (nextBtn) nextBtn.disabled = true;
           prefetchMarketoForms2();
           this.calculateScores();
-          await sendToSheet(this.buildSheetPayload());
+          this._sendToSheetPromise = sendToSheet(this.buildSheetPayload());
           this.showResults();
         } else {
           this.currentStep += 1;
@@ -3585,6 +3590,7 @@ class MarkerQuiz {
     this.showStartScreen = true;
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
     this._marketoResultsUrlPromise = null;
+    this._sendToSheetPromise = null;
     document.body.classList.remove('survey-fullscreen-active');
     this.render();
   }
