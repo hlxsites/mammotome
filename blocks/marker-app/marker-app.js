@@ -445,40 +445,121 @@ const CONTACT_SALES_THANK_YOU_HTML = `
     <p>Thank you for your submission. We'll be in touch within 2-3 business days.</p>
   </div>`;
 
+const CONTACT_SALES_MARKETO_OVERLAY_ID = 'contact-sales-marketo-overlay';
+
+const CONTACT_SALES_OVERLAY_CLOSE_HTML = CLOSE_BTN_HTML
+  .replace('id="close-survey-btn"', 'id="contact-sales-overlay-close"')
+  .replace('aria-label="Close survey"', 'aria-label="Close"');
+
+const removeContactSalesMarketoOverlay = () => {
+  document.getElementById(CONTACT_SALES_MARKETO_OVERLAY_ID)?.remove();
+};
+
+let contactSalesOverlayEscapeHandler = null;
+
+/**
+ * Full-screen contact (2695) layer: quiz-style purple shell, white card, Mkto embed, thank-you, "Go back".
+ * Appended to `overlayHost` (defaults: `.survey-fullscreen`, `main`, or `document.body`) so the contact form
+ * is not mounted beside the email-results form on the same page.
+ */
+const openContactSalesMarketoOverlay = async ({
+  contactSalesFormId,
+  extendHiddenFields,
+  getSheetPayload,
+  contactSectionEl,
+  contactButtonsEl,
+  overlayHost,
+}) => {
+  removeContactSalesMarketoOverlay();
+  if (contactSalesOverlayEscapeHandler) {
+    document.removeEventListener('keydown', contactSalesOverlayEscapeHandler);
+    contactSalesOverlayEscapeHandler = null;
+  }
+
+  const host = overlayHost
+    || contactSectionEl?.closest('.survey-fullscreen')
+    || contactSectionEl?.closest('main')
+    || document.body;
+
+  const root = document.createElement('div');
+  root.id = CONTACT_SALES_MARKETO_OVERLAY_ID;
+  root.className = 'contact-sales-marketo-overlay';
+  root.setAttribute('role', 'dialog');
+  root.setAttribute('aria-modal', 'true');
+  root.innerHTML = `
+    <div class="contact-sales-marketo-overlay-inner">
+      ${CONTACT_SALES_OVERLAY_CLOSE_HTML}
+      <div class="survey-card contact-sales-marketo-card">
+        <div id="contact-sales-form-mount" class="contact-sales-form-wrapper"></div>
+      </div>
+      <div class="contact-sales-marketo-overlay-footer" id="contact-sales-overlay-footer" hidden>
+        <button type="button" class="btn btn-quiz-secondary" id="contact-sales-overlay-back-btn">Go back to the quiz</button>
+      </div>
+    </div>
+  `;
+  host.appendChild(root);
+
+  const mount = root.querySelector('#contact-sales-form-mount');
+  const footer = root.querySelector('#contact-sales-overlay-footer');
+
+  const finishClose = () => {
+    const submitted = root.dataset.submitted === 'true';
+    if (contactSalesOverlayEscapeHandler) {
+      document.removeEventListener('keydown', contactSalesOverlayEscapeHandler);
+      contactSalesOverlayEscapeHandler = null;
+    }
+    removeContactSalesMarketoOverlay();
+    if (submitted && contactSectionEl) {
+      contactSectionEl.querySelector('.contact-sales-inline-thank-you')?.remove();
+      const area = document.createElement('div');
+      area.className = 'contact-sales-inline-thank-you';
+      area.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
+      contactSectionEl.appendChild(area);
+    } else if (contactButtonsEl) {
+      contactButtonsEl.style.display = '';
+    }
+  };
+
+  root.querySelector('#contact-sales-overlay-close')?.addEventListener('click', finishClose);
+  root.querySelector('#contact-sales-overlay-back-btn')?.addEventListener('click', finishClose);
+  contactSalesOverlayEscapeHandler = (e) => {
+    if (e.key === 'Escape') {
+      finishClose();
+    }
+  };
+  document.addEventListener('keydown', contactSalesOverlayEscapeHandler);
+
+  const hooks = {
+    clearContainer: true,
+    extendHiddenFields,
+    onSuccess: (values) => {
+      sendToSheet(getSheetPayload(), { email: values.Email || '' });
+      const m = document.querySelector(`#${CONTACT_SALES_MARKETO_OVERLAY_ID} #contact-sales-form-mount`);
+      if (m) {
+        m.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
+        m.classList.remove('multistep-form', 'multistep-form-embedded');
+        delete m.dataset.mktoLoaded;
+      }
+      root.dataset.submitted = 'true';
+      if (footer) footer.hidden = false;
+      return false;
+    },
+  };
+
+  mount.innerHTML = CONTACT_SALES_LOADING_HTML;
+  await ensureMarketoForms2Ready();
+  try {
+    const form = await embedMultistepMarketoForm(mount, contactSalesFormId, hooks);
+    if (form) mount.dataset.mktoLoaded = 'true';
+  } catch {
+    mount.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
+  }
+};
+
 const EMAIL_RESULTS_THANK_YOU_HTML = `
   <div class="thank-you-container email-results-thank-you" role="status" aria-live="polite">
     <p>Thank you for participating in Mammotome's "Meet Your Match". Your results will be emailed to you shortly.</p>
   </div>`;
-
-/** Email Marketo mounts here so thank-you `innerHTML` cannot clear unrelated DOM (e.g. form 2695). */
-const EMAIL_RESULTS_FORM_MOUNT_SELECTOR = '.email-results-form-mount';
-
-const getEmailResultsFormMount = (wrapper) => {
-  if (!wrapper) return null;
-  return wrapper.querySelector(EMAIL_RESULTS_FORM_MOUNT_SELECTOR) || wrapper;
-};
-
-/**
- * MktoForms2 can remove other forms on the page when one submits; re-embed 2695 if it was open.
- */
-const restoreContactSalesEmbedIfStripped = async (block, contactSalesFormId, buildHooks) => {
-  if (!contactSalesFormId || typeof buildHooks !== 'function') return;
-  const cw = block.querySelector('#contact-sales-form-wrapper');
-  if (!cw || cw.dataset.mktoLoaded !== 'true') return;
-  if (cw.querySelector('.contact-sales-thank-you')) return;
-  const fid = `mktoForm_${contactSalesFormId}`;
-  if (cw.querySelector(`form#${fid}`)) return;
-  delete cw.dataset.mktoLoaded;
-  cw.innerHTML = CONTACT_SALES_LOADING_HTML;
-  cw.classList.add('multistep-form', 'multistep-form-embedded');
-  await ensureMarketoForms2Ready();
-  try {
-    const form = await embedMultistepMarketoForm(cw, contactSalesFormId, buildHooks());
-    if (form) cw.dataset.mktoLoaded = 'true';
-  } catch {
-    cw.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
-  }
-};
 
 const embedMarketoForm = async (container, formId) => {
   await ensureMarketoForms2Ready();
@@ -2509,7 +2590,7 @@ class MarkerQuiz {
                     <button class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
                     <button class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
                   </div>
-                  ${this.emailResultsFormId ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"><div class="email-results-form-mount"></div></div>' : `
+                  ${this.emailResultsFormId ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>' : `
                   <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
                     <div class="lead-capture-fields">
                       <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
@@ -2558,7 +2639,6 @@ class MarkerQuiz {
                     <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
                     <button class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
                   </div>
-                  <div id="contact-sales-form-wrapper" class="contact-sales-form-wrapper" style="display: none;"></div>
                 </div>
     
     
@@ -2581,51 +2661,32 @@ class MarkerQuiz {
     });
 
     this.block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
-      const wrapper = this.block.querySelector('#contact-sales-form-wrapper');
+      if (!this.contactSalesFormId) return;
       const contactButtons = this.block.querySelector('.contact-section .contact-buttons');
-      if (!wrapper || !this.contactSalesFormId) return;
-
+      const contactSection = this.block.querySelector('.contact-section');
       if (contactButtons) contactButtons.style.display = 'none';
-      wrapper.style.display = 'block';
-
-      if (wrapper.dataset.mktoLoaded === 'true') return;
-
-      try {
-        wrapper.innerHTML = CONTACT_SALES_LOADING_HTML;
-        await ensureMarketoForms2Ready();
-        const form = await embedMultistepMarketoForm(wrapper, this.contactSalesFormId, {
-          clearContainer: true,
-          extendHiddenFields: async (f) => {
-            const resultsUrl = await (this._marketoResultsUrlPromise || prepareQuizResultsUrlForMarketo());
-            try {
-              f.addHiddenFields({
-                quizResultsURL: resultsUrl,
-                Products__c: buildMarketoEmailResultsProductFieldValue(this.buildSheetPayload()),
-              });
-            } catch (err) {
-              /* ignore: hidden field optional */
-            }
-          },
-          onSuccess: (values) => {
-            sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
-            const w = this.block.querySelector('#contact-sales-form-wrapper');
-            if (w) {
-              w.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
-              w.classList.remove('multistep-form', 'multistep-form-embedded');
-            }
-            return false;
-          },
-        });
-        if (!form) return;
-        wrapper.dataset.mktoLoaded = 'true';
-      } catch (e) {
-        wrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
-      }
+      await openContactSalesMarketoOverlay({
+        contactSalesFormId: this.contactSalesFormId,
+        extendHiddenFields: async (f) => {
+          const resultsUrl = await (this._marketoResultsUrlPromise || prepareQuizResultsUrlForMarketo());
+          try {
+            f.addHiddenFields({
+              quizResultsURL: resultsUrl,
+              Products__c: buildMarketoEmailResultsProductFieldValue(this.buildSheetPayload()),
+            });
+          } catch (err) {
+            /* ignore: hidden field optional */
+          }
+        },
+        getSheetPayload: () => this.buildSheetPayload(),
+        contactSectionEl: contactSection,
+        contactButtonsEl: contactButtons,
+        overlayHost: this.block.querySelector('.product-survey-container.survey-fullscreen'),
+      });
     });
 
     this.block.querySelector('#contact-no-btn')?.addEventListener('click', () => {
-      // eslint-disable-next-line no-alert
-      alert('Thank you for taking the quiz!');
+      this.restart();
     });
 
     const requestResultsBtn = this.block.querySelector('#request-results-btn');
@@ -2634,36 +2695,12 @@ class MarkerQuiz {
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
       requestResultsBtn.addEventListener('click', async () => {
         requestResultsBtn.style.display = 'none';
-        const emailMount = getEmailResultsFormMount(emailFormWrapper);
-        emailMount.innerHTML = EMAIL_RESULTS_LOADING_HTML;
+        emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
         emailFormWrapper.style.display = 'block';
-        const contactHooks = () => ({
-          clearContainer: true,
-          extendHiddenFields: async (f) => {
-            const resultsUrl = await (this._marketoResultsUrlPromise || prepareQuizResultsUrlForMarketo());
-            try {
-              f.addHiddenFields({
-                quizResultsURL: resultsUrl,
-                Products__c: buildMarketoEmailResultsProductFieldValue(this.buildSheetPayload()),
-              });
-            } catch (err) {
-              /* ignore: hidden field optional */
-            }
-          },
-          onSuccess: (values) => {
-            sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
-            const w = this.block.querySelector('#contact-sales-form-wrapper');
-            if (w) {
-              w.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
-              w.classList.remove('multistep-form', 'multistep-form-embedded');
-            }
-            return false;
-          },
-        });
         try {
-          const form = await embedMarketoForm(emailMount, this.emailResultsFormId);
+          const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
 
-          const submitBtn = emailMount.querySelector('button[type="submit"]');
+          const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
           if (submitBtn) submitBtn.disabled = true;
 
           const resultsUrl = await prepareQuizResultsUrlForMarketo();
@@ -2678,16 +2715,11 @@ class MarkerQuiz {
 
           form.onSuccess((values) => {
             sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
-            emailMount.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
-            void restoreContactSalesEmbedIfStripped(
-              this.block,
-              this.contactSalesFormId,
-              contactHooks,
-            );
+            emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
             return false;
           });
         } catch (e) {
-          emailMount.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
+          emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
         }
       });
     } else if (requestResultsBtn) {
@@ -3629,8 +3661,15 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   const sheetPayload = () => buildPreviewSheetPayload(product, products);
   const previewResultsUrlPromise = prepareQuizResultsUrlForMarketo();
 
+  /** Leave preview mode and load the real quiz from the start (same as Take Quiz Again). */
+  const exitPreviewToQuizStart = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('preview');
+    window.location.assign(url.toString());
+  };
+
   block.querySelector('#close-survey-btn')?.addEventListener('click', () => {
-    window.location.assign(MARKER_QUIZ_EXIT_URL);
+    exitPreviewToQuizStart();
   });
 
   block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
@@ -3638,9 +3677,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   });
 
   block.querySelector('#restart-btn')?.addEventListener('click', () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('preview');
-    window.location.assign(url.toString());
+    exitPreviewToQuizStart();
   });
 
   block.querySelector('#preview-product-select')?.addEventListener('change', (e) => {
@@ -3650,48 +3687,32 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   });
 
   block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
-    const wrapper = block.querySelector('#contact-sales-form-wrapper');
+    if (!contactSalesFormId) return;
     const contactButtons = block.querySelector('.contact-section .contact-buttons');
-    if (!wrapper || !contactSalesFormId) return;
+    const contactSection = block.querySelector('.contact-section');
     if (contactButtons) contactButtons.style.display = 'none';
-    wrapper.style.display = 'block';
-    if (wrapper.dataset.mktoLoaded === 'true') return;
-    try {
-      wrapper.innerHTML = CONTACT_SALES_LOADING_HTML;
-      await ensureMarketoForms2Ready();
-      const form = await embedMultistepMarketoForm(wrapper, contactSalesFormId, {
-        clearContainer: true,
-        extendHiddenFields: async (f) => {
-          const resultsUrl = await previewResultsUrlPromise;
-          try {
-            f.addHiddenFields({
-              quizResultsURL: resultsUrl,
-              Products__c: buildMarketoEmailResultsProductFieldValue(sheetPayload()),
-            });
-          } catch (err) {
-            /* ignore: hidden field optional */
-          }
-        },
-        onSuccess: (values) => {
-          sendToSheet(sheetPayload(), { email: values.Email || '' });
-          const w = block.querySelector('#contact-sales-form-wrapper');
-          if (w) {
-            w.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
-            w.classList.remove('multistep-form', 'multistep-form-embedded');
-          }
-          return false;
-        },
-      });
-      if (!form) return;
-      wrapper.dataset.mktoLoaded = 'true';
-    } catch (e) {
-      wrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
-    }
+    await openContactSalesMarketoOverlay({
+      contactSalesFormId,
+      extendHiddenFields: async (f) => {
+        const resultsUrl = await previewResultsUrlPromise;
+        try {
+          f.addHiddenFields({
+            quizResultsURL: resultsUrl,
+            Products__c: buildMarketoEmailResultsProductFieldValue(sheetPayload()),
+          });
+        } catch (err) {
+          /* ignore: hidden field optional */
+        }
+      },
+      getSheetPayload: sheetPayload,
+      contactSectionEl: contactSection,
+      contactButtonsEl: contactButtons,
+      overlayHost: block.querySelector('.product-survey-container.survey-fullscreen'),
+    });
   });
 
   block.querySelector('#contact-no-btn')?.addEventListener('click', () => {
-    // eslint-disable-next-line no-alert
-    alert('Thank you for taking the quiz!');
+    exitPreviewToQuizStart();
   });
 
   const requestResultsBtn = block.querySelector('#request-results-btn');
@@ -3700,35 +3721,11 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   if (emailResultsFormId && requestResultsBtn && emailFormWrapper) {
     requestResultsBtn.addEventListener('click', async () => {
       requestResultsBtn.style.display = 'none';
-      const emailMount = getEmailResultsFormMount(emailFormWrapper);
-      emailMount.innerHTML = EMAIL_RESULTS_LOADING_HTML;
+      emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
       emailFormWrapper.style.display = 'block';
-      const contactHooks = () => ({
-        clearContainer: true,
-        extendHiddenFields: async (f) => {
-          const resultsUrl = await previewResultsUrlPromise;
-          try {
-            f.addHiddenFields({
-              quizResultsURL: resultsUrl,
-              Products__c: buildMarketoEmailResultsProductFieldValue(sheetPayload()),
-            });
-          } catch (err) {
-            /* ignore: hidden field optional */
-          }
-        },
-        onSuccess: (values) => {
-          sendToSheet(sheetPayload(), { email: values.Email || '' });
-          const w = block.querySelector('#contact-sales-form-wrapper');
-          if (w) {
-            w.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
-            w.classList.remove('multistep-form', 'multistep-form-embedded');
-          }
-          return false;
-        },
-      });
       try {
-        const form = await embedMarketoForm(emailMount, emailResultsFormId);
-        const submitBtn = emailMount.querySelector('button[type="submit"]');
+        const form = await embedMarketoForm(emailFormWrapper, emailResultsFormId);
+        const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
         if (submitBtn) submitBtn.disabled = true;
         const resultsUrl = await prepareQuizResultsUrlForMarketo();
         const previewPayload = sheetPayload();
@@ -3739,12 +3736,11 @@ const wirePreviewResultsPage = (block, product, products, config) => {
         if (submitBtn) submitBtn.disabled = false;
         form.onSuccess((values) => {
           sendToSheet(sheetPayload(), { email: values.Email || '' });
-          emailMount.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
-          void restoreContactSalesEmbedIfStripped(block, contactSalesFormId, contactHooks);
+          emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
           return false;
         });
       } catch (e) {
-        emailMount.innerHTML = '<p class="contact-sales-form-error">Unable to load form.</p>';
+        emailFormWrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form.</p>';
       }
     });
   } else if (requestResultsBtn) {
@@ -3808,7 +3804,7 @@ const renderPreview = (block, product, products, config) => {
                         <h4>No other products in feed</h4>
                       </div>`;
   const emailOrLeadBlock = emailResultsFormId
-    ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"><div class="email-results-form-mount"></div></div>'
+    ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>'
     : `
                   <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
                     <div class="lead-capture-fields">
@@ -3901,7 +3897,6 @@ const renderPreview = (block, product, products, config) => {
                   <button type="button" class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
                   <button type="button" class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
                 </div>
-                <div id="contact-sales-form-wrapper" class="contact-sales-form-wrapper" style="display: none;"></div>
               </div>
     
               ${(product.footnotes || []).length ? `

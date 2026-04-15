@@ -1306,9 +1306,63 @@ body.marker-app-hide-chrome-footer .footer {
 }
 
 /* Match email-results Marketo shell (#f1f1f1); any configured form id */
-#contact-sales-form-wrapper.multistep-form form.mktoForm {
+#contact-sales-form-wrapper.multistep-form form.mktoForm,
+#contact-sales-form-mount.multistep-form form.mktoForm {
   background-color: #f1f1f1;
   padding: 2rem !important;
+}
+
+/* Full-screen contact (2695) overlay — same gradient shell as quiz, white card, above results */
+.contact-sales-marketo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background-image: url("https://main--mammotome--hlxsites.aem.page/assets/images/mammotome-gradient-wave-no-tagline.png");
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.contact-sales-marketo-overlay-inner {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px max(32px, env(safe-area-inset-bottom, 0));
+  box-sizing: border-box;
+}
+
+.contact-sales-marketo-card {
+  width: 100%;
+  max-width: 800px;
+  margin-top: clamp(72px, 12vh, 120px);
+  padding: 28px 24px 40px;
+  box-sizing: border-box;
+}
+
+.contact-sales-marketo-card:hover {
+  transform: none;
+  box-shadow: 0 20px 40px
+    color-mix(in srgb, var(--mt-global-color-black) 8%, transparent);
+}
+
+.contact-sales-marketo-overlay-footer {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+  padding-bottom: 24px;
+  text-align: center;
+}
+
+.contact-sales-inline-thank-you {
+  margin-top: 20px;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .contact-sales-marketo-card {
+    margin-top: 64px;
+    padding: 20px 16px 32px;
+  }
 }
 
 .contact-sales-form-wrapper .mktoForm {
