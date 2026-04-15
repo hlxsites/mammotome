@@ -484,6 +484,7 @@ const openContactSalesMarketoOverlay = async ({
   contactSectionEl,
   contactButtonsEl,
   overlayHost,
+  onFinishClose,
 }) => {
   removeContactSalesMarketoOverlay();
   if (contactSalesOverlayEscapeHandler) {
@@ -509,7 +510,7 @@ const openContactSalesMarketoOverlay = async ({
         <div id="contact-sales-form-mount" class="contact-sales-form-wrapper"></div>
       </div>
       <div class="contact-sales-marketo-overlay-footer" id="contact-sales-overlay-footer" hidden>
-        <button type="button" class="btn btn-quiz-secondary" id="contact-sales-overlay-back-btn">Go back to the quiz</button>
+        <button type="button" class="btn btn-quiz-secondary" id="contact-sales-overlay-back-btn">Done</button>
       </div>
     </div>
   `;
@@ -533,6 +534,11 @@ const openContactSalesMarketoOverlay = async ({
       contactSectionEl.appendChild(area);
     } else if (contactButtonsEl) {
       contactButtonsEl.style.display = '';
+    }
+    try {
+      onFinishClose?.();
+    } catch (err) {
+      /* ignore: close navigation is best-effort */
     }
   };
 
@@ -1192,6 +1198,13 @@ class MarkerQuiz {
         return;
       }
       window.location.assign(MARKER_QUIZ_EXIT_URL);
+      return;
+    }
+    const isResultsOrThankYouView = Boolean(
+      this.block.querySelector('.results-card, .thank-you-container'),
+    );
+    if (isResultsOrThankYouView) {
+      this.restart();
       return;
     }
     this.goToWelcomeScreenFromClose();
@@ -2700,6 +2713,7 @@ class MarkerQuiz {
         contactSectionEl: contactSection,
         contactButtonsEl: contactButtons,
         overlayHost: this.block.querySelector('.product-survey-container.survey-fullscreen'),
+        onFinishClose: () => this.restart(),
       });
     });
 
@@ -3726,6 +3740,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
       contactSectionEl: contactSection,
       contactButtonsEl: contactButtons,
       overlayHost: block.querySelector('.product-survey-container.survey-fullscreen'),
+      onFinishClose: () => exitPreviewToQuizStart(),
     });
   });
 
