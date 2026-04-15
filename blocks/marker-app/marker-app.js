@@ -92,8 +92,15 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
+    const existingUuid = (typeof sessionStorage !== 'undefined'
+      && !options.forceNewUuid
+      && sessionStorage.getItem('markerQuizUuid'))
+      ? sessionStorage.getItem('markerQuizUuid')
+      : '';
+
     const requestBody = {
       clientSecret: CLIENT_SECRET,
+      uuid: existingUuid || '',
       responses: {
         q1_current_markers: payload.current_bx_markers || '',
         q2_modalities: [payload.modality || ''],
