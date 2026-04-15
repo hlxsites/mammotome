@@ -549,7 +549,6 @@ const openContactSalesMarketoOverlay = async ({
     clearContainer: true,
     extendHiddenFields,
     onSuccess: (values) => {
-      sendToSheet(getSheetPayload(), { email: extractEmailFromMarketoSuccessValues(values) });
       const m = document.querySelector(`#${CONTACT_SALES_MARKETO_OVERLAY_ID} #contact-sales-form-mount`);
       if (m) {
         m.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
@@ -2697,7 +2696,7 @@ class MarkerQuiz {
             /* ignore: hidden field optional */
           }
         },
-        getSheetPayload: () => this.buildSheetPayload(),
+        getSheetPayload: () => ({}),
         contactSectionEl: contactSection,
         contactButtonsEl: contactButtons,
         overlayHost: this.block.querySelector('.product-survey-container.survey-fullscreen'),
