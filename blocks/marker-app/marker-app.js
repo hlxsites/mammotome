@@ -153,12 +153,27 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
     } else if (data.error) {
       // server returned an error – no action needed
     }
-  } catch {
+  } catch (err) {
     console.warn('[Marker Quiz] sendToSheet error:', err);
   } finally {
     clearTimeout(timeoutId);
   }
 }
+
+const extractEmailFromMarketoSuccessValues = (values) => {
+  if (!values || typeof values !== 'object') return '';
+  if (typeof values.Email === 'string' && values.Email.includes('@')) return values.Email.trim();
+  if (typeof values.email === 'string' && values.email.includes('@')) return values.email.trim();
+  if (typeof values.WorkEmail === 'string' && values.WorkEmail.includes('@')) return values.WorkEmail.trim();
+  if (typeof values.workEmail === 'string' && values.workEmail.includes('@')) return values.workEmail.trim();
+
+  const emailEntry = Object.entries(values).find(([key, val]) => {
+    if (typeof val !== 'string') return false;
+    if (!/@/.test(val)) return false;
+    return /email/i.test(key) || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val.trim());
+  });
+  return emailEntry ? String(emailEntry[1]).trim() : '';
+};
 
 const CLOSE_BTN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="8.5 8.5 7 7" width="24" height="24">
       <line stroke="currentColor" x1="14.1213" y1="9.87866" x2="9.8787" y2="14.1213" stroke-width="1.7" stroke-linecap="square"/>
@@ -527,7 +542,7 @@ const openContactSalesMarketoOverlay = async ({
     clearContainer: true,
     extendHiddenFields,
     onSuccess: (values) => {
-      sendToSheet(getSheetPayload(), { email: values.Email || '' });
+      sendToSheet(getSheetPayload(), { email: extractEmailFromMarketoSuccessValues(values) });
       const m = document.querySelector(`#${CONTACT_SALES_MARKETO_OVERLAY_ID} #contact-sales-form-mount`);
       if (m) {
         m.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
@@ -2711,7 +2726,7 @@ class MarkerQuiz {
           if (submitBtn) submitBtn.disabled = false;
 
           form.onSuccess((values) => {
-            sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
+            sendToSheet(this.buildSheetPayload(), { email: extractEmailFromMarketoSuccessValues(values) });
             emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
             return false;
           });
@@ -3732,7 +3747,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
         });
         if (submitBtn) submitBtn.disabled = false;
         form.onSuccess((values) => {
-          sendToSheet(sheetPayload(), { email: values.Email || '' });
+          sendToSheet(sheetPayload(), { email: extractEmailFromMarketoSuccessValues(values) });
           emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
           return false;
         });
