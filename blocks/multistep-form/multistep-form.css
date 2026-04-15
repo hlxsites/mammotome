@@ -132,7 +132,10 @@ main .contact-sales-form-wrapper.multistep-form form,
 
 .contact-sales-form-wrapper.multistep-form .form-div {
     padding: 4% 0;
-    margin-right: 0;
+    margin-right: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 main .contact-sales-form-wrapper.multistep-form :is(select, textarea),
@@ -169,4 +172,14 @@ main .contact-sales-form-wrapper.multistep-form .mktoForm th,
     max-width: 100%;
     box-sizing: border-box;
     vertical-align: top;
+}
+
+/* Beats `main .multistep-form form` grid + minmax(0,1fr) for embedded contact on marker results. */
+.contact-sales-form-wrapper.multistep-form form.mktoForm,
+.contact-sales-form-wrapper.multistep-form form {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: none !important;
+    box-sizing: border-box !important;
 }

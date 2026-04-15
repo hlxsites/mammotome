@@ -1,6 +1,5 @@
 import {
   readBlockConfig,
-  loadScript,
   getMarkerRecommendations,
   toClassName,
 } from '../../scripts/lib-franklin.js';
@@ -10,7 +9,7 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwZYd5rhFtYLc0SaBDvq_
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
 
-const DEFAULT_CONTACT_SALES_FORM_ID = 2364;
+const DEFAULT_CONTACT_SALES_FORM_ID = 2695;
 
 const getEmailResultsFormIdFromConfig = (config) => config['email-results-form-id'] || config.emailresultsformid || null;
 
@@ -381,34 +380,89 @@ const allowTrademarkHtml = (str) => {
   );
 };
 
-const loadScriptAsync = (src) => new Promise((resolve, reject) => {
-  loadScript(src, (type) => {
-    if (type === 'error') reject(new Error(`Failed to load script: ${src}`));
-    else resolve();
-  });
-});
-
 const MARKETO_FORMS2_SRC = 'https://www2.mammotome.com/js/forms2/js/forms2.min.js';
 
+/** Single in-flight load for Forms 2 (contact sales form 2364, email form, multistep). */
+let marketoForms2LoadPromise = null;
+
+/**
+ * Resolves when `window.MktoForms2` is available. Uses one shared script tag + optional preload.
+ * Call early (decorate / results) so the library is ready before the user opens the contact form.
+ */
+const ensureMarketoForms2Ready = () => {
+  if (typeof window === 'undefined') return Promise.resolve();
+  if (window.MktoForms2) return Promise.resolve();
+  if (marketoForms2LoadPromise) return marketoForms2LoadPromise;
+
+  marketoForms2LoadPromise = new Promise((resolve, reject) => {
+    const succeed = () => {
+      if (window.MktoForms2) resolve();
+      else reject(new Error('MktoForms2 not available'));
+    };
+    const fail = () => reject(new Error('Marketo script load failed'));
+
+    let script = document.querySelector('script[src*="forms2.min.js"]');
+    if (!script) {
+      if (!document.head.querySelector(`link[rel="preload"][href="${MARKETO_FORMS2_SRC}"]`)) {
+        const preload = document.createElement('link');
+        preload.rel = 'preload';
+        preload.as = 'script';
+        preload.href = MARKETO_FORMS2_SRC;
+        document.head.appendChild(preload);
+      }
+      script = document.createElement('script');
+      script.src = MARKETO_FORMS2_SRC;
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    if (window.MktoForms2) {
+      succeed();
+      return;
+    }
+
+    script.addEventListener('load', succeed, { once: true });
+    script.addEventListener('error', fail, { once: true });
+  }).catch((err) => {
+    marketoForms2LoadPromise = null;
+    return Promise.reject(err);
+  });
+
+  return marketoForms2LoadPromise;
+};
+
 const prefetchMarketoForms2 = () => {
-  if (typeof window === 'undefined' || window.MktoForms2) return;
-  if (document.querySelector('script[src*="forms2.min.js"]')) return;
-  const s = document.createElement('script');
-  s.src = MARKETO_FORMS2_SRC;
-  s.async = true;
-  document.head.appendChild(s);
+  ensureMarketoForms2Ready().catch(() => {});
 };
 
 const EMAIL_RESULTS_LOADING_HTML = '<p class="email-results-form-loading" role="status" aria-live="polite">Loading...</p>';
 
+/** Shown in contact-sales wrapper while Forms2 loads, then cleared by embedMultistepMarketoForm (clearContainer). */
+const CONTACT_SALES_LOADING_HTML = '<p class="contact-sales-form-loading" role="status" aria-live="polite">Loading...</p>';
+
+const CONTACT_SALES_THANK_YOU_HTML = `
+  <div class="thank-you-container contact-sales-thank-you" role="status" aria-live="polite">
+    <p>Thank you for your submission. We'll be in touch within 2-3 business days.</p>
+  </div>`;
+
+const EMAIL_RESULTS_THANK_YOU_HTML = `
+  <div class="thank-you-container email-results-thank-you" role="status" aria-live="polite">
+    <p>Thank you for participating in Mammotome's "Meet Your Match". Your results will be emailed to you shortly.</p>
+  </div>`;
+
 const embedMarketoForm = async (container, formId) => {
-  await loadScriptAsync('//www2.mammotome.com/js/forms2/js/forms2.min.js');
+  await ensureMarketoForms2Ready();
   const formElement = document.createElement('form');
   formElement.id = `mktoForm_${formId}`;
   container.appendChild(formElement);
   window.MktoForms2.loadForm('//www2.mammotome.com', '435-TDP-284', formId);
+  const expectedFormDomId = `mktoForm_${formId}`;
   return new Promise((resolve) => {
     window.MktoForms2.whenReady((form) => {
+      const domForm = form.getFormElem()[0];
+      if (!domForm || domForm.id !== expectedFormDomId) {
+        return;
+      }
       container.querySelector('.email-results-form-loading')?.remove();
       resolve(form);
     });
@@ -978,6 +1032,8 @@ class MarkerQuiz {
     this.startScreenInline = false;
     this.startWindowBackgroundUrl = String(config.startWindowBackgroundUrl || '').trim();
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
+    /** Warmed in showResults for contact-sales Marketo hidden field (parallel with form load). */
+    this._marketoResultsUrlPromise = null;
   }
 
   /**
@@ -2345,6 +2401,7 @@ class MarkerQuiz {
 
   showResults() {
     prefetchMarketoForms2();
+    this._marketoResultsUrlPromise = prepareQuizResultsUrlForMarketo();
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
@@ -2504,18 +2561,29 @@ class MarkerQuiz {
       if (wrapper.dataset.mktoLoaded === 'true') return;
 
       try {
+        wrapper.innerHTML = CONTACT_SALES_LOADING_HTML;
+        await ensureMarketoForms2Ready();
         const form = await embedMultistepMarketoForm(wrapper, this.contactSalesFormId, {
+          clearContainer: true,
           extendHiddenFields: async (f) => {
-            const resultsUrl = await prepareQuizResultsUrlForMarketo();
+            const resultsUrl = await (this._marketoResultsUrlPromise || prepareQuizResultsUrlForMarketo());
             try {
-              f.addHiddenFields({ quizResultsURL: resultsUrl });
+              f.addHiddenFields({
+                quizResultsURL: resultsUrl,
+                Products__c: buildMarketoEmailResultsProductFieldValue(this.buildSheetPayload()),
+              });
             } catch (err) {
               /* ignore: hidden field optional */
             }
           },
           onSuccess: (values) => {
             sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
-            return true;
+            const w = this.block.querySelector('#contact-sales-form-wrapper');
+            if (w) {
+              w.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
+              w.classList.remove('multistep-form', 'multistep-form-embedded');
+            }
+            return false;
           },
         });
         if (!form) return;
@@ -2556,7 +2624,8 @@ class MarkerQuiz {
 
           form.onSuccess((values) => {
             sendToSheet(this.buildSheetPayload(), { email: values.Email || '' });
-            return true;
+            emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
+            return false;
           });
         } catch (e) {
           emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
@@ -3392,6 +3461,7 @@ class MarkerQuiz {
     this.startScreenInline = false;
     this.showStartScreen = true;
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
+    this._marketoResultsUrlPromise = null;
     document.body.classList.remove('survey-fullscreen-active');
     this.render();
   }
@@ -3498,6 +3568,7 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   const emailResultsFormId = getEmailResultsFormIdFromConfig(config);
   const contactSalesFormId = getContactSalesFormIdFromConfig(config);
   const sheetPayload = () => buildPreviewSheetPayload(product, products);
+  const previewResultsUrlPromise = prepareQuizResultsUrlForMarketo();
 
   block.querySelector('#close-survey-btn')?.addEventListener('click', () => {
     window.location.assign(MARKER_QUIZ_EXIT_URL);
@@ -3507,8 +3578,10 @@ const wirePreviewResultsPage = (block, product, products, config) => {
     btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
   });
 
-  block.querySelector('#preview-restart-btn')?.addEventListener('click', () => {
-    window.location.assign(MARKER_QUIZ_EXIT_URL);
+  block.querySelector('#restart-btn')?.addEventListener('click', () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('preview');
+    window.location.assign(url.toString());
   });
 
   block.querySelector('#preview-product-select')?.addEventListener('change', (e) => {
@@ -3525,18 +3598,29 @@ const wirePreviewResultsPage = (block, product, products, config) => {
     wrapper.style.display = 'block';
     if (wrapper.dataset.mktoLoaded === 'true') return;
     try {
+      wrapper.innerHTML = CONTACT_SALES_LOADING_HTML;
+      await ensureMarketoForms2Ready();
       const form = await embedMultistepMarketoForm(wrapper, contactSalesFormId, {
+        clearContainer: true,
         extendHiddenFields: async (f) => {
-          const resultsUrl = await prepareQuizResultsUrlForMarketo();
+          const resultsUrl = await previewResultsUrlPromise;
           try {
-            f.addHiddenFields({ quizResultsURL: resultsUrl });
+            f.addHiddenFields({
+              quizResultsURL: resultsUrl,
+              Products__c: buildMarketoEmailResultsProductFieldValue(sheetPayload()),
+            });
           } catch (err) {
             /* ignore: hidden field optional */
           }
         },
         onSuccess: (values) => {
           sendToSheet(sheetPayload(), { email: values.Email || '' });
-          return true;
+          const w = block.querySelector('#contact-sales-form-wrapper');
+          if (w) {
+            w.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
+            w.classList.remove('multistep-form', 'multistep-form-embedded');
+          }
+          return false;
         },
       });
       if (!form) return;
@@ -3572,7 +3656,8 @@ const wirePreviewResultsPage = (block, product, products, config) => {
         if (submitBtn) submitBtn.disabled = false;
         form.onSuccess((values) => {
           sendToSheet(sheetPayload(), { email: values.Email || '' });
-          return true;
+          emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
+          return false;
         });
       } catch (e) {
         emailFormWrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form.</p>';
@@ -3712,7 +3797,7 @@ const renderPreview = (block, product, products, config) => {
               <div class="quiz-actions-section">
                 <div class="quiz-actions-buttons">
                   <button type="button" class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
-                  <button type="button" class="btn btn-quiz-secondary" id="preview-restart-btn">Exit preview</button>
+                  <button type="button" class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
                 </div>
                   ${emailOrLeadBlock}
               </div>
@@ -3778,6 +3863,7 @@ export default async function decorate(block) {
     : String(startWindowRaw || '');
   config.startWindowBackgroundUrl = await resolveStartWindowBackgroundUrl(startWindowStr);
 
+  prefetchMarketoForms2();
   const quiz = new MarkerQuiz(block, config, products);
   await quiz.init();
   return quiz;

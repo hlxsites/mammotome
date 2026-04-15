@@ -69,6 +69,7 @@ const loadScript = (src, container) => new Promise((resolve, reject) => {
  * @param {HTMLElement} container
  * @param {string|number} formId
  * @param {object} [hooks]
+ * @param {boolean} [hooks.clearContainer] replace container children before loading UI (marker-app contact wrapper)
  * @param {function} [hooks.extendHiddenFields] async (form, ctx) => void
  * @param {function} [hooks.onSuccess] (values, followUpUrl, form) => boolean
  * @returns {Promise<object|null>}
@@ -85,10 +86,13 @@ export async function embedMultistepMarketoForm(container, formId, hooks = {}) {
   }
 
   container.classList.add('multistep-form', 'multistep-form-embedded');
+  if (hooks.clearContainer) {
+    container.replaceChildren();
+  }
 
   const loadingDiv = document.createElement('div');
   loadingDiv.className = 'form-loading';
-  loadingDiv.innerHTML = '<p>Loading form...</p>';
+  loadingDiv.innerHTML = '<p>Loading...</p>';
   container.appendChild(loadingDiv);
 
   if (typeof window.MktoForms2 === 'undefined') {
@@ -135,8 +139,6 @@ export async function embedMultistepMarketoForm(container, formId, hooks = {}) {
   observer.observe(document.head, { childList: true, subtree: true });
   disableMarketoCSS();
 
-  loadingDiv.remove();
-
   if (typeof window.MktoForms2 === 'undefined') {
     // eslint-disable-next-line no-console
     console.error('MktoForms2 is not defined. Marketo script may have failed to load.');
@@ -180,6 +182,9 @@ export async function embedMultistepMarketoForm(container, formId, hooks = {}) {
           if (typeof hooks.extendHiddenFields === 'function') {
             await hooks.extendHiddenFields(form, { pageSlug });
           }
+
+          /* Show form as soon as Marketo + hidden fields are ready; fsaat setup below can take many ms */
+          loadingDiv.remove();
 
           const formEl = form.getFormElem()[0];
 
@@ -366,6 +371,7 @@ export async function embedMultistepMarketoForm(container, formId, hooks = {}) {
 
           resolve(form);
         } catch (err) {
+          loadingDiv.remove();
           reject(err);
         }
       })();
