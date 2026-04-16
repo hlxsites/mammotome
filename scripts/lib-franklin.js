@@ -609,7 +609,7 @@ export async function getMarkerRecommendations(sourceUrl) {
 
   if (!window.markerRecommendationsCache.has(resolvedSource)) {
     const withLimit = (raw) => {
-      const u = new URL(String(raw));
+      const u = new URL(String(raw), window.location.origin);
       if (!u.searchParams.has('limit')) u.searchParams.set('limit', '10000');
       return u.toString();
     };
@@ -623,12 +623,12 @@ export async function getMarkerRecommendations(sourceUrl) {
     const tryFallbackUrls = (rawUrl) => {
       const candidates = [];
       try {
-        const u = new URL(String(rawUrl));
+        const u = new URL(String(rawUrl), window.location.origin);
         // If author used a cross-origin AEM preview URL, try same path on current origin.
         candidates.push(`${window.location.origin}${u.pathname}`);
         // Also try production domain as a generic fallback for local dev.
         candidates.push(`https://www.mammotome.com${u.pathname}`);
-      } catch {
+      } catch (e) {
         // ignore
       }
       return [...new Set(candidates.filter(Boolean))];
