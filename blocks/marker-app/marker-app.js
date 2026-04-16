@@ -211,7 +211,7 @@ const ICON_PLAYVIDEO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0
       + '    <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>'
       + '</svg>';
 
-const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
+const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
 const VIMEO_REGEX = /(?:vimeo\.com\/)(?:video\/)?(\d+)/;
 
 const DRAG_THRESHOLD_DEFAULT = 3;
@@ -664,6 +664,42 @@ const readBlockConfigWithHtml = (block) => {
     if (html) config[name] = html;
   });
   return config;
+};
+
+const MARKER_APP_JSON_SOURCE_KEYS = [
+  'json-file',
+  'json-url',
+  'json',
+  'data-file',
+  'data-url',
+  'data-source',
+  'marker-data',
+  'marker-data-file',
+];
+
+const getMarkerRecommendationsSourceFromBlock = (block, config = {}) => {
+  const configured = MARKER_APP_JSON_SOURCE_KEYS
+    .map((key) => config[key] ?? config[key.replace(/-/g, '')])
+    .find((value) => String(value || '').trim());
+  if (configured) return String(configured).trim();
+
+  const rows = [...block.querySelectorAll(':scope > div')];
+  // Also scan the first row: authors often place the JSON URL
+  // immediately under the block name as a URL-only row.
+  for (let i = 0; i < rows.length; i += 1) {
+    const cols = [...rows[i].children];
+    // Support the "URL-only" authoring style (as seen in sheets):
+    // - single-cell row containing the JSON URL (common with colspan)
+    // - OR a 2-column row (or more) that includes a JSON URL in any cell
+    const cellValues = cols.map((c) => {
+      const link = c.querySelector('a[href]');
+      return String(link?.href || c.textContent || '').trim();
+    }).filter(Boolean);
+    if (!cellValues.length) continue;
+    const jsonCell = cellValues.find((v) => /\.json(?:\?|#|$)/i.test(v));
+    if (jsonCell) return jsonCell;
+  }
+  return '';
 };
 
 const MARKER_APP_HIDE_CHROME_KEYS = new Set(['nav', 'footer']);
@@ -3960,10 +3996,11 @@ const renderPreview = (block, product, products, config) => {
 };
 
 export default async function decorate(block) {
-  const { products } = await getMarkerRecommendations();
+  const config = readBlockConfigWithHtml(block);
+  const markerRecommendationsSource = getMarkerRecommendationsSourceFromBlock(block, config);
+  const { products } = await getMarkerRecommendations(markerRecommendationsSource || undefined);
   const hideChrome = parseHideChromeFromBlock(block);
   applyMarkerAppHideChrome(hideChrome);
-  const config = readBlockConfigWithHtml(block);
   config.scoreExcludeKeywords = hideChrome.scoreExcludeKeywords;
   mergeStartTitleFromBlock(block, config);
 

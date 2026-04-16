@@ -596,19 +596,69 @@ function parseFootnotes(raw) {
   return String(raw).split('\\').map((f) => f.trim()).filter(Boolean);
 }
 
-export async function getMarkerRecommendations() {
-  if (!window.markerRecommendations) {
-    const { markerRecommendations, country, language } = getInfo();
-    let resp = await fetch(`${markerRecommendations}?limit=10000`);
-    // On localhost, try locale-prefixed path if root path fails (Franklin content structure)
-    if (!resp.ok && window.location.hostname === 'localhost' && country && language) {
+export async function getMarkerRecommendations(sourceUrl) {
+  const { markerRecommendations, country, language } = getInfo();
+  const resolvedSource = String(sourceUrl || markerRecommendations || '').trim();
+  if (!resolvedSource) {
+    throw new Error('Marker recommendations source is not configured');
+  }
+
+  if (!window.markerRecommendationsCache) {
+    window.markerRecommendationsCache = new Map();
+  }
+
+  if (!window.markerRecommendationsCache.has(resolvedSource)) {
+    const withLimit = (raw) => {
+      const u = new URL(String(raw));
+      if (!u.searchParams.has('limit')) u.searchParams.set('limit', '10000');
+      return u.toString();
+    };
+
+    const tryFetchJson = async (rawUrl) => {
+      const resp = await fetch(withLimit(rawUrl));
+      if (!resp.ok) throw new Error(`${resp.status}: ${resp.statusText}`);
+      return resp.json();
+    };
+
+    const tryFallbackUrls = (rawUrl) => {
+      const candidates = [];
+      try {
+        const u = new URL(String(rawUrl));
+        // If author used a cross-origin AEM preview URL, try same path on current origin.
+        candidates.push(`${window.location.origin}${u.pathname}`);
+        // Also try production domain as a generic fallback for local dev.
+        candidates.push(`https://www.mammotome.com${u.pathname}`);
+      } catch {
+        // ignore
+      }
+      return [...new Set(candidates.filter(Boolean))];
+    };
+
+    let json;
+    try {
+      json = await tryFetchJson(resolvedSource);
+    } catch (err) {
+      // If cross-origin is blocked (CORS) or unavailable, retry fallbacks.
+      const fallbacks = tryFallbackUrls(resolvedSource);
+      let lastErr = err;
+      for (let i = 0; i < fallbacks.length; i += 1) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          json = await tryFetchJson(fallbacks[i]);
+          lastErr = null;
+          break;
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      if (!json) throw lastErr || err;
+    }
+
+    // On localhost, try locale-prefixed path if root path fails only for the default source.
+    if (!sourceUrl && window.location.hostname === 'localhost' && country && language && !json) {
       const localePath = `/${country}/${language}/marker-recommendation.json`;
-      resp = await fetch(`${window.location.origin}${localePath}?limit=10000`);
+      json = await tryFetchJson(`${window.location.origin}${localePath}`);
     }
-    if (!resp.ok) {
-      throw new Error(`${resp.status}: ${resp.statusText}`);
-    }
-    const json = await resp.json();
 
     // AEM xlsx→JSON: single-sheet has root { data }, multi-sheet has { sheetName: { data } }
     // Sheet names with shared- prefix become keys (e.g. shared-products → products)
@@ -646,9 +696,9 @@ export async function getMarkerRecommendations() {
       capabilities[id] = ratings;
     });
 
-    window.markerRecommendations = { products, capabilities };
+    window.markerRecommendationsCache.set(resolvedSource, { products, capabilities });
   }
-  return window.markerRecommendations;
+  return window.markerRecommendationsCache.get(resolvedSource);
 }
 
 /**
