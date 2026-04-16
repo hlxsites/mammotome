@@ -2728,17 +2728,21 @@ class MarkerQuiz {
 
     if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
       requestResultsBtn.addEventListener('click', async () => {
-        if (this._sendToSheetPromise) await this._sendToSheetPromise;
         requestResultsBtn.style.display = 'none';
         emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
         emailFormWrapper.style.display = 'block';
         try {
-          const form = await embedMarketoForm(emailFormWrapper, this.emailResultsFormId);
+          const [form, resultsUrl] = await Promise.all([
+            embedMarketoForm(emailFormWrapper, this.emailResultsFormId),
+            (async () => {
+              if (this._sendToSheetPromise) await this._sendToSheetPromise;
+              return prepareQuizResultsUrlForMarketo();
+            })(),
+          ]);
 
           const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
           if (submitBtn) submitBtn.disabled = true;
 
-          const resultsUrl = await prepareQuizResultsUrlForMarketo();
           const sheetPayload = this.buildSheetPayload();
 
           form.addHiddenFields({
@@ -3763,10 +3767,12 @@ const wirePreviewResultsPage = (block, product, products, config) => {
       emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
       emailFormWrapper.style.display = 'block';
       try {
-        const form = await embedMarketoForm(emailFormWrapper, emailResultsFormId);
+        const [form, resultsUrl] = await Promise.all([
+          embedMarketoForm(emailFormWrapper, emailResultsFormId),
+          previewResultsUrlPromise,
+        ]);
         const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
         if (submitBtn) submitBtn.disabled = true;
-        const resultsUrl = await prepareQuizResultsUrlForMarketo();
         const previewPayload = sheetPayload();
         form.addHiddenFields({
           quizResultsURL: resultsUrl,
