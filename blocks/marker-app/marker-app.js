@@ -1423,6 +1423,7 @@ class MarkerQuiz {
 
   showQuizForm() {
     document.body.classList.add('survey-fullscreen-active');
+    sessionStorage.removeItem('markerQuizUuid');
 
     this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen">
@@ -2581,7 +2582,6 @@ class MarkerQuiz {
 
   showResults() {
     prefetchMarketoForms2();
-    this._marketoResultsUrlPromise = prepareQuizResultsUrlForMarketo();
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
@@ -2737,7 +2737,10 @@ class MarkerQuiz {
       await openContactSalesMarketoOverlay({
         contactSalesFormId: this.contactSalesFormId,
         extendHiddenFields: async (f) => {
-          const resultsUrl = await (this._marketoResultsUrlPromise || prepareQuizResultsUrlForMarketo());
+          const resultsUrl = await (async () => {
+            if (this._sendToSheetPromise) await this._sendToSheetPromise;
+            return prepareQuizResultsUrlForMarketo();
+          })();
           try {
             f.addHiddenFields({
               quizResultsURL: resultsUrl,
