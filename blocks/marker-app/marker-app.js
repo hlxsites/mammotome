@@ -236,7 +236,7 @@ const getVideoEmbedUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   const youtubeMatch = trimmed.match(YOUTUBE_REGEX);
-  if (youtubeMatch) return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1`;
+  if (youtubeMatch) return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1&rel=0`;
   const vimeoMatch = trimmed.match(VIMEO_REGEX);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
   return trimmed;
