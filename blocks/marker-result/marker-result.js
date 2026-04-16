@@ -162,6 +162,7 @@ export default async function decorate(block) {
   const uuid = params.get('uuid');
   const token = params.get('token');
   const tokenCreatedAt = params.get('tokenCreatedAt');
+  const debug = params.get('debug') === '1';
 
   if (!uuid || !token || !tokenCreatedAt) {
     block.innerHTML = '<p>Invalid or missing results link.</p>';
@@ -181,12 +182,12 @@ export default async function decorate(block) {
   try {
     const url = `${SHEET_URL}?uuid=${encodeURIComponent(uuid)}&token=${encodeURIComponent(token)}&tokenCreatedAt=${encodeURIComponent(tokenCreatedAt)}`;
     const [data, { products }] = await Promise.all([
-      fetch(url).then((res) => res.json()),
+      fetch(url, { redirect: 'follow' }).then((res) => res.json()),
       getMarkerRecommendations(),
     ]);
 
-    if (!data.success) {
-      block.innerHTML = `<p>Unable to load results: ${escapeHtml(data.error || 'Unknown error')}</p>`;
+    if (!data || !data.success) {
+      block.innerHTML = `<p>Unable to load results: ${escapeHtml((data && data.error) || 'Unknown error')}</p>`;
       return;
     }
 
@@ -329,7 +330,7 @@ export default async function decorate(block) {
           confirmation.style.display = 'block';
           setTimeout(() => { confirmation.style.display = 'none'; }, 4000);
         }
-      } catch {
+      } catch (e) {
         // eslint-disable-next-line no-alert
         window.prompt('Copy this link to share your results:', window.location.href);
       }
@@ -341,7 +342,12 @@ export default async function decorate(block) {
     });
 
     applyVimeoThumbnails(block).catch(() => {});
-  } catch {
+  } catch (err) {
+    if (debug) {
+      const message = err?.message ? String(err.message) : String(err);
+      block.innerHTML = `<p>Something went wrong loading your results: ${escapeHtml(message)}</p>`;
+      return;
+    }
     block.innerHTML = '<p>Something went wrong loading your results. Please try again later.</p>';
   }
 }
