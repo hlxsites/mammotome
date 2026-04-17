@@ -143,6 +143,7 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
     const response = await fetch(SHEET_URL, {
       method: 'POST',
       redirect: 'follow',
+      keepalive: true,
       body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
