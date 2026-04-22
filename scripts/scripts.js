@@ -414,24 +414,24 @@ function initMarketoEnhancedConversions() {
 
 // google tag manager
 function loadGTM() {
-  if (window.location.hostname.includes('localhost') || 
-      document.location.hostname.includes('.hlx.page') || 
-      document.location.hostname.includes('.aem.page')) {
+  if (window.location.hostname.includes('localhost')
+      || document.location.hostname.includes('.hlx.page')
+      || document.location.hostname.includes('.aem.page')) {
     return;
   }
 
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  
+  function gtag(...args) { window.dataLayer.push(args); }
+
   gtag('consent', 'default', {
-    'ad_storage': 'denied',
-    'analytics_storage': 'denied',
-    'ad_user_data': 'denied',
-    'ad_personalization': 'denied',
-    'functionality_storage': 'denied',
-    'personalization_storage': 'denied',
-    'security_storage': 'granted',
-    'wait_for_update': 500
+    ad_storage: 'denied',
+    analytics_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    functionality_storage: 'denied',
+    personalization_storage: 'denied',
+    security_storage: 'granted',
+    wait_for_update: 500,
   });
 
   const scriptTag = document.createElement('script');
