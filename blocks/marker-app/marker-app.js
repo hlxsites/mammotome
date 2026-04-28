@@ -215,15 +215,6 @@ const ICON_PLAYVIDEO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0
 const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
 const VIMEO_REGEX = /(?:vimeo\.com\/)(?:video\/)?(\d+)/;
 
-const DRAG_THRESHOLD_DEFAULT = 3;
-const DRAG_THRESHOLD_QMB_T = 10;
-
-const isQmbTDisplay = () => typeof window !== 'undefined'
-          && window.innerWidth >= 2160
-          && window.innerHeight >= 3840;
-
-const getDragThreshold = () => (isQmbTDisplay() ? DRAG_THRESHOLD_QMB_T : DRAG_THRESHOLD_DEFAULT);
-
 const escapeHtml = (str) => {
   if (str == null || typeof str !== 'string') return '';
   return str
@@ -2869,12 +2860,19 @@ class MarkerQuiz {
 
     const progressBar = this.block.querySelector('#quiz-progress-bar');
     if (progressBar) {
-      progressBar.innerHTML = this.visibleQuestionIndices.map((_, vi) => {
-        const classes = ['progress-segment'];
-        if (vi < stepPos) classes.push('completed');
-        if (vi === stepPos) classes.push('active');
-        return `<div class="${classes.join(' ')}"></div>`;
-      }).join('');
+      const totalSteps = Math.max(visibleCount, 1);
+      const progressPct = ((stepPos + 1) / totalSteps) * 100;
+      let fill = progressBar.querySelector('.progress-bar-fill');
+      if (!fill) {
+        fill = document.createElement('div');
+        fill.className = 'progress-bar-fill';
+        fill.style.width = '0%';
+        progressBar.appendChild(fill);
+        // Force layout so the first transition animates from 0%.
+        // eslint-disable-next-line no-unused-expressions
+        fill.offsetWidth;
+      }
+      fill.style.width = `${progressPct}%`;
     }
 
     const display = this.block.querySelector('#quiz-question-display');
@@ -2931,7 +2929,6 @@ class MarkerQuiz {
       this.clearQuizSelectionRequiredHint();
       nav.innerHTML = `
             <button class="btn btn-secondary" id="quiz-prev-btn" ${stepPos === 0 ? 'disabled' : ''}>← Previous</button>
-            <div class="question-counter">Question ${stepPos + 1} of ${visibleCount}</div>
             <button class="btn" id="quiz-next-btn">${isLast ? 'Get Results' : 'Next'} →</button>`;
 
       nav.querySelector('#quiz-prev-btn')?.addEventListener('click', () => {
@@ -3353,29 +3350,45 @@ class MarkerQuiz {
               || options.map((_, i) => i);
     this.selections[step] = order;
 
-    const optionParts = order.map((origIdx) => {
+    const gripSvg = `<svg class="sortable-grip-icon" viewBox="0 0 8 14" width="8" height="14" aria-hidden="true" focusable="false">
+              <circle cx="2" cy="2" r="1"/><circle cx="6" cy="2" r="1"/>
+              <circle cx="2" cy="6" r="1"/><circle cx="6" cy="6" r="1"/>
+              <circle cx="2" cy="10" r="1"/><circle cx="6" cy="10" r="1"/>
+              <circle cx="2" cy="14" r="1"/><circle cx="6" cy="14" r="1"/>
+            </svg>`;
+    const upChevron = '<svg class="sortable-arrow-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 11 L8 6 L13 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const downChevron = '<svg class="sortable-arrow-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 5 L8 10 L13 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    const optionParts = order.map((origIdx, position) => {
       const opt = options[origIdx];
       const images = getOptionImages(optionImages, opt, origIdx);
       const imagesHtml = images.length > 0
         ? `<div class="sortable-option-images">${images.map((src) => `<img src="${escapeHtml(src)}" alt="" class="sortable-option-img" />`).join('')}</div>`
         : '';
-      return `<div class="sortable-drop-zone" data-drop-zone="true"></div><div class="option sortable" data-option-index="${origIdx}">
+      const isFirst = position === 0;
+      const isLast = position === order.length - 1;
+      const labelText = (opt.text || '').replace(/<[^>]*>/g, '').trim();
+      const upLabel = labelText ? `Move ${labelText} up` : 'Move up';
+      const downLabel = labelText ? `Move ${labelText} down` : 'Move down';
+      return `<div class="option sortable" data-option-index="${origIdx}">
+            <span class="sortable-grip" aria-hidden="true">${gripSvg}</span>
             <div class="option-content">
               ${imagesHtml}
               <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
             </div>
-            <span class="drag-handle" title="Drag to sort">⋮⋮</span>
+            <div class="sortable-arrows">
+              <button type="button" class="sortable-arrow sortable-arrow-up" aria-label="${escapeHtml(upLabel)}"${isFirst ? ' disabled' : ''}>${upChevron}</button>
+              <button type="button" class="sortable-arrow sortable-arrow-down" aria-label="${escapeHtml(downLabel)}"${isLast ? ' disabled' : ''}>${downChevron}</button>
+            </div>
           </div>`;
     }).join('');
-
-    const trailingDropZone = '<div class="sortable-drop-zone" data-drop-zone="true"></div>';
 
     const qImage = this.questionImages[step + 1];
     const imageHtml = qImage
       ? `<div class="question-image"><img src="${escapeHtml(qImage.image)}" alt="" /></div>`
       : '';
     const imageLayoutClass = qImage ? ` has-image image-${qImage.placement}` : '';
-    const optionsBlock = `<div class="options-container layout-vertical sortable-with-drop-zones">${optionParts}${trailingDropZone}</div>`;
+    const optionsBlock = `<div class="options-container layout-vertical sortable-arrows-list">${optionParts}</div>`;
     const contentOrder = qImage?.placement === 'right'
       ? `${optionsBlock}${imageHtml}`
       : `${imageHtml}${optionsBlock}`;
@@ -3384,143 +3397,105 @@ class MarkerQuiz {
           <div class="question-text">${allowTrademarkHtml(question.text)}</div>
           <div class="question-container question-sortable${imageLayoutClass}">
             ${contentOrder}
+            <div class="sortable-status visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
           </div>`;
 
-    display.querySelectorAll('.option.sortable').forEach((el) => {
-      this.attachSortableDragListeners(el);
+    display.querySelectorAll('.sortable-arrow').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const trigger = e.currentTarget;
+        const optionEl = trigger.closest('.option.sortable');
+        if (!optionEl) return;
+        const direction = trigger.classList.contains('sortable-arrow-up') ? -1 : 1;
+        this.moveSortableOption(optionEl, direction);
+      });
     });
   }
 
-  attachSortableDragListeners(option) {
-    let threshold;
-    let lastHighlighted = null;
-
-    option.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0) return;
-      e.preventDefault();
-      option.setPointerCapture(e.pointerId);
-
-      threshold = getDragThreshold();
-      lastHighlighted = null;
-      this.draggedElement = option;
-      this.pointerStartX = e.clientX;
-      this.pointerStartY = e.clientY;
-      this.pointerDragStarted = false;
-      this.touchDropTarget = null;
-    });
-
-    option.addEventListener('pointermove', (e) => {
-      if (this.draggedElement !== option) return;
-      if (!this.pointerDragStarted) {
-        if (Math.abs(e.clientX - this.pointerStartX) > threshold
-            || Math.abs(e.clientY - this.pointerStartY) > threshold) {
-          this.pointerDragStarted = true;
-          option.classList.add('dragging');
-          option.style.pointerEvents = 'none';
-        } else return;
-      }
-
-      option.style.transform = `translate(${e.clientX - this.pointerStartX}px, ${e.clientY - this.pointerStartY}px)`;
-
-      const under = document.elementFromPoint(e.clientX, e.clientY);
-      const dropZone = under?.closest?.('.sortable-drop-zone');
-      const validZone = dropZone?.closest('.options-container') ? dropZone : null;
-
-      if (validZone !== lastHighlighted) {
-        if (lastHighlighted) lastHighlighted.classList.remove('drag-over');
-        if (validZone) validZone.classList.add('drag-over');
-        lastHighlighted = validZone;
-      }
-      this.touchDropTarget = validZone;
-    });
-
-    const cleanup = () => {
-      const wasDragging = this.pointerDragStarted;
-      option.classList.remove('dragging');
-      option.style.pointerEvents = '';
-      option.style.transform = '';
-      this.pointerDragStarted = false;
-
-      if (lastHighlighted) {
-        lastHighlighted.classList.remove('drag-over');
-        lastHighlighted = null;
-      }
-
-      if (wasDragging && this.touchDropTarget) {
-        this.touchDropTarget.parentNode.insertBefore(option, this.touchDropTarget);
-        this.captureSortedOrder();
-        this.touchDropTarget = null;
-      }
-      this.clearDragState();
-      this.draggedElement = null;
-    };
-
-    option.addEventListener('pointerup', cleanup);
-    option.addEventListener('pointercancel', cleanup);
-  }
-
-  clearDragOver() {
-    this.block.querySelectorAll('.option.drag-over').forEach(
-      (el) => el.classList.remove('drag-over'),
-    );
-    this.block.querySelectorAll('.sortable-drop-zone.drag-over').forEach(
-      (el) => el.classList.remove('drag-over'),
-    );
-  }
-
-  clearDragState() {
-    if (this.draggedElement) {
-      this.draggedElement.classList.remove('dragging');
-      this.draggedElement = null;
-    }
-    this.clearDragOver();
-  }
-
-  swapSortableOptions(el1, el2) {
-    const container = el1.parentNode;
-    const allOpts = [...container.querySelectorAll('.option')];
-
-    if (allOpts.indexOf(el1) < allOpts.indexOf(el2)) {
-      container.insertBefore(el2, el1);
-    } else {
-      container.insertBefore(el1, el2);
-    }
-    this.captureSortedOrder();
-  }
-
-  captureSortedOrder() {
+  moveSortableOption(optionEl, direction) {
     const qIdx = this.getCurrentQuestionIndex();
     const question = this.questions[qIdx];
     if (!question || question.type !== 'sortable') return;
 
-    const container = this.block.querySelector('.options-container');
-    if (!container) return;
+    const order = this.selections[qIdx];
+    if (!Array.isArray(order)) return;
 
-    const indices = [...container.querySelectorAll('.option.sortable')]
-      .map((el) => parseInt(el.dataset.optionIndex, 10));
-    this.selections[qIdx] = indices;
+    const origIdx = parseInt(optionEl.dataset.optionIndex, 10);
+    const pos = order.indexOf(origIdx);
+    const newPos = pos + direction;
+    if (pos < 0 || newPos < 0 || newPos >= order.length) return;
+
+    const container = optionEl.parentNode;
+    const allOptions = [...container.querySelectorAll('.option.sortable')];
+    const otherEl = allOptions[newPos];
+    if (!otherEl) return;
+
+    const oldRect1 = optionEl.getBoundingClientRect();
+    const oldRect2 = otherEl.getBoundingClientRect();
+
+    if (direction === -1) {
+      container.insertBefore(optionEl, otherEl);
+    } else {
+      container.insertBefore(optionEl, otherEl.nextSibling);
+    }
+
+    [order[pos], order[newPos]] = [order[newPos], order[pos]];
+
+    MarkerQuiz.updateSortableArrowStates(container);
+
+    const newRect1 = optionEl.getBoundingClientRect();
+    const newRect2 = otherEl.getBoundingClientRect();
+    const dy1 = oldRect1.top - newRect1.top;
+    const dy2 = oldRect2.top - newRect2.top;
+    const animOpts = { duration: 220, easing: 'cubic-bezier(0.2, 0, 0, 1)' };
+    if (typeof optionEl.animate === 'function') {
+      optionEl.animate(
+        [{ transform: `translateY(${dy1}px)` }, { transform: 'translateY(0)' }],
+        animOpts,
+      );
+      otherEl.animate(
+        [{ transform: `translateY(${dy2}px)` }, { transform: 'translateY(0)' }],
+        animOpts,
+      );
+    }
+
+    const sameDirSelector = direction === -1 ? '.sortable-arrow-up' : '.sortable-arrow-down';
+    const oppositeSelector = direction === -1 ? '.sortable-arrow-down' : '.sortable-arrow-up';
+    const sameBtn = optionEl.querySelector(sameDirSelector);
+    if (sameBtn && !sameBtn.disabled) {
+      sameBtn.focus();
+    } else {
+      optionEl.querySelector(oppositeSelector)?.focus();
+    }
 
     const options = this.getSortableOptionsForQuestion(question);
+    const movedLabel = (options[origIdx]?.text || '').replace(/<[^>]*>/g, '').trim();
+    const announcement = movedLabel
+      ? `${movedLabel} moved to position ${newPos + 1} of ${order.length}.`
+      : `Item moved to position ${newPos + 1} of ${order.length}.`;
+    this.announceSortableStatus(announcement);
 
-    const rankList = indices.map((i, rank) => `${rank + 1}. ${options[i].text}`).join(', ');
+    const rankList = order.map((i, rank) => `${rank + 1}. ${options[i].text}`).join(', ');
     this.logCurrentScores(`Q${qIdx + 1} reorder — ${rankList}`);
-
-    MarkerQuiz.fixDropZonePairing(container);
   }
 
-  static fixDropZonePairing(container) {
-    container.querySelectorAll('.sortable-drop-zone').forEach((dz) => dz.remove());
-    const opts = container.querySelectorAll('.option.sortable');
-    opts.forEach((opt) => {
-      const dz = document.createElement('div');
-      dz.className = 'sortable-drop-zone';
-      dz.dataset.dropZone = 'true';
-      container.insertBefore(dz, opt);
+  static updateSortableArrowStates(container) {
+    const opts = [...container.querySelectorAll('.option.sortable')];
+    const last = opts.length - 1;
+    opts.forEach((el, idx) => {
+      const upBtn = el.querySelector('.sortable-arrow-up');
+      const downBtn = el.querySelector('.sortable-arrow-down');
+      if (upBtn) upBtn.disabled = idx === 0;
+      if (downBtn) downBtn.disabled = idx === last;
     });
-    const trailing = document.createElement('div');
-    trailing.className = 'sortable-drop-zone';
-    trailing.dataset.dropZone = 'true';
-    container.appendChild(trailing);
+  }
+
+  announceSortableStatus(message) {
+    const status = this.block.querySelector('.sortable-status');
+    if (!status) return;
+    status.textContent = '';
+    requestAnimationFrame(() => {
+      status.textContent = message;
+    });
   }
 
   selectOption(stepIndex, optionIndex) {

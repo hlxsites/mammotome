@@ -558,26 +558,25 @@ body.marker-app-hide-chrome-footer .footer {
 
 .progress-bar {
   width: 100%;
-  display: flex;
-  gap: 8px;
-}
-
-.progress-segment {
-  flex: 1;
   height: 8px;
   background: var(--mt-global-color-gallery);
   border-radius: 4px;
-  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
-.progress-segment.completed {
+.progress-bar-fill {
+  height: 100%;
+  width: 0;
   background: var(--mt-global-color-accent-primary);
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: width;
 }
 
-.progress-segment.active {
-  background: var(--mt-global-color-accent-primary);
-  box-shadow: 0 0 8px
-    color-mix(in srgb, var(--mt-global-color-accent-primary) 60%, transparent);
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar-fill {
+    transition: none;
+  }
 }
 
 .question-text {
@@ -969,77 +968,103 @@ body.marker-app-hide-chrome-footer .footer {
 
 .option.sortable {
   flex-direction: row;
-  cursor: grab;
-  touch-action: none;
+  align-items: center;
+  gap: 12px;
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-.option.sortable:active {
-  cursor: grabbing;
+.option.sortable:focus-within {
+  background: var(--mt-global-color-blue-light);
+  border-color: var(--mt-global-color-accent-primary);
 }
 
 .option.sortable .option-content {
   flex: 1;
+  min-width: 0;
 }
 
-.drag-handle {
-  color: var(--mt-global-color-accent-grey);
-  cursor: grab;
+.sortable-grip {
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  font-size: 25px;
+  justify-content: center;
+  color: var(--mt-global-color-accent-grey);
+  fill: currentcolor;
+  pointer-events: none;
   user-select: none;
 }
 
-.option.sortable:hover .drag-handle {
+.sortable-grip-icon {
+  display: block;
+}
+
+.sortable-arrows {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.sortable-arrow {
+  appearance: none;
+  background: var(--mt-global-color-white);
+  border: 2px solid var(--mt-global-color-accent-grey);
+  border-radius: 50%;
+  color: var(--mt-global-color-accent-grey);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  line-height: 1;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease;
+}
+
+.sortable-arrow:hover:not(:disabled) {
+  border-color: var(--mt-global-color-accent-primary);
   color: var(--mt-global-color-accent-primary);
 }
 
-.option.dragging {
-  opacity: 0.5;
-  box-shadow: 0 10px 30px
-    color-mix(in srgb, var(--mt-global-color-black) 20%, transparent);
-  z-index: 100;
-  transition: none;
-  will-change: transform;
-}
-
-.option.drag-over {
+.sortable-arrow:focus-visible {
+  outline: none;
   border-color: var(--mt-global-color-accent-primary);
-  background: var(--mt-global-color-blue-light);
-  box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--mt-global-color-accent-primary) 25%, transparent);
+  color: var(--mt-global-color-accent-primary);
+  box-shadow: 0 0 0 3px var(--mt-global-color-accent-primary);
 }
 
-.sortable-drop-zone {
-  flex: 0 0 16px;
-  min-height: 16px;
-  margin: 0;
-  transition:
-    flex 0.1s ease,
-    min-height 0.1s ease,
-    background 0.1s ease;
+.sortable-arrow:active:not(:disabled) {
+  transform: scale(0.92);
 }
 
-.sortable-drop-zone.drag-over {
-  flex: 0 0 48px;
-  min-height: 48px;
-  background: color-mix(
-    in srgb,
-    var(--mt-global-color-accent-primary) 15%,
-    transparent
-  );
-  border: 3px solid var(--mt-global-color-accent-primary);
-  border-radius: 8px;
-  box-shadow:
-    0 0 0 2px
-      color-mix(in srgb, var(--mt-global-color-accent-primary) 25%, transparent),
-    inset 0 0 12px
-      color-mix(in srgb, var(--mt-global-color-accent-primary) 10%, transparent);
+.sortable-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.sortable-arrow-icon {
+  display: block;
+}
+
+.sortable-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .sortable-option-images {
@@ -1217,11 +1242,6 @@ body.marker-app-hide-chrome-footer .footer {
   background: var(--mt-global-color-gallery);
   box-shadow: 0 5px 15px
     color-mix(in srgb, var(--mt-global-color-black) 10%, transparent);
-}
-
-.question-counter {
-  font-weight: 600;
-  color: var(--mt-global-color-dove-gray);
 }
 
 .lead-capture-form {
@@ -2145,20 +2165,14 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .survey-card .navigation {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     column-gap: 14px;
     row-gap: 12px;
     margin-top: 24px;
     flex-wrap: unset;
     margin: 0 33px;
-  }
-
-  .survey-card .navigation .question-counter {
-    justify-self: center;
-    text-align: center;
-    white-space: nowrap;
   }
 
   .survey-card .navigation .btn {
@@ -2427,11 +2441,11 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .survey-fullscreen .progress-bar {
-    gap: 12px;
+    height: 12px;
+    border-radius: 6px;
   }
 
-  .survey-fullscreen .progress-segment {
-    height: 12px;
+  .survey-fullscreen .progress-bar-fill {
     border-radius: 6px;
   }
 
@@ -2582,10 +2596,6 @@ body.marker-app-hide-chrome-footer .footer {
     padding: 18px 24px;
     font-size: 22px;
     border-radius: 14px;
-  }
-
-  .survey-card .question-counter {
-    font-size: 26px;
   }
 
   .survey-card .navigation .btn {
@@ -2821,10 +2831,6 @@ body.marker-app-hide-chrome-footer .footer {
     margin-bottom: 40px;
   }
 
-  .drag-handle {
-    font-size: 36px;
-  }
-
   .sortable-option-img {
     width: 72px;
     height: 72px;
@@ -2836,14 +2842,23 @@ body.marker-app-hide-chrome-footer .footer {
     margin-bottom: 12px;
   }
 
-  .sortable-drop-zone {
-    flex: 0 0 24px;
-    min-height: 24px;
+  .sortable-arrows {
+    gap: 14px;
   }
 
-  .sortable-drop-zone.drag-over {
-    flex: 0 0 64px;
-    min-height: 64px;
+  .sortable-arrow {
+    width: 56px;
+    height: 56px;
+  }
+
+  .sortable-arrow-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .sortable-grip-icon {
+    width: 12px;
+    height: 22px;
   }
 
   .product-footnotes {
@@ -3094,12 +3109,12 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar {
-    gap: 12px;
-  }
-
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-segment {
     border-radius: 6px;
     height: 12px;
+  }
+
+  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar-fill {
+    border-radius: 6px;
   }
 
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .question-text {
@@ -3212,10 +3227,6 @@ body.marker-app-hide-chrome-footer .footer {
     padding: 14px 19px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .question-counter {
-    font-size: 21px;
-  }
-
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation {
     align-items: center;
     column-gap: unset;
@@ -3226,12 +3237,6 @@ body.marker-app-hide-chrome-footer .footer {
     justify-content: space-between;
     margin-top: 40px;
     row-gap: unset;
-  }
-
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation .question-counter {
-    justify-self: unset;
-    text-align: center;
-    white-space: nowrap;
   }
 
   .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation .btn {
@@ -3354,10 +3359,6 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .progress-bar {
-    gap: 4px;
-  }
-
-  .progress-segment {
     height: 6px;
   }
 
@@ -3696,13 +3697,23 @@ body.marker-app-hide-chrome-footer .footer {
     padding: 0 13px;
   }
 
-  .drag-handle {
-    font-size: 13px;
+  .sortable-arrows {
+    gap: 6px;
   }
 
-  .question-counter {
-    font-size: 12px;
-    font-weight: 500;
+  .sortable-arrow {
+    width: 28px;
+    height: 28px;
+  }
+
+  .sortable-arrow-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  .sortable-grip-icon {
+    width: 6px;
+    height: 11px;
   }
 
   .top-recommendation-label {
