@@ -935,7 +935,7 @@ const RATING_SCALE = [
 const PERMANENT_VISIBILITY_RATING_SCALE = [
   { value: 1, label: 'Not Important' },
   { value: 2, label: '' },
-  { value: 3, label: 'Somewhat Important' },
+  { value: 3, label: '' },
   { value: 4, label: '' },
   { value: 5, label: 'Very Important' },
 ];
@@ -1335,9 +1335,14 @@ class MarkerQuiz {
     const startDescription = this.config['start-description'] ?? this.config.startDescription ?? this.config.description ?? DEFAULT_START_DESCRIPTION;
     const startButtonRaw = this.config['start-button'] ?? this.config.startButton ?? this.config.button ?? DEFAULT_START_BUTTON;
     const startButton = typeof startButtonRaw === 'string' ? startButtonRaw.trim() : String(startButtonRaw ?? '').trim();
+    const estimatedTimeRaw = this.config['estimated-time'] ?? this.config.estimatedtime ?? this.config.estimatedTime ?? '';
+    const estimatedTime = typeof estimatedTimeRaw === 'string' ? estimatedTimeRaw.trim() : String(estimatedTimeRaw ?? '').trim();
     const { subHeader } = this.config;
     const descSafe = allowTrademarkHtml(startDescription);
     const btnSafe = allowTrademarkHtml(startButton || DEFAULT_START_BUTTON);
+    const estimatedTimeHtml = estimatedTime
+      ? `<p class="start-screen-estimated-time">Estimated time: ${allowTrademarkHtml(estimatedTime)}</p>`
+      : '';
 
     const subHeaderImageHtml = subHeader?.image
       ? `<div class="start-sub-header-image"><img src="${escapeHtml(subHeader.image)}" alt="" /></div>`
@@ -1359,6 +1364,7 @@ class MarkerQuiz {
                 ${subHeaderTextHtml}
                 <p class="start-screen-description">${descSafe}</p>
                 <button type="button" class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
+                ${estimatedTimeHtml}
               </div>`;
 
     if (this.startScreenInline) {
@@ -1448,95 +1454,162 @@ class MarkerQuiz {
     return [
       {
         index: 0,
-        text: 'Which biopsy site markers do you currently use?',
-        type: 'grouped-multi',
+        text: "Which biopsy site markers do you currently use? Select all that apply.",
+        type: "grouped-multi",
         options: [
-          { text: 'BiomarC® (Barbell, Petite Barbell, Tribell)', group: 'Mammotome' },
-          { text: 'HydroMARK™ (Barrel, Butterfly, Open Coil)', group: 'Mammotome' },
-          { text: 'HydroMARK™ Plus (Dragonfly, Hummingbird)', group: 'Mammotome' },
-          { text: 'LumiMARK™ (Tulip, Lotus, Rose)', group: 'Mammotome' },
-          { text: 'MammoMARK® (Bowtie, Triple Twist, U-Shape)', group: 'Mammotome' },
-          { text: 'MammoSTAR®  (Barbell, Tribell)', group: 'Mammotome' },
-          { text: 'Hologic SecurMark® (Buckle, Infinity, Stoplight, Mini Cork, Top Hat)', group: 'Hologic' },
-          { text: 'Hologic TriMark® and CelerMark™ (Cork, Hourglass)', group: 'Hologic' },
-          { text: 'Hologic TuMark® (Q, X, Vision, Eye, U, Conic)', group: 'Hologic' },
-          { text: 'BD Gel Mark UltraCor™ or Ultra™ (S, Omega)', group: 'BD' },
-          { text: 'BD SenoMark™ (O, X, M, S, Omega)', group: 'BD' },
-          { text: 'BD SenoMark™ UltraCor™ MRI (M, X)', group: 'BD' },
-          { text: 'BD SenoMark™ Ultra (Ribbon, Coil)', group: 'BD' },
-          { text: 'BD UltraClip™ II or UltraClip™ Dual Trigger (Wing, Ribbon, Coil, Heart, Venus)', group: 'BD' },
-          { text: 'BD UltraCor™ Twirl™ (Curls, Clover, Ring)', group: 'BD' },
-          { text: 'BD UltraCor™ (Spring)', group: 'BD' },
-          { text: 'Other' },
+          {
+            text: "BiomarC® (Barbell, Petite Barbell, Tribell)",
+            group: "Mammotome",
+          },
+          {
+            text: "HydroMARK™ (Barrel, Butterfly, Open Coil)",
+            group: "Mammotome",
+          },
+          {
+            text: "HydroMARK™ Plus (Dragonfly, Hummingbird)",
+            group: "Mammotome",
+          },
+          { text: "LumiMARK™ (Tulip, Lotus, Rose)", group: "Mammotome" },
+          {
+            text: "MammoMARK® (Bowtie, Triple Twist, U-Shape)",
+            group: "Mammotome",
+          },
+          { text: "MammoSTAR®  (Barbell, Tribell)", group: "Mammotome" },
+          {
+            text: "Hologic SecurMark® (Buckle, Infinity, Stoplight, Mini Cork, Top Hat)",
+            group: "Hologic",
+          },
+          {
+            text: "Hologic TriMark® and CelerMark™ (Cork, Hourglass)",
+            group: "Hologic",
+          },
+          {
+            text: "Hologic TuMark® (Q, X, Vision, Eye, U, Conic)",
+            group: "Hologic",
+          },
+          { text: "BD Gel Mark UltraCor™ or Ultra™ (S, Omega)", group: "BD" },
+          { text: "BD SenoMark™ (O, X, M, S, Omega)", group: "BD" },
+          { text: "BD SenoMark™ UltraCor™ MRI (M, X)", group: "BD" },
+          { text: "BD SenoMark™ Ultra (Ribbon, Coil)", group: "BD" },
+          {
+            text: "BD UltraClip™ II or UltraClip™ Dual Trigger (Wing, Ribbon, Coil, Heart, Venus)",
+            group: "BD",
+          },
+          { text: "BD UltraCor™ Twirl™ (Curls, Clover, Ring)", group: "BD" },
+          { text: "BD UltraCor™ (Spring)", group: "BD" },
+          { text: "Other" },
         ],
         groups: [
-          { brand: 'Mammotome', items: [] },
-          { brand: 'Hologic', items: [] },
-          { brand: 'BD', items: [] },
+          { brand: "Mammotome", items: [] },
+          { brand: "Hologic", items: [] },
+          { brand: "BD", items: [] },
         ],
-        otherOption: { text: 'Other' },
-        otherTextInput: { value: '' },
+        otherOption: { text: "Other" },
+        otherTextInput: { value: "" },
         ungrouped: [],
       },
       {
         index: 1,
-        text: 'What modality would you like to explore first?',
-        type: 'single',
+        text: "What modality would you like to explore first?",
+        type: "single",
         options: [
-          { text: 'Ultrasound' },
-          { text: 'Stereotactic' },
-          { text: 'MRI' },
+          { text: "Ultrasound" },
+          { text: "Stereotactic" },
+          { text: "MRI" },
         ],
       },
       {
         index: 2,
-        text: 'Rank these features by importance to your practice (drag to reorder, 1 = most important):',
-        type: 'sortable',
+        text: "Rank these features by importance to your practice (click to reorder, 1 = most important):",
+        type: "sortable",
         options: SORTABLE_OPTIONS.map((o) => ({ ...o })),
         optionsMri: SORTABLE_OPTIONS_MRI.map((o) => ({ ...o })),
       },
+      // {
+      //   index: 3,
+      //   text: 'What specific patient case considerations impact your biopsy marker choice? Select all that apply.',
+      //   type: 'multi',
+      //   options: [
+      //     { text: 'I prefer a cost-effective marker for suspected benign lesions, institutional restrictions, contract limitations, etc.' },
+      //     { text: 'Dense breast tissue impacts my ability to visualize, so I prefer a larger clip or one with ultrasound enhancements.' },
+      //     { text: 'I prefer smaller markers for superficial lesions, or those in the axilla or near breast implants.' },
+      //     { text: 'I prefer to use a specific marker brand or shape for each biopsy modality, so I easily know how the biopsy was performed.' },
+      //   ],
+      // },
+
       {
         index: 3,
-        text: 'What specific patient case considerations impact your biopsy marker choice? Select all that apply.',
-        type: 'multi',
+        text: "What specific patient case considerations impact your biopsy marker choice? Select all that apply.",
+        type: "multi",
         options: [
-          { text: 'I prefer a cost-effective marker for suspected benign lesions, institutional restrictions, contract limitations, etc.' },
-          { text: 'Dense breast tissue impacts my ability to visualize, so I prefer a larger clip or one with ultrasound enhancements.' },
-          { text: 'I prefer smaller markers for superficial lesions, or those in the axilla or near breast implants.' },
-          { text: 'I prefer to use a specific marker brand or shape for each biopsy modality, so I easily know how the biopsy was performed.' },
+          {
+            text: "Bi-Rads Category",
+            description: "Categories 4A, 4B, 4C or 5",
+          },
+          {
+            text: "Breast Tissue Type",
+            description: "Dense Categories A through D",
+          },
+          {
+            text: "Lesion Location",
+            description: "Superficial or Sensitive Anatomical Areas",
+          },
+          {
+            text: "Biopsy Modality",
+            description: "Specific marker brand or shape",
+          },
         ],
       },
       {
         index: 4,
-        text: 'At follow-up imaging, what is your biggest concern about a previously placed marker?',
-        type: 'single',
+        text: "At follow-up imaging, what is your biggest concern about a previously placed marker?",
+        type: "single",
         options: [
-          { text: 'Marker migration away from biopsy site', capability: 'anti_migration' },
-          { text: 'Poor visibility or no longer visible', capability: 'long_term_us_visibility' },
-          { text: 'Inconsistent visibility across different imaging modalities', capability: 'cross_modal_visibility' },
-          { text: 'Unable to distinguish marker shape or identify which modality was used', capability: 'shape_distinction' },
-          { text: 'Artifact obscuring adjacent tissue on follow-up imaging', capability: 'low_artifact', modalityGated: true },
-          { text: 'Marker displaced from site during surgical excision (OR anti-displacement)', capability: 'or_anti_displacement' },
+          {
+            text: "Marker migration away from biopsy site",
+            capability: "anti_migration",
+          },
+          {
+            text: "Poor visibility or no longer visible",
+            capability: "long_term_us_visibility",
+          },
+          {
+            text: "Inconsistent visibility across different imaging modalities",
+            capability: "cross_modal_visibility",
+          },
+          {
+            text: "Unable to distinguish marker shape or identify which modality was used",
+            capability: "shape_distinction",
+          },
+          {
+            text: "Artifact obscuring adjacent tissue on follow-up imaging",
+            capability: "low_artifact",
+            modalityGated: true,
+          },
+          {
+            text: "Marker displaced from site during surgical excision (OR anti-displacement)",
+            capability: "or_anti_displacement",
+          },
         ],
       },
       {
         index: 5,
-        text: 'How often would you use a marker with hemostatic properties?',
-        type: 'single',
+        text: "How often would you use a marker with hemostatic properties?",
+        type: "single",
         options: [
-          { text: 'Often' },
-          { text: 'Occasionally' },
-          { text: 'Rarely' },
-          { text: 'Never' },
+          { text: "Often" },
+          { text: "Occasionally" },
+          { text: "Rarely" },
+          { text: "Never" },
         ],
       },
       {
         index: 6,
-        text: 'Which best describes your biopsy case mix?',
-        type: 'single',
+        text: "Which best describes your biopsy case mix?",
+        type: "single",
         options: [
           {
-            text: 'Diagnostic-Focused',
+            text: "Diagnostic-Focused",
             capWeights: {
               long_term_us_visibility: 1,
               anti_migration: 1,
@@ -1555,7 +1628,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: 'Pre-Surgical',
+            text: "Pre-Surgical",
             capWeights: {
               long_term_us_visibility: 3,
               anti_migration: 2,
@@ -1574,7 +1647,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: 'Oncology-Integrated',
+            text: "Oncology-Integrated",
             capWeights: {
               long_term_us_visibility: 3,
               anti_migration: 2,
@@ -1593,7 +1666,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: 'High-Risk',
+            text: "High-Risk",
             capWeights: {
               long_term_us_visibility: 3,
               anti_migration: 1,
@@ -1612,7 +1685,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: 'Community Center: Broad Patient Mix',
+            text: "Community Center: Broad Patient Mix",
             capWeights: {
               long_term_us_visibility: 2,
               anti_migration: 1,
@@ -1631,7 +1704,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: 'Academic / Teaching Hospital',
+            text: "Academic / Teaching Hospital",
             capWeights: {
               long_term_us_visibility: 2,
               anti_migration: 1,
@@ -1653,8 +1726,8 @@ class MarkerQuiz {
       },
       {
         index: 7,
-        text: 'Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?',
-        type: 'rating-single',
+        text: "Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?",
+        type: "rating-single",
         ratingScale: PERMANENT_VISIBILITY_RATING_SCALE,
         /**
          * Omitted when MRI is selected (LumiMARK/BioMaRC vetoed; question has no scoring effect).
@@ -1663,13 +1736,14 @@ class MarkerQuiz {
       },
       {
         index: 8,
-        text: 'How frequently do your patients express the following preferences or needs? '
-          + 'Rate each on a scale of 1-5 (1 = Never, 5 = Very frequently)',
-        type: 'rating',
+        text:
+          "How frequently do your patients express the following preferences or needs? " +
+          "Rate each on a scale of 1-5 (1 = Never, 5 = Very frequently)",
+        type: "rating",
         items: RATING_ITEMS.map((item) => ({ ...item })),
       },
     ].map((q) => {
-      if (q.type === 'grouped-multi') {
+      if (q.type === "grouped-multi") {
         q.options.forEach((opt) => {
           if (/^other$/i.test(opt.text.trim()) || !opt.group) return;
           const g = q.groups.find((grp) => grp.brand === opt.group);
@@ -2149,6 +2223,7 @@ class MarkerQuiz {
     return { full: 15, partial: -20, incompatible: -9999 };
   }
 
+
   /**
        * Patient case scores by modality. modalityIndex: 0=Ultrasound, 1=Stereotactic, 2=MRI.
        * @param {number} optionIndex Case option index (0-4)
@@ -2160,14 +2235,18 @@ class MarkerQuiz {
       // Ultrasound
       [
         {
+          // cost
           hm: 2, hmplus: 0, mammomark: 4, mammostar: 3, lumimark: 5, biomarc: 5,
         },
+        // visibilty
         {
           hm: 5, hmplus: 5, mammomark: 2, mammostar: 4, lumimark: 2, biomarc: 1,
         },
+        // smaller markers
         {
           hm: 5, hmplus: 4, mammomark: 4, mammostar: 3, lumimark: 0, biomarc: 3,
         },
+        // biopsy modality
         {
           hm: 5, hmplus: 1, mammomark: 4, mammostar: 2, lumimark: 1, biomarc: 2,
         },
@@ -2889,10 +2968,14 @@ class MarkerQuiz {
         const optionsHtml = question.options.map((opt, i) => {
           const selected = this.isOptionSelected(qIdx, i);
           const indicator = isMulti ? 'checkbox' : 'radio';
-          return `<div class="option${selected ? ' selected' : ''}" data-option-index="${i}">
+          const hasDescription = Boolean(opt.description);
+          const textHtml = hasDescription
+            ? `<span class="option-title">${allowTrademarkHtml(opt.text)}</span><span class="option-description">${allowTrademarkHtml(opt.description)}</span>`
+            : allowTrademarkHtml(opt.text);
+          return `<div class="option${selected ? ' selected' : ''}${hasDescription ? ' option-has-description' : ''}" data-option-index="${i}">
                 <div class="option-content">
                   <span class="${indicator}${selected ? ' checked' : ''}"></span>
-                  <span class="option-text">${allowTrademarkHtml(opt.text)}</span>
+                  <span class="option-text">${textHtml}</span>
                 </div>
               </div>`;
         }).join('');

@@ -171,6 +171,15 @@
   white-space: normal;
 }
 
+.start-screen-estimated-time {
+  margin: 16px 0 0;
+  font-size: 0.875rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--mt-global-color-base-mmt-gray);
+  text-align: center;
+}
+
 .start-sub-header-image {
   text-align: center;
   margin: 20px 0;
@@ -688,6 +697,29 @@ body.marker-app-hide-chrome-footer .footer {
 .option-text {
   flex: 1;
   text-align: left;
+}
+
+.option.option-has-description .option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-title {
+  font-weight: 700;
+  color: var(--mt-global-color-accent-primary);
+}
+
+.option-description {
+  font-size: 0.85em;
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--mt-global-color-base-mmt-gray);
+}
+
+.option.selected .option-title,
+.option.selected .option-description {
+  color: var(--mt-global-color-white);
 }
 
 .checkbox,
