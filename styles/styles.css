@@ -1208,3 +1208,7 @@ main .section.our-history .year.highlight .icon-calendar {
 .section.nopadding {
   padding: 0;
 }
+
+.section.video-container.video-margin {
+  margin-top: -20px;
+}
