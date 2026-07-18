@@ -3,6 +3,9 @@
 
 .product-survey-container {
   line-height: 1.2;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .survey-fullscreen.survey-fullscreen-welcome {
@@ -24,6 +27,13 @@
   font-weight: 700;
   text-align: center;
   font-size: 1.75rem;
+}
+
+.start-screen-dislaimer {
+  font-size: 10px;
+  line-height: 1.2;
+  padding: 30px;
+  color: var(--mt-global-color-base-mmt-gray);
 }
 
 .start-screen .start-screen-title-heading .start-screen-title-line {
@@ -189,12 +199,6 @@
   max-width: 55%;
   height: auto;
   margin: 15px;
-}
-
-.product-survey-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
 }
 
 .survey-fullscreen {
@@ -647,8 +651,7 @@ body.marker-app-hide-chrome-footer .footer {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin-bottom: 30px;
-  margin: 0 auto;
+  margin: 0 auto 30px;
   padding: 0 3%;
 }
 
@@ -1567,6 +1570,17 @@ body.marker-app-hide-chrome-footer .footer {
   padding-left: 0.25em;
 }
 
+.product-footnotes .footnote-asterisk {
+  margin: 10px 0 0;
+  padding-left: 1.5em;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.product-footnotes .footnote-asterisk em {
+  font-style: italic;
+}
+
 .results-card .product-footnotes {
   margin-top: 24px;
   padding-top: 20px;
@@ -1960,14 +1974,118 @@ body.marker-app-hide-chrome-footer .footer {
 
 .alternatives-grid .product-card .card-reason {
   display: block;
-  font-size: 16px;
+  font-size: 10px;
   padding: 0 20px 16px;
   margin: 0;
-  text-align: center;
+  text-align: left;
+  color: var(--mt-global-color-dove-gray);
+  line-height: 1.2em;
 }
 
 .alternatives-grid .product-card .btn {
   display: none;
+}
+
+.social-share-section {
+  margin: 40px 0 30px;
+  text-align: center;
+}
+
+.social-share-section h3 {
+  color: var(--mt-global-color-base-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.social-share-prompt {
+  margin: 0 0 20px;
+  font-size: 1rem;
+  color: var(--mt-global-color-charcoal, #333);
+}
+
+.social-share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+
+.social-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-decoration: none;
+  line-height: 0;
+  transition: none;
+}
+
+.social-share-btn:hover,
+.social-share-btn:focus,
+.social-share-btn:active {
+  background: none;
+  box-shadow: none;
+  transform: none;
+  text-decoration: none;
+  opacity: 1;
+}
+
+.social-share-btn svg {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.social-share-linkedin,
+.social-share-linkedin:hover,
+.social-share-linkedin:focus {
+  color: #0a66c2;
+}
+
+.social-share-facebook,
+.social-share-facebook:hover,
+.social-share-facebook:focus {
+  color: #1877f2;
+}
+
+.social-share-x,
+.social-share-x:hover,
+.social-share-x:focus {
+  color: #000;
+}
+
+.social-share-toast {
+  position: sticky;
+  bottom: 24px;
+  z-index: 30;
+  max-width: 36rem;
+  margin: 16px auto 0;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--mt-global-color-base-primary, #84329b);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mt-global-color-black, #000) 18%, transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.social-share-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .results-card .contact-section {
@@ -2122,12 +2240,12 @@ body.marker-app-hide-chrome-footer .footer {
     z-index: -1;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro) {
     justify-content: center;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::before,
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro)::after {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro)::before,
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro)::after {
     flex: 0 0 auto;
     min-height: 0;
   }
@@ -2202,9 +2320,8 @@ body.marker-app-hide-chrome-footer .footer {
     align-items: center;
     column-gap: 14px;
     row-gap: 12px;
-    margin-top: 24px;
+    margin: 24px 33px 0;
     flex-wrap: unset;
-    margin: 0 33px;
   }
 
   .survey-card .navigation .btn {
@@ -2368,7 +2485,6 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .alternatives-grid .product-card .card-reason {
-    font-size: 15px;
     padding: 0 16px 14px;
   }
 
@@ -2403,6 +2519,12 @@ body.marker-app-hide-chrome-footer .footer {
 @media (min-width: 1080px) and (min-height: 1350px) and (max-width: 1536px) {
   .survey-fullscreen {
     height: 100vh;
+    justify-content: flex-start;
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow-x: hidden;
   }
 
   .start-screen .start-screen-title-heading .start-screen-title-line {
@@ -2425,16 +2547,7 @@ body.marker-app-hide-chrome-footer .footer {
     width: 100%;
   }
 
-  .survey-fullscreen {
-    justify-content: flex-start;
-    background-attachment: fixed;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow-x: hidden;
-  }
-
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) .survey-card {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro) .survey-card {
     margin-top: 75px;
     margin-bottom: 24px;
   }
@@ -2628,10 +2741,6 @@ body.marker-app-hide-chrome-footer .footer {
     padding: 18px 24px;
     font-size: 22px;
     border-radius: 14px;
-  }
-
-  .survey-card .navigation .btn {
-    font-size: 1rem;
   }
 
   .survey-card .navigation {
@@ -2835,7 +2944,6 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .alternatives-grid .product-card .card-reason {
-    font-size: 1.5rem;
     padding: 0 30px 24px;
   }
 
@@ -3052,7 +3160,6 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .survey-fullscreen:has(.results-card) .alternatives-grid .product-card .card-reason {
-    font-size: 15px;
     padding: 0 16px 14px;
   }
 
@@ -3089,11 +3196,11 @@ body.marker-app-hide-chrome-footer .footer {
 }
 
 @media (min-width: 860px) and (max-width: 868px) and (min-height: 1350px) {
-  .survey-fullscreen:has(.results-card):not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) {
+  .survey-fullscreen:has(.results-card):not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro) {
     justify-content: flex-start;
   }
 
-  .survey-fullscreen:has(.results-card):not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro) .survey-card {
+  .survey-fullscreen:has(.results-card):not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro) .survey-card {
     margin-bottom: 24px;
     margin-top: max(16px, env(safe-area-inset-top, 0));
   }
@@ -3103,7 +3210,7 @@ body.marker-app-hide-chrome-footer .footer {
     top: max(88px, 22%);
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) {
     background-attachment: fixed;
     background-position: center center;
     background-repeat: no-repeat;
@@ -3113,153 +3220,153 @@ body.marker-app-hide-chrome-footer .footer {
     overflow-x: hidden;
   }
 
-  .product-survey-container.survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) {
+  .product-survey-container.survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) {
     box-sizing: border-box;
     max-width: none;
     padding: 28px;
     width: 100%;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar-container,
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .progress-bar-container,
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card {
     box-sizing: border-box;
     max-width: min(1480px, 100%);
     min-width: 0;
     width: 100%;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card {
     border-radius: 28px;
     margin-bottom: 60px;
     margin-top: 30px;
     padding: 40px 48px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar-container {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .progress-bar-container {
     border-radius: 28px;
     padding: 24px 48px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .progress-bar {
     border-radius: 6px;
     height: 12px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .progress-bar-fill {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .progress-bar-fill {
     border-radius: 6px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .question-text {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .question-text {
     font-size: 1.75rem;
     font-weight: 500;
     margin-bottom: 24px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .options-container {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .options-container {
     margin-bottom: 50px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .option {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .option {
     border-radius: 24px;
     font-size: 24px;
     padding: 16px 20px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .option-content {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .option-content {
     gap: 22px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .checkbox,
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .radio {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .checkbox,
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .radio {
     height: 29px;
     width: 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .checkbox.checked::after {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .checkbox.checked::after {
     font-size: 18px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .radio.checked::after {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .radio.checked::after {
     height: 13px;
     width: 13px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .question-container .grouped-checkboxes-container {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .question-container .grouped-checkboxes-container {
     max-width: 1100px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-header {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-header {
     padding: 22px 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-header span {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-header span {
     font-size: 1.4rem;
     font-weight: 300;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-header .header-right {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-header .header-right {
     gap: 13px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-chevron {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-chevron {
     width: 29px;
     height: 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group.open .checkbox-group-body {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group.open .checkbox-group-body {
     max-height: 900px;
     padding: 11px 29px 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-body {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-body {
     padding: 0 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row {
     border-radius: 13px;
     margin-bottom: 13px;
     padding: 19px 22px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row .option-text {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row .option-text {
     font-size: 16px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row.standalone {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row.standalone {
     border-radius: 14px;
     margin-bottom: 14px;
     padding: 22px 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row .checkbox,
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-other .checkbox {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .grouped-checkbox-row .checkbox,
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-other .checkbox {
     margin-right: 18px;
     width: 18px;
     height: 18px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-other {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-other {
     border-radius: 14px;
     margin-bottom: 14px;
     padding: 22px 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .checkbox-group-other .other-check-row .option-text {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .checkbox-group-other .other-check-row .option-text {
     font-size: 1.4rem;
     font-weight: 300;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .other-text-field {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .other-text-field {
     margin-top: 29px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .grouped-checkboxes-container .other-text-input {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .grouped-checkboxes-container .other-text-input {
     border-radius: 11px;
     font-size: 18px;
     padding: 14px 19px;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .navigation {
     align-items: center;
     column-gap: unset;
     display: flex;
@@ -3271,7 +3378,7 @@ body.marker-app-hide-chrome-footer .footer {
     row-gap: unset;
   }
 
-  .survey-fullscreen:not(.survey-fullscreen-welcome):not(.survey-fullscreen-video-intro):not(:has(.results-card)) .survey-card .navigation .btn {
+  .survey-fullscreen:not(.survey-fullscreen-welcome, .survey-fullscreen-video-intro, :has(.results-card)) .survey-card .navigation .btn {
     font-size: 24px;
     font-weight: 400;
     padding: 19px 27px;
@@ -3285,7 +3392,7 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .start-sub-header h2 {
-    margin-top: 34px;
+    margin-top: 40px;
     color: var(--mt-global-color-base-mmt-gray);
     font-weight: 400;
     font-size: 1rem;
@@ -3295,11 +3402,14 @@ body.marker-app-hide-chrome-footer .footer {
   .start-screen-title-block img {
     max-height: 20px;
     width: 82%;
+    margin-top: 20px;
+    padding: 0 20px;
   }
 
   .alternatives-grid {
     flex-direction: column;
     align-items: center;
+    padding: 20px;
   }
 
   .alternatives-grid .product-card {
@@ -3309,7 +3419,6 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .alternatives-grid .product-card .card-reason {
-    font-size: 13px;
     padding: 0 12px 12px;
   }
 
@@ -3352,6 +3461,7 @@ body.marker-app-hide-chrome-footer .footer {
   .navigation {
     flex-direction: column;
     gap: 15px;
+    margin-top: 0;
   }
 
   .options-container .option {
@@ -3364,7 +3474,7 @@ body.marker-app-hide-chrome-footer .footer {
   .question-container {
     max-width: 100%;
     width: 100%;
-    gap: 0px;
+    gap: 0;
   }
 
   .options-container.layout-vertical .option {
@@ -3372,7 +3482,8 @@ body.marker-app-hide-chrome-footer .footer {
   }
 
   .question-container.has-image {
-    gap: 0px;
+    gap: 0;
+    flex-direction: column;
   }
 
   .product-featured-photo img,
@@ -3392,10 +3503,6 @@ body.marker-app-hide-chrome-footer .footer {
 
   .progress-bar {
     height: 6px;
-  }
-
-  .question-container.has-image {
-    flex-direction: column;
   }
 
   .question-image {
@@ -3465,10 +3572,6 @@ body.marker-app-hide-chrome-footer .footer {
     width: calc(100% + 32px);
   }
 
-  .alternatives-grid {
-    padding: 20px;
-  }
-
   .btn {
     font-size: 14px;
     width: 44%;
@@ -3489,10 +3592,6 @@ body.marker-app-hide-chrome-footer .footer {
     margin: 0 auto;
     display: block;
     margin-bottom: 15px;
-  }
-
-  .navigation {
-    margin-top: 0px;
   }
 
   .option-text {
@@ -3518,16 +3617,6 @@ body.marker-app-hide-chrome-footer .footer {
 
   .start-screen-page-heading-logo {
     width: 55%;
-  }
-
-  .start-screen-title-block img {
-    margin-top: 20px;
-    padding: 0 20px;
-  }
-
-  .start-sub-header h2 {
-    font-size: 1rem;
-    margin-top: 40px;
   }
 
   .start-sub-header-image img {
@@ -3632,7 +3721,6 @@ body.marker-app-hide-chrome-footer .footer {
     background-color: transparent;
     border: none;
     box-shadow: none;
-    -webkit-appearance: none;
     cursor: pointer;
     display: block;
     height: 32px;
@@ -3656,7 +3744,6 @@ body.marker-app-hide-chrome-footer .footer {
 
   .rating-range-input::-webkit-slider-thumb {
     appearance: none;
-    -webkit-appearance: none;
     background: var(--rating-range-fill, var(--mt-global-color-accent-primary));
     border: 1px solid var(--mt-global-color-white);
     border-radius: 50%;
@@ -3703,6 +3790,7 @@ body.marker-app-hide-chrome-footer .footer {
   .survey-card {
     width: 100%;
   }
+
   .start-screen-page-heading {
     padding-top: 24px;
   }

@@ -76,7 +76,7 @@
 }
 
 .email-results-form-wrapper .mktoForm hr {
-  border: solid 1px #eeeeee;
+  border: solid 1px #eee;
   padding: 0 !important;
 }
 
@@ -181,7 +181,6 @@
 }
 
 .email-results-form-wrapper .mktoForm fieldset .mktoFieldWrap {
-  flex-direction: row !important;
   justify-content: flex-end !important;
   flex-direction: row-reverse !important;
   align-items: center;
@@ -285,6 +284,7 @@
 }
 
 /* ---- Contact sales multistep (scoped; multistep-form.js relies on row visibility rules) ---- */
+
 /*
  * Field + shell styling aligned with .email-results-form-wrapper (marker-app only).
  * Selectors use main / .survey-fullscreen so cascade wins over blocks/multistep-form/multistep-form.css.
@@ -495,7 +495,7 @@ main .contact-sales-form-wrapper.multistep-form .mktoForm textarea.mktoField,
 }
 
 /* Do not target radios/checkboxes: same .mktoField class wins cascade and breaks Yes/No alignment */
-.contact-sales-form-wrapper.multistep-form .mktoForm .mktoField:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoField:not([type="radio"], [type="checkbox"], [type="hidden"]) {
   margin: var(--form-input-margin);
   font-size: var(--form-input-font-size);
   font-family: var(--mt-form-font-family);

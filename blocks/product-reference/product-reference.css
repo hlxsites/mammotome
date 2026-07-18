@@ -37,7 +37,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 6%);
   margin: 0 auto 36px;
 }
 
@@ -111,18 +111,18 @@ html {
 
 .product-ref-actions button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
 }
 
 .product-ref-actions button.primary {
   background: linear-gradient(135deg, #5f8dda 0%, #84329b 100%);
   color: #fff;
   border: none;
-  box-shadow: 0 4px 12px rgba(95, 141, 218, 0.35);
+  box-shadow: 0 4px 12px rgb(95 141 218 / 35%);
 }
 
 .product-ref-actions button.primary:hover {
-  box-shadow: 0 6px 20px rgba(95, 141, 218, 0.5);
+  box-shadow: 0 6px 20px rgb(95 141 218 / 50%);
 }
 
 /* Preview bar */

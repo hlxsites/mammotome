@@ -56,6 +56,44 @@ const getVideoThumbnailUrl = (product) => {
 
 const isVimeoVideo = (url) => url && typeof url === 'string' && VIMEO_REGEX.test(url.trim());
 
+/** Shown under MammoMARK when hemostatic Often/Occasionally forces it into 3rd place. */
+const HEMOSTATIC_MAMMOMARK_NOTE = 'You indicated that you would occasionally or often use a marker with hemostatic-related characteristics. This recommendation includes a collagen-containing marker, as published studies have described collagen as having hemostatic properties.*';
+/** APA 7th citation for the hemostatic collagen note (trusted HTML). */
+const HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML = '* Rosen, E. L., Baker, J. A., &amp; Soo, M. S. (2003). Accuracy of a collagen-plug biopsy site marking device deployed after stereotactic core needle breast biopsy. <em>AJR. American Journal of Roentgenology, 181</em>(5), 1295–1299.';
+/** Shown under MammoStar/BioMarc when natural preference 3+ forces one into 3rd place. */
+const NATURAL_PREFERENCE_NOTE = 'You indicated that your patients sometimes, often, or very frequently express a preference for natural marker options. This recommendation includes a marker that incorporates a collagen carrier rather than a metal-only marker design.';
+
+function isMammomarkProduct(prod) {
+  if (!prod) return false;
+  const id = String(prod.id || '').toLowerCase();
+  const name = String(prod.shortName || prod.name || '').toLowerCase();
+  return id.includes('mammomark') || id.includes('cormark')
+    || name.includes('mammomark') || name.includes('cormark');
+}
+
+function isNaturalBonusProduct(prod) {
+  if (!prod) return false;
+  const id = String(prod.id || '').toLowerCase();
+  const name = String(prod.shortName || prod.name || '').toLowerCase();
+  return id.includes('mammostar') || id.includes('biomarc')
+    || name.includes('mammostar') || name.includes('mammo star')
+    || name.includes('biomarc') || name.includes('biomar');
+}
+
+function sheetFlagTruthy(obj, keys) {
+  if (!obj) return false;
+  return keys.some((key) => {
+    if (!(key in obj)) return false;
+    const v = obj[key];
+    if (v === true || v === 1) return true;
+    if (typeof v === 'string') {
+      const s = v.trim().toLowerCase();
+      return s === 'true' || s === '1' || s === 'yes';
+    }
+    return false;
+  });
+}
+
 const vimeoThumbnailCache = new Map();
 
 async function fetchVimeoThumbnail(videoUrl) {
@@ -219,7 +257,50 @@ export default async function decorate(block) {
       return;
     }
 
-    const alternativeEntries = [secondProduct, thirdProduct].filter(Boolean);
+    const bleedingFrequency = firstSheetString(sheet, [
+      'bleeding_concern',
+      'bleedingConcern',
+      'q5_bleeding_frequency_text',
+      'q5BleedingFrequencyText',
+    ]).trim().toLowerCase();
+    const bleedingIsOftenOrOccasionally = bleedingFrequency === 'often'
+      || bleedingFrequency === 'occasionally';
+    const showHemostaticMammomarkNote = isMammomarkProduct(thirdProduct)
+      && !isMammomarkProduct(topProduct)
+      && !isMammomarkProduct(secondProduct)
+      && (
+        sheetFlagTruthy(sheet, [
+          'hemostaticMammomarkNote',
+          'hemostatic_mammomark_note',
+          'Hemostatic_Mammomark_Note',
+        ])
+        || bleedingIsOftenOrOccasionally
+      );
+
+    const naturalRatingRaw = firstSheetString(sheet, [
+      'natural_rating',
+      'naturalRating',
+      'q7_natural_rating',
+      'q7NaturalRating',
+    ]);
+    const naturalRating = Number(naturalRatingRaw) || 0;
+    const showNaturalPreferenceNote = isNaturalBonusProduct(thirdProduct)
+      && !isNaturalBonusProduct(topProduct)
+      && !isNaturalBonusProduct(secondProduct)
+      && (
+        sheetFlagTruthy(sheet, [
+          'naturalPreferenceNote',
+          'natural_preference_note',
+          'Natural_Preference_Note',
+        ])
+        || naturalRating >= 3
+      );
+
+    const alternativeEntries = [secondProduct, thirdProduct].filter(Boolean).map((prod) => ({
+      ...prod,
+      hemostaticForced: showHemostaticMammomarkNote && isMammomarkProduct(prod),
+      naturalForced: showNaturalPreferenceNote && isNaturalBonusProduct(prod),
+    }));
 
     const hasProductVideo = Boolean(topProduct.video);
 
@@ -291,6 +372,8 @@ export default async function decorate(block) {
                         <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
                       </div>
                       <h4>${allowTrademarkHtml(prod.name)}</h4>
+                      ${prod.hemostaticForced ? `<p class="card-reason">${escapeHtml(HEMOSTATIC_MAMMOMARK_NOTE)}</p>` : ''}
+                      ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(NATURAL_PREFERENCE_NOTE)}</p>` : ''}
                     </div>
                   `).join('')}
                 </div>
@@ -306,11 +389,16 @@ export default async function decorate(block) {
                 </div>
               </div>
 
-              ${(topProduct.footnotes || []).length ? `
+              ${((topProduct.footnotes || []).length || showHemostaticMammomarkNote) ? `
               <div class="product-footnotes">
+                ${(topProduct.footnotes || []).length ? `
                 <ol class="footnotes-list">
                   ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
                 </ol>
+                ` : ''}
+                ${showHemostaticMammomarkNote ? `
+                <p class="footnote footnote-asterisk">${HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML}</p>
+                ` : ''}
               </div>
               ` : ''}
             </div>

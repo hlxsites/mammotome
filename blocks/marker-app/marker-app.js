@@ -133,6 +133,8 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
       secondProductName: payload.second_product_name || '',
       thirdProductId: payload.third_product_id || '',
       thirdProductName: payload.third_product_name || '',
+      hemostaticMammomarkNote: Boolean(payload.hemostatic_mammomark_note),
+      naturalPreferenceNote: Boolean(payload.natural_preference_note),
 
       email: userInfo.email || '',
       userAgent: sanitizeUserAgent(navigator.userAgent),
@@ -162,6 +164,7 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
       // server returned an error – no action needed
     }
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.warn('[Marker Quiz] sendToSheet error:', err);
   } finally {
     clearTimeout(timeoutId);
@@ -472,7 +475,6 @@ let contactSalesOverlayEscapeHandler = null;
 const openContactSalesMarketoOverlay = async ({
   contactSalesFormId,
   extendHiddenFields,
-  getSheetPayload,
   contactSectionEl,
   contactButtonsEl,
   overlayHost,
@@ -546,7 +548,7 @@ const openContactSalesMarketoOverlay = async ({
   const hooks = {
     clearContainer: true,
     extendHiddenFields,
-    onSuccess: (values) => {
+    onSuccess: () => {
       const m = document.querySelector(`#${CONTACT_SALES_MARKETO_OVERLAY_ID} #contact-sales-form-mount`);
       if (m) {
         m.innerHTML = CONTACT_SALES_THANK_YOU_HTML;
@@ -687,9 +689,10 @@ const getMarkerRecommendationsSourceFromBlock = (block, config = {}) => {
       const link = c.querySelector('a[href]');
       return String(link?.href || c.textContent || '').trim();
     }).filter(Boolean);
-    if (!cellValues.length) continue;
-    const jsonCell = cellValues.find((v) => /\.json(?:\?|#|$)/i.test(v));
-    if (jsonCell) return jsonCell;
+    if (cellValues.length) {
+      const jsonCell = cellValues.find((v) => /\.json(?:\?|#|$)/i.test(v));
+      if (jsonCell) return jsonCell;
+    }
   }
   return '';
 };
@@ -923,6 +926,139 @@ const NICKEL_BONUS_KEYS = ['mammostar', 'biomarc', 'mammomark', 'hm', 'hmplus'];
 /** Bonus markers for permanent visibility preference: lumimark, biomarc only */
 const PERMANENT_VISIBILITY_BONUS_KEYS = ['lumimark', 'biomarc'];
 
+/** Shown under MammoMARK when hemostatic Often/Occasionally forces it into 3rd place. */
+const HEMOSTATIC_MAMMOMARK_NOTE = 'You indicated that you would occasionally or often use a marker with hemostatic-related characteristics. This recommendation includes a collagen-containing marker, as published studies have described collagen as having hemostatic properties.*';
+/** APA 7th citation for the hemostatic collagen note (trusted HTML). */
+const HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML = '* Rosen, E. L., Baker, J. A., &amp; Soo, M. S. (2003). Accuracy of a collagen-plug biopsy site marking device deployed after stereotactic core needle breast biopsy. <em>AJR. American Journal of Roentgenology, 181</em>(5), 1295–1299.';
+/** Shown under MammoStar/BioMarc when natural preference 3+ forces one into 3rd place. */
+const NATURAL_PREFERENCE_NOTE = 'You indicated that your patients sometimes, often, or very frequently express a preference for natural marker options. This recommendation includes a marker that incorporates a collagen carrier rather than a metal-only marker design.';
+
+/** Prefill copy for LinkedIn / Facebook / X share buttons on results. */
+const MARKER_MATCH_SHARE_TEXT = [
+  'I found my #MarkerMatch with the Mammotome Meet Your Match Quiz!',
+  '',
+  'Which Mammotome marker is your match?',
+  '',
+  'Take the quiz to discover the marker that aligns with your patient and clinical needs, then share your results.',
+  '',
+  '#MarkerMatch #MammotomeMarkers #BreastBiopsy',
+].join('\n');
+
+const SOCIAL_SHARE_ICON_LINKEDIN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1-.004-4.125 2.062 2.062 0 0 1 .004 4.125zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+const SOCIAL_SHARE_ICON_FACEBOOK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
+const SOCIAL_SHARE_ICON_X = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>';
+
+/** Clean quiz URL for social share (no results tokens / preview params). */
+function getMarkerMatchShareUrl() {
+  if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  ['token', 'tokenCreatedAt', 'uuid', 'preview', 'debug'].forEach((key) => {
+    url.searchParams.delete(key);
+  });
+  url.hash = '';
+  return `${url.origin}${url.pathname}${url.search}`;
+}
+
+function getMarkerMatchShareBody(shareUrl = getMarkerMatchShareUrl(), text = MARKER_MATCH_SHARE_TEXT) {
+  return `${text}\n\n${shareUrl}`;
+}
+
+/** LinkedIn feed composer with prefilled text (? # & safely encoded). */
+function buildLinkedInShareUrl(shareBody = getMarkerMatchShareBody()) {
+  return `https://www.linkedin.com/feed/?shareActive=true&mini=true&text=${encodeURIComponent(shareBody)}`;
+}
+
+function buildSocialShareUrls(shareUrl = getMarkerMatchShareUrl(), text = MARKER_MATCH_SHARE_TEXT) {
+  const encodedUrl = encodeURIComponent(shareUrl);
+  const encodedText = encodeURIComponent(text);
+  return {
+    linkedin: buildLinkedInShareUrl(getMarkerMatchShareBody(shareUrl, text)),
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`,
+    x: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+  };
+}
+
+function showSocialShareToast(message, host) {
+  const root = host || document.body;
+  root.querySelectorAll('.social-share-toast').forEach((el) => el.remove());
+  const toast = document.createElement('div');
+  toast.className = 'social-share-toast';
+  toast.setAttribute('role', 'status');
+  toast.textContent = message;
+  root.appendChild(toast);
+  window.setTimeout(() => toast.classList.add('is-visible'), 10);
+  window.setTimeout(() => {
+    toast.classList.remove('is-visible');
+    window.setTimeout(() => toast.remove(), 300);
+  }, 4500);
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try {
+    ok = document.execCommand('copy');
+  } catch {
+    ok = false;
+  }
+  ta.remove();
+  return ok;
+}
+
+/**
+ * LinkedIn: open composer with encoded prefill + copy full text as paste backup.
+ * Facebook / X use native share intents from href.
+ */
+function bindSocialShareButtons(container) {
+  if (!container) return;
+  const section = container.querySelector('.social-share-section');
+  if (!section) return;
+
+  section.querySelector('.social-share-linkedin')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const body = getMarkerMatchShareBody();
+    const linkedinUrl = buildLinkedInShareUrl(body);
+    const copied = await copyTextToClipboard(body).catch(() => false);
+    window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+    if (copied) {
+      showSocialShareToast(
+        'If the LinkedIn post looks incomplete, paste with Ctrl+V (⌘V on Mac).',
+        container.querySelector('.results-card') || container,
+      );
+    }
+  });
+}
+
+function buildSocialShareSectionHtml() {
+  const urls = buildSocialShareUrls();
+  return `
+              <div class="social-share-section">
+                <h3>Share Your #MarkerMatch</h3>
+                <p class="social-share-prompt">Share your results on LinkedIn, Facebook, or X</p>
+                <div class="social-share-buttons">
+                  <a class="social-share-btn social-share-linkedin" href="${escapeHtml(urls.linkedin)}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
+                    ${SOCIAL_SHARE_ICON_LINKEDIN}
+                  </a>
+                  <a class="social-share-btn social-share-facebook" href="${escapeHtml(urls.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
+                    ${SOCIAL_SHARE_ICON_FACEBOOK}
+                  </a>
+                  <a class="social-share-btn social-share-x" href="${escapeHtml(urls.x)}" target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+                    ${SOCIAL_SHARE_ICON_X}
+                  </a>
+                </div>
+              </div>`;
+}
+
 const RATING_SCALE = [
   { value: 1, label: 'Never' },
   { value: 2, label: '' },
@@ -931,7 +1067,6 @@ const RATING_SCALE = [
   { value: 5, label: 'Very frequently' },
 ];
 
-/** Scale for long-term ultrasound visibility / resorbable preference (rating-single only). */
 const PERMANENT_VISIBILITY_RATING_SCALE = [
   { value: 1, label: 'Not Important' },
   { value: 2, label: '' },
@@ -1196,9 +1331,9 @@ class MarkerQuiz {
     this.startWindowBackgroundUrl = String(config.startWindowBackgroundUrl || '').trim();
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
     /** Warmed in showResults for contact-sales Marketo hidden field (parallel with form load). */
-    this._marketoResultsUrlPromise = null;
-    /** Fired when leaving the quiz on "Get Results"; await before reading markerQuizUuid for Marketo. */
-    this._sendToSheetPromise = null;
+    this.marketoResultsUrlPromise = null;
+    /** Fired on "Get Results"; await before reading markerQuizUuid for Marketo. */
+    this.sendToSheetPromise = null;
   }
 
   /**
@@ -1365,6 +1500,9 @@ class MarkerQuiz {
                 <p class="start-screen-description">${descSafe}</p>
                 <button type="button" class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
                 ${estimatedTimeHtml}
+                
+                  <p class="start-screen-dislaimer"><strong>Disclaimer:</strong> The information obtained through these questions is for general guidance and product selection purposes only. It does not constitute a representation, guarantee, or warranty of suitability for any specific application or condition. Users are responsible for independently verifying that the selected marker brand meets their intended use and complies with all applicable standards, requirements and the manufacturer's Instructions for Use.</p>
+                
               </div>`;
 
     if (this.startScreenInline) {
@@ -1454,162 +1592,159 @@ class MarkerQuiz {
     return [
       {
         index: 0,
-        text: "Which biopsy site markers do you currently use? Select all that apply.",
-        type: "grouped-multi",
+        text: 'Which biopsy site markers do you currently use? Select all that apply.',
+        type: 'grouped-multi',
         options: [
           {
-            text: "BiomarC® (Barbell, Petite Barbell, Tribell)",
-            group: "Mammotome",
+            text: 'BiomarC® (Barbell, Petite Barbell, Tribell)',
+            group: 'Mammotome',
           },
           {
-            text: "HydroMARK™ (Barrel, Butterfly, Open Coil)",
-            group: "Mammotome",
+            text: 'HydroMARK™ (Barrel, Butterfly, Open Coil)',
+            group: 'Mammotome',
           },
           {
-            text: "HydroMARK™ Plus (Dragonfly, Hummingbird)",
-            group: "Mammotome",
-          },
-          { text: "LumiMARK™ (Tulip, Lotus, Rose)", group: "Mammotome" },
-          {
-            text: "MammoMARK® (Bowtie, Triple Twist, U-Shape)",
-            group: "Mammotome",
-          },
-          { text: "MammoSTAR®  (Barbell, Tribell)", group: "Mammotome" },
-          {
-            text: "Hologic SecurMark® (Buckle, Infinity, Stoplight, Mini Cork, Top Hat)",
-            group: "Hologic",
+            text: 'HydroMARK™ Plus (Dragonfly™, Hummingbird™)',
+            group: 'Mammotome',
           },
           {
-            text: "Hologic TriMark® and CelerMark™ (Cork, Hourglass)",
-            group: "Hologic",
+            text: 'LumiMARK™ (Tulip™, Lotus, Rose)',
+            group: 'Mammotome',
           },
           {
-            text: "Hologic TuMark® (Q, X, Vision, Eye, U, Conic)",
-            group: "Hologic",
+            text: 'MammoMARK® (Bowtie, Triple Twist, U-Shape)',
+            group: 'Mammotome',
           },
-          { text: "BD Gel Mark UltraCor™ or Ultra™ (S, Omega)", group: "BD" },
-          { text: "BD SenoMark™ (O, X, M, S, Omega)", group: "BD" },
-          { text: "BD SenoMark™ UltraCor™ MRI (M, X)", group: "BD" },
-          { text: "BD SenoMark™ Ultra (Ribbon, Coil)", group: "BD" },
+          { text: 'MammoSTAR®  (Barbell, Tribell)', group: 'Mammotome' },
           {
-            text: "BD UltraClip™ II or UltraClip™ Dual Trigger (Wing, Ribbon, Coil, Heart, Venus)",
-            group: "BD",
+            text: 'Hologic SecurMark® (Buckle, Infinity, Stoplight, Mini Cork, Top Hat)',
+            group: 'Hologic',
           },
-          { text: "BD UltraCor™ Twirl™ (Curls, Clover, Ring)", group: "BD" },
-          { text: "BD UltraCor™ (Spring)", group: "BD" },
-          { text: "Other" },
+          {
+            text: 'Hologic TriMark® and CelerMark™ (Cork, Hourglass)',
+            group: 'Hologic',
+          },
+          {
+            text: 'Hologic TuMark® (Q, X, Vision, Eye, U, Conic)',
+            group: 'Hologic',
+          },
+          { text: 'BD Gel Mark UltraCor™ or Ultra™ (S, Omega)', group: 'BD' },
+          { text: 'BD SenoMark™ (O, X, M, S, Omega)', group: 'BD' },
+          { text: 'BD SenoMark™ UltraCor™ MRI (M, X)', group: 'BD' },
+          { text: 'BD SenoMark™ Ultra (Ribbon, Coil)', group: 'BD' },
+          {
+            text: 'BD UltraClip™ II or UltraClip™ Dual Trigger (Wing, Ribbon, Coil, Heart, Venus)',
+            group: 'BD',
+          },
+          { text: 'BD UltraCor™ Twirl™ (Curls, Clover, Ring)', group: 'BD' },
+          { text: 'BD UltraCor™ (Spring)', group: 'BD' },
+          { text: 'Other' },
         ],
         groups: [
-          { brand: "Mammotome", items: [] },
-          { brand: "Hologic", items: [] },
-          { brand: "BD", items: [] },
+          { brand: 'Mammotome', items: [] },
+          { brand: 'Hologic', items: [] },
+          { brand: 'BD', items: [] },
         ],
-        otherOption: { text: "Other" },
-        otherTextInput: { value: "" },
+        otherOption: { text: 'Other' },
+        otherTextInput: { value: '' },
         ungrouped: [],
       },
       {
         index: 1,
-        text: "What modality would you like to explore first?",
-        type: "single",
+        text: 'What modality would you like to explore first?',
+        type: 'single',
         options: [
-          { text: "Ultrasound" },
-          { text: "Stereotactic" },
-          { text: "MRI" },
+          { text: 'Ultrasound' },
+          { text: 'Stereotactic' },
+          { text: 'MRI' },
         ],
       },
       {
         index: 2,
-        text: "Rank these features by importance to your practice (click to reorder, 1 = most important):",
-        type: "sortable",
+        text: 'Rank these features by importance to your practice (click to reorder, 1 = most important):',
+        type: 'sortable',
         options: SORTABLE_OPTIONS.map((o) => ({ ...o })),
         optionsMri: SORTABLE_OPTIONS_MRI.map((o) => ({ ...o })),
       },
-      // {
-      //   index: 3,
-      //   text: 'What specific patient case considerations impact your biopsy marker choice? Select all that apply.',
-      //   type: 'multi',
-      //   options: [
-      //     { text: 'I prefer a cost-effective marker for suspected benign lesions, institutional restrictions, contract limitations, etc.' },
-      //     { text: 'Dense breast tissue impacts my ability to visualize, so I prefer a larger clip or one with ultrasound enhancements.' },
-      //     { text: 'I prefer smaller markers for superficial lesions, or those in the axilla or near breast implants.' },
-      //     { text: 'I prefer to use a specific marker brand or shape for each biopsy modality, so I easily know how the biopsy was performed.' },
-      //   ],
-      // },
 
       {
+      // Add photo to the right of this question
         index: 3,
-        text: "What specific patient case considerations impact your biopsy marker choice? Select all that apply.",
-        type: "multi",
+        text: 'What specific patient case considerations impact your biopsy marker choice? Select all that apply.',
+        type: 'multi',
         options: [
+          // {
+          //   text: 'Bi-Rads Category',
+          //   description: 'Categories 4A, 4B, 4C or 5',
+          // },
           {
-            text: "Bi-Rads Category",
-            description: "Categories 4A, 4B, 4C or 5",
+            text: 'Suspected Benign Lesions',
+            // description: '-',
           },
           {
-            text: "Breast Tissue Type",
-            description: "Dense Categories A through D",
+            text: 'Breast Density Level',
+            // description: '-',
           },
           {
-            text: "Lesion Location",
-            description: "Superficial or Sensitive Anatomical Areas",
+            text: 'Superficial Lesions or Axilla',
+            // description: '-',
           },
           {
-            text: "Biopsy Modality",
-            description: "Specific marker brand or shape",
+            text: 'Per Biopsy Modality',
+            // description: '-',
           },
         ],
       },
       {
         index: 4,
-        text: "At follow-up imaging, what is your biggest concern about a previously placed marker?",
-        type: "single",
+        text: 'At follow-up imaging, what is your biggest concern about a previously placed marker?',
+        type: 'single',
         options: [
           {
-            text: "Marker migration away from biopsy site",
-            capability: "anti_migration",
+            text: 'Marker migration away from biopsy site',
+            capability: 'anti_migration',
           },
           {
-            text: "Poor visibility or no longer visible",
-            capability: "long_term_us_visibility",
+            text: 'Poor visibility or no longer visible',
+            capability: 'long_term_us_visibility',
           },
           {
-            text: "Inconsistent visibility across different imaging modalities",
-            capability: "cross_modal_visibility",
+            text: 'Inconsistent visibility across different imaging modalities',
+            capability: 'cross_modal_visibility',
           },
           {
-            text: "Unable to distinguish marker shape or identify which modality was used",
-            capability: "shape_distinction",
+            text: 'Unable to distinguish marker shape or identify which modality was used',
+            capability: 'shape_distinction',
           },
           {
-            text: "Artifact obscuring adjacent tissue on follow-up imaging",
-            capability: "low_artifact",
+            text: 'Artifact obscuring adjacent tissue on follow-up imaging',
+            capability: 'low_artifact',
             modalityGated: true,
           },
           {
-            text: "Marker displaced from site during surgical excision (OR anti-displacement)",
-            capability: "or_anti_displacement",
+            text: 'Marker displaced from site during surgical excision (OR anti-displacement)',
+            capability: 'or_anti_displacement',
           },
         ],
       },
       {
         index: 5,
-        text: "How often would you use a marker with hemostatic properties?",
-        type: "single",
+        text: 'How often would you use a marker with hemostatic properties?',
+        type: 'single',
         options: [
-          { text: "Often" },
-          { text: "Occasionally" },
-          { text: "Rarely" },
-          { text: "Never" },
+          { text: 'Often' },
+          { text: 'Occasionally' },
+          { text: 'Rarely' },
+          { text: 'Never' },
         ],
       },
       {
         index: 6,
-        text: "Which best describes your biopsy case mix?",
-        type: "single",
+        text: 'Which best describes your biopsy case mix?',
+        type: 'single',
         options: [
           {
-            text: "Diagnostic-Focused",
+            text: 'Diagnostic-Focused',
             capWeights: {
               long_term_us_visibility: 1,
               anti_migration: 1,
@@ -1628,7 +1763,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: "Pre-Surgical",
+            text: 'Pre-Surgical',
             capWeights: {
               long_term_us_visibility: 3,
               anti_migration: 2,
@@ -1647,7 +1782,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: "Oncology-Integrated",
+            text: 'Oncology-Integrated',
             capWeights: {
               long_term_us_visibility: 3,
               anti_migration: 2,
@@ -1666,7 +1801,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: "High-Risk",
+            text: 'High-Risk',
             capWeights: {
               long_term_us_visibility: 3,
               anti_migration: 1,
@@ -1685,7 +1820,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: "Community Center: Broad Patient Mix",
+            text: 'Community Center: Broad Patient Mix',
             capWeights: {
               long_term_us_visibility: 2,
               anti_migration: 1,
@@ -1704,7 +1839,7 @@ class MarkerQuiz {
             },
           },
           {
-            text: "Academic / Teaching Hospital",
+            text: 'Academic / Teaching Hospital',
             capWeights: {
               long_term_us_visibility: 2,
               anti_migration: 1,
@@ -1726,24 +1861,23 @@ class MarkerQuiz {
       },
       {
         index: 7,
-        text: "Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?",
-        type: "rating-single",
+        text: 'Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?',
+        type: 'rating-single',
         ratingScale: PERMANENT_VISIBILITY_RATING_SCALE,
         /**
-         * Omitted when MRI is selected (LumiMARK/BioMaRC vetoed; question has no scoring effect).
+         * Omitted when MRI is selected (LumiMARK/BiomarC vetoed; question has no scoring effect).
          */
         skipWhenMri: true,
       },
       {
         index: 8,
         text:
-          "How frequently do your patients express the following preferences or needs? " +
-          "Rate each on a scale of 1-5 (1 = Never, 5 = Very frequently)",
-        type: "rating",
+          'How frequently do your patients express the following preferences or needs?',
+        type: 'rating',
         items: RATING_ITEMS.map((item) => ({ ...item })),
       },
     ].map((q) => {
-      if (q.type === "grouped-multi") {
+      if (q.type === 'grouped-multi') {
         q.options.forEach((opt) => {
           if (/^other$/i.test(opt.text.trim()) || !opt.group) return;
           const g = q.groups.find((grp) => grp.brand === opt.group);
@@ -1789,6 +1923,12 @@ class MarkerQuiz {
 
   getPreferencesRatingQuestionIndex() {
     return this.questions.findIndex((q) => q?.type === 'rating');
+  }
+
+  getHemostaticQuestionIndex() {
+    return this.questions.findIndex(
+      (q) => q?.text && /hemostatic|bleeding|hematoma/i.test(q.text),
+    );
   }
 
   getCurrentQuestionIndex() {
@@ -2058,48 +2198,121 @@ class MarkerQuiz {
   }
 
   /**
-   * When natural, nickel, or permanent-visibility rating is 3+, returns the best-scoring
-   * marker from the contextual bonus pool, excluding all ids in `excludeIds`
-   * (e.g. top pick and strict second-by-score).
+   * True when hemostatic frequency is "Often" (0) or "Occasionally" (1).
+   */
+  wantsHemostaticMammomarkRecommendation() {
+    const hemoIdx = this.getHemostaticQuestionIndex();
+    const hemoSel = hemoIdx >= 0 ? this.selections[hemoIdx] : null;
+    return hemoSel === 0 || hemoSel === 1;
+  }
+
+  /**
+   * Natural-marker preference rating (1–5). MRI uses the non-animal row instead,
+   * so this force applies only for Ultrasound/Stereotactic.
+   */
+  getNaturalPreferenceRating() {
+    if (this.isMriSelected()) return 0;
+    const prefIdx = this.getPreferencesRatingQuestionIndex();
+    const ratingSel = prefIdx >= 0 ? this.selections[prefIdx] : null;
+    if (!ratingSel || typeof ratingSel !== 'object') return 0;
+    return Number(ratingSel[0]) || 0;
+  }
+
+  /**
+   * True when natural preference is Sometimes (3), Often (4), or Very frequently (5).
+   */
+  wantsNaturalPreferenceRecommendation() {
+    return this.getNaturalPreferenceRating() >= 3;
+  }
+
+  /**
+   * Highest-scoring MammoStar/BioMarc for the natural-preference force.
+   * Only applies when neither product is already in the top two.
+   * @param {Set<string>} exclude
+   * @returns {object | null}
+   */
+  getForcedNaturalRecommendationProduct(exclude) {
+    if (!this.wantsNaturalPreferenceRecommendation()) return null;
+    const naturalIds = NATURAL_BONUS_KEYS
+      .map((key) => this.resolveProductId(key))
+      .filter(Boolean);
+    // Already trending if either natural bonus marker is in the top two.
+    if (naturalIds.some((id) => exclude.has(id))) return null;
+
+    const eligible = naturalIds
+      .filter((id) => id in this.products
+        && this.scores[id] > MarkerQuiz.ELECTRE_VETO_THRESHOLD)
+      .map((id) => ({
+        id,
+        score: this.scores[id],
+        ...this.products[id],
+        naturalForced: true,
+      }))
+      .sort((a, b) => b.score - a.score);
+    return eligible[0] || null;
+  }
+
+  /**
+   * Builds the single "third" recommendation card shown alongside the strict
+   * second-by-score pick. Forced picks (when not already in the top two):
+   *   1. Hemostatic "Often"/"Occasionally" → MammoMARK.
+   *   2. Natural preference Sometimes/Often/Very frequently → higher-scoring
+   *      of MammoStar / BioMarc.
+   * Otherwise candidate markers come from nickel and permanent-visibility
+   * bonus pools; highest score wins as a tie breaker.
    * @param {Set<string>|Iterable<string>} excludeIds
    * @returns {object | null} Product row { id, score, ...catalog fields }
    */
-  getRatingBonusProduct(excludeIds) {
+  getThirdRecommendationProduct(excludeIds) {
     const exclude = excludeIds instanceof Set ? excludeIds : new Set(excludeIds);
 
+    // Hemostatic "Often"/"Occasionally" → force MammoMARK as at least 3rd
+    // when scores alone did not already place it in the top two.
+    if (this.wantsHemostaticMammomarkRecommendation()) {
+      const mammoId = this.resolveProductId('mammomark');
+      if (
+        mammoId
+        && !exclude.has(mammoId)
+        && mammoId in this.products
+        && this.scores[mammoId] > MarkerQuiz.ELECTRE_VETO_THRESHOLD
+      ) {
+        return {
+          id: mammoId,
+          score: this.scores[mammoId],
+          ...this.products[mammoId],
+          hemostaticForced: true,
+        };
+      }
+    }
+
+    // Natural preference 3+ → force higher-scoring MammoStar/BioMarc as 3rd
+    // when neither is already in the top two.
+    const naturalForced = this.getForcedNaturalRecommendationProduct(exclude);
+    if (naturalForced) return naturalForced;
+
+    const candidateKeys = new Set();
+
+    // Nickel preference rating (1–5; high = 3+). Natural is handled above.
     const prefIdx = this.getPreferencesRatingQuestionIndex();
     const ratingSel = prefIdx >= 0 ? this.selections[prefIdx] : null;
-    if (!ratingSel || typeof ratingSel !== 'object') return null;
+    if (ratingSel && typeof ratingSel === 'object') {
+      const nickelRating = this.isMriSelected() ? 0 : (ratingSel[1] || 1);
+      if (nickelRating >= 3) NICKEL_BONUS_KEYS.forEach((key) => candidateKeys.add(key));
+    }
 
-    const naturalRating = ratingSel[0] || 1;
-    const nickelRating = this.isMriSelected() ? 0 : (ratingSel[1] || 1);
+    // Permanent-visibility rating (existing trigger; not applicable for MRI).
     const permVisIdx = this.getPermanentVisibilityQuestionIndex();
     const permVisRaw = (permVisIdx >= 0 && !this.isMriSelected())
       ? this.selections[permVisIdx]
       : undefined;
     const permVisRating = (permVisRaw != null) ? (Number(permVisRaw) || 1) : 0;
-
-    const naturalHigh = naturalRating >= 3;
-    const nickelHigh = nickelRating >= 3;
-    const permVisHigh = permVisRating >= 3;
-
-    if (!naturalHigh && !nickelHigh && !permVisHigh) return null;
-
-    let bonusKeys;
-
-    if (permVisHigh && permVisRating >= naturalRating && permVisRating >= nickelRating) {
-      bonusKeys = PERMANENT_VISIBILITY_BONUS_KEYS;
-    } else if (naturalHigh && nickelHigh) {
-      bonusKeys = naturalRating >= nickelRating ? NATURAL_BONUS_KEYS : NICKEL_BONUS_KEYS;
-    } else if (naturalHigh) {
-      bonusKeys = NATURAL_BONUS_KEYS;
-    } else if (nickelHigh) {
-      bonusKeys = NICKEL_BONUS_KEYS;
-    } else {
-      bonusKeys = PERMANENT_VISIBILITY_BONUS_KEYS;
+    if (permVisRating >= 3) {
+      PERMANENT_VISIBILITY_BONUS_KEYS.forEach((key) => candidateKeys.add(key));
     }
 
-    const eligible = bonusKeys
+    if (candidateKeys.size === 0) return null;
+
+    const eligible = [...candidateKeys]
       .map((key) => this.resolveProductId(key))
       .filter((id) => id && !exclude.has(id) && this.scores[id] >= 0 && id in this.products);
 
@@ -2109,33 +2322,6 @@ class MarkerQuiz {
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
     return byScore[0];
-  }
-
-  /**
-   * When bleeding is "Often" or "Occasionally" and MammoMARK is not already
-   * among the primary and "You Should Also Consider" picks, returns a
-   * bleeding-based recommendation for MammoMARK.
-   * @param {string} topProductId
-   * @param {string[]} alternativeProductIds
-   * @returns {{ product: object } | null}
-   */
-  getBleedingRecommendationContext(topProductId, alternativeProductIds) {
-    const bleedingIdx = this.questions.findIndex(
-      (q) => q?.text && /bleeding|hematoma/i.test(q.text),
-    );
-    if (bleedingIdx < 0) return null;
-
-    const bleedingSel = this.selections[bleedingIdx];
-    if (bleedingSel !== 0 && bleedingSel !== 1) return null;
-
-    const mammomarkId = this.resolveProductId('mammomark');
-    if (!mammomarkId || !(mammomarkId in this.products)) return null;
-
-    if (mammomarkId === topProductId || alternativeProductIds.includes(mammomarkId)) return null;
-
-    const product = { id: mammomarkId, ...this.products[mammomarkId] };
-
-    return { product };
   }
 
   /** Maps modality option text to score index (0=Ultrasound, 1=Stereotactic, 2=MRI). */
@@ -2222,7 +2408,6 @@ class MarkerQuiz {
   static get ELECTRE_SCORES() {
     return { full: 15, partial: -20, incompatible: -9999 };
   }
-
 
   /**
        * Patient case scores by modality. modalityIndex: 0=Ultrasound, 1=Stereotactic, 2=MRI.
@@ -2446,6 +2631,10 @@ class MarkerQuiz {
     return scores[optionIndex] || {};
   }
 
+  //--------------------------------
+  // ALL NATURAL SCORES
+  //--------------------------------
+
   static getAllNatural(rating) {
     // Rating 1-5; Ultrasound/Stereotactic “natural markers” row.
     // MRI uses getNonAnimalPreferenceScores.
@@ -2473,6 +2662,10 @@ class MarkerQuiz {
    * MRI “non-animal markers” row: same bonus curve as natural for mammostar/biomarc;
    * rating 3 → small MammoMARK penalty only; ratings 4–5 → hard veto applied in calculateScores.
    */
+
+  //--------------------------------
+  // NON-ANIMAL PREFERENCE SCORES
+  //--------------------------------
   static getNonAnimalPreferenceScores(rating) {
     const bonusMap = {
       1: 0, 2: 1, 3: 2, 4: 4, 5: 6,
@@ -2485,7 +2678,7 @@ class MarkerQuiz {
       biomarc: bonus,
       hm: 0,
       hmplus: 0,
-      mammomark: mammoPenalty,
+      mammomark: Penalty,
       lumimark: 0,
     };
   }
@@ -2612,18 +2805,15 @@ class MarkerQuiz {
       ? (this.questions[caseMixIdx]?.options?.[caseMixSel]?.text || `option ${caseMixSel}`)
       : '';
 
-    const bleedingIdx = this.questions.findIndex(
-      (q) => q?.text && /bleeding|hematoma/i.test(q.text),
-    );
+    const bleedingIdx = this.getHemostaticQuestionIndex();
     const bleedingSel = bleedingIdx >= 0 ? this.selections[bleedingIdx] : null;
     const bleedingConcern = bleedingSel != null
       ? (this.questions[bleedingIdx]?.options?.[bleedingSel]?.text || `option ${bleedingSel}`)
       : '';
 
     const sheetSecond = eligibleForPayload[1];
-    const sheetRatingBonus = sheetSecond
-      ? this.getRatingBonusProduct(new Set([top?.id, sheetSecond.id].filter(Boolean)))
-      : null;
+    const sheetThirdExclude = new Set([top?.id, sheetSecond?.id].filter(Boolean));
+    const sheetThird = this.getThirdRecommendationProduct(sheetThirdExclude);
 
     return {
       date_time: new Date().toISOString(),
@@ -2646,8 +2836,10 @@ class MarkerQuiz {
       all_scores: { ...this.scores },
       second_product_id: sheetSecond?.id || '',
       second_product_name: sheetSecond?.name || '',
-      third_product_id: sheetRatingBonus?.id || '',
-      third_product_name: sheetRatingBonus?.name || '',
+      third_product_id: sheetThird?.id || '',
+      third_product_name: sheetThird?.name || '',
+      hemostatic_mammomark_note: Boolean(sheetThird?.hemostaticForced),
+      natural_preference_note: Boolean(sheetThird?.naturalForced),
     };
   }
 
@@ -2666,18 +2858,19 @@ class MarkerQuiz {
     const alternativeProducts = [];
     if (secondByScore) {
       alternativeProducts.push(secondByScore);
-      const ratingBonusProduct = this.getRatingBonusProduct(
+      const thirdProduct = this.getThirdRecommendationProduct(
         new Set([topProduct?.id, secondByScore.id].filter(Boolean)),
       );
-      if (ratingBonusProduct && ratingBonusProduct.id !== secondByScore.id) {
-        alternativeProducts.push(ratingBonusProduct);
+      if (thirdProduct && thirdProduct.id !== secondByScore.id) {
+        alternativeProducts.push(thirdProduct);
       }
+    } else if (topProduct) {
+      const thirdProduct = this.getThirdRecommendationProduct(
+        new Set([topProduct.id].filter(Boolean)),
+      );
+      if (thirdProduct) alternativeProducts.push(thirdProduct);
     }
-
-    const bleedingContext = this.getBleedingRecommendationContext(
-      topProduct?.id,
-      alternativeProducts.map((p) => p.id),
-    );
+    const showHemostaticMammomarkNote = alternativeProducts.some((p) => p.hemostaticForced);
 
     this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen">
@@ -2758,35 +2951,26 @@ class MarkerQuiz {
                           <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
                         </div>
                         <h4>${allowTrademarkHtml(prod.name)}</h4>
+                        ${prod.hemostaticForced ? `<p class="card-reason">${escapeHtml(HEMOSTATIC_MAMMOMARK_NOTE)}</p>` : ''}
+                        ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(NATURAL_PREFERENCE_NOTE)}</p>` : ''}
                       </div>
                     `).join('')}
-                    ${bleedingContext ? `
-                      <div class="product-card">
-                        <div class="product-image">
-                          <img src="${escapeHtml(bleedingContext.product.recommendationImage || bleedingContext.product.cardImage || bleedingContext.product.image)}" alt="${stripHtmlForAlt(bleedingContext.product.name)}" />
-                        </div>
-                        <h4>${allowTrademarkHtml(bleedingContext.product.name)}</h4>
-                      </div>
-                    ` : ''}
                   </div>
                 </div>
-    
-    
+
                 <hr class="divider primary">
-                <div class="contact-section">
-                  <h3>Would you like to be contacted by a sales rep to learn more?</h3>
-                  <div class="contact-buttons">
-                    <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
-                    <button class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
-                  </div>
-                </div>
+                ${buildSocialShareSectionHtml()}
     
-    
-                ${(topProduct.footnotes || []).length ? `
+                ${((topProduct.footnotes || []).length || showHemostaticMammomarkNote) ? `
                   <div class="product-footnotes">
+                    ${(topProduct.footnotes || []).length ? `
                     <ol class="footnotes-list">
                       ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
                     </ol>
+                    ` : ''}
+                    ${showHemostaticMammomarkNote ? `
+                    <p class="footnote footnote-asterisk">${HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML}</p>
+                    ` : ''}
                   </div>
                 ` : ''}
     
@@ -2795,6 +2979,7 @@ class MarkerQuiz {
           </div>`;
 
     this.bindCloseBtn();
+    bindSocialShareButtons(this.block);
     this.block.querySelector('#restart-btn')?.addEventListener('click', () => this.restart());
     this.block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
       btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
@@ -2809,7 +2994,7 @@ class MarkerQuiz {
         contactSalesFormId: this.contactSalesFormId,
         extendHiddenFields: async (f) => {
           const resultsUrl = await (async () => {
-            if (this._sendToSheetPromise) await this._sendToSheetPromise;
+            if (this.sendToSheetPromise) await this.sendToSheetPromise;
             return prepareQuizResultsUrlForMarketo();
           })();
           try {
@@ -2845,7 +3030,7 @@ class MarkerQuiz {
           const [form, resultsUrl] = await Promise.all([
             embedMarketoForm(emailFormWrapper, this.emailResultsFormId),
             (async () => {
-              if (this._sendToSheetPromise) await this._sendToSheetPromise;
+              if (this.sendToSheetPromise) await this.sendToSheetPromise;
               return prepareQuizResultsUrlForMarketo();
             })(),
           ]);
@@ -2863,7 +3048,9 @@ class MarkerQuiz {
           if (submitBtn) submitBtn.disabled = false;
 
           form.onSuccess((values) => {
-            sendToSheet(this.buildSheetPayload(), { email: extractEmailFromMarketoSuccessValues(values) });
+            sendToSheet(this.buildSheetPayload(), {
+              email: extractEmailFromMarketoSuccessValues(values),
+            });
             emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
             return false;
           });
@@ -3032,7 +3219,7 @@ class MarkerQuiz {
           if (nextBtn) nextBtn.disabled = true;
           prefetchMarketoForms2();
           this.calculateScores();
-          this._sendToSheetPromise = sendToSheet(this.buildSheetPayload());
+          this.sendToSheetPromise = sendToSheet(this.buildSheetPayload());
           this.showResults();
         } else {
           this.currentStep += 1;
@@ -3691,8 +3878,8 @@ class MarkerQuiz {
     this.startScreenInline = false;
     this.showStartScreen = true;
     this.showVideoIntroScreen = Boolean(this.startWindowBackgroundUrl);
-    this._marketoResultsUrlPromise = null;
-    this._sendToSheetPromise = null;
+    this.marketoResultsUrlPromise = null;
+    this.sendToSheetPromise = null;
     document.body.classList.remove('survey-fullscreen-active');
     this.render();
   }
@@ -3811,6 +3998,8 @@ const wirePreviewResultsPage = (block, product, products, config) => {
   block.querySelector('#close-survey-btn')?.addEventListener('click', () => {
     exitPreviewToQuizStart();
   });
+
+  bindSocialShareButtons(block);
 
   block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
     btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
@@ -3988,7 +4177,7 @@ const renderPreview = (block, product, products, config) => {
                   <div class="top-recommendation-description">${allowTrademarkHtml(product.description)}</div>
                 </div>
               </div>
-    
+
               <div class="features-video-section ${(product.video || product.featuredPhoto) ? 'has-video' : 'no-video'}">
                 <div class="features-section-inner">
                   <h2 class="features-section-title">Product Features</h2>
@@ -4017,14 +4206,20 @@ const renderPreview = (block, product, products, config) => {
                 </div>
               </div>
     
-              <div class="quiz-actions-section">
+              <div class="contact-section">
+                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
+                              <div class="quiz-actions-section">
                 <div class="quiz-actions-buttons">
-                  <button type="button" class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
-                  <button type="button" class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
+                  <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
+
+                  <button type="button" class="btn btn-contact-secondary" id="request-results-btn">Email My Results</button>
                 </div>
                   ${emailOrLeadBlock}
               </div>
     
+              </div>
+
+
               <hr class="divider primary">
               <div class="alternatives-section">
                 <h3>You Should Also Consider</h3>
@@ -4034,13 +4229,7 @@ const renderPreview = (block, product, products, config) => {
               </div>
     
               <hr class="divider primary">
-              <div class="contact-section">
-                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
-                <div class="contact-buttons">
-                  <button type="button" class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
-                  <button type="button" class="btn btn-contact-secondary" id="contact-no-btn">No, Thank You</button>
-                </div>
-              </div>
+              ${buildSocialShareSectionHtml()}
     
               ${(product.footnotes || []).length ? `
                 <div class="product-footnotes">

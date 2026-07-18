@@ -69,7 +69,8 @@ const loadScript = (src, container) => new Promise((resolve, reject) => {
  * @param {HTMLElement} container
  * @param {string|number} formId
  * @param {object} [hooks]
- * @param {boolean} [hooks.clearContainer] replace container children before loading UI (marker-app contact wrapper)
+ * @param {boolean} [hooks.clearContainer] replace container children before loading UI
+ *   (marker-app contact wrapper)
  * @param {function} [hooks.extendHiddenFields] async (form, ctx) => void
  * @param {function} [hooks.onSuccess] (values, followUpUrl, form) => boolean
  * @returns {Promise<object|null>}
@@ -183,7 +184,7 @@ export async function embedMultistepMarketoForm(container, formId, hooks = {}) {
             await hooks.extendHiddenFields(form, { pageSlug });
           }
 
-          /* Show form as soon as Marketo + hidden fields are ready; fsaat setup below can take many ms */
+          /* Show form once Marketo + hidden fields are ready; fsaat setup below can be slow. */
           loadingDiv.remove();
 
           const formEl = form.getFormElem()[0];
