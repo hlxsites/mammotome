@@ -2010,6 +2010,7 @@ body.marker-app-hide-chrome-footer .footer {
   justify-content: center;
   align-items: center;
   gap: 28px;
+  margin-top:20px;
 }
 
 .social-share-btn {

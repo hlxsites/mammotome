@@ -1044,7 +1044,6 @@ function buildSocialShareSectionHtml() {
   return `
               <div class="social-share-section">
                 <h3>Share Your #MarkerMatch</h3>
-                <p class="social-share-prompt">Share your results on LinkedIn, Facebook, or X</p>
                 <div class="social-share-buttons">
                   <a class="social-share-btn social-share-linkedin" href="${escapeHtml(urls.linkedin)}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
                     ${SOCIAL_SHARE_ICON_LINKEDIN}
@@ -2917,11 +2916,14 @@ class MarkerQuiz {
                     </div>
                   </div>
                 </div>
-    
+
+                
                 <div class="quiz-actions-section">
+                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
                   <div class="quiz-actions-buttons">
-                    <button class="btn btn-quiz-primary" id="request-results-btn">Email My Results</button>
-                    <button class="btn btn-quiz-secondary" id="restart-btn">Take Quiz Again</button>
+                           <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
+
+                  <button type="button" class="btn btn-contact-secondary" id="request-results-btn">Email My Results</button>
                   </div>
                   ${this.emailResultsFormId ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>' : `
                   <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
