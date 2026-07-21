@@ -937,7 +937,7 @@ const NATURAL_PREFERENCE_NOTE = 'You indicated that your patients sometimes, oft
 const MARKER_MATCH_SHARE_TEXT = [
   'I found my #MarkerMatch with the Mammotome Meet Your Match Quiz!',
   '',
-  'Which Mammotome marker is your match?',
+  'Find out which Mammotome marker is your match.',
   '',
   'Take the quiz to discover the marker that aligns with your patient and clinical needs, then share your results.',
   '',
