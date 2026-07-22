@@ -1,3 +1,70 @@
+/* ===========================================================================
+ * MARKER QUIZ ("Meet Your Match") — QUICK-EDIT GUIDE FOR DEVELOPERS
+ * ===========================================================================
+ *
+ * WHAT THIS FILE DOES (the 30-second version):
+ *   It runs a quiz that asks a clinician a handful of questions, adds up a
+ *   score for each Mammotome marker product based on their answers, and then
+ *   shows the highest-scoring product as their "top recommendation" (plus a
+ *   couple of alternatives). Think of it like a personality quiz: every answer
+ *   quietly adds or subtracts points from each product, and whoever has the
+ *   most points at the end "wins".
+ *
+ * THE THREE THINGS YOU'LL MOST LIKELY BE ASKED TO CHANGE, AND WHERE THEY LIVE:
+ *
+ *   1. QUESTION WORDING / OPTIONS / ORDER
+ *      -> `MarkerQuiz.buildQuestions()`  (search for "static buildQuestions")
+ *         This is the single list of every question shown in the quiz. Edit the
+ *         `text` to change wording, edit `options` to change answers. The
+ *         `index` values and `type` values matter for scoring — see notes there
+ *         before reordering.
+ *
+ *   2. HOW ANSWERS AFFECT THE SCORE (the "points" each product gets)
+ *      -> Data tables near the top:  `RANK_SCORES`, `RANK_SCORES_MRI`,
+ *         `RATING_ITEMS`, and the *_BONUS_KEYS constants (search for "SCORING
+ *         CONFIG").
+ *      -> The engine that reads those tables: `calculateScores()`
+ *         (search for "calculateScores()").
+ *      -> The per-question point tables: the `static get...Scores()` helpers
+ *         (search for "SCORING TABLES (static helpers)").
+ *      Most scoring tweaks are just changing numbers in those tables — you
+ *      rarely need to touch the engine logic itself.
+ *
+ *   3. WHAT THE RESULTS PAGE SHOWS (top pick + alternatives + special notes)
+ *      -> `showResults()` (search for "showResults()") builds the results HTML.
+ *      -> `getThirdRecommendationProduct()` decides the 3rd "also consider"
+ *         card and the special-case forced recommendations.
+ *
+ * KEY VOCABULARY USED THROUGHOUT:
+ *   - "product id" / "scoring key": short codes for each marker product —
+ *       hm = HydroMARK, hmplus = HydroMARK Plus, mammomark = MammoMARK & CorMARK,
+ *       mammostar = MammoSTAR, lumimark = LumiMARK, biomarc = BiomarC.
+ *   - "capability": a feature axis a product can be good/bad at, e.g.
+ *       long_term_us_visibility, anti_migration, affordability. Products get a
+ *       1-5 rating per capability; higher = better.
+ *   - "ELECTRE veto": a way to say "this product is a hard NO for this answer".
+ *       A vetoed product gets a huge negative score (-9999) so it can never win.
+ *       See ELECTRE_SCORES / ELECTRE_VETO_THRESHOLD.
+ *   - "MRI branch": MRI has different rules, so lots of logic checks
+ *       `this.isMriSelected()` and swaps in the *_MRI tables / functions.
+ *
+ * HOW A SINGLE RUN FLOWS (top to bottom):
+ *   decorate()  -> loads product data + config, creates a MarkerQuiz
+ *   MarkerQuiz.render() -> start screen -> quiz form
+ *   renderStep() -> shows one question at a time; "Next" advances,
+ *                   "Get Results" on the last step calls calculateScores()
+ *                   then showResults().
+ *   sendToSheet() -> logs the answers + scores to a Google Sheet (analytics).
+ *
+ * WARNING BEFORE YOU EDIT:
+ *   Question answers are matched to scoring by POSITION (option index) in many
+ *   of the static tables. If you add, remove, or reorder options in
+ *   buildQuestions(), you usually must update the matching row order in the
+ *   corresponding get...Scores() table. Each of those tables has a comment
+ *   telling you which option each row is for.
+ * ===========================================================================
+ */
+
 import {
   readBlockConfig,
   getMarkerRecommendations,
@@ -5,6 +72,18 @@ import {
 } from '../../scripts/lib-franklin.js';
 import { embedMultistepMarketoForm } from '../multistep-form/multistep-form.js';
 
+/* ---------------------------------------------------------------------------
+ * INTEGRATION CONSTANTS (external services this quiz talks to)
+ * ---------------------------------------------------------------------------
+ * SHEET_URL     : Google Apps Script endpoint that stores each quiz result for
+ *                 analytics. Change this if the tracking sheet moves.
+ * CLIENT_SECRET : shared secret sent with each Sheet request so the script can
+ *                 verify it's really coming from this app.
+ * DEFAULT_CONTACT_SALES_FORM_ID : Marketo form used for "Contact a rep" when
+ *                 the page author didn't specify one in the block config.
+ * NOTE: these are client-side values (visible in the browser). Don't put
+ * anything truly sensitive here; treat CLIENT_SECRET as low-security.
+ * ------------------------------------------------------------------------- */
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwZYd5rhFtYLc0SaBDvq_lz_m5CzEG4PmPcsJBYMWbkSKEP4UNgObFh1XrxMs-vn5ME/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
@@ -391,10 +470,17 @@ const stripHtmlForAlt = (str) => {
 
 const allowTrademarkHtml = (str) => {
   const escaped = escapeHtml(str);
-  return escaped.replace(
+  const withSup = escaped.replace(
     /&lt;sup&gt;(.*?)&lt;\/sup&gt;/gs,
     (_, content) => `<sup>${content}</sup>`,
   );
+  // Site convention (see decorateSupScript in lib-franklin.js): render ™ as
+  // superscripted "TM" text (global `sup.tm` styles) so it stays legible at
+  // small sizes. Segments already inside <sup> are left untouched.
+  return withSup
+    .split(/(<sup>.*?<\/sup>)/gs)
+    .map((seg) => (seg.startsWith('<sup>') ? seg : seg.replace(/™/g, '<sup class="tm">TM</sup>')))
+    .join('');
 };
 
 const MARKETO_FORMS2_SRC = 'https://www2.mammotome.com/js/forms2/js/forms2.min.js';
@@ -769,6 +855,27 @@ const applyMarkerAppHideChrome = ({ hideNav, hideFooter }) => {
   document.body.classList.toggle('marker-app-hide-chrome-footer', Boolean(hideFooter));
 };
 
+/* ===========================================================================
+ * SCORING CONFIG  (the "how many points" data tables)
+ * ===========================================================================
+ * This is where most scoring changes happen. These are plain data objects —
+ * changing a number here changes how the quiz scores, no logic edits needed.
+ *
+ * RANK_SCORES powers the "rank these features" question (Q3, the drag/reorder
+ * one) for the NON-MRI path. RANK_SCORES_MRI is the MRI equivalent below it.
+ *
+ * How to read RANK_SCORES:
+ *   - label_to_capability: maps the words the user sees ("Ease of Locating")
+ *     to the internal capability key ("locating"). Change the left side to
+ *     rename what the user sees.
+ *   - rank_weights: how much the 1st/2nd/3rd/4th ranked feature is worth.
+ *     e.g. { 1: 6, 2: 4, 3: 2, 4: 1 } means the top-ranked feature counts 6x.
+ *   - q3_capability_ratings: for EACH product, how good (1-5) it is at each
+ *     capability. Final points for a feature = product's rating x rank weight.
+ *
+ * Example: user ranks "Ease of Locating" #1 (weight 6). HydroMARK's `locating`
+ * rating is 5, so HydroMARK gains 5 x 6 = 30 points from that one choice.
+ * =========================================================================== */
 const RANK_SCORES = {
   type: 'ranked_capability',
   label_to_capability: {
@@ -849,6 +956,13 @@ const SORTABLE_OPTIONS = Object.entries(RANK_SCORES.label_to_capability).map(([t
   key,
 }));
 
+/*
+ * RANK_SCORES_MRI — same shape as RANK_SCORES above, but used ONLY when the
+ * user picked MRI as their modality. MRI has different feature labels and
+ * different product ratings (note some products are all-zero here, meaning
+ * they contribute nothing on the MRI path). The engine automatically picks
+ * this table over RANK_SCORES when `isMriSelected()` is true.
+ */
 const RANK_SCORES_MRI = {
   type: 'ranked_capability',
   label_to_capability: {
@@ -914,10 +1028,23 @@ const RATING_ITEM_NATURAL = 'Preference for natural markers';
  */
 const RATING_ITEM_NON_ANIMAL = 'Preference for non-animal origin markers';
 
+/*
+ * RATING_ITEMS — the two 1-5 slider rows in the "how frequently do your
+ * patients express these preferences" question. `key` is how the code refers
+ * to each row internally (used in calculateScores). Add a row here + a matching
+ * score function if you ever need a third preference slider.
+ */
 const RATING_ITEMS = [
   { text: RATING_ITEM_NATURAL, key: 'natural' },
   { text: 'Concerns about nickel allergies or metal sensitivities', key: 'nickel_free' },
 ];
+
+/*
+ * *_BONUS_KEYS below: "if the user cares a lot about X (rating 3+), which
+ * products should get a boost / be eligible as a forced recommendation?"
+ * These are just lists of product ids. Edit a list to change which products
+ * benefit from a given preference. They're used in getThirdRecommendationProduct().
+ */
 
 /** Bonus markers for natural preference (rating 3+): mammostar, biomarc */
 const NATURAL_BONUS_KEYS = ['mammostar', 'biomarc'];
@@ -1309,6 +1436,27 @@ const mergeStartTitleFromBlock = (block, config) => {
   });
 };
 
+/* ===========================================================================
+ * MarkerQuiz — the main controller class.
+ * ===========================================================================
+ * One instance runs one quiz. It holds all the state (which step we're on,
+ * what the user picked, the running scores) and has methods for each screen.
+ *
+ * Handy map of the most-edited methods (in file order):
+ *   buildQuestions()      - the question list (static)
+ *   calculateScores()     - the scoring engine
+ *   get...Scores()        - the scoring number tables (static)
+ *   getThirdRecommendationProduct() - special-case "also consider" logic
+ *   showResults()         - the results screen
+ *   renderStep()          - shows one question; handles Next/Prev/Get Results
+ *
+ * Key state fields set in the constructor:
+ *   this.questions   - array from buildQuestions()
+ *   this.selections  - { questionIndex: answer } the user's raw answers
+ *   this.scores      - { productId: points } filled by calculateScores()
+ *   this.currentStep - index into the VISIBLE questions (some are hidden, e.g.
+ *                      the permanent-visibility question is skipped for MRI)
+ * =========================================================================== */
 class MarkerQuiz {
   constructor(block, config, products) {
     this.block = block;
@@ -1583,10 +1731,36 @@ class MarkerQuiz {
     this.renderStep();
   }
 
-  /**
-       * Builds native question definitions — no Marketo DOM parsing required.
-       * Mirrors the structure previously extracted from Marketo fieldsets.
-       */
+  /* =======================================================================
+   * QUESTIONS — the single source of truth for every quiz question.
+   * =======================================================================
+   * Each object in the returned array is one question/screen. To change what
+   * the user sees, edit here. Fields you'll care about:
+   *
+   *   index   : the question's fixed number. IMPORTANT — a lot of scoring code
+   *             refers to questions by this index (e.g. `this.selections[3]`
+   *             for the patient-cases question). Do NOT renumber casually.
+   *   text    : the prompt shown to the user. Safe to reword freely.
+   *   type    : controls how it renders AND how it's scored. Values used:
+   *               'grouped-multi' -> checkboxes grouped by brand (Q1 markers)
+   *               'single'        -> pick one (radio buttons)
+   *               'multi'         -> pick several (checkboxes)
+   *               'sortable'      -> drag/click to rank (the priorities question)
+   *               'rating'        -> two 1-5 sliders (patient preferences)
+   *               'rating-single' -> one 1-5 slider (permanent visibility)
+   *   options : the answer choices. Some options carry scoring hints, e.g.
+   *             `capability`, `capWeights`, `q3Floors` — these feed the scoring
+   *             tables. If you add/remove/reorder options, re-check the matching
+   *             get...Scores() table (they line up BY POSITION).
+   *   skipWhenMri: true -> this question is hidden when the user picks MRI.
+   *
+   * Adding a whole new question is more involved: you must also teach
+   * calculateScores() how to score it. Reordering or rewording is easy;
+   * changing scoring means touching both this list and the tables above/below.
+   *
+   * Builds native question definitions — no Marketo DOM parsing required.
+   * Mirrors the structure previously extracted from Marketo fieldsets.
+   * ======================================================================= */
   static buildQuestions() {
     return [
       {
@@ -1607,7 +1781,7 @@ class MarkerQuiz {
             group: 'Mammotome',
           },
           {
-            text: 'LumiMARK™ (Tulip™, Lotus, Rose)',
+            text: 'LumiMARK™ (Tulip™, Lotus™, Rose™)',
             group: 'Mammotome',
           },
           {
@@ -1934,11 +2108,38 @@ class MarkerQuiz {
     return this.visibleQuestionIndices[this.currentStep];
   }
 
+  /* =======================================================================
+   * calculateScores() — THE SCORING ENGINE.
+   * =======================================================================
+   * Called once when the user clicks "Get Results". Walks through each answer,
+   * looks up the points for that answer, and adds them to `this.scores`
+   * (an object like { hm: 42, mammomark: 30, ... }). Highest total wins.
+   *
+   * The pattern repeats for every question and looks like this:
+   *   1. Find the question (by index or by matching its text/type).
+   *   2. Skip it if the author hid it from scoring (questionExcludedFromScore).
+   *   3. Ask a helper (getXScores / a table) for the points per product.
+   *   4. Add those points to this.scores, translating the scoring key to the
+   *      real product id via resolveProductId() (handles aliases like hm ->
+   *      hydromark).
+   *
+   * MRI note: several blocks branch on `this.isMriSelected()` and use the
+   * *_MRI tables / getNonAnimal* functions instead of the default ones.
+   *
+   * TO CHANGE HOW A QUESTION SCORES: usually you don't edit this method — you
+   * edit the numbers in the matching table/helper it calls (named in each
+   * block's comment below). Edit here only to change the overall wiring/order.
+   * ======================================================================= */
   calculateScores() {
+    // Start every product at 0 points for a clean run.
     Object.keys(this.products).forEach((id) => {
       this.scores[id] = 0;
     });
 
+    // --- Q2: Modality (Ultrasound / Stereotactic / MRI) -------------------
+    // Applies compatibility: a product "full"-compatible with the chosen
+    // modality gains points; "partial"/"incompatible" loses points or is
+    // vetoed. Points come from getModalityCompatibility() + ELECTRE_SCORES.
     const modalitiesIdx = this.questions.findIndex(
       (q) => q?.text && /modalit/i.test(q.text),
     );
@@ -2024,6 +2225,8 @@ class MarkerQuiz {
       });
     }
 
+    // --- Q5 (index 4): Follow-up imaging concern -------------------------
+    // Points table/logic: getFollowupConcernScores().
     if (this.selections[4] != null && !this.questionExcludedFromScore(this.questions[4])) {
       const { q3_capability_ratings: capRatings } = RANK_SCORES;
       const followupScores = MarkerQuiz.getFollowupConcernScores(
@@ -2037,6 +2240,9 @@ class MarkerQuiz {
       });
     }
 
+    // --- Q6 (index 5): Hemostatic ("bleeding") frequency -----------------
+    // Points table: getBleedingScores(). Also drives the forced-MammoMARK
+    // recommendation later (see wantsHemostaticMammomarkRecommendation()).
     if (this.selections[5] != null && !this.questionExcludedFromScore(this.questions[5])) {
       const bleedingScores = MarkerQuiz.getBleedingScores(this.selections[5]);
       Object.entries(bleedingScores).forEach(([productId, points]) => {
@@ -2045,6 +2251,9 @@ class MarkerQuiz {
       });
     }
 
+    // --- Q7 (index 6): Biopsy case mix -----------------------------------
+    // Points logic: getCaseMixScores(). Also returns "q3Floors" (minimum
+    // capability importances) stashed on this.caseMixQ3Floors for later use.
     if (this.selections[6] != null && !this.questionExcludedFromScore(this.questions[6])) {
       const { q3_capability_ratings: capRatings } = RANK_SCORES;
       const { scores: caseMixScores, q3Floors } = MarkerQuiz.getCaseMixScores(
@@ -2062,6 +2271,11 @@ class MarkerQuiz {
       }
     }
 
+    // --- Preferences sliders: natural + nickel (the 'rating' question) ----
+    // prefSel[0] = natural preference (1-5), prefSel[1] = nickel concern (1-5).
+    // Non-MRI: getAllNatural() + getNickelScores(). MRI: getNonAnimalPreferenceScores()
+    // (nickel row is dropped for MRI). A natural rating of 4-5 on MRI also hard-
+    // vetoes MammoMARK (adds the big negative ELECTRE incompatible score).
     const prefIdx = this.getPreferencesRatingQuestionIndex();
     if (
       prefIdx >= 0
@@ -2095,6 +2309,9 @@ class MarkerQuiz {
       }
     }
 
+    // --- Permanent-visibility slider (the 'rating-single' question) -------
+    // Not scored on the MRI path (question is hidden then). Points table:
+    // getPermanentVisibilityScores() — boosts LumiMARK & BiomarC.
     const permVisIdx = this.getPermanentVisibilityQuestionIndex();
     if (
       permVisIdx >= 0
@@ -2367,8 +2584,32 @@ class MarkerQuiz {
     }) || null;
   }
 
+  /* =======================================================================
+   * SCORING TABLES (static helpers)
+   * =======================================================================
+   * These are the "lookup tables" calculateScores() calls. Each returns an
+   * object of { productKey: points }. THIS is where you change the actual
+   * numbers behind an answer. They're static (no `this`) because they're pure:
+   * same input -> same output, no quiz state involved.
+   *
+   * IMPORTANT: most of these map an answer to points BY POSITION (option
+   * index). The order of rows here must match the order of options in
+   * buildQuestions() for the same question. Each table comments which option
+   * each row belongs to — keep them in sync when you edit questions.
+   *
+   * About "ELECTRE" (you'll see the word a lot): it's just the naming scheme
+   * for hard compatibility rules. A product can be 'full', 'partial', or
+   * 'incompatible' with a modality. ELECTRE_SCORES turns those into points:
+   * full = +15, partial = -20, incompatible = -9999 (a "veto" — so negative it
+   * can never be recommended). ELECTRE_VETO_THRESHOLD is the cutoff used later
+   * to filter vetoed products out of the results.
+   * ======================================================================= */
+
   /**
    * ELECTRE modality compatibility table.
+   * Returns, for the chosen modality, how compatible each product is.
+   * Edit the 'full'/'partial'/'incompatible' values to change which products
+   * are recommended vs vetoed for Ultrasound / Stereotactic / MRI.
    * @param {number} optionIndex 0=Ultrasound, 1=Stereotactic, 2=MRI
    * @returns {{ [productKey: string]: 'full'|'partial'|'incompatible' }}
    */
@@ -2402,8 +2643,14 @@ class MarkerQuiz {
     return compatibility[optionIndex] || {};
   }
 
+  // Any product whose total score is <= this is treated as "vetoed" (never
+  // recommended). It's set well below the incompatible score (-9999) so a
+  // single incompatible answer is enough to knock a product out.
   static get ELECTRE_VETO_THRESHOLD() { return -9000; }
 
+  // Points awarded for modality compatibility. Tweak these to make modality
+  // compatibility matter more or less. `incompatible` is intentionally huge-
+  // negative so it acts as a hard veto (see ELECTRE_VETO_THRESHOLD above).
   static get ELECTRE_SCORES() {
     return { full: 15, partial: -20, incompatible: -9999 };
   }
@@ -2677,7 +2924,10 @@ class MarkerQuiz {
       biomarc: bonus,
       hm: 0,
       hmplus: 0,
-      mammomark: Penalty,
+      // BUGFIX: this previously read `Penalty` (undefined) which threw a
+      // ReferenceError and broke scoring for every MRI user. The intended
+      // variable is `mammoPenalty` (declared just above): -1 at rating 3, else 0.
+      mammomark: mammoPenalty,
       lumimark: 0,
     };
   }
@@ -2842,12 +3092,30 @@ class MarkerQuiz {
     };
   }
 
+  /* =======================================================================
+   * showResults() — builds and shows the results screen.
+   * =======================================================================
+   * Ranking logic (the part you'll most likely tweak):
+   *   1. Sort every product by score, highest first.
+   *   2. Drop "vetoed" products (score at/below ELECTRE_VETO_THRESHOLD).
+   *   3. topProduct     = highest remaining score (the big hero card).
+   *      secondByScore  = next highest (first "also consider" card).
+   *      third          = getThirdRecommendationProduct(), which may FORCE a
+   *                       specific product for special cases (hemostatic ->
+   *                       MammoMARK, strong natural preference -> MammoStar/
+   *                       BiomarC) rather than just taking the next by score.
+   * The rest of this method is HTML for the results page + wiring up the
+   * "Contact me" / "Email my results" buttons. To change results copy/layout,
+   * edit the template string below. To change WHICH products appear, edit the
+   * ranking logic here and/or getThirdRecommendationProduct().
+   * ======================================================================= */
   showResults() {
     prefetchMarketoForms2();
     const sortedProducts = Object.keys(this.scores)
       .map((id) => ({ id, score: this.scores[id], ...this.products[id] }))
       .sort((a, b) => b.score - a.score);
 
+    // Remove hard-vetoed products so they can't be recommended.
     const eligibleProducts = sortedProducts.filter(
       (p) => p.score > MarkerQuiz.ELECTRE_VETO_THRESHOLD,
     );
@@ -3210,7 +3478,14 @@ class MarkerQuiz {
         }
       });
 
+      // "Next" / "Get Results" button. This is the hand-off point: on the LAST
+      // question it runs the whole scoring pipeline and shows results:
+      //   calculateScores()  -> fills this.scores
+      //   sendToSheet()      -> logs answers+scores to Google Sheet (analytics)
+      //   showResults()      -> renders the recommendation screen
+      // On any other question it just advances to the next visible step.
       nav.querySelector('#quiz-next-btn')?.addEventListener('click', () => {
+        // Require an answer before moving on (sortable is always "answered").
         if (!isSortable && !this.hasSelection(qIdx)) {
           this.showQuizSelectionRequiredHint();
           return;
@@ -3218,7 +3493,7 @@ class MarkerQuiz {
         this.clearQuizSelectionRequiredHint();
         if (isLast) {
           const nextBtn = nav.querySelector('#quiz-next-btn');
-          if (nextBtn) nextBtn.disabled = true;
+          if (nextBtn) nextBtn.disabled = true; // prevent double-submit
           prefetchMarketoForms2();
           this.calculateScores();
           this.sendToSheetPromise = sendToSheet(this.buildSheetPayload());
@@ -4248,6 +4523,17 @@ const renderPreview = (block, product, products, config) => {
   wirePreviewResultsPage(block, product, products, config);
 };
 
+/* ===========================================================================
+ * decorate() — THE ENTRY POINT. This is where execution starts.
+ * ===========================================================================
+ * The AEM/Franklin framework calls this automatically, passing the `block`
+ * (the DOM element authored on the page). It:
+ *   1. Reads config from the block (JSON data source, hidden nav/footer, etc.)
+ *   2. Loads the product catalog via getMarkerRecommendations().
+ *   3. Handles ?preview mode (jumps straight to a results preview for authors).
+ *   4. Otherwise creates a MarkerQuiz and starts it (quiz.init()).
+ * If you're tracing "how does this thing boot up?", start reading here.
+ * =========================================================================== */
 export default async function decorate(block) {
   const config = readBlockConfigWithHtml(block);
   const markerRecommendationsSource = getMarkerRecommendationsSourceFromBlock(block, config);

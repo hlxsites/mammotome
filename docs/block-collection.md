@@ -3,14 +3,17 @@
 This is a collection of blocks, specifically developed as part of the Mammotome Franklin project.
 
 - [Hero](blocks/hero.md)
-- [Columns](blocks/columns.md)
 - [Cards](blocks/cards.md)
 - [Carousel](blocks/carousel.md)
-- [Hero-Carousel](blocks/hero-carousel.md)
-- [Product-Carousel](blocks/product-carousel.md)
 - [Collapsible](blocks/collapsible.md)
-- [Tab Navigation](blocks/tab-nav.md)
+- [Columns](blocks/columns.md)
+- [Flex-Carousel](blocks/flex-carousel.md)
+- [Hero-Autoplay](blocks/hero-autoplay.md)
+- [Hero-Carousel](blocks/hero-carousel.md)
+- [Marker-App](blocks/marker-app.md)
 - [Previous-Next Navigation](blocks/prevnext.md)
+- [Product-Carousel](blocks/product-carousel.md)
+- [Tab Navigation](blocks/tab-nav.md)
 - [SoundCloud](blocks/soundcloud.md)
 
 ### ProductDB related blocks:
