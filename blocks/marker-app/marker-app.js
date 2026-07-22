@@ -1,15 +1,6 @@
 /* ===========================================================================
- * MARKER QUIZ ("Meet Your Match") — QUICK-EDIT GUIDE FOR DEVELOPERS
+ * MARKER QUIZ ("Meet Your Match") — QUICK-EDIT GUIDE 
  * ===========================================================================
- *
- * WHAT THIS FILE DOES (the 30-second version):
- *   It runs a quiz that asks a clinician a handful of questions, adds up a
- *   score for each Mammotome marker product based on their answers, and then
- *   shows the highest-scoring product as their "top recommendation" (plus a
- *   couple of alternatives). Think of it like a personality quiz: every answer
- *   quietly adds or subtracts points from each product, and whoever has the
- *   most points at the end "wins".
- *
  * THE THREE THINGS YOU'LL MOST LIKELY BE ASKED TO CHANGE, AND WHERE THEY LIVE:
  *
  *   1. QUESTION WORDING / OPTIONS / ORDER
@@ -20,15 +11,7 @@
  *         before reordering.
  *
  *   2. HOW ANSWERS AFFECT THE SCORE (the "points" each product gets)
- *      -> Data tables near the top:  `RANK_SCORES`, `RANK_SCORES_MRI`,
- *         `RATING_ITEMS`, and the *_BONUS_KEYS constants (search for "SCORING
- *         CONFIG").
- *      -> The engine that reads those tables: `calculateScores()`
- *         (search for "calculateScores()").
- *      -> The per-question point tables: the `static get...Scores()` helpers
- *         (search for "SCORING TABLES (static helpers)").
- *      Most scoring tweaks are just changing numbers in those tables — you
- *      rarely need to touch the engine logic itself.
+ *      -> Refer to the separate marker app scoring documentation.
  *
  *   3. WHAT THE RESULTS PAGE SHOWS (top pick + alternatives + special notes)
  *      -> `showResults()` (search for "showResults()") builds the results HTML.
@@ -72,18 +55,6 @@ import {
 } from '../../scripts/lib-franklin.js';
 import { embedMultistepMarketoForm } from '../multistep-form/multistep-form.js';
 
-/* ---------------------------------------------------------------------------
- * INTEGRATION CONSTANTS (external services this quiz talks to)
- * ---------------------------------------------------------------------------
- * SHEET_URL     : Google Apps Script endpoint that stores each quiz result for
- *                 analytics. Change this if the tracking sheet moves.
- * CLIENT_SECRET : shared secret sent with each Sheet request so the script can
- *                 verify it's really coming from this app.
- * DEFAULT_CONTACT_SALES_FORM_ID : Marketo form used for "Contact a rep" when
- *                 the page author didn't specify one in the block config.
- * NOTE: these are client-side values (visible in the browser). Don't put
- * anything truly sensitive here; treat CLIENT_SECRET as low-security.
- * ------------------------------------------------------------------------- */
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwZYd5rhFtYLc0SaBDvq_lz_m5CzEG4PmPcsJBYMWbkSKEP4UNgObFh1XrxMs-vn5ME/exec';
 
 const CLIENT_SECRET = '82e499ca-32c2-4e6c-a983-12f4f7ea7a36';
@@ -240,7 +211,6 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
         sessionStorage.setItem('markerQuizUuid', data.uuid);
       }
     } else if (data.error) {
-      // server returned an error – no action needed
     }
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -470,17 +440,10 @@ const stripHtmlForAlt = (str) => {
 
 const allowTrademarkHtml = (str) => {
   const escaped = escapeHtml(str);
-  const withSup = escaped.replace(
+  return escaped.replace(
     /&lt;sup&gt;(.*?)&lt;\/sup&gt;/gs,
     (_, content) => `<sup>${content}</sup>`,
   );
-  // Site convention (see decorateSupScript in lib-franklin.js): render ™ as
-  // superscripted "TM" text (global `sup.tm` styles) so it stays legible at
-  // small sizes. Segments already inside <sup> are left untouched.
-  return withSup
-    .split(/(<sup>.*?<\/sup>)/gs)
-    .map((seg) => (seg.startsWith('<sup>') ? seg : seg.replace(/™/g, '<sup class="tm">TM</sup>')))
-    .join('');
 };
 
 const MARKETO_FORMS2_SRC = 'https://www2.mammotome.com/js/forms2/js/forms2.min.js';
@@ -858,8 +821,7 @@ const applyMarkerAppHideChrome = ({ hideNav, hideFooter }) => {
 /* ===========================================================================
  * SCORING CONFIG  (the "how many points" data tables)
  * ===========================================================================
- * This is where most scoring changes happen. These are plain data objects —
- * changing a number here changes how the quiz scores, no logic edits needed.
+ * Changing a number here changes how a product scores, no logic edits are needed. 
  *
  * RANK_SCORES powers the "rank these features" question (Q3, the drag/reorder
  * one) for the NON-MRI path. RANK_SCORES_MRI is the MRI equivalent below it.
@@ -873,8 +835,7 @@ const applyMarkerAppHideChrome = ({ hideNav, hideFooter }) => {
  *   - q3_capability_ratings: for EACH product, how good (1-5) it is at each
  *     capability. Final points for a feature = product's rating x rank weight.
  *
- * Example: user ranks "Ease of Locating" #1 (weight 6). HydroMARK's `locating`
- * rating is 5, so HydroMARK gains 5 x 6 = 30 points from that one choice.
+ * To understand scoring logic, reference the separate marker app scoring documentation.
  * =========================================================================== */
 const RANK_SCORES = {
   type: 'ranked_capability',
@@ -2596,13 +2557,6 @@ class MarkerQuiz {
    * index). The order of rows here must match the order of options in
    * buildQuestions() for the same question. Each table comments which option
    * each row belongs to — keep them in sync when you edit questions.
-   *
-   * About "ELECTRE" (you'll see the word a lot): it's just the naming scheme
-   * for hard compatibility rules. A product can be 'full', 'partial', or
-   * 'incompatible' with a modality. ELECTRE_SCORES turns those into points:
-   * full = +15, partial = -20, incompatible = -9999 (a "veto" — so negative it
-   * can never be recommended). ELECTRE_VETO_THRESHOLD is the cutoff used later
-   * to filter vetoed products out of the results.
    * ======================================================================= */
 
   /**
@@ -2643,14 +2597,7 @@ class MarkerQuiz {
     return compatibility[optionIndex] || {};
   }
 
-  // Any product whose total score is <= this is treated as "vetoed" (never
-  // recommended). It's set well below the incompatible score (-9999) so a
-  // single incompatible answer is enough to knock a product out.
   static get ELECTRE_VETO_THRESHOLD() { return -9000; }
-
-  // Points awarded for modality compatibility. Tweak these to make modality
-  // compatibility matter more or less. `incompatible` is intentionally huge-
-  // negative so it acts as a hard veto (see ELECTRE_VETO_THRESHOLD above).
   static get ELECTRE_SCORES() {
     return { full: 15, partial: -20, incompatible: -9999 };
   }
