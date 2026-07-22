@@ -1146,6 +1146,283 @@ function buildSocialShareSectionHtml() {
               </div>`;
 }
 
+/* ===========================================================================
+ * Shared results card — used by BOTH the live results and ?preview mode.
+ * ===========================================================================
+ * showResults() (live quiz) and renderPreview() (?preview authoring mode)
+ * render the exact same card through these two functions so the preview page
+ * always mirrors the live layout. The callers only differ in:
+ *   - the data they pass (real ranked products vs. preview picks)
+ *   - the chrome around the card (preview bar, close-button behavior)
+ *   - the callbacks injected into wireResultsCard() below.
+ * =========================================================================== */
+
+/**
+ * Build the results-card HTML (hero, features/video, contact + email buttons,
+ * alternatives grid, social share, footnotes).
+ *
+ * @param {Object}  o
+ * @param {Object}  o.topProduct              product for the hero section
+ * @param {Object[]} o.alternativeProducts    "You Should Also Consider" cards;
+ *   entries may carry `hemostaticForced` / `naturalForced` to show card notes
+ * @param {?string} o.emailResultsFormId      Marketo form id; falsy -> inline
+ *   lead-capture fallback form instead
+ * @param {boolean} o.showHemostaticFootnote  render the asterisk citation
+ * @param {string}  [o.cardClasses]           extra classes on .results-card
+ */
+const buildResultsCardHtml = ({
+  topProduct,
+  alternativeProducts,
+  emailResultsFormId,
+  showHemostaticFootnote,
+  cardClasses = '',
+}) => {
+  const emailOrLeadBlock = emailResultsFormId
+    ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>'
+    : `
+                  <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
+                    <div class="lead-capture-fields">
+                      <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
+                      <input class="lead-input" id="lead-email" type="email" placeholder="Work email" autocomplete="email" />
+                      <input class="lead-input" id="lead-facility" type="text" placeholder="Facility / institution" autocomplete="organization" />
+                    </div>
+                    <div class="lead-capture-actions">
+                      <button class="btn btn-quiz-primary" id="lead-submit-btn">Submit</button>
+                      <button class="btn btn-quiz-secondary" id="lead-cancel-btn">Cancel</button>
+                    </div>
+                    <p class="lead-capture-error" style="display:none;">Please enter your name and a valid email.</p>
+                  </div>
+                  <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
+                    ✓ Thanks! Your results have been recorded.
+                  </p>`;
+
+  return `
+            <div class="survey-card results-card${cardClasses ? ` ${cardClasses}` : ''}">
+              <div class="results-container">
+                <div class="top-recommendation-hero">
+                  <div class="top-recommendation-image">
+                    <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="${stripHtmlForAlt(topProduct.name)}" />
+                  </div>
+                  <div class="top-recommendation-content">
+                    <div class="top-recommendation-heading">
+                      <p class="top-recommendation-label">Your top recommended marker</p>
+                      <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
+                    </div>
+                    <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
+                  </div>
+                </div>
+    
+                <div class="features-video-section ${(topProduct.video || topProduct.featuredPhoto) ? 'has-video' : 'no-video'}">
+                  <div class="features-section-inner">
+                    <h2 class="features-section-title">Product Features</h2>
+                    <div class="features-section-content">
+                      <div class="features-container">
+                        <ul class="top-recommendation-features product-features">
+                          ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
+                        </ul>
+                      </div>
+                      ${(topProduct.video || topProduct.featuredPhoto) ? `
+                      <div class="features-media-column">
+                        ${topProduct.featuredPhoto ? `
+                          <div class="product-featured-photo">
+                            <img src="${escapeHtml(topProduct.featuredPhoto)}" alt="Featured" />
+                          </div>
+                        ` : ''}
+                        ${topProduct.video ? `
+                          <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(topProduct.video))}" ${isVimeoVideo(topProduct.video) ? `data-vimeo-url="${escapeHtml(topProduct.video.trim())}"` : ''} aria-label="Play video">
+                            <img src="${escapeHtml(getVideoThumbnailUrl(topProduct))}" alt="Play video" />
+                            <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
+                          </button>
+                        ` : ''}
+                      </div>
+                    ` : ''}
+                    </div>
+                  </div>
+                </div>
+
+                
+                <div class="quiz-actions-section">
+                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
+                  <div class="quiz-actions-buttons">
+                           <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
+
+                  <button type="button" class="btn btn-contact-secondary" id="request-results-btn">Email My Results</button>
+                  </div>
+                  ${emailOrLeadBlock}
+                </div>
+
+                <hr class="divider primary">
+                <div class="alternatives-section">
+                  <h3>You Should Also Consider</h3>
+                  <div class="alternatives-grid">
+                    ${alternativeProducts.map((prod) => `
+                      <div class="product-card">
+                        <div class="product-image">
+                          <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
+                        </div>
+                        <h4>${allowTrademarkHtml(prod.name)}</h4>
+                        ${prod.hemostaticForced ? `<p class="card-reason">${escapeHtml(HEMOSTATIC_MAMMOMARK_NOTE)}</p>` : ''}
+                        ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(NATURAL_PREFERENCE_NOTE)}</p>` : ''}
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <hr class="divider primary">
+                ${buildSocialShareSectionHtml()}
+    
+                ${((topProduct.footnotes || []).length || showHemostaticFootnote) ? `
+                  <div class="product-footnotes">
+                    ${(topProduct.footnotes || []).length ? `
+                    <ol class="footnotes-list">
+                      ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
+                    </ol>
+                    ` : ''}
+                    ${showHemostaticFootnote ? `
+                    <p class="footnote footnote-asterisk">${HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML}</p>
+                    ` : ''}
+                  </div>
+                ` : ''}
+    
+              </div>
+            </div>`;
+};
+
+/**
+ * Wire up every interactive piece of the results card built by
+ * buildResultsCardHtml(): social share, video thumbnails, "Yes, Contact Me"
+ * Marketo overlay, "Email My Results" Marketo form (or the lead-capture
+ * fallback when no form id is configured).
+ *
+ * Behavior differences between live and preview are injected:
+ * @param {Element}  block
+ * @param {Object}   o
+ * @param {?string}  o.contactSalesFormId
+ * @param {?string}  o.emailResultsFormId
+ * @param {Function} o.getSheetPayload  () => payload — real answers (live) or
+ *   the preview stub
+ * @param {Function} o.getResultsUrl    async () => url — live waits for the
+ *   sheet log first
+ * @param {Function} o.onExit           live restarts the quiz; preview reloads
+ *   the page without ?preview
+ */
+const wireResultsCard = (block, {
+  contactSalesFormId,
+  emailResultsFormId,
+  getSheetPayload,
+  getResultsUrl,
+  onExit,
+}) => {
+  bindSocialShareButtons(block);
+
+  block.querySelector('#restart-btn')?.addEventListener('click', () => onExit());
+
+  block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
+    btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
+  });
+
+  block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
+    if (!contactSalesFormId) return;
+    const contactButtons = block.querySelector('.contact-section .contact-buttons');
+    const contactSection = block.querySelector('.contact-section');
+    if (contactButtons) contactButtons.style.display = 'none';
+    await openContactSalesMarketoOverlay({
+      contactSalesFormId,
+      extendHiddenFields: async (f) => {
+        const resultsUrl = await getResultsUrl();
+        try {
+          f.addHiddenFields({
+            quizResultsURL: resultsUrl,
+            Products__c: buildMarketoEmailResultsProductFieldValue(getSheetPayload()),
+          });
+        } catch (err) {
+          /* ignore: hidden field optional */
+        }
+      },
+      contactSectionEl: contactSection,
+      contactButtonsEl: contactButtons,
+      overlayHost: block.querySelector('.product-survey-container.survey-fullscreen'),
+      onFinishClose: () => onExit(),
+    });
+  });
+
+  block.querySelector('#contact-no-btn')?.addEventListener('click', () => onExit());
+
+  const requestResultsBtn = block.querySelector('#request-results-btn');
+  const emailFormWrapper = block.querySelector('#email-results-form-wrapper');
+
+  if (emailResultsFormId && requestResultsBtn && emailFormWrapper) {
+    requestResultsBtn.addEventListener('click', async () => {
+      requestResultsBtn.style.display = 'none';
+      emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
+      emailFormWrapper.style.display = 'block';
+      try {
+        const [form, resultsUrl] = await Promise.all([
+          embedMarketoForm(emailFormWrapper, emailResultsFormId),
+          getResultsUrl(),
+        ]);
+
+        const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        form.addHiddenFields({
+          quizResultsURL: resultsUrl,
+          Product__c: buildMarketoEmailResultsProductFieldValue(getSheetPayload()),
+        });
+
+        if (submitBtn) submitBtn.disabled = false;
+
+        form.onSuccess((values) => {
+          sendToSheet(getSheetPayload(), {
+            email: extractEmailFromMarketoSuccessValues(values),
+          });
+          emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
+          return false;
+        });
+      } catch (e) {
+        emailFormWrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form. Please try again later.</p>';
+      }
+    });
+  } else if (requestResultsBtn) {
+    const leadForm = block.querySelector('#lead-capture-form');
+    const leadConfirmation = block.querySelector('#lead-capture-confirmation');
+    const leadError = block.querySelector('.lead-capture-error');
+
+    requestResultsBtn.addEventListener('click', () => {
+      requestResultsBtn.style.display = 'none';
+      if (leadForm) leadForm.style.display = 'block';
+      block.querySelector('#lead-name')?.focus();
+    });
+
+    block.querySelector('#lead-cancel-btn')?.addEventListener('click', () => {
+      if (leadForm) leadForm.style.display = 'none';
+      requestResultsBtn.style.display = '';
+    });
+
+    block.querySelector('#lead-submit-btn')?.addEventListener('click', () => {
+      const name = block.querySelector('#lead-name')?.value?.trim() || '';
+      const email = block.querySelector('#lead-email')?.value?.trim() || '';
+      const facility = block.querySelector('#lead-facility')?.value?.trim() || '';
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (!name || !emailValid) {
+        if (leadError) leadError.style.display = 'block';
+        return;
+      }
+
+      if (leadError) leadError.style.display = 'none';
+      if (leadForm) leadForm.style.display = 'none';
+      if (leadConfirmation) leadConfirmation.style.display = 'block';
+
+      sendToSheet({
+        ...getSheetPayload(), name, email, facility,
+      });
+    });
+  }
+
+  applyVimeoThumbnails(block);
+};
+
 const RATING_SCALE = [
   { value: 1, label: 'Never' },
   { value: 2, label: '' },
@@ -3051,10 +3328,10 @@ class MarkerQuiz {
    *                       specific product for special cases (hemostatic ->
    *                       MammoMARK, strong natural preference -> MammoStar/
    *                       BiomarC) rather than just taking the next by score.
-   * The rest of this method is HTML for the results page + wiring up the
-   * "Contact me" / "Email my results" buttons. To change results copy/layout,
-   * edit the template string below. To change WHICH products appear, edit the
-   * ranking logic here and/or getThirdRecommendationProduct().
+   * The results page HTML + button wiring are SHARED with ?preview mode:
+   * see buildResultsCardHtml() / wireResultsCard(). To change results
+   * copy/layout, edit buildResultsCardHtml(). To change WHICH products
+   * appear, edit the ranking logic here and/or getThirdRecommendationProduct().
    * ======================================================================= */
   showResults() {
     prefetchMarketoForms2();
@@ -3089,230 +3366,27 @@ class MarkerQuiz {
     this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen">
             ${CLOSE_BTN_HTML}
-            <div class="survey-card results-card">
-              <div class="results-container">
-                <div class="top-recommendation-hero">
-                  <div class="top-recommendation-image">
-                    <img src="${escapeHtml(topProduct.cardImage || topProduct.image)}" alt="${stripHtmlForAlt(topProduct.name)}" />
-                  </div>
-                  <div class="top-recommendation-content">
-                    <div class="top-recommendation-heading">
-                      <p class="top-recommendation-label">Your top recommended marker</p>
-                      <h1 class="top-recommendation-name">${allowTrademarkHtml(topProduct.name)}</h1>
-                    </div>
-                    <div class="top-recommendation-description">${allowTrademarkHtml(topProduct.description)}</div>
-                  </div>
-                </div>
-    
-                <div class="features-video-section ${(topProduct.video || topProduct.featuredPhoto) ? 'has-video' : 'no-video'}">
-                  <div class="features-section-inner">
-                    <h2 class="features-section-title">Product Features</h2>
-                    <div class="features-section-content">
-                      <div class="features-container">
-                        <ul class="top-recommendation-features product-features">
-                          ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
-                        </ul>
-                      </div>
-                      ${(topProduct.video || topProduct.featuredPhoto) ? `
-                      <div class="features-media-column">
-                        ${topProduct.featuredPhoto ? `
-                          <div class="product-featured-photo">
-                            <img src="${escapeHtml(topProduct.featuredPhoto)}" alt="Featured" />
-                          </div>
-                        ` : ''}
-                        ${topProduct.video ? `
-                          <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(topProduct.video))}" ${isVimeoVideo(topProduct.video) ? `data-vimeo-url="${escapeHtml(topProduct.video.trim())}"` : ''} aria-label="Play video">
-                            <img src="${escapeHtml(getVideoThumbnailUrl(topProduct))}" alt="Play video" />
-                            <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
-                          </button>
-                        ` : ''}
-                      </div>
-                    ` : ''}
-                    </div>
-                  </div>
-                </div>
-
-                
-                <div class="quiz-actions-section">
-                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
-                  <div class="quiz-actions-buttons">
-                           <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
-
-                  <button type="button" class="btn btn-contact-secondary" id="request-results-btn">Email My Results</button>
-                  </div>
-                  ${this.emailResultsFormId ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>' : `
-                  <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
-                    <div class="lead-capture-fields">
-                      <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
-                      <input class="lead-input" id="lead-email" type="email" placeholder="Work email" autocomplete="email" />
-                      <input class="lead-input" id="lead-facility" type="text" placeholder="Facility / institution" autocomplete="organization" />
-                    </div>
-                    <div class="lead-capture-actions">
-                      <button class="btn btn-quiz-primary" id="lead-submit-btn">Submit</button>
-                      <button class="btn btn-quiz-secondary" id="lead-cancel-btn">Cancel</button>
-                    </div>
-                    <p class="lead-capture-error" style="display:none;">Please enter your name and a valid email.</p>
-                  </div>
-                  <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
-                    ✓ Thanks! Your results have been recorded.
-                  </p>`}
-                </div>
-
-                <hr class="divider primary">
-                <div class="alternatives-section">
-                  <h3>You Should Also Consider</h3>
-                  <div class="alternatives-grid">
-                    ${alternativeProducts.map((prod) => `
-                      <div class="product-card">
-                        <div class="product-image">
-                          <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
-                        </div>
-                        <h4>${allowTrademarkHtml(prod.name)}</h4>
-                        ${prod.hemostaticForced ? `<p class="card-reason">${escapeHtml(HEMOSTATIC_MAMMOMARK_NOTE)}</p>` : ''}
-                        ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(NATURAL_PREFERENCE_NOTE)}</p>` : ''}
-                      </div>
-                    `).join('')}
-                  </div>
-                </div>
-
-                <hr class="divider primary">
-                ${buildSocialShareSectionHtml()}
-    
-                ${((topProduct.footnotes || []).length || showHemostaticMammomarkNote) ? `
-                  <div class="product-footnotes">
-                    ${(topProduct.footnotes || []).length ? `
-                    <ol class="footnotes-list">
-                      ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
-                    </ol>
-                    ` : ''}
-                    ${showHemostaticMammomarkNote ? `
-                    <p class="footnote footnote-asterisk">${HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML}</p>
-                    ` : ''}
-                  </div>
-                ` : ''}
-    
-              </div>
-            </div>
+            ${buildResultsCardHtml({
+    topProduct,
+    alternativeProducts,
+    emailResultsFormId: this.emailResultsFormId,
+    showHemostaticFootnote: showHemostaticMammomarkNote,
+  })}
           </div>`;
 
     this.bindCloseBtn();
-    bindSocialShareButtons(this.block);
-    this.block.querySelector('#restart-btn')?.addEventListener('click', () => this.restart());
-    this.block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
-      btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
+    wireResultsCard(this.block, {
+      contactSalesFormId: this.contactSalesFormId,
+      emailResultsFormId: this.emailResultsFormId,
+      getSheetPayload: () => this.buildSheetPayload(),
+      getResultsUrl: async () => {
+        // Make sure the sheet row (keyed by uuid) exists before Marketo gets
+        // the results URL that points at it.
+        if (this.sendToSheetPromise) await this.sendToSheetPromise;
+        return prepareQuizResultsUrlForMarketo();
+      },
+      onExit: () => this.restart(),
     });
-
-    this.block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
-      if (!this.contactSalesFormId) return;
-      const contactButtons = this.block.querySelector('.contact-section .contact-buttons');
-      const contactSection = this.block.querySelector('.contact-section');
-      if (contactButtons) contactButtons.style.display = 'none';
-      await openContactSalesMarketoOverlay({
-        contactSalesFormId: this.contactSalesFormId,
-        extendHiddenFields: async (f) => {
-          const resultsUrl = await (async () => {
-            if (this.sendToSheetPromise) await this.sendToSheetPromise;
-            return prepareQuizResultsUrlForMarketo();
-          })();
-          try {
-            f.addHiddenFields({
-              quizResultsURL: resultsUrl,
-              Products__c: buildMarketoEmailResultsProductFieldValue(this.buildSheetPayload()),
-            });
-          } catch (err) {
-            /* ignore: hidden field optional */
-          }
-        },
-        getSheetPayload: () => ({}),
-        contactSectionEl: contactSection,
-        contactButtonsEl: contactButtons,
-        overlayHost: this.block.querySelector('.product-survey-container.survey-fullscreen'),
-        onFinishClose: () => this.restart(),
-      });
-    });
-
-    this.block.querySelector('#contact-no-btn')?.addEventListener('click', () => {
-      this.restart();
-    });
-
-    const requestResultsBtn = this.block.querySelector('#request-results-btn');
-    const emailFormWrapper = this.block.querySelector('#email-results-form-wrapper');
-
-    if (this.emailResultsFormId && requestResultsBtn && emailFormWrapper) {
-      requestResultsBtn.addEventListener('click', async () => {
-        requestResultsBtn.style.display = 'none';
-        emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
-        emailFormWrapper.style.display = 'block';
-        try {
-          const [form, resultsUrl] = await Promise.all([
-            embedMarketoForm(emailFormWrapper, this.emailResultsFormId),
-            (async () => {
-              if (this.sendToSheetPromise) await this.sendToSheetPromise;
-              return prepareQuizResultsUrlForMarketo();
-            })(),
-          ]);
-
-          const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
-          if (submitBtn) submitBtn.disabled = true;
-
-          const sheetPayload = this.buildSheetPayload();
-
-          form.addHiddenFields({
-            quizResultsURL: resultsUrl,
-            Product__c: buildMarketoEmailResultsProductFieldValue(sheetPayload),
-          });
-
-          if (submitBtn) submitBtn.disabled = false;
-
-          form.onSuccess((values) => {
-            sendToSheet(this.buildSheetPayload(), {
-              email: extractEmailFromMarketoSuccessValues(values),
-            });
-            emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
-            return false;
-          });
-        } catch (e) {
-          emailFormWrapper.innerHTML = '<p class="error">Unable to load form. Please try again later.</p>';
-        }
-      });
-    } else if (requestResultsBtn) {
-      const leadForm = this.block.querySelector('#lead-capture-form');
-      const leadConfirmation = this.block.querySelector('#lead-capture-confirmation');
-      const leadError = this.block.querySelector('.lead-capture-error');
-
-      requestResultsBtn.addEventListener('click', () => {
-        requestResultsBtn.style.display = 'none';
-        leadForm.style.display = 'block';
-        this.block.querySelector('#lead-name')?.focus();
-      });
-
-      this.block.querySelector('#lead-cancel-btn')?.addEventListener('click', () => {
-        leadForm.style.display = 'none';
-        requestResultsBtn.style.display = '';
-      });
-
-      this.block.querySelector('#lead-submit-btn')?.addEventListener('click', () => {
-        const name = this.block.querySelector('#lead-name')?.value?.trim() || '';
-        const email = this.block.querySelector('#lead-email')?.value?.trim() || '';
-        const facility = this.block.querySelector('#lead-facility')?.value?.trim() || '';
-        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-        if (!name || !emailValid) {
-          if (leadError) leadError.style.display = 'block';
-          return;
-        }
-
-        if (leadError) leadError.style.display = 'none';
-        leadForm.style.display = 'none';
-        if (leadConfirmation) leadConfirmation.style.display = 'block';
-
-        sendToSheet({
-          ...this.buildSheetPayload(), name, email, facility,
-        });
-      });
-    }
-
-    applyVimeoThumbnails(this.block);
   }
 
   renderStep() {
@@ -4199,17 +4273,36 @@ const buildPreviewSheetPayload = (topProduct, products) => {
   };
 };
 
-const pickPreviewAlternativeProducts = (topProduct, products, limit = 2) => (
-  Object.values(products || {})
-    .filter((p) => p.id !== topProduct.id)
-    .sort((a, b) => a.slug.localeCompare(b.slug))
-    .slice(0, limit)
-);
+/**
+ * Preview alternatives always include the two CONDITIONAL recommendations so
+ * their card notes can be style-checked without replaying the quiz:
+ *   - MammoMARK with the hemostatic note (+ asterisk footnote)
+ *   - BiomarC with the natural-preference note
+ * If one of them is the previewed hero product, remaining slots are filled
+ * with other products alphabetically (no note).
+ */
+const pickPreviewAlternativeProducts = (topProduct, products, limit = 2) => {
+  const forced = [
+    { id: 'biomarc', flag: 'naturalForced' },
+    { id: 'mammomark', flag: 'hemostaticForced' },
+  ]
+    .map(({ id, flag }) => {
+      const p = products?.[id] || findProductBySlug(products, id);
+      return p && p.id !== topProduct.id ? { ...p, [flag]: true } : null;
+    })
+    .filter(Boolean);
+
+  const usedIds = new Set([topProduct.id, ...forced.map((p) => p.id)]);
+  const fillers = Object.values(products || {})
+    .filter((p) => !usedIds.has(p.id))
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+
+  return [...forced, ...fillers].slice(0, limit);
+};
 
 const wirePreviewResultsPage = (block, product, products, config) => {
   const emailResultsFormId = getEmailResultsFormIdFromConfig(config);
   const contactSalesFormId = getContactSalesFormIdFromConfig(config);
-  const sheetPayload = () => buildPreviewSheetPayload(product, products);
   const previewResultsUrlPromise = prepareQuizResultsUrlForMarketo();
 
   /** Leave preview mode and load the real quiz from the start (same as Take Quiz Again). */
@@ -4223,117 +4316,19 @@ const wirePreviewResultsPage = (block, product, products, config) => {
     exitPreviewToQuizStart();
   });
 
-  bindSocialShareButtons(block);
-
-  block.querySelectorAll('.product-video-thumbnail').forEach((btn) => {
-    btn.addEventListener('click', () => openProductVideo(btn.dataset.videoUrl));
-  });
-
-  block.querySelector('#restart-btn')?.addEventListener('click', () => {
-    exitPreviewToQuizStart();
-  });
-
   block.querySelector('#preview-product-select')?.addEventListener('change', (e) => {
     const url = new URL(window.location);
     url.searchParams.set('preview', e.target.value);
     window.location.href = url.toString();
   });
 
-  block.querySelector('#contact-yes-btn')?.addEventListener('click', async () => {
-    if (!contactSalesFormId) return;
-    const contactButtons = block.querySelector('.contact-section .contact-buttons');
-    const contactSection = block.querySelector('.contact-section');
-    if (contactButtons) contactButtons.style.display = 'none';
-    await openContactSalesMarketoOverlay({
-      contactSalesFormId,
-      extendHiddenFields: async (f) => {
-        const resultsUrl = await previewResultsUrlPromise;
-        try {
-          f.addHiddenFields({
-            quizResultsURL: resultsUrl,
-            Products__c: buildMarketoEmailResultsProductFieldValue(sheetPayload()),
-          });
-        } catch (err) {
-          /* ignore: hidden field optional */
-        }
-      },
-      getSheetPayload: sheetPayload,
-      contactSectionEl: contactSection,
-      contactButtonsEl: contactButtons,
-      overlayHost: block.querySelector('.product-survey-container.survey-fullscreen'),
-      onFinishClose: () => exitPreviewToQuizStart(),
-    });
+  wireResultsCard(block, {
+    contactSalesFormId,
+    emailResultsFormId,
+    getSheetPayload: () => buildPreviewSheetPayload(product, products),
+    getResultsUrl: () => previewResultsUrlPromise,
+    onExit: exitPreviewToQuizStart,
   });
-
-  block.querySelector('#contact-no-btn')?.addEventListener('click', () => {
-    exitPreviewToQuizStart();
-  });
-
-  const requestResultsBtn = block.querySelector('#request-results-btn');
-  const emailFormWrapper = block.querySelector('#email-results-form-wrapper');
-
-  if (emailResultsFormId && requestResultsBtn && emailFormWrapper) {
-    requestResultsBtn.addEventListener('click', async () => {
-      requestResultsBtn.style.display = 'none';
-      emailFormWrapper.innerHTML = EMAIL_RESULTS_LOADING_HTML;
-      emailFormWrapper.style.display = 'block';
-      try {
-        const [form, resultsUrl] = await Promise.all([
-          embedMarketoForm(emailFormWrapper, emailResultsFormId),
-          previewResultsUrlPromise,
-        ]);
-        const submitBtn = emailFormWrapper.querySelector('button[type="submit"]');
-        if (submitBtn) submitBtn.disabled = true;
-        const previewPayload = sheetPayload();
-        form.addHiddenFields({
-          quizResultsURL: resultsUrl,
-          Product__c: buildMarketoEmailResultsProductFieldValue(previewPayload),
-        });
-        if (submitBtn) submitBtn.disabled = false;
-        form.onSuccess((values) => {
-          sendToSheet(sheetPayload(), { email: extractEmailFromMarketoSuccessValues(values) });
-          emailFormWrapper.innerHTML = EMAIL_RESULTS_THANK_YOU_HTML;
-          return false;
-        });
-      } catch (e) {
-        emailFormWrapper.innerHTML = '<p class="contact-sales-form-error">Unable to load form.</p>';
-      }
-    });
-  } else if (requestResultsBtn) {
-    const leadForm = block.querySelector('#lead-capture-form');
-    const leadConfirmation = block.querySelector('#lead-capture-confirmation');
-    const leadError = block.querySelector('.lead-capture-error');
-
-    requestResultsBtn.addEventListener('click', () => {
-      requestResultsBtn.style.display = 'none';
-      if (leadForm) leadForm.style.display = 'block';
-      block.querySelector('#lead-name')?.focus();
-    });
-
-    block.querySelector('#lead-cancel-btn')?.addEventListener('click', () => {
-      if (leadForm) leadForm.style.display = 'none';
-      requestResultsBtn.style.display = '';
-    });
-
-    block.querySelector('#lead-submit-btn')?.addEventListener('click', () => {
-      const name = block.querySelector('#lead-name')?.value?.trim() || '';
-      const email = block.querySelector('#lead-email')?.value?.trim() || '';
-      const facility = block.querySelector('#lead-facility')?.value?.trim() || '';
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if (!name || !emailValid) {
-        if (leadError) leadError.style.display = 'block';
-        return;
-      }
-      if (leadError) leadError.style.display = 'none';
-      if (leadForm) leadForm.style.display = 'none';
-      if (leadConfirmation) leadConfirmation.style.display = 'block';
-      sendToSheet({
-        ...sheetPayload(), name, email, facility,
-      });
-    });
-  }
-
-  applyVimeoThumbnails(block);
 };
 
 const renderPreview = (block, product, products, config) => {
@@ -4343,40 +4338,14 @@ const renderPreview = (block, product, products, config) => {
     .map((p) => `<option value="${p.slug}"${p.slug === product.slug ? ' selected' : ''}>${p.name}</option>`)
     .join('');
   const emailResultsFormId = getEmailResultsFormIdFromConfig(config);
-  const alternativeProducts = pickPreviewAlternativeProducts(product, products, 2);
-  const alternativesHtml = alternativeProducts.length
-    ? alternativeProducts.map((prod) => `
-                      <div class="product-card">
-                        <div class="product-image">
-                          <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
-                        </div>
-                        <h4>${allowTrademarkHtml(prod.name)}</h4>
-                      </div>`).join('')
-    : `
-                      <div class="product-card preview-alternative-fallback">
-                        <div class="product-image">
-                          <img src="${PLACEHOLDER_IMAGE}" alt="" />
-                        </div>
-                        <h4>No other products in feed</h4>
-                      </div>`;
-  const emailOrLeadBlock = emailResultsFormId
-    ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>'
-    : `
-                  <div id="lead-capture-form" class="lead-capture-form" style="display:none;">
-                    <div class="lead-capture-fields">
-                      <input class="lead-input" id="lead-name" type="text" placeholder="Full name" autocomplete="name" />
-                      <input class="lead-input" id="lead-email" type="email" placeholder="Work email" autocomplete="email" />
-                      <input class="lead-input" id="lead-facility" type="text" placeholder="Facility / institution" autocomplete="organization" />
-                    </div>
-                    <div class="lead-capture-actions">
-                      <button class="btn btn-quiz-primary" id="lead-submit-btn">Submit</button>
-                      <button class="btn btn-quiz-secondary" id="lead-cancel-btn">Cancel</button>
-                    </div>
-                    <p class="lead-capture-error" style="display:none;">Please enter your name and a valid email.</p>
-                  </div>
-                  <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
-                    ✓ Thanks! Your results have been recorded.
-                  </p>`;
+  let alternativeProducts = pickPreviewAlternativeProducts(product, products, 2);
+  if (alternativeProducts.length === 0) {
+    alternativeProducts = [{
+      id: 'preview-fallback',
+      name: 'No other products in feed',
+      image: PLACEHOLDER_IMAGE,
+    }];
+  }
 
   document.body.classList.add('survey-fullscreen-active');
 
@@ -4387,84 +4356,13 @@ const renderPreview = (block, product, products, config) => {
             <span class="preview-bar-label">Results preview — add <code>?preview</code> or <code>?preview=slug</code> to the URL</span>
             <select id="preview-product-select" aria-label="Preview product">${options}</select>
           </div>
-          <div class="survey-card results-card preview-results">
-            <div class="results-container">
-              <div class="top-recommendation-hero">
-                <div class="top-recommendation-image">
-                  <img src="${escapeHtml(product.cardImage || product.image)}" alt="${stripHtmlForAlt(product.name)}" />
-                </div>
-                <div class="top-recommendation-content">
-                  <div class="top-recommendation-heading">
-                    <p class="top-recommendation-label">Your top recommended marker</p>
-                    <h1 class="top-recommendation-name">${allowTrademarkHtml(product.name)}</h1>
-                  </div>
-                  <div class="top-recommendation-description">${allowTrademarkHtml(product.description)}</div>
-                </div>
-              </div>
-
-              <div class="features-video-section ${(product.video || product.featuredPhoto) ? 'has-video' : 'no-video'}">
-                <div class="features-section-inner">
-                  <h2 class="features-section-title">Product Features</h2>
-                  <div class="features-section-content">
-                    <div class="features-container">
-                      <ul class="top-recommendation-features product-features">
-                        ${(product.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
-                      </ul>
-                    </div>
-                    ${(product.video || product.featuredPhoto) ? `
-                      <div class="features-media-column">
-                        ${product.featuredPhoto ? `
-                          <div class="product-featured-photo">
-                            <img src="${escapeHtml(product.featuredPhoto)}" alt="Featured" />
-                          </div>
-                        ` : ''}
-                    ${product.video ? `
-                        <button type="button" class="product-video-thumbnail" data-video-url="${escapeHtml(getVideoEmbedUrl(product.video))}" ${isVimeoVideo(product.video) ? `data-vimeo-url="${escapeHtml(product.video.trim())}"` : ''} aria-label="Play video">
-                          <img src="${escapeHtml(getVideoThumbnailUrl(product))}" alt="Play video" />
-                          <span class="icon-playvideo">${ICON_PLAYVIDEO_SVG}</span>
-                        </button>
-                      ` : ''}
-                      </div>
-                    ` : ''}
-                  </div>
-                </div>
-              </div>
-    
-              <div class="contact-section">
-                <h3>Would you like to be contacted by a sales rep to learn more?</h3>
-                              <div class="quiz-actions-section">
-                <div class="quiz-actions-buttons">
-                  <button class="btn btn-contact-primary" id="contact-yes-btn">Yes, Contact Me</button>
-
-                  <button type="button" class="btn btn-contact-secondary" id="request-results-btn">Email My Results</button>
-                </div>
-                  ${emailOrLeadBlock}
-              </div>
-    
-              </div>
-
-
-              <hr class="divider primary">
-              <div class="alternatives-section">
-                <h3>You Should Also Consider</h3>
-                <div class="alternatives-grid">
-                  ${alternativesHtml}
-                </div>
-              </div>
-    
-              <hr class="divider primary">
-              ${buildSocialShareSectionHtml()}
-    
-              ${(product.footnotes || []).length ? `
-                <div class="product-footnotes">
-                  <ol class="footnotes-list">
-                    ${(product.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
-                  </ol>
-                </div>
-              ` : ''}
-            
-            </div>
-          </div>
+          ${buildResultsCardHtml({
+    topProduct: product,
+    alternativeProducts,
+    emailResultsFormId,
+    showHemostaticFootnote: alternativeProducts.some((p) => p.hemostaticForced),
+    cardClasses: 'preview-results',
+  })}
         </div>`;
 
   wirePreviewResultsPage(block, product, products, config);
