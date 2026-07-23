@@ -2,7 +2,7 @@
 
 The Marker-App block renders the "Meet Your Match" marker recommendation quiz: a start screen, a series of questions, and a results screen with recommended products, email-results and contact-sales forms, and social sharing.
 
-Unlike most blocks, **the questions, answer options, and scoring logic live in the code, not in the document.** Authors do not write the quiz. What the author controls is the configuration around it: which product data file to load, the start screen wording, images attached to specific questions, which questions to hide, and which forms to use.
+Unlike most blocks, **the questions, answer options, and scoring logic live in the code, not in the document.** Authors do not write the quiz. What the author controls is the configuration around it: which product data file to load, the start screen wording, images attached to specific questions, which questions to hide, which forms to use, and the text prefilled into the social "share your results" buttons.
 
 ## Variations
 
@@ -41,6 +41,32 @@ Notes:
 | --- | --- | --- |
 | `email-results-form-id` | Marketo form ID | Email results form is unavailable |
 | `contact-sales-form-id` | Marketo form ID | `2695` |
+
+### Social share text
+
+| Setting | Value | Default if omitted |
+| --- | --- | --- |
+| `share-text` | The message prefilled when a visitor shares their results on LinkedIn, Facebook, or X | The standard #MarkerMatch copy below |
+
+The results screen has a "Share Your #MarkerMatch" section with LinkedIn, Facebook, and X buttons. All three buttons use the **same** text — there is one `share-text` row, not one per network. The quiz page URL is appended automatically, so don't include a link in the text.
+
+Each paragraph (line) you write in the cell becomes its own paragraph in the share message, separated by a blank line. Formatting like bold or italics is dropped — only the plain text is used.
+
+If the row is omitted or left empty, this default is used:
+
+> I found my #MarkerMatch with the Mammotome Meet Your Match Quiz!
+>
+> Find out which Mammotome marker is your match.
+>
+> Take the quiz to discover the marker that aligns with your patient and clinical needs, then share your results.
+>
+> #MarkerMatch #MammotomeMarkers #BreastBiopsy
+
+Example row:
+
+| Setting | Value |
+| --- | --- |
+| `share-text` | I just took the Meet Your Match quiz — find out which marker fits your practice! #MarkerMatch |
 
 ### Hiding things
 
@@ -143,6 +169,7 @@ Full-screen quiz with a video background, custom wording, and both Marketo forms
 | start-window | https://vimeo.com/123456789 |
 | email-results-form-id | 2841 |
 | contact-sales-form-id | 2695 |
+| share-text | I found my #MarkerMatch with the Mammotome Meet Your Match Quiz! #MarkerMatch |
 | hide | nav, footer |
 
 **With images and a hidden question**
@@ -174,5 +201,7 @@ Results generated in preview mode are marked as preview data and are not counted
 **A question image doesn't show up.** Check the question number against the table above, and confirm the label is exactly `Question 4` — a label like `Question 4 Image` won't match.
 
 **The whole quiz disappeared after editing the `hide` row.** A `hide` term is matching more question prompts than intended. Remember it is a substring match, so a broad word like `marker` will match almost everything. Use a longer, quoted phrase.
+
+**The share buttons still post the default text.** Check the label is exactly `share-text` (or `Share Text` — capitalization and punctuation don't matter) and that the value cell isn't empty. A cell containing only formatting or an image counts as empty, and the default copy is used instead.
 
 **Site header and footer are still visible.** The `hide` row must contain the words `nav` and `footer` specifically. Other wording, such as `header` or `menu`, is treated as a question filter instead.

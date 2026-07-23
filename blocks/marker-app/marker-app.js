@@ -1015,14 +1015,29 @@ const NICKEL_BONUS_KEYS = ['mammostar', 'biomarc', 'mammomark', 'hm', 'hmplus'];
 const PERMANENT_VISIBILITY_BONUS_KEYS = ['lumimark', 'biomarc'];
 
 /** Shown under MammoMARK when hemostatic Often/Occasionally forces it into 3rd place. */
-const HEMOSTATIC_MAMMOMARK_NOTE = 'You indicated that you would occasionally or often use a marker with hemostatic-related characteristics. This recommendation includes a collagen-containing marker, as published studies have described collagen as having hemostatic properties.*';
-/** APA 7th citation for the hemostatic collagen note (trusted HTML). */
-const HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML = '* Rosen, E. L., Baker, J. A., &amp; Soo, M. S. (2003). Accuracy of a collagen-plug biopsy site marking device deployed after stereotactic core needle breast biopsy. <em>AJR. American Journal of Roentgenology, 181</em>(5), 1295–1299.';
-/** Shown under MammoStar/BioMarc when natural preference 3+ forces one into 3rd place. */
-const NATURAL_PREFERENCE_NOTE = 'You indicated that your patients sometimes, often, or very frequently express a preference for natural marker options. This recommendation includes a marker that incorporates a collagen carrier rather than a metal-only marker design.';
+const HEMOSTATIC_MAMMOMARK_NOTE = 'You indicated that you would occasionally or often use a marker with hemostatic-related characteristics. This recommendation includes a collagen-containing marker, as published studies have described collagen as having hemostatic properties.';
+/** Shown under BiomarC when natural preference 3+ forces it into 3rd place. */
+const NATURAL_PREFERENCE_NOTE = 'You indicated that your patients sometimes, often, or very frequently express a preference for natural marker options. This recommendation includes a natural, non-metal composition.';
+/** MammoSTAR variant, used when it outscores BiomarC for the natural-preference pick. */
+const NATURAL_PREFERENCE_NOTE_MAMMOSTAR = 'You indicated that your patients sometimes, often, or very frequently express a preference for natural marker options. This recommendation includes a beta-glucan gel carrier for unique patient sensitivities.';
 
-/** Prefill copy for LinkedIn / Facebook / X share buttons on results. */
-const MARKER_MATCH_SHARE_TEXT = [
+/** True when the product row is MammoSTAR (id/slug/name check, alias-tolerant). */
+const isMammoStarProduct = (product) => `${product?.id || ''} ${product?.slug || ''} ${product?.name || ''}`
+  .toLowerCase()
+  .replace(/[^a-z0-9]/g, '')
+  .includes('mammostar');
+
+/** Natural-preference card note for a naturalForced product. */
+const getNaturalPreferenceNote = (product) => (
+  isMammoStarProduct(product) ? NATURAL_PREFERENCE_NOTE_MAMMOSTAR : NATURAL_PREFERENCE_NOTE
+);
+
+/**
+ * Prefill copy for LinkedIn / Facebook / X share buttons on results.
+ * Default only — authors can override it with a block row:
+ *   | Share Text | I found my #MarkerMatch ... (each line becomes a paragraph) |
+ */
+const DEFAULT_MARKER_MATCH_SHARE_TEXT = [
   'I found my #MarkerMatch with the Mammotome Meet Your Match Quiz!',
   '',
   'Find out which Mammotome marker is your match.',
@@ -1031,6 +1046,35 @@ const MARKER_MATCH_SHARE_TEXT = [
   '',
   '#MarkerMatch #MammotomeMarkers #BreastBiopsy',
 ].join('\n');
+
+/** Active share text; replaced by the authored "Share Text" row when present. */
+let markerMatchShareText = DEFAULT_MARKER_MATCH_SHARE_TEXT;
+
+/** Plain text of an element with <br> preserved as newlines. */
+const getShareTextLine = (el) => {
+  const clone = el.cloneNode(true);
+  clone.querySelectorAll('br').forEach((br) => br.replaceWith('\n'));
+  return clone.textContent.replace(/\u00a0/g, ' ').trim();
+};
+
+/**
+ * Reads the authored "Share Text" row from the block table, if present.
+ * Each paragraph (line) in the cell becomes a paragraph in the share copy,
+ * separated by a blank line. Returns '' when the row is absent or empty.
+ */
+const parseMarkerMatchShareTextFromBlock = (block) => {
+  const row = [...block.querySelectorAll(':scope > div')].find((r) => {
+    const cols = [...r.children];
+    return cols.length >= 2 && toClassName(cols[0].textContent) === 'share-text';
+  });
+  if (!row) return '';
+  const cell = row.children[1];
+  const paragraphs = [...cell.querySelectorAll('p')];
+  return (paragraphs.length ? paragraphs : [cell])
+    .map(getShareTextLine)
+    .filter(Boolean)
+    .join('\n\n');
+};
 
 const SOCIAL_SHARE_ICON_LINKEDIN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1-.004-4.125 2.062 2.062 0 0 1 .004 4.125zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
 const SOCIAL_SHARE_ICON_FACEBOOK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
@@ -1047,7 +1091,7 @@ function getMarkerMatchShareUrl() {
   return `${url.origin}${url.pathname}${url.search}`;
 }
 
-function getMarkerMatchShareBody(shareUrl = getMarkerMatchShareUrl(), text = MARKER_MATCH_SHARE_TEXT) {
+function getMarkerMatchShareBody(shareUrl = getMarkerMatchShareUrl(), text = markerMatchShareText) {
   return `${text}\n\n${shareUrl}`;
 }
 
@@ -1056,7 +1100,7 @@ function buildLinkedInShareUrl(shareBody = getMarkerMatchShareBody()) {
   return `https://www.linkedin.com/feed/?shareActive=true&mini=true&text=${encodeURIComponent(shareBody)}`;
 }
 
-function buildSocialShareUrls(shareUrl = getMarkerMatchShareUrl(), text = MARKER_MATCH_SHARE_TEXT) {
+function buildSocialShareUrls(shareUrl = getMarkerMatchShareUrl(), text = markerMatchShareText) {
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(text);
   return {
@@ -1167,14 +1211,12 @@ function buildSocialShareSectionHtml() {
  *   entries may carry `hemostaticForced` / `naturalForced` to show card notes
  * @param {?string} o.emailResultsFormId      Marketo form id; falsy -> inline
  *   lead-capture fallback form instead
- * @param {boolean} o.showHemostaticFootnote  render the asterisk citation
  * @param {string}  [o.cardClasses]           extra classes on .results-card
  */
 const buildResultsCardHtml = ({
   topProduct,
   alternativeProducts,
   emailResultsFormId,
-  showHemostaticFootnote,
   cardClasses = '',
 }) => {
   const emailOrLeadBlock = emailResultsFormId
@@ -1262,7 +1304,7 @@ const buildResultsCardHtml = ({
                         </div>
                         <h4>${allowTrademarkHtml(prod.name)}</h4>
                         ${prod.hemostaticForced ? `<p class="card-reason">${escapeHtml(HEMOSTATIC_MAMMOMARK_NOTE)}</p>` : ''}
-                        ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(NATURAL_PREFERENCE_NOTE)}</p>` : ''}
+                        ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(getNaturalPreferenceNote(prod))}</p>` : ''}
                       </div>
                     `).join('')}
                   </div>
@@ -1271,16 +1313,11 @@ const buildResultsCardHtml = ({
                 <hr class="divider primary">
                 ${buildSocialShareSectionHtml()}
     
-                ${((topProduct.footnotes || []).length || showHemostaticFootnote) ? `
+                ${(topProduct.footnotes || []).length ? `
                   <div class="product-footnotes">
-                    ${(topProduct.footnotes || []).length ? `
                     <ol class="footnotes-list">
                       ${(topProduct.footnotes || []).map((fn) => `<li class="footnote">${allowTrademarkHtml(fn)}</li>`).join('')}
                     </ol>
-                    ` : ''}
-                    ${showHemostaticFootnote ? `
-                    <p class="footnote footnote-asterisk">${HEMOSTATIC_MAMMOMARK_FOOTNOTE_HTML}</p>
-                    ` : ''}
                   </div>
                 ` : ''}
     
@@ -3361,8 +3398,6 @@ class MarkerQuiz {
       );
       if (thirdProduct) alternativeProducts.push(thirdProduct);
     }
-    const showHemostaticMammomarkNote = alternativeProducts.some((p) => p.hemostaticForced);
-
     this.block.innerHTML = `
           <div class="product-survey-container survey-fullscreen">
             ${CLOSE_BTN_HTML}
@@ -3370,7 +3405,6 @@ class MarkerQuiz {
     topProduct,
     alternativeProducts,
     emailResultsFormId: this.emailResultsFormId,
-    showHemostaticFootnote: showHemostaticMammomarkNote,
   })}
           </div>`;
 
@@ -4276,7 +4310,7 @@ const buildPreviewSheetPayload = (topProduct, products) => {
 /**
  * Preview alternatives always include the two CONDITIONAL recommendations so
  * their card notes can be style-checked without replaying the quiz:
- *   - MammoMARK with the hemostatic note (+ asterisk footnote)
+ *   - MammoMARK with the hemostatic note
  *   - BiomarC with the natural-preference note
  * If one of them is the previewed hero product, remaining slots are filled
  * with other products alphabetically (no note).
@@ -4360,7 +4394,6 @@ const renderPreview = (block, product, products, config) => {
     topProduct: product,
     alternativeProducts,
     emailResultsFormId,
-    showHemostaticFootnote: alternativeProducts.some((p) => p.hemostaticForced),
     cardClasses: 'preview-results',
   })}
         </div>`;
@@ -4387,6 +4420,9 @@ export default async function decorate(block) {
   applyMarkerAppHideChrome(hideChrome);
   config.scoreExcludeKeywords = hideChrome.scoreExcludeKeywords;
   mergeStartTitleFromBlock(block, config);
+
+  const authoredShareText = parseMarkerMatchShareTextFromBlock(block);
+  if (authoredShareText) markerMatchShareText = authoredShareText;
 
   const previewParams = getPreviewParams();
   if (previewParams.active) {

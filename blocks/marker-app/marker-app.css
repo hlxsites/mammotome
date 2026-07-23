@@ -1570,17 +1570,6 @@ body.marker-app-hide-chrome-footer .footer {
   padding-left: 0.25em;
 }
 
-.product-footnotes .footnote-asterisk {
-  margin: 10px 0 0;
-  padding-left: 1.5em;
-  line-height: 1.6;
-  text-align: left;
-}
-
-.product-footnotes .footnote-asterisk em {
-  font-style: italic;
-}
-
 .results-card .product-footnotes {
   margin-top: 24px;
   padding-top: 20px;
