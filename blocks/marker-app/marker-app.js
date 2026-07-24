@@ -1033,7 +1033,7 @@ const getNaturalPreferenceNote = (product) => (
 );
 
 /**
- * Prefill copy for LinkedIn / Facebook / X share buttons on results.
+ * Prefill copy for the LinkedIn share button on results.
  * Default only — authors can override it with a block row:
  *   | Share Text | I found my #MarkerMatch ... (each line becomes a paragraph) |
  */
@@ -1077,8 +1077,6 @@ const parseMarkerMatchShareTextFromBlock = (block) => {
 };
 
 const SOCIAL_SHARE_ICON_LINKEDIN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1-.004-4.125 2.062 2.062 0 0 1 .004 4.125zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
-const SOCIAL_SHARE_ICON_FACEBOOK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>';
-const SOCIAL_SHARE_ICON_X = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>';
 
 /** Clean quiz URL for social share (no results tokens / preview params). */
 function getMarkerMatchShareUrl() {
@@ -1098,16 +1096,6 @@ function getMarkerMatchShareBody(shareUrl = getMarkerMatchShareUrl(), text = mar
 /** LinkedIn feed composer with prefilled text (? # & safely encoded). */
 function buildLinkedInShareUrl(shareBody = getMarkerMatchShareBody()) {
   return `https://www.linkedin.com/feed/?shareActive=true&mini=true&text=${encodeURIComponent(shareBody)}`;
-}
-
-function buildSocialShareUrls(shareUrl = getMarkerMatchShareUrl(), text = markerMatchShareText) {
-  const encodedUrl = encodeURIComponent(shareUrl);
-  const encodedText = encodeURIComponent(text);
-  return {
-    linkedin: buildLinkedInShareUrl(getMarkerMatchShareBody(shareUrl, text)),
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`,
-    x: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
-  };
 }
 
 function showSocialShareToast(message, host) {
@@ -1149,7 +1137,6 @@ async function copyTextToClipboard(text) {
 
 /**
  * LinkedIn: open composer with encoded prefill + copy full text as paste backup.
- * Facebook / X use native share intents from href.
  */
 function bindSocialShareButtons(container) {
   if (!container) return;
@@ -1172,19 +1159,12 @@ function bindSocialShareButtons(container) {
 }
 
 function buildSocialShareSectionHtml() {
-  const urls = buildSocialShareUrls();
   return `
               <div class="social-share-section">
                 <h3>Share Your #MarkerMatch</h3>
                 <div class="social-share-buttons">
-                  <a class="social-share-btn social-share-linkedin" href="${escapeHtml(urls.linkedin)}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
+                  <a class="social-share-btn social-share-linkedin" href="${escapeHtml(buildLinkedInShareUrl())}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
                     ${SOCIAL_SHARE_ICON_LINKEDIN}
-                  </a>
-                  <a class="social-share-btn social-share-facebook" href="${escapeHtml(urls.facebook)}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
-                    ${SOCIAL_SHARE_ICON_FACEBOOK}
-                  </a>
-                  <a class="social-share-btn social-share-x" href="${escapeHtml(urls.x)}" target="_blank" rel="noopener noreferrer" aria-label="Share on X">
-                    ${SOCIAL_SHARE_ICON_X}
                   </a>
                 </div>
               </div>`;
@@ -1212,12 +1192,15 @@ function buildSocialShareSectionHtml() {
  * @param {?string} o.emailResultsFormId      Marketo form id; falsy -> inline
  *   lead-capture fallback form instead
  * @param {string}  [o.cardClasses]           extra classes on .results-card
+ * @param {string[]} [o.productDisclaimers]   authored disclaimer HTML rows for
+ *   the top product; rendered below Product Features
  */
 const buildResultsCardHtml = ({
   topProduct,
   alternativeProducts,
   emailResultsFormId,
   cardClasses = '',
+  productDisclaimers = [],
 }) => {
   const emailOrLeadBlock = emailResultsFormId
     ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>'
@@ -1237,6 +1220,13 @@ const buildResultsCardHtml = ({
                   <p id="lead-capture-confirmation" class="lead-capture-confirmation" style="display:none;">
                     ✓ Thanks! Your results have been recorded.
                   </p>`;
+
+  const disclaimerBlock = productDisclaimers.length
+    ? `
+                  <div class="product-feature-disclaimers">
+                    ${productDisclaimers.map((html) => `<p class="product-feature-disclaimer">${html}</p>`).join('')}
+                  </div>`
+    : '';
 
   return `
             <div class="survey-card results-card${cardClasses ? ` ${cardClasses}` : ''}">
@@ -1262,6 +1252,7 @@ const buildResultsCardHtml = ({
                         <ul class="top-recommendation-features product-features">
                           ${(topProduct.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
                         </ul>
+                        ${disclaimerBlock}
                       </div>
                       ${(topProduct.video || topProduct.featuredPhoto) ? `
                       <div class="features-media-column">
@@ -1523,6 +1514,76 @@ const PRODUCT_ID_ALIASES = {
   mammostar: ['mammostar', 'mammo-star'],
   lumimark: ['lumimark', 'lumi-mark'],
   biomarc: ['biomarc', 'biomar', 'biomar-c'],
+};
+
+/** Map an authored product label (id, alias, or slug-like name) to a canonical product id. */
+const resolveAuthoredProductId = (raw) => {
+  const normalized = toClassName(raw);
+  if (!normalized) return null;
+  return Object.keys(PRODUCT_ID_ALIASES).find((id) => {
+    if (id === normalized) return true;
+    return PRODUCT_ID_ALIASES[id].some((alias) => toClassName(alias) === normalized);
+  }) || null;
+};
+
+/**
+ * Reads per-product disclaimer rows from the block table.
+ * Authoring (two columns):
+ *   | hmplus | *Add a new row of content here. |
+ * Multiple rows with the same product id are all shown, in order.
+ * Also accepts a labelled three-column form:
+ *   | Disclaimer | hmplus | *Add a new row of content here. |
+ *
+ * @param {Element} block
+ * @returns {Object.<string, string[]>} map of product id -> HTML disclaimer strings
+ */
+const parseProductDisclaimersFromBlock = (block) => {
+  const result = {};
+  block.querySelectorAll(':scope > div').forEach((row) => {
+    const cols = [...row.children];
+    if (cols.length < 2) return;
+
+    let productRaw = '';
+    let textCol = null;
+    const firstKey = toClassName(cols[0].textContent);
+    if (
+      (firstKey === 'disclaimer' || firstKey === 'results-disclaimer' || firstKey === 'product-disclaimer')
+      && cols.length >= 3
+    ) {
+      productRaw = cols[1].textContent;
+      textCol = cols[2];
+    } else {
+      productRaw = cols[0].textContent;
+      textCol = cols[1];
+    }
+
+    const productId = resolveAuthoredProductId(productRaw);
+    if (!productId || !textCol) return;
+
+    // Skip rows that are clearly other config (images-only, empty, JSON URLs).
+    if (textCol.querySelector('img, picture') && !textCol.textContent.trim()) return;
+    const textProbe = (textCol.textContent || '').trim();
+    if (!textProbe || /\.json(?:\?|#|$)/i.test(textProbe)) return;
+
+    const paragraphs = [...textCol.querySelectorAll(':scope > p')];
+    const html = paragraphs.length
+      ? paragraphs.map((p) => p.innerHTML.trim()).filter(Boolean).join('<br>')
+      : textCol.innerHTML.trim();
+    if (!html) return;
+
+    if (!result[productId]) result[productId] = [];
+    result[productId].push(html);
+  });
+  return result;
+};
+
+/** Disclaimer HTML strings for a results product (by id / slug alias). */
+const getDisclaimersForProduct = (product, disclaimersByProductId = {}) => {
+  if (!product) return [];
+  const byId = disclaimersByProductId[String(product.id || '').toLowerCase()];
+  if (byId?.length) return byId;
+  const resolved = resolveAuthoredProductId(product.slug || product.id || '');
+  return (resolved && disclaimersByProductId[resolved]) || [];
 };
 
 const CHEVRON_SVG = `<svg class="checkbox-group-chevron" viewBox="0 0 20 20" fill="currentColor">
@@ -3405,6 +3466,10 @@ class MarkerQuiz {
     topProduct,
     alternativeProducts,
     emailResultsFormId: this.emailResultsFormId,
+    productDisclaimers: getDisclaimersForProduct(
+      topProduct,
+      this.config.productDisclaimers,
+    ),
   })}
           </div>`;
 
@@ -4395,6 +4460,7 @@ const renderPreview = (block, product, products, config) => {
     alternativeProducts,
     emailResultsFormId,
     cardClasses: 'preview-results',
+    productDisclaimers: getDisclaimersForProduct(product, config.productDisclaimers),
   })}
         </div>`;
 
@@ -4423,6 +4489,7 @@ export default async function decorate(block) {
 
   const authoredShareText = parseMarkerMatchShareTextFromBlock(block);
   if (authoredShareText) markerMatchShareText = authoredShareText;
+  config.productDisclaimers = parseProductDisclaimersFromBlock(block);
 
   const previewParams = getPreviewParams();
   if (previewParams.active) {

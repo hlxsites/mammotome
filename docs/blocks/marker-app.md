@@ -2,7 +2,7 @@
 
 The Marker-App block renders the "Meet Your Match" marker recommendation quiz: a start screen, a series of questions, and a results screen with recommended products, email-results and contact-sales forms, and social sharing.
 
-Unlike most blocks, **the questions, answer options, and scoring logic live in the code, not in the document.** Authors do not write the quiz. What the author controls is the configuration around it: which product data file to load, the start screen wording, images attached to specific questions, which questions to hide, which forms to use, and the text prefilled into the social "share your results" buttons.
+Unlike most blocks, **the questions, answer options, and scoring logic live in the code, not in the document.** Authors do not write the quiz. What the author controls is the configuration around it: which product data file to load, the start screen wording, images attached to specific questions, which questions to hide, which forms to use, per-product results disclaimers, and the text prefilled into the social "share your results" buttons.
 
 ## Variations
 
@@ -42,13 +42,42 @@ Notes:
 | `email-results-form-id` | Marketo form ID | Email results form is unavailable |
 | `contact-sales-form-id` | Marketo form ID | `2695` |
 
+### Results disclaimers (per product)
+
+Authors can add disclaimer lines that appear **below the Product Features list** on the results screen for a specific recommended product. Each disclaimer is a two-column row:
+
+| Product id | Disclaimer text |
+| --- | --- |
+| `hmplus` | \*Add a new row of content here. |
+
+Add as many rows as you need. Rows that share the same product id all appear, in the order authored.
+
+Valid product ids (aliases in parentheses also work):
+
+| Id | Product |
+| --- | --- |
+| `hm` | HydroMARK (`hydromark`) |
+| `hmplus` | HydroMARK Plus (`hydromark-plus`) |
+| `mammomark` | MammoMARK & CorMARK (`cormark`) |
+| `mammostar` | MammoSTAR |
+| `lumimark` | LumiMARK |
+| `biomarc` | BiomarC |
+
+Basic formatting in the text cell (italics, links, superscripts) is preserved. If the top recommendation is a different product, that product's disclaimer rows are shown instead — other products' rows stay hidden.
+
+Optional labelled form (three columns) if you prefer an explicit setting name:
+
+| Setting | Product id | Text |
+| --- | --- | --- |
+| `Disclaimer` | `hmplus` | \*Add a new row of content here. |
+
 ### Social share text
 
 | Setting | Value | Default if omitted |
 | --- | --- | --- |
-| `share-text` | The message prefilled when a visitor shares their results on LinkedIn, Facebook, or X | The standard #MarkerMatch copy below |
+| `share-text` | The message prefilled when a visitor shares their results on LinkedIn | The standard #MarkerMatch copy below |
 
-The results screen has a "Share Your #MarkerMatch" section with LinkedIn, Facebook, and X buttons. All three buttons use the **same** text — there is one `share-text` row, not one per network. The quiz page URL is appended automatically, so don't include a link in the text.
+The results screen has a "Share Your #MarkerMatch" section with a LinkedIn button. The quiz page URL is appended automatically, so don't include a link in the text.
 
 Each paragraph (line) you write in the cell becomes its own paragraph in the share message, separated by a blank line. Formatting like bold or italics is dropped — only the plain text is used.
 
@@ -170,6 +199,8 @@ Full-screen quiz with a video background, custom wording, and both Marketo forms
 | email-results-form-id | 2841 |
 | contact-sales-form-id | 2695 |
 | share-text | I found my #MarkerMatch with the Mammotome Meet Your Match Quiz! #MarkerMatch |
+| hmplus | *Visibility claims based on clinical evaluation. |
+| hmplus | *Not available in all markets. |
 | hide | nav, footer |
 
 **With images and a hidden question**
@@ -203,5 +234,7 @@ Results generated in preview mode are marked as preview data and are not counted
 **The whole quiz disappeared after editing the `hide` row.** A `hide` term is matching more question prompts than intended. Remember it is a substring match, so a broad word like `marker` will match almost everything. Use a longer, quoted phrase.
 
 **The share buttons still post the default text.** Check the label is exactly `share-text` (or `Share Text` — capitalization and punctuation don't matter) and that the value cell isn't empty. A cell containing only formatting or an image counts as empty, and the default copy is used instead.
+
+**A results disclaimer doesn't show.** Confirm the left cell is a known product id (`hm`, `hmplus`, `mammomark`, `mammostar`, `lumimark`, or `biomarc`) and that you're previewing/receiving that product as the top recommendation. Disclaimers for other products are intentionally hidden.
 
 **Site header and footer are still visible.** The `hide` row must contain the words `nav` and `footer` specifically. Other wording, such as `header` or `menu`, is treated as a question filter instead.
