@@ -44,32 +44,59 @@ Notes:
 
 ### Results disclaimers (per product)
 
-Authors can add disclaimer lines that appear **below the Product Features list** on the results screen for a specific recommended product. Each disclaimer is a two-column row:
+Use these rows when you need short legal or clinical notes under a product’s features on the **results screen** — for example a visibility claim, market availability note, or similar disclaimer.
 
-| Product id | Disclaimer text |
+#### Where it appears on the page
+
+On the quiz results screen (and in `?preview` mode), each disclaimer shows **directly below that product’s Product Features list**, in the left column under the feature bullets, and **above** the “Would you like to be contacted…” actions. It does **not** appear on the start screen or during the questions.
+
+Only disclaimers for the **top recommended product** are shown. Rows authored for other products stay hidden until that product is the top match.
+
+#### Where to update it (authoring)
+
+Edit the **Marker-App block table** on the page document (Google Docs / SharePoint), the same two-column table used for `json-file`, `share-text`, `hide`, and the other settings. Add a new row anywhere in that table:
+
+| Left column (product id) | Right column (disclaimer text) |
 | --- | --- |
 | `hmplus` | \*Add a new row of content here. |
 
-Add as many rows as you need. Rows that share the same product id all appear, in the order authored.
+To change copy later, edit the right-hand cell of that row and republish the page. To remove a disclaimer, delete the row (or clear the text cell).
 
-Valid product ids (aliases in parentheses also work):
+You can add **multiple rows per product**. They render in the order they appear in the table:
 
-| Id | Product |
+| hmplus | \*First disclaimer line. |
 | --- | --- |
-| `hm` | HydroMARK (`hydromark`) |
-| `hmplus` | HydroMARK Plus (`hydromark-plus`) |
-| `mammomark` | MammoMARK & CorMARK (`cormark`) |
-| `mammostar` | MammoSTAR |
-| `lumimark` | LumiMARK |
-| `biomarc` | BiomarC |
+| hmplus | \*Second disclaimer line. |
+| mammostar | \*Only shown when MammoSTAR is the top recommendation. |
 
-Basic formatting in the text cell (italics, links, superscripts) is preserved. If the top recommendation is a different product, that product's disclaimer rows are shown instead — other products' rows stay hidden.
+#### Product ids
 
-Optional labelled form (three columns) if you prefer an explicit setting name:
+The left cell must be a known product id (or a recognized alias). Capitalization and punctuation don’t matter.
+
+| Id | Product | Also accepted |
+| --- | --- | --- |
+| `hm` | HydroMARK | `hydromark`, `hydro-mark` |
+| `hmplus` | HydroMARK Plus | `hydromark-plus`, `hydromarkplus` |
+| `mammomark` | MammoMARK & CorMARK | `cormark` |
+| `mammostar` | MammoSTAR | `mammo-star` |
+| `lumimark` | LumiMARK | `lumi-mark` |
+| `biomarc` | BiomarC | `biomar`, `biomar-c` |
+
+#### Formatting and preview
+
+Basic formatting in the text cell (italics, links, superscripts) is preserved.
+
+To check the layout without taking the quiz, open the page with a preview URL for that product — for example `?preview=hmplus` for HydroMARK Plus — and confirm the lines sit under Product Features.
+
+#### Optional three-column form
+
+If you prefer an explicit setting label instead of putting the product id in the first column, use three columns:
 
 | Setting | Product id | Text |
 | --- | --- | --- |
 | `Disclaimer` | `hmplus` | \*Add a new row of content here. |
+
+`Results Disclaimer` and `Product Disclaimer` work as the setting name as well.
 
 ### Social share text
 
