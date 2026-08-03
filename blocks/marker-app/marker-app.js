@@ -746,7 +746,8 @@ const getMarkerRecommendationsSourceFromBlock = (block, config = {}) => {
   return '';
 };
 
-const MARKER_APP_HIDE_CHROME_KEYS = new Set(['nav', 'footer']);
+/** Reserved `hide` tokens (not treated as question-prompt filters). */
+const MARKER_APP_HIDE_CHROME_KEYS = new Set(['nav', 'footer', 'share', 'social']);
 
 /** Map curly/smart quotes from Word/Excel to ASCII so quoted phrases parse reliably. */
 const normalizeAuthoringQuotes = (str) => String(str || '')
@@ -809,6 +810,7 @@ const parseHideChromeFromBlock = (block) => {
   return {
     hideNav: chromeTargets.has('nav'),
     hideFooter: chromeTargets.has('footer'),
+    hideSocialShare: chromeTargets.has('share') || chromeTargets.has('social'),
     scoreExcludeKeywords,
   };
 };
@@ -1160,6 +1162,7 @@ function bindSocialShareButtons(container) {
 
 function buildSocialShareSectionHtml() {
   return `
+              <hr class="divider primary">
               <div class="social-share-section">
                 <h3>Share Your #MarkerMatch</h3>
                 <div class="social-share-buttons">
@@ -1194,6 +1197,8 @@ function buildSocialShareSectionHtml() {
  * @param {string}  [o.cardClasses]           extra classes on .results-card
  * @param {string[]} [o.productDisclaimers]   authored disclaimer HTML rows for
  *   the top product; rendered below Product Features
+ * @param {boolean}  [o.hideSocialShare]      when true, omit the LinkedIn share
+ *   section (authoring `hide` row: `share` or `social`)
  */
 const buildResultsCardHtml = ({
   topProduct,
@@ -1201,6 +1206,7 @@ const buildResultsCardHtml = ({
   emailResultsFormId,
   cardClasses = '',
   productDisclaimers = [],
+  hideSocialShare = false,
 }) => {
   const emailOrLeadBlock = emailResultsFormId
     ? '<div id="email-results-form-wrapper" class="email-results-form-wrapper" style="display:none;"></div>'
@@ -1301,8 +1307,7 @@ const buildResultsCardHtml = ({
                   </div>
                 </div>
 
-                <hr class="divider primary">
-                ${buildSocialShareSectionHtml()}
+                ${hideSocialShare ? '' : buildSocialShareSectionHtml()}
     
                 ${(topProduct.footnotes || []).length ? `
                   <div class="product-footnotes">
@@ -3470,6 +3475,7 @@ class MarkerQuiz {
       topProduct,
       this.config.productDisclaimers,
     ),
+    hideSocialShare: Boolean(this.config.hideSocialShare),
   })}
           </div>`;
 
@@ -4461,6 +4467,7 @@ const renderPreview = (block, product, products, config) => {
     emailResultsFormId,
     cardClasses: 'preview-results',
     productDisclaimers: getDisclaimersForProduct(product, config.productDisclaimers),
+    hideSocialShare: Boolean(config.hideSocialShare),
   })}
         </div>`;
 
@@ -4485,6 +4492,7 @@ export default async function decorate(block) {
   const hideChrome = parseHideChromeFromBlock(block);
   applyMarkerAppHideChrome(hideChrome);
   config.scoreExcludeKeywords = hideChrome.scoreExcludeKeywords;
+  config.hideSocialShare = hideChrome.hideSocialShare;
   mergeStartTitleFromBlock(block, config);
 
   const authoredShareText = parseMarkerMatchShareTextFromBlock(block);
