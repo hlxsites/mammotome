@@ -1576,6 +1576,25 @@ body.marker-app-hide-chrome-footer .footer {
   color: var(--mt-global-color-dove-gray);
 }
 
+.results-product-disclaimers {
+  padding: 30px 0 0 15px;
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--mt-global-color-base-mmt-gray);
+  text-align: left;
+}
+
+.results-card .results-product-disclaimers p {
+  margin: 0 0 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.results-product-disclaimer-secondary {
+  font-style: italic;
+}
+
 .results-card {
   border-radius: 20px;
   box-shadow: 0 20px 40px

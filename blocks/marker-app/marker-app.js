@@ -249,6 +249,13 @@ const DEFAULT_START_TITLE_HTML = '<h1 class="start-screen-title-heading"><span c
 
 const START_SCREEN_DISCLAIMER_HTML = `<p class="start-screen-dislaimer"><strong>Disclaimer:</strong> The information obtained through these questions is for general guidance and product selection purposes only. It does not constitute a representation, guarantee, or warranty of suitability for any specific application or condition. Users are responsible for independently verifying that the selected marker brand meets their intended use and complies with all applicable standards, requirements and the manufacturer's Instructions for Use.</p>`;
 
+const RESULTS_PRODUCT_DISCLAIMERS_HTML = `
+                  <div class="results-product-disclaimers">
+                    <p>For more information see the <a href="https://www.mammotome.com/assets/product-documents/markers/us-mammotome-marker-biopsy-device-compatibility-brochure.pdf" target="_blank" rel="noopener noreferrer">Mammotome<sup>®</sup> Markers Biopsy Device Compatibility Guide.</a></p>
+                    <p>For complete product details, see the Instructions for Use.</p>
+                    <p class="results-product-disclaimer-secondary">Products may not be approved or available in your region. Please check with your local Mammotome representative.</p>
+                  </div>`;
+
 const DEFAULT_START_DESCRIPTION = 'Take our quick quiz to discover the solution that best aligns with your patient and clinical needs.';
 
 const DEFAULT_START_BUTTON = 'Start Quiz';
@@ -1321,6 +1328,8 @@ const buildResultsCardHtml = ({
                     </ol>
                   </div>
                 ` : ''}
+
+                ${RESULTS_PRODUCT_DISCLAIMERS_HTML}
     
               </div>
             </div>`;
@@ -2259,7 +2268,7 @@ class MarkerQuiz {
       },
       {
         index: 7,
-        text: 'Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?',
+        text: 'Do you prefer a biopsy marker without a resorbable carrier/plug?',
         type: 'single',
         options: [
           { text: 'Yes' },
@@ -2322,7 +2331,10 @@ class MarkerQuiz {
   getPermanentVisibilityQuestionIndex() {
     // Find the permanent-visibility question by text to avoid relying on
     // the outdated 'rating-single' type.
-    return this.questions.findIndex((q) => q?.text && /long-?term\s+ultrasound/i.test(q.text));
+    return this.questions.findIndex(
+      (q) => q?.text
+        && /(long-?term\s+ultrasound|resorbable\s+carrier)/i.test(q.text),
+    );
   }
 
   getPreferencesRatingQuestionIndex() {
