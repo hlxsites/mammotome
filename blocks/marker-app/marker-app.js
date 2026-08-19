@@ -100,16 +100,13 @@ const isOriginAllowed = () => {
 
 const validateGoogleSheetsPayload = (payload) => {
   const errors = [];
-
-  if (!payload || typeof payload !== 'object') {
-    errors.push('Payload must be a JSON object');
-  }
-
+  if (!payload || typeof payload !== 'object') return { valid: false, errors: ['Missing payload'] };
   if (!payload.date_time) errors.push('Missing date_time');
   if (!payload.current_bx_markers) errors.push('Missing current_bx_markers');
   if (!payload.top_product_id) errors.push('Missing top_product_id');
-
   return { valid: errors.length === 0, errors };
+
+  
 };
 
 /**
@@ -163,7 +160,6 @@ async function sendToSheet(payload, userInfo = {}, options = {}) {
         q4_patient_cases: (payload.patient_cases || '').split(', ').filter(Boolean),
         q5_followup_concern: payload.followup_concern || '',
         q5_bleeding_frequency_text: payload.bleeding_concern || '',
-        q6_case_mix: payload.case_mix || '',
         q7_natural_rating: payload.natural_rating || 0,
         q7_nick_rating: payload.nickel_rating || 0,
         q7_permanent_visibility_rating: payload.permanent_visibility_rating || 0,
@@ -250,6 +246,8 @@ const START_HEADER_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets
 const START_FOOTER_LOGO_URL = 'https://main--mammotome--hlxsites.aem.page/assets/images/circle-m-symbol-logo-white.png';
 
 const DEFAULT_START_TITLE_HTML = '<h1 class="start-screen-title-heading"><span class="start-screen-title-line">Meet Your</span><span class="start-screen-title-line start-screen-title-line--emphasis">Match</span></h1>';
+
+const START_SCREEN_DISCLAIMER_HTML = `<p class="start-screen-dislaimer"><strong>Disclaimer:</strong> The information obtained through these questions is for general guidance and product selection purposes only. It does not constitute a representation, guarantee, or warranty of suitability for any specific application or condition. Users are responsible for independently verifying that the selected marker brand meets their intended use and complies with all applicable standards, requirements and the manufacturer's Instructions for Use.</p>`;
 
 const DEFAULT_START_DESCRIPTION = 'Take our quick quiz to discover the solution that best aligns with your patient and clinical needs.';
 
@@ -984,7 +982,7 @@ const SORTABLE_OPTIONS_MRI = Object.entries(
   key,
 }));
 
-const RATING_ITEM_NATURAL = 'Preference for natural markers';
+const RATING_ITEM_NATURAL = 'Preference for all-natural markers (non-metal, no animal byproducts, simple sugar carrier)';
 /**
  * Same 1–5 scale as natural row; MRI scoring uses `getNonAnimalPreferenceScores`
  * (MammoMARK penalty for 3+).
@@ -1300,6 +1298,12 @@ const buildResultsCardHtml = ({
                           <img src="${escapeHtml(prod.recommendationImage || prod.cardImage || prod.image)}" alt="${stripHtmlForAlt(prod.name)}" />
                         </div>
                         <h4>${allowTrademarkHtml(prod.name)}</h4>
+                        <div class="alternative-product-features-section">
+                          <h5>Product Features</h5>
+                          <ul class="alternative-product-features">
+                            ${(prod.alternativeFeatures || prod.features || []).map((f) => `<li>${allowTrademarkHtml(f)}</li>`).join('')}
+                          </ul>
+                        </div>
                         ${prod.hemostaticForced ? `<p class="card-reason">${escapeHtml(HEMOSTATIC_MAMMOMARK_NOTE)}</p>` : ''}
                         ${prod.naturalForced ? `<p class="card-reason">${escapeHtml(getNaturalPreferenceNote(prod))}</p>` : ''}
                       </div>
@@ -1307,6 +1311,7 @@ const buildResultsCardHtml = ({
                   </div>
                 </div>
 
+                ${START_SCREEN_DISCLAIMER_HTML}
                 ${hideSocialShare ? '' : buildSocialShareSectionHtml()}
     
                 ${(topProduct.footnotes || []).length ? `
@@ -1831,7 +1836,6 @@ class MarkerQuiz {
     this.currentStep = 0;
     this.selections = {};
     this.scores = {};
-    this.caseMixQ3Floors = undefined;
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
     this.prevMriForStepRecompute = undefined;
@@ -1988,9 +1992,7 @@ class MarkerQuiz {
                 <p class="start-screen-description">${descSafe}</p>
                 <button type="button" class="btn btn-primary" id="start-survey-btn">${btnSafe}</button>
                 ${estimatedTimeHtml}
-                
-                  <p class="start-screen-dislaimer"><strong>Disclaimer:</strong> The information obtained through these questions is for general guidance and product selection purposes only. It does not constitute a representation, guarantee, or warranty of suitability for any specific application or condition. Users are responsible for independently verifying that the selected marker brand meets their intended use and complies with all applicable standards, requirements and the manufacturer's Instructions for Use.</p>
-                
+                ${START_SCREEN_DISCLAIMER_HTML}
               </div>`;
 
     if (this.startScreenInline) {
@@ -2204,8 +2206,11 @@ class MarkerQuiz {
             // description: '-',
           },
           {
-            text: 'Per Biopsy Modality',
+            text: 'Biopsy Modality',
             // description: '-',
+          },
+          {
+            text: 'None',
           },
         ],
       },
@@ -2243,7 +2248,7 @@ class MarkerQuiz {
       },
       {
         index: 5,
-        text: 'How often would you use a marker with hemostatic properties?',
+        text: 'How often do your patients experience heavy bleeding or hematoma during biopsy?',
         type: 'single',
         options: [
           { text: 'Often' },
@@ -2253,133 +2258,16 @@ class MarkerQuiz {
         ],
       },
       {
-        index: 6,
-        text: 'Which best describes your biopsy case mix?',
-        type: 'single',
-        options: [
-          {
-            text: 'Diagnostic-Focused',
-            capWeights: {
-              long_term_us_visibility: 1,
-              anti_migration: 1,
-              locating: 1,
-              affordability: 3,
-              cross_modal_visibility: 0,
-              shape_distinction: 1,
-              low_artifact: 1,
-              or_anti_displacement: 0,
-            },
-            q3Floors: {
-              long_term_us_visibility: 1,
-              anti_migration: 1,
-              locating: 1,
-              affordability: 3,
-            },
-          },
-          {
-            text: 'Pre-Surgical',
-            capWeights: {
-              long_term_us_visibility: 3,
-              anti_migration: 2,
-              locating: 2,
-              affordability: 0,
-              cross_modal_visibility: 2,
-              shape_distinction: 1,
-              low_artifact: 1,
-              or_anti_displacement: 3,
-            },
-            q3Floors: {
-              long_term_us_visibility: 3,
-              anti_migration: 2,
-              locating: 2,
-              affordability: 0,
-            },
-          },
-          {
-            text: 'Oncology-Integrated',
-            capWeights: {
-              long_term_us_visibility: 3,
-              anti_migration: 2,
-              locating: 1,
-              affordability: 0,
-              cross_modal_visibility: 3,
-              shape_distinction: 2,
-              low_artifact: 1,
-              or_anti_displacement: 2,
-            },
-            q3Floors: {
-              long_term_us_visibility: 3,
-              anti_migration: 2,
-              locating: 1,
-              affordability: 0,
-            },
-          },
-          {
-            text: 'High-Risk',
-            capWeights: {
-              long_term_us_visibility: 3,
-              anti_migration: 1,
-              locating: 2,
-              affordability: 0,
-              cross_modal_visibility: 2,
-              shape_distinction: 3,
-              low_artifact: 1,
-              or_anti_displacement: 1,
-            },
-            q3Floors: {
-              long_term_us_visibility: 3,
-              anti_migration: 1,
-              locating: 2,
-              affordability: 0,
-            },
-          },
-          {
-            text: 'Community Center: Broad Patient Mix',
-            capWeights: {
-              long_term_us_visibility: 2,
-              anti_migration: 1,
-              locating: 2,
-              affordability: 2,
-              cross_modal_visibility: 1,
-              shape_distinction: 3,
-              low_artifact: 1,
-              or_anti_displacement: 1,
-            },
-            q3Floors: {
-              long_term_us_visibility: 2,
-              anti_migration: 1,
-              locating: 2,
-              affordability: 2,
-            },
-          },
-          {
-            text: 'Academic / Teaching Hospital',
-            capWeights: {
-              long_term_us_visibility: 2,
-              anti_migration: 1,
-              locating: 2,
-              affordability: 0,
-              cross_modal_visibility: 3,
-              shape_distinction: 2,
-              low_artifact: 1,
-              or_anti_displacement: 1,
-            },
-            q3Floors: {
-              long_term_us_visibility: 2,
-              anti_migration: 1,
-              locating: 2,
-              affordability: 0,
-            },
-          },
-        ],
-      },
-      {
         index: 7,
         text: 'Do you prefer a marker with long-term ultrasound visibility and without a resorbable component?',
-        type: 'rating-single',
-        ratingScale: PERMANENT_VISIBILITY_RATING_SCALE,
+        type: 'single',
+        options: [
+          { text: 'Yes' },
+          { text: 'No' },
+          { text: 'No preference' },
+        ],
         /**
-         * Omitted when MRI is selected (LumiMARK/BiomarC vetoed; question has no scoring effect).
+         * Omitted when MRI is selected (question hidden on MRI path).
          */
         skipWhenMri: true,
       },
@@ -2432,7 +2320,9 @@ class MarkerQuiz {
   }
 
   getPermanentVisibilityQuestionIndex() {
-    return this.questions.findIndex((q) => q?.type === 'rating-single');
+    // Find the permanent-visibility question by text to avoid relying on
+    // the outdated 'rating-single' type.
+    return this.questions.findIndex((q) => q?.text && /long-?term\s+ultrasound/i.test(q.text));
   }
 
   getPreferencesRatingQuestionIndex() {
@@ -2556,14 +2446,17 @@ class MarkerQuiz {
     if (this.selections[3] && !this.questionExcludedFromScore(this.questions[3])) {
       const sel4 = this.selections[3];
       const cases = Array.isArray(sel4) ? sel4 : [sel4];
-      const modalityIndex = this.getPrimaryModalityIndex();
-      cases.forEach((optIdx) => {
-        const caseScores = MarkerQuiz.getPatientCaseScores(optIdx, modalityIndex);
-        Object.entries(caseScores).forEach(([productId, points]) => {
-          const resolvedId = this.resolveProductId(productId);
-          if (resolvedId) this.scores[resolvedId] += points;
+      const noneOptionIndex = this.questions[3]?.options?.length ? this.questions[3].options.length - 1 : -1;
+      if (!cases.includes(noneOptionIndex)) {
+        const modalityIndex = this.getPrimaryModalityIndex();
+        cases.forEach((optIdx) => {
+          const caseScores = MarkerQuiz.getPatientCaseScores(optIdx, modalityIndex);
+          Object.entries(caseScores).forEach(([productId, points]) => {
+            const resolvedId = this.resolveProductId(productId);
+            if (resolvedId) this.scores[resolvedId] += points;
+          });
         });
-      });
+      }
     }
 
     // --- Q5 (index 4): Follow-up imaging concern -------------------------
@@ -2590,26 +2483,6 @@ class MarkerQuiz {
         const resolvedId = this.resolveProductId(productId);
         if (resolvedId) this.scores[resolvedId] += points;
       });
-    }
-
-    // --- Q7 (index 6): Biopsy case mix -----------------------------------
-    // Points logic: getCaseMixScores(). Also returns "q3Floors" (minimum
-    // capability importances) stashed on this.caseMixQ3Floors for later use.
-    if (this.selections[6] != null && !this.questionExcludedFromScore(this.questions[6])) {
-      const { q3_capability_ratings: capRatings } = RANK_SCORES;
-      const { scores: caseMixScores, q3Floors } = MarkerQuiz.getCaseMixScores(
-        this.selections[6],
-        capRatings,
-      );
-
-      Object.entries(caseMixScores).forEach(([productId, points]) => {
-        const resolvedId = this.resolveProductId(productId) ?? productId;
-        if (resolvedId in this.scores) this.scores[resolvedId] += points;
-      });
-
-      if (q3Floors && Object.keys(q3Floors).length > 0) {
-        this.caseMixQ3Floors = q3Floors;
-      }
     }
 
     // --- Preferences sliders: natural + nickel (the 'rating' question) ----
@@ -2650,9 +2523,8 @@ class MarkerQuiz {
       }
     }
 
-    // --- Permanent-visibility slider (the 'rating-single' question) -------
-    // Not scored on the MRI path (question is hidden then). Points table:
-    // getPermanentVisibilityScores() — boosts LumiMARK & BiomarC.
+    // --- Permanent-visibility single-choice question ---------------------
+    // If user selects "Yes" (option 0) award +6 to LumiMARK & BiomarC.
     const permVisIdx = this.getPermanentVisibilityQuestionIndex();
     if (
       permVisIdx >= 0
@@ -2660,12 +2532,14 @@ class MarkerQuiz {
       && !this.isMriSelected()
       && !this.questionExcludedFromScore(this.questions[permVisIdx])
     ) {
-      const permVisRating = Number(this.selections[permVisIdx]) || 1;
-      const permVisScores = MarkerQuiz.getPermanentVisibilityScores(permVisRating);
-      Object.entries(permVisScores).forEach(([productId, points]) => {
-        const resolvedId = this.resolveProductId(productId);
-        if (resolvedId) this.scores[resolvedId] += points;
-      });
+      const sel = this.selections[permVisIdx];
+      // options: 0 = Yes, 1 = No, 2 = No preference
+      if (sel === 0) {
+        ['lumimark', 'biomarc'].forEach((key) => {
+          const resolvedId = this.resolveProductId(key);
+          if (resolvedId && resolvedId in this.scores) this.scores[resolvedId] += 6;
+        });
+      }
     }
   }
 
@@ -2862,8 +2736,9 @@ class MarkerQuiz {
     const permVisRaw = (permVisIdx >= 0 && !this.isMriSelected())
       ? this.selections[permVisIdx]
       : undefined;
-    const permVisRating = (permVisRaw != null) ? (Number(permVisRaw) || 1) : 0;
-    if (permVisRating >= 3) {
+    // For the single-choice permanent-visibility question: option 0 = Yes.
+    const permVisYes = permVisRaw === 0;
+    if (permVisYes) {
       PERMANENT_VISIBILITY_BONUS_KEYS.forEach((key) => candidateKeys.add(key));
     }
 
@@ -3349,9 +3224,19 @@ class MarkerQuiz {
     const bio = Number(ratingSel[0] ?? 0);
     const nick = isMri ? undefined : Number(ratingSel[1] ?? 0);
     const permVisIdx = this.getPermanentVisibilityQuestionIndex();
-    const permVis = (permVisIdx >= 0 && !isMri)
-      ? Number(this.selections[permVisIdx] ?? 0)
-      : undefined;
+    // Map internal selection (0/1/2) to human-readable answer text for the
+    // sheet payload. Keep undefined for MRI or unanswered.
+    let permVis;
+    if (permVisIdx >= 0 && !isMri) {
+      const sel = this.selections[permVisIdx];
+      if (sel == null) {
+        permVis = undefined;
+      } else {
+        permVis = this.questions[permVisIdx]?.options?.[sel]?.text ?? String(sel);
+      }
+    } else {
+      permVis = undefined;
+    }
 
     // ── Patient cases (Q4)
     const casesIdx = this.questions.findIndex(
@@ -3371,14 +3256,6 @@ class MarkerQuiz {
     const followupSel = followupIdx >= 0 ? this.selections[followupIdx] : null;
     const followupConcern = followupSel != null
       ? (this.questions[followupIdx]?.options?.[followupSel]?.text || `option ${followupSel}`)
-      : '';
-
-    const caseMixIdx = this.questions.findIndex(
-      (q) => q?.text && /biopsy case mix/i.test(q.text),
-    );
-    const caseMixSel = caseMixIdx >= 0 ? this.selections[caseMixIdx] : null;
-    const caseMix = caseMixSel != null
-      ? (this.questions[caseMixIdx]?.options?.[caseMixSel]?.text || `option ${caseMixSel}`)
       : '';
 
     const bleedingIdx = this.getHemostaticQuestionIndex();
@@ -3404,7 +3281,6 @@ class MarkerQuiz {
       priority_4: priorities[3] || '',
       patient_cases: patientCases,
       followup_concern: followupConcern,
-      case_mix: caseMix,
       bleeding_concern: bleedingConcern,
       natural_rating: bio,
       ...(nick !== undefined ? { nickel_rating: nick } : {}),
@@ -3633,7 +3509,7 @@ class MarkerQuiz {
   }
 
   renderGroupedMultiQuestion(display, question) {
-    const step = question.index;
+    const step = this.questions.indexOf(question);
 
     const groupsHtml = question.groups.map((group) => {
       const itemsHtml = group.items.map((opt) => {
@@ -3793,7 +3669,7 @@ class MarkerQuiz {
   }
 
   renderRatingQuestion(display, question) {
-    const step = question.index;
+    const step = this.questions.indexOf(question);
     const items = this.getRatingItemsForQuestion(question);
     const isMri = this.isMriSelected();
     if (this.lastRatingWasMri !== isMri) {
@@ -3851,7 +3727,7 @@ class MarkerQuiz {
   }
 
   renderRatingSingleQuestion(display, question) {
-    const step = question.index;
+    const step = this.questions.indexOf(question);
     const selected = this.selections[step];
     const scale = question.ratingScale || RATING_SCALE;
 
@@ -3900,7 +3776,7 @@ class MarkerQuiz {
     const scale = mode === 'single'
       ? (question.ratingScale || RATING_SCALE)
       : RATING_SCALE;
-    const step = question.index;
+    const step = this.questions.indexOf(question);
     display.querySelectorAll('.rating-slider-mobile').forEach((wrap) => {
       const input = wrap.querySelector('.rating-range-input');
       const summary = wrap.querySelector('.rating-slider-summary');
@@ -3943,7 +3819,7 @@ class MarkerQuiz {
   }
 
   selectRatingSingle(question, value) {
-    const step = question.index;
+    const step = this.questions.indexOf(question);
     this.selections[step] = value;
 
     const container = this.block.querySelector('.rating-single-page');
@@ -3973,7 +3849,7 @@ class MarkerQuiz {
   }
 
   selectRating(question, itemIndex, value) {
-    const step = question.index;
+    const step = this.questions.indexOf(question);
     if (!this.selections[step]) this.selections[step] = {};
     this.selections[step][itemIndex] = value;
 
@@ -4181,19 +4057,27 @@ class MarkerQuiz {
         this.selections[stepIndex] = [];
       }
       const arr = this.selections[stepIndex];
-      const pos = arr.indexOf(optionIndex);
-      if (pos >= 0) arr.splice(pos, 1);
-      else arr.push(optionIndex);
+      const noneIndex = question.options.findIndex((opt) => /^none$/i.test(String(opt?.text ?? '').trim()));
+      const isNoneChoice = optionIndex === noneIndex;
+      const isNoneCurrentlySelected = noneIndex >= 0 && arr.includes(noneIndex);
 
-      const optEl = this.block.querySelector(
-        `#quiz-question-display .option[data-option-index="${optionIndex}"]`,
-      );
-      if (optEl) {
-        const checkbox = optEl.querySelector('.checkbox');
-        const isSelected = arr.includes(optionIndex);
-        optEl.classList.toggle('selected', isSelected);
-        checkbox?.classList.toggle('checked', isSelected);
+      if (isNoneChoice) {
+        this.selections[stepIndex] = [noneIndex];
+      } else if (isNoneCurrentlySelected) {
+        this.selections[stepIndex] = [optionIndex];
+      } else {
+        const pos = arr.indexOf(optionIndex);
+        if (pos >= 0) arr.splice(pos, 1);
+        else arr.push(optionIndex);
       }
+
+      this.block.querySelectorAll('#quiz-question-display .option').forEach((el) => {
+        const idx = parseInt(el.dataset.optionIndex, 10);
+        const selected = this.selections[stepIndex]?.includes(idx);
+        const checkbox = el.querySelector('.checkbox');
+        el.classList.toggle('selected', Boolean(selected));
+        checkbox?.classList.toggle('checked', Boolean(selected));
+      });
     } else {
       this.selections[stepIndex] = optionIndex;
 
@@ -4274,7 +4158,6 @@ class MarkerQuiz {
     this.currentStep = 0;
     this.selections = {};
     this.scores = {};
-    this.caseMixQ3Floors = undefined;
     this.lastSortableWasMri = undefined;
     this.lastRatingWasMri = undefined;
     this.prevMriForStepRecompute = undefined;
@@ -4365,7 +4248,6 @@ const buildPreviewSheetPayload = (topProduct, products) => {
     priority_4: '',
     patient_cases: '',
     followup_concern: '',
-    case_mix: '',
     bleeding_concern: '',
     natural_rating: 0,
     all_scores: {

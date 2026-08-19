@@ -683,6 +683,7 @@ export async function getMarkerRecommendations(sourceUrl) {
         recommendationImage: p.RecommendationImage ?? p.recommendationImage ?? p['Recommendation Image'] ?? '',
         footnotes: parseFootnotes(p.Footnotes ?? p.footnotes ?? ''),
         features: parseMarkerFeatures(p.Features ?? p.features ?? ''),
+        alternativeFeatures: parseMarkerFeatures(p.AlternativeFeatures ?? p.alternativeFeatures ?? p['Alternative Features'] ?? p['alternative features'] ?? ''),
       };
     });
 
