@@ -598,6 +598,11 @@ body.marker-app-hide-chrome-footer .footer {
   padding: 0 37px;
 }
 
+.question-text em,
+.question-text .question-emphasis {
+  font-style: italic;
+}
+
 .question-container {
   text-align: center;
   flex: 1;
@@ -3725,7 +3730,7 @@ body.marker-app-hide-chrome-footer .footer {
     box-shadow: none;
     transform: none;
   }
-  
+
   .results-compatibility-disclaimers {
   padding: 0;
   text-align: center;

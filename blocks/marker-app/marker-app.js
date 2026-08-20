@@ -449,10 +449,14 @@ const stripHtmlForAlt = (str) => {
 
 const allowTrademarkHtml = (str) => {
   const escaped = escapeHtml(str);
-  return escaped.replace(
-    /&lt;sup&gt;(.*?)&lt;\/sup&gt;/gs,
-    (_, content) => `<sup>${content}</sup>`,
-  );
+  return escaped
+    .replace(/&lt;em&gt;(.*?)&lt;\/em&gt;/gs, '<em>$1</em>')
+    .replace(/&lt;i&gt;(.*?)&lt;\/i&gt;/gs, '<i>$1</i>')
+    .replace(/&lt;span class="question-emphasis"&gt;(.*?)&lt;\/span&gt;/gs, '<span class="question-emphasis">$1</span>')
+    .replace(
+      /&lt;sup&gt;(.*?)&lt;\/sup&gt;/gs,
+      (_, content) => `<sup>${content}</sup>`,
+    );
 };
 
 const MARKETO_FORMS2_SRC = 'https://www2.mammotome.com/js/forms2/js/forms2.min.js';
@@ -2273,7 +2277,7 @@ class MarkerQuiz {
       },
       {
         index: 7,
-        text: 'Do you prefer a biopsy marker without a resorbable carrier/plug?',
+        text: 'Do you prefer a biopsy marker <em>without</em> a resorbable carrier/plug?',
         type: 'single',
         options: [
           { text: 'Yes' },
