@@ -1584,7 +1584,22 @@ body.marker-app-hide-chrome-footer .footer {
   text-align: left;
 }
 
+.results-compatibility-disclaimers {
+  padding: 10px 0 0 60px;
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--mt-global-color-base-mmt-gray);
+  text-align: left;
+}
+
 .results-card .results-product-disclaimers p {
+  margin: 0 0 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.results-card .results-compatibility-disclaimers p {
   margin: 0 0 6px;
   font-size: 10px;
   line-height: 1.2;
@@ -3710,6 +3725,15 @@ body.marker-app-hide-chrome-footer .footer {
     box-shadow: none;
     transform: none;
   }
+  
+  .results-compatibility-disclaimers {
+  padding: 0;
+  text-align: center;
+}
+
+.results-card .results-compatibility-disclaimers p {
+  text-align: center;
+}
 }
 
 @media (max-width: 600px) {

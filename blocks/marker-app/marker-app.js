@@ -251,9 +251,13 @@ const START_SCREEN_DISCLAIMER_HTML = `<p class="start-screen-dislaimer"><strong>
 
 const RESULTS_PRODUCT_DISCLAIMERS_HTML = `
                   <div class="results-product-disclaimers">
-                    <p>For more information see the <a href="https://www.mammotome.com/assets/product-documents/markers/us-mammotome-marker-biopsy-device-compatibility-brochure.pdf" target="_blank" rel="noopener noreferrer">Mammotome<sup>®</sup> Markers Biopsy Device Compatibility Guide.</a></p>
                     <p>For complete product details, see the Instructions for Use.</p>
                     <p class="results-product-disclaimer-secondary">Products may not be approved or available in your region. Please check with your local Mammotome representative.</p>
+                  </div>`;
+
+const RESULTS_COMPATIBILITY_GUIDE_HTML = `
+                  <div class="results-compatibility-disclaimers">
+                    <p>For more information see the <a href="https://www.mammotome.com/assets/product-documents/markers/us-mammotome-marker-biopsy-device-compatibility-brochure.pdf" target="_blank" rel="noopener noreferrer">Mammotome<sup>®</sup> Markers Biopsy Device Compatibility Guide.</a></p>
                   </div>`;
 
 const DEFAULT_START_DESCRIPTION = 'Take our quick quiz to discover the solution that best aligns with your patient and clinical needs.';
@@ -1021,8 +1025,8 @@ const NICKEL_BONUS_KEYS = ['mammostar', 'biomarc', 'mammomark', 'hm', 'hmplus'];
 /** Bonus markers for permanent visibility preference: lumimark, biomarc only */
 const PERMANENT_VISIBILITY_BONUS_KEYS = ['lumimark', 'biomarc'];
 
-/** Shown under MammoMARK when hemostatic Often/Occasionally forces it into 3rd place. */
-const HEMOSTATIC_MAMMOMARK_NOTE = 'You indicated that you would occasionally or often use a marker with hemostatic-related characteristics. This recommendation includes a collagen-containing marker, as published studies have described collagen as having hemostatic properties.';
+/** Shown under MammoMARK when bleeding or migration concerns force it into 3rd place. */
+const HEMOSTATIC_MAMMOMARK_NOTE = 'You indicated that you experience cases with heavy bleeding and/or marker migration.';
 /** Shown under BiomarC when natural preference 3+ forces it into 3rd place. */
 const NATURAL_PREFERENCE_NOTE = 'You indicated that your patients sometimes, often, or very frequently express a preference for natural marker options. This recommendation includes a natural, non-metal composition.';
 /** MammoSTAR variant, used when it outscores BiomarC for the natural-preference pick. */
@@ -1316,6 +1320,7 @@ const buildResultsCardHtml = ({
                       </div>
                     `).join('')}
                   </div>
+                  ${RESULTS_COMPATIBILITY_GUIDE_HTML}
                 </div>
 
                 ${START_SCREEN_DISCLAIMER_HTML}
@@ -2488,7 +2493,7 @@ class MarkerQuiz {
 
     // --- Q6 (index 5): Hemostatic ("bleeding") frequency -----------------
     // Points table: getBleedingScores(). Also drives the forced-MammoMARK
-    // recommendation later (see wantsHemostaticMammomarkRecommendation()).
+    // recommendation later (see wantsMammomarkRecommendation()).
     if (this.selections[5] != null && !this.questionExcludedFromScore(this.questions[5])) {
       const bleedingScores = MarkerQuiz.getBleedingScores(this.selections[5]);
       Object.entries(bleedingScores).forEach(([productId, points]) => {
@@ -2640,13 +2645,26 @@ class MarkerQuiz {
     return items;
   }
 
-  /**
-   * True when hemostatic frequency is "Often" (0) or "Occasionally" (1).
-   */
-  wantsHemostaticMammomarkRecommendation() {
+  /** True when anti-migration is ranked first or second. */
+  wantsAntiMigrationMammomarkRecommendation() {
+    const sortableIdx = this.questions.findIndex((q) => q?.type === 'sortable');
+    if (sortableIdx < 0 || !Array.isArray(this.selections[sortableIdx])) return false;
+    const question = this.questions[sortableIdx];
+    const options = this.isMriSelected()
+      ? (question.optionsMri ?? SORTABLE_OPTIONS_MRI)
+      : (question.options ?? SORTABLE_OPTIONS);
+    return this.selections[sortableIdx]
+      .slice(0, 2)
+      .some((optionIndex) => options[optionIndex]?.key === 'anti_migration');
+  }
+
+  /** True when hemostatic frequency is "Often" (0) or "Occasionally" (1). */
+  wantsMammomarkRecommendation() {
     const hemoIdx = this.getHemostaticQuestionIndex();
     const hemoSel = hemoIdx >= 0 ? this.selections[hemoIdx] : null;
-    return hemoSel === 0 || hemoSel === 1;
+    return hemoSel === 0
+      || hemoSel === 1
+      || this.wantsAntiMigrationMammomarkRecommendation();
   }
 
   /**
@@ -2698,7 +2716,8 @@ class MarkerQuiz {
   /**
    * Builds the single "third" recommendation card shown alongside the strict
    * second-by-score pick. Forced picks (when not already in the top two):
-   *   1. Hemostatic "Often"/"Occasionally" → MammoMARK.
+  *   1. Hemostatic "Often"/"Occasionally" or anti-migration ranked first/
+  *      second → MammoMARK.
    *   2. Natural preference Sometimes/Often/Very frequently → higher-scoring
    *      of MammoStar / BioMarc.
    * Otherwise candidate markers come from nickel and permanent-visibility
@@ -2709,9 +2728,9 @@ class MarkerQuiz {
   getThirdRecommendationProduct(excludeIds) {
     const exclude = excludeIds instanceof Set ? excludeIds : new Set(excludeIds);
 
-    // Hemostatic "Often"/"Occasionally" → force MammoMARK as at least 3rd
+    // Bleeding or anti-migration concern → force MammoMARK as at least 3rd
     // when scores alone did not already place it in the top two.
-    if (this.wantsHemostaticMammomarkRecommendation()) {
+    if (this.wantsMammomarkRecommendation()) {
       const mammoId = this.resolveProductId('mammomark');
       if (
         mammoId
