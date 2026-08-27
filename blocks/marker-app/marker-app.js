@@ -252,12 +252,12 @@ const START_SCREEN_DISCLAIMER_HTML = `<p class="start-screen-dislaimer"><strong>
 const RESULTS_PRODUCT_DISCLAIMERS_HTML = `
                   <div class="results-product-disclaimers">
                     <p>For complete product details, see the Instructions for Use.</p>
-                    <p class="results-product-disclaimer-secondary">Products may not be approved or available in your region. Please check with your local Mammotome representative.</p>
                   </div>`;
 
 const RESULTS_COMPATIBILITY_GUIDE_HTML = `
                   <div class="results-compatibility-disclaimers">
                     <p>For more information see the <a href="https://www.mammotome.com/assets/product-documents/markers/us-mammotome-marker-biopsy-device-compatibility-brochure.pdf" target="_blank" rel="noopener noreferrer">Mammotome<sup>®</sup> Markers Biopsy Device Compatibility Guide.</a></p>
+                    <p class="results-product-disclaimer-secondary">Products may not be approved or available in your region. Please check with your local Mammotome representative.</p>
                   </div>`;
 
 const DEFAULT_START_DESCRIPTION = 'Take our quick quiz to discover the solution that best aligns with your patient and clinical needs.';
@@ -997,7 +997,7 @@ const SORTABLE_OPTIONS_MRI = Object.entries(
   key,
 }));
 
-const RATING_ITEM_NATURAL = 'Preference for all-natural markers (non-metal, no animal byproducts, simple sugar carrier)';
+const RATING_ITEM_NATURAL = 'Preference for all-natural markers (non-metal, non-animal, simple sugar carrier)';
 /**
  * Same 1–5 scale as natural row; MRI scoring uses `getNonAnimalPreferenceScores`
  * (MammoMARK penalty for 3+).
