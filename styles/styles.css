@@ -868,7 +868,7 @@ main .section .default-content-wrapper {
   min-width: 300px;
 }
 
-/* Remove icon play video fro hero-video */ 
+/* Remove icon play video from hero-video */ 
 .section.hero-video-container.hide-icon .icon-playvideo {
   display: none;
 }
@@ -1207,4 +1207,8 @@ main .section.our-history .year.highlight .icon-calendar {
 
 .section.nopadding {
   padding: 0;
+}
+
+.section.video-container.video-margin {
+  margin-top: -20px;
 }

@@ -1,3 +1,12 @@
 {
-  "extends": ["stylelint-config-standard"]
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "selector-class-pattern": [
+      "^(?:[a-z][a-z0-9-]*(?:__[a-z0-9-]+)?(?:--[a-z0-9-]+)?|mkto[A-Z][a-zA-Z]*)$",
+      {
+        "message": "Expected class selector to be kebab-case, BEM, or Marketo (mkto*)"
+      }
+    ],
+    "no-descending-specificity": null
+  }
 }

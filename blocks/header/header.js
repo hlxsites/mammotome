@@ -431,6 +431,20 @@ async function searchInput(event) {
   history.replaceState(null, '', url);
 }
 
+function closeSearch(searchSection) {
+  const { input, searchElement } = searchSection;
+  if (!input.active) return;
+  input.active = false;
+  input.value = '';
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  searchElement.removeChild(input.parentElement);
+  searchElement.removeChild(input.aside);
+  if (searchElement.outsideClickHandler) {
+    document.removeEventListener('click', searchElement.outsideClickHandler);
+    searchElement.outsideClickHandler = null;
+  }
+}
+
 async function searchClick(event) {
   const searchSection = event.currentTarget;
   const { input, searchElement } = searchSection;
@@ -455,27 +469,13 @@ async function searchClick(event) {
         closeSearch(searchSection);
       }
     };
-    searchElement._outsideClickHandler = handleClickOutside;
+    searchElement.outsideClickHandler = handleClickOutside;
     setTimeout(() => document.addEventListener('click', handleClickOutside), 0);
   } else {
     // Search is open → close it
     closeSearch(searchSection);
   }
   event.preventDefault();
-}
-
-function closeSearch(searchSection) {
-  const { input, searchElement } = searchSection;
-  if (!input.active) return;
-  input.active = false;
-  input.value = '';
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  searchElement.removeChild(input.parentElement);
-  searchElement.removeChild(input.aside);
-  if (searchElement._outsideClickHandler) {
-    document.removeEventListener('click', searchElement._outsideClickHandler);
-    searchElement._outsideClickHandler = null;
-  }
 }
 
 function searchDisable(event) {

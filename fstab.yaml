@@ -1,0 +1,5 @@
+# Minimal fstab to use the local repository as the site mountpoint
+owner: mammotome
+mountpoints:
+  '/':
+    path: .

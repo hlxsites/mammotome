@@ -1,0 +1,527 @@
+.preview-results .email-results-form-wrapper .email-results-form-loading,
+.preview-results .contact-sales-form-wrapper .contact-sales-form-loading,
+.preview-results .contact-sales-form-wrapper .form-loading {
+  display: block;
+  min-height: 2.75rem;
+}
+
+/* ---- Email results form (scoped) ---- */
+.email-results-form-wrapper .mktoForm {
+  max-width: 741px !important;
+  width: 100% !important;
+  margin: 0 auto;
+  padding: 3rem 2.5rem !important;
+  border-radius: 20px;
+  font-family: var(--mt-body-font-family-regular) !important;
+  background-color: #f1f1f1;
+  box-sizing: border-box;
+}
+
+.email-results-form-wrapper .mktoForm .mktoFormRow {
+  display: flex;
+  max-width: 100% !important;
+  gap: 2rem;
+}
+
+.email-results-form-wrapper .mktoForm .mktoFormRow .mktoFormCol {
+  flex: 1;
+  min-width: 0;
+}
+
+.email-results-form-wrapper fieldset .mktoButtonRow {
+  gap: 0;
+  max-width: 100% !important;
+}
+
+.email-results-form-wrapper fieldset .mktoFormRow .mktoFieldDescriptor {
+  margin: 0 !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoAsterix,
+.email-results-form-wrapper .mktoForm .mktoOffset,
+.email-results-form-wrapper .mktoForm .mktoGutter {
+  display: none !important;
+}
+
+.email-results-form-wrapper .mktoForm fieldset {
+  border: none;
+  display: flex !important;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.email-results-form-wrapper .mktoForm .mktoRequiredField .mktoLabel::after {
+  content: "*";
+}
+
+.email-results-form-wrapper .mktoForm .mktoHtmlText {
+  width: 100% !important;
+}
+
+.email-results-form-wrapper .mktoForm h1 {
+  color: #3d3e40;
+  line-height: 1.25;
+  font-weight: 400;
+  width: 100%;
+  max-width: 36rem;
+  text-align: center;
+  margin: 0 auto;
+  font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+}
+
+.email-results-form-wrapper .mktoForm h2 {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.email-results-form-wrapper .mktoForm hr {
+  border: solid 1px #eee;
+  padding: 0 !important;
+}
+
+.email-results-form-wrapper .mktoForm .disclaimer,
+.email-results-form-wrapper .disclaimer {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoFieldWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.email-results-form-wrapper .mktoForm .mktoFormCol,
+.email-results-form-wrapper .mktoForm .mktoFieldWrap,
+.email-results-form-wrapper .mktoForm input,
+.email-results-form-wrapper .mktoForm textarea.mktoField,
+.email-results-form-wrapper .mktoForm select.mktoField,
+.email-results-form-wrapper .mktoForm .mktoButtonRow {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.email-results-form-wrapper .mktoForm textarea.mktoField {
+  min-height: 17vh;
+  resize: none;
+}
+
+.email-results-form-wrapper .mktoForm .mktoLabel {
+  margin: 1rem 0 !important;
+  font-size: 16px;
+  width: 100% !important;
+  max-width: 100%;
+}
+
+.email-results-form-wrapper .col-label {
+  font-weight: 700 !important;
+  font-size: 16px !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoRadioList .mktoLabel,
+.email-results-form-wrapper .mktoForm fieldset legend {
+  font-weight: 700;
+  display: inline !important;
+  margin-right: 2rem !important;
+}
+
+.email-results-form-wrapper .mktoForm fieldset .mktoLabel {
+  font-weight: 400;
+  display: inline !important;
+}
+
+.email-results-form-wrapper .mktoForm input[type="text"],
+.email-results-form-wrapper .mktoForm input[type="url"],
+.email-results-form-wrapper .mktoForm input[type="email"],
+.email-results-form-wrapper .mktoForm input[type="tel"],
+.email-results-form-wrapper .mktoForm input[type="number"],
+.email-results-form-wrapper .mktoForm input[type="date"],
+.email-results-form-wrapper .mktoForm textarea.mktoField,
+.email-results-form-wrapper .mktoForm select.mktoField {
+  background-color: #f7f7f7;
+  border: solid 1px #ececec;
+  font-size: 16px;
+  color: #000;
+  border-radius: 10px;
+  padding: 10px !important;
+  line-height: 1.5;
+}
+
+.email-results-form-wrapper .mktoForm select.mktoField {
+  padding-top: 13.5px !important;
+  padding-bottom: 13.5px !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoRadioList,
+.email-results-form-wrapper .mktoForm .mktoCheckboxList {
+  width: 100% !important;
+  display: flex !important;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.email-results-form-wrapper .mktoForm .mktoRadioList > input,
+.email-results-form-wrapper .mktoForm .mktoCheckboxList > input {
+  width: 1rem !important;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.email-results-form-wrapper .mktoForm .mktoRadioList > label,
+.email-results-form-wrapper .mktoForm .mktoCheckboxList > label,
+.email-results-form-wrapper .mktoForm legend {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.email-results-form-wrapper .mktoForm fieldset .mktoFieldWrap {
+  justify-content: flex-end !important;
+  flex-direction: row-reverse !important;
+  align-items: center;
+  width: 1.5rem !important;
+  height: 1.5rem;
+}
+
+.email-results-form-wrapper .mktoForm fieldset .mktoCheckboxList > input {
+  height: 2rem !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoError {
+  position: relative !important;
+  right: unset !important;
+  left: unset !important;
+  bottom: unset !important;
+  font-size: 15px;
+  margin-bottom: 1rem;
+}
+
+.email-results-form-wrapper .mktoForm .mktoError .mktoErrorMsg {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #f2545b !important;
+  text-shadow: none !important;
+  padding: 0 !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoError .mktoErrorArrowWrap {
+  display: none;
+}
+
+.email-results-form-wrapper .mktoForm .mktoButtonWrap {
+  margin: 2rem auto 0 !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoButtonWrap.mktoSimple .mktoButton:hover {
+  border: solid 0 #5f8dda !important;
+}
+
+.email-results-form-wrapper .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+  border: 0 #5f8dda !important;
+  width: 200px;
+  background: #5f8dda !important;
+  margin: 0 auto !important;
+  padding: 1rem !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  display: block;
+  border-radius: 100px;
+}
+
+.email-results-form-wrapper .mktoForm table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: auto;
+}
+
+.email-results-form-wrapper .mktoForm td,
+.email-results-form-wrapper .mktoForm th {
+  width: auto !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+
+@media (max-width: 740px) {
+  .email-results-form-wrapper .mktoForm {
+    max-width: 100% !important;
+  }
+
+  .email-results-form-wrapper .mktoForm .mktoFormRow:nth-of-type(10) {
+    float: none !important;
+    margin-top: 1rem !important;
+  }
+
+  .email-results-form-wrapper .mktoForm h1 {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .email-results-form-wrapper .mktoForm {
+    padding: 3rem 0.5rem !important;
+    max-width: 100% !important;
+  }
+
+  .email-results-form-wrapper .mktoForm .mktoFormRow {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  .email-results-form-wrapper .mktoForm .mktoFormRow:nth-of-type(9) fieldset .mktoFormRow {
+    gap: 0 !important;
+  }
+
+  .email-results-form-wrapper .mktoForm sup {
+    padding: 0 !important;
+  }
+}
+
+/* ---- Contact sales multistep (scoped; multistep-form.js relies on row visibility rules) ---- */
+
+/*
+ * Field + shell styling aligned with .email-results-form-wrapper (marker-app only).
+ * Selectors use main / .survey-fullscreen so cascade wins over blocks/multistep-form/multistep-form.css.
+ */
+main .contact-sales-form-wrapper.multistep-form form,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form form {
+  padding: 3rem 2.5rem !important;
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+main .contact-sales-form-wrapper.multistep-form .mktoForm input[type="text"],
+main .contact-sales-form-wrapper.multistep-form .mktoForm input[type="url"],
+main .contact-sales-form-wrapper.multistep-form .mktoForm input[type="email"],
+main .contact-sales-form-wrapper.multistep-form .mktoForm input[type="tel"],
+main .contact-sales-form-wrapper.multistep-form .mktoForm input[type="number"],
+main .contact-sales-form-wrapper.multistep-form .mktoForm input[type="date"],
+main .contact-sales-form-wrapper.multistep-form .mktoForm textarea.mktoField,
+main .contact-sales-form-wrapper.multistep-form .mktoForm select.mktoField,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm input[type="text"],
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm input[type="url"],
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm input[type="email"],
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm input[type="tel"],
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm input[type="number"],
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm input[type="date"],
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm textarea.mktoField,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm select.mktoField {
+  background-color: #f7f7f7;
+  border: solid 1px #ececec;
+  font-family: var(--mt-body-font-family-regular);
+  font-size: 16px;
+  color: #000;
+  border-radius: 10px;
+  padding: 10px !important;
+  line-height: 1.5;
+  min-height: 0;
+  height: auto;
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+main .contact-sales-form-wrapper.multistep-form .mktoForm select.mktoField,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm select.mktoField {
+  padding-top: 13.5px !important;
+  padding-bottom: 13.5px !important;
+}
+
+main .contact-sales-form-wrapper.multistep-form .mktoForm textarea.mktoField,
+.survey-fullscreen .contact-sales-form-wrapper.multistep-form .mktoForm textarea.mktoField {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoClear {
+  clear: both;
+  float: none;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoField {
+  float: left;
+  line-height: 1.2em;
+}
+
+/* Radios inside .mktoRadioList use flex; float:left + line-height on .mktoField misaligns control vs label */
+.contact-sales-form-wrapper.multistep-form .mktoRadioList .mktoField {
+  float: none;
+  line-height: 1;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm > .mktoFormRow fieldset {
+  border: none;
+  display: grid;
+  align-content: flex-start;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm > .mktoFormRow,
+.contact-sales-form-wrapper.multistep-form .mktoForm > .mktoButtonRow,
+.contact-sales-form-wrapper.multistep-form .mktoForm > .mktoFormRow fieldset legend {
+  display: none;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoRequiredField .mktoAsterix {
+  display: none;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoHtmlText {
+  font-family: var(--mt-body-font-family-regular);
+  line-height: 1rem;
+  padding: 2% 0;
+  width: 100% !important;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoHtmlText a {
+  color: var(--mt-link-color) !important;
+  text-decoration: none;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoLabel {
+  margin: 1rem 0;
+  display: block;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoRequiredField label.mktoLabel {
+  font-family: var(--mt-body-font-family-regular);
+  font-size: 16px;
+  font-weight: var(--mt-font-weight-bold);
+  color: var(--mt-global-color-charcoal);
+  line-height: 1.25;
+  margin-bottom: 15px;
+  width: 100% !important;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoFormCol > .mktoFormRow:nth-child(5) {
+  display: grid;
+  gap: 0 2rem;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoRadioList {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem .5rem;
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  padding-left: 0;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoRadioList > label,
+.contact-sales-form-wrapper.multistep-form .mktoRadioList label {
+  margin: 0;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  float: none;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoRadioList input[type="radio"],
+.contact-sales-form-wrapper.multistep-form .mktoRadioList input.mktoField[type="radio"] {
+  width: 1rem !important;
+  height: 1rem;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1;
+  flex-shrink: 0;
+  align-self: center;
+  vertical-align: middle;
+  float: none;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoErrorMsg::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  top: 0;
+  border: 6px solid transparent;
+  border-top: 0;
+  border-bottom: 6px solid #a50050;
+  transform: translate(-50%, calc(-100%));
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoErrorMsg {
+  background-color: #a50050;
+  border: 1px solid #a50050;
+  border-radius: 6px;
+  max-width: 16em;
+  padding: 0.4em 0.6em;
+  color: #f3f3f3;
+  font-size: var(--mt-font-size-80);
+  margin: 7px auto 0;
+  left: 45%;
+  position: absolute;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoButtonRow {
+  padding-left: 7px;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoButtonWrap.mktoSimple {
+  margin: auto !important;
+}
+
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+  border: 0 !important;
+  font-weight: var(--mt-font-weight-regular);
+  font-size: var(--mt-font-size-100) !important;
+  color: var(--mt-global-color-white);
+  text-transform: uppercase;
+  border-radius: 20px;
+  margin-top: -10px;
+  background-image: none !important;
+  padding: 10px 40px !important;
+}
+
+.contact-sales-form-wrapper.multistep-form button[data-dir="prev"] {
+  background-color: var(--mt-global-color-accent-grey) !important;
+  margin-right: 15px !important;
+}
+
+.contact-sales-form-wrapper.multistep-form button[data-dir="next"],
+.contact-sales-form-wrapper.multistep-form button[type="submit"] {
+  background-color: var(--mt-global-color-accent-quinary) !important;
+}
+
+/* Do not target radios/checkboxes: same .mktoField class wins cascade and breaks Yes/No alignment */
+.contact-sales-form-wrapper.multistep-form .mktoForm .mktoField:not([type="radio"], [type="checkbox"], [type="hidden"]) {
+  margin: var(--form-input-margin);
+  font-size: var(--form-input-font-size);
+  font-family: var(--mt-form-font-family);
+}
+
+@media (max-width: 787px) {
+  .contact-sales-form-wrapper.multistep-form .mktoForm > .mktoFormRow fieldset {
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  main .contact-sales-form-wrapper.multistep-form form,
+  .survey-fullscreen .contact-sales-form-wrapper.multistep-form form {
+    padding: 3rem 0.5rem !important;
+  }
+
+  .contact-sales-form-wrapper.multistep-form .mktoForm .mktoButtonWrap.mktoSimple .mktoButton {
+    border-radius: 50px;
+    padding: 4% !important;
+    width: 175px;
+    display: block;
+    margin-top: 10px;
+  }
+
+  .contact-sales-form-wrapper.multistep-form .mktoFormCol > .mktoFormRow:nth-child(5) {
+    display: block;
+  }
+}
