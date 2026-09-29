@@ -662,7 +662,7 @@ const embedMarketoForm = async (container, formId) => {
 
 const prepareQuizResultsUrlForMarketo = async () => {
   const uuid = sessionStorage.getItem('markerQuizUuid') || '';
-  const baseUrl = window.location.origin;
+  const baseUrl = 'https://www.mammotome.com';
   let resultsUrl = `${baseUrl}/us/en/marker-results?uuid=${uuid}`;
   try {
     const linkResponse = await fetch(SHEET_URL, {
