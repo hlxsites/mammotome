@@ -455,7 +455,12 @@ function loadDelayed() {
     // Initialize Enhanced Conversions for all Marketo forms
     initMarketoEnhancedConversions();
     // eslint-disable-next-line import/no-cycle
-    return import('./delayed.js');
+    return import('./delayed.js').catch((error) => {
+      // Only retry if file failed to load, otherwise there would be side effects twice
+      const isLoadFailure = /dynamically imported module|importing a module script failed/i.test(error?.message);
+      if (!isLoadFailure) throw error;
+      return import('./coveo-run.js');
+    });
   }, 3000);
   // load anything that can be postponed to the latest here
 }
