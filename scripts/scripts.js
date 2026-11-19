@@ -21,6 +21,8 @@ import {
 const LCP_BLOCKS = ['hero', 'product-reference', 'product-support']; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'mammotome'; // add your RUM generation information here
 
+const stylesheetLoads = new Map();
+
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
   desktop: () => window.innerWidth >= 600,
@@ -126,15 +128,49 @@ function buildHeroBlock(main) {
 }
 
 /**
+ * Loads a stylesheet once and resolves when it is ready.
+ * @param {string} href The stylesheet URL
+ * @returns {Promise<void>} A promise that resolves when the stylesheet is loaded
+ */
+function loadStylesheet(href) {
+  if (!stylesheetLoads.has(href)) {
+    stylesheetLoads.set(href, new Promise((resolve, reject) => {
+      loadCSS(href, (eventType) => {
+        if (eventType === 'error') {
+          reject(new Error(`Failed to load stylesheet: ${href}`));
+        } else {
+          resolve();
+        }
+      });
+    }));
+  }
+  return stylesheetLoads.get(href);
+}
+
+/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
-  await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`, null);
+  const href = `${window.hlx.codeBasePath}/styles/fonts.css`;
+  await loadStylesheet(href);
   try {
     if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
   } catch (e) {
     // do nothing
   }
+}
+
+async function scrollToHashTarget(doc) {
+  if (!window.location.hash) return;
+
+  await document.fonts.ready;
+  await new Promise((resolve) => {
+    window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
+  });
+
+  const { hash } = window.location;
+  const element = hash ? doc.getElementById(hash.substring(1)) : false;
+  if (element) element.scrollIntoView();
 }
 
 /**
@@ -263,7 +299,10 @@ async function loadEager(doc) {
     try {
       /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
       if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
-        loadFonts();
+        loadFonts().catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error('Failed to load fonts', error);
+        });
       }
     } catch (e) {
       // do nothing
@@ -300,15 +339,19 @@ async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
-  const { hash } = window.location;
-  const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  if (hash && element) element.scrollIntoView();
-
   await loadHeader(doc.querySelector('header'));
   await loadFooter(doc.querySelector('footer'));
 
-  loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`, null);
-  loadFonts();
+  await Promise.all([
+    loadStylesheet(`${window.hlx.codeBasePath}/styles/lazy-styles.css`).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load lazy styles', error);
+    }),
+    loadFonts().catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load fonts', error);
+    }),
+  ]);
 
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-32x32.png`);
   addFavIcon(`${window.hlx.codeBasePath}/styles/icons/favicon-180x180.png`, 'apple-touch-icon');
@@ -321,6 +364,8 @@ async function loadLazy(doc) {
 
   // Mark customer as having viewed the page once
   localStorage.setItem('franklin-visitor-returning', Boolean(true).toString());
+
+  await scrollToHashTarget(doc);
 
   document.dispatchEvent(new Event('franklin.loadLazy_completed'));
 }
